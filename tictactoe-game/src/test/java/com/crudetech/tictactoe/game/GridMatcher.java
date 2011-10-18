@@ -9,7 +9,7 @@ public class GridMatcher {
         return new TypeSafeDiagnosingMatcher<Grid>() {
             @Override
             protected boolean matchesSafely(Grid grid, Description mismatchDescription) {
-                for (Grid.Cell cell : grid) {
+                for (Grid.Cell cell : grid.getCells()) {
                     if (cell.getMark() != Grid.Mark.None) {
                         mismatchDescription.appendText("not empty at").appendValue(cell.getLocation());
                         return false;

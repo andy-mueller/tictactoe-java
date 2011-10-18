@@ -1,5 +1,6 @@
 package com.crudetech.tictactoe.game;
 
+import com.crudetech.collections.AbstractIterable;
 import com.crudetech.functional.UnaryFunction;
 
 import java.util.Arrays;
@@ -37,6 +38,37 @@ class LinearRandomAccessGrid implements Grid {
         verifyThat(column, is(not(nullValue())));
 
         return matrix[computeIndexFrom(row, column)];
+    }
+
+    @Override
+    public Iterable<Cell> getCells() {
+        return new AbstractIterable<Cell>() {
+            @Override
+            public Iterator<Cell> iterator() {
+                return new Iterator<Cell>() {
+                    private int idx = 0;
+
+                    @Override
+                    public boolean hasNext() {
+                        return idx < matrix.length;
+                    }
+
+                    @Override
+                    public Cell next() {
+                        if (!hasNext()) {
+                            throw new NoSuchElementException();
+                        }
+                        Location location = locationOfIndex(idx++);
+                        return new Cell(location, getAt(location));
+                    }
+
+                    @Override
+                    public void remove() {
+                        throw new UnsupportedOperationException();
+                    }
+                };
+            }
+        };
     }
 
     private int computeIndexFrom(Row row, Column column) {
@@ -141,32 +173,5 @@ class LinearRandomAccessGrid implements Grid {
         } else {
             return nonMarkedCells.isEmpty();
         }
-    }
-
-
-    @Override
-    public Iterator<Cell> iterator() {
-        return new Iterator<Cell>() {
-            private int idx = 0;
-
-            @Override
-            public boolean hasNext() {
-                return idx < matrix.length;
-            }
-
-            @Override
-            public Cell next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException();
-                }
-                Location location = locationOfIndex(idx++);
-                return new Cell(location, getAt(location));
-            }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-        };
     }
 }

@@ -6,7 +6,7 @@ public class NaiveTryAndErrorPlayer implements Player{
 
     @Override
     public void yourTurn(Grid actualGrid) {
-        for(Grid.Cell cell : actualGrid){
+        for(Grid.Cell cell : actualGrid.getCells()){
             if(cell.getMark() == Grid.Mark.None){
                 game.addMark(this, cell.getLocation());
                 break;

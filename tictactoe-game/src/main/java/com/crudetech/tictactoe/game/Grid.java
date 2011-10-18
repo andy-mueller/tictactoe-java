@@ -1,11 +1,15 @@
 package com.crudetech.tictactoe.game;
 
+import java.util.Objects;
+
 import static com.crudetech.matcher.Verify.verifyThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
-public interface Grid extends Iterable<Grid.Cell> {
+public interface Grid {
     Mark getAt(Row row, Column column);
+
+    Iterable<Cell> getCells();
 
     public enum Mark {
         Cross, Nought, None;
@@ -58,15 +62,13 @@ public interface Grid extends Iterable<Grid.Cell> {
             Location location = (Location) o;
 
             return column == location.column
-                && row == location.row;
+                    && row == location.row;
 
         }
 
         @Override
         public int hashCode() {
-            int result = row.hashCode();
-            result = 31 * result + column.hashCode();
-            return result;
+            return Objects.hash(row, column);
         }
 
         @Override
@@ -109,15 +111,13 @@ public interface Grid extends Iterable<Grid.Cell> {
             Cell cell = (Cell) o;
 
             return location.equals(cell.location)
-                && mark == cell.mark;
+                    && mark == cell.mark;
 
         }
 
         @Override
         public int hashCode() {
-            int result = mark.hashCode();
-            result = 31 * result + location.hashCode();
-            return result;
+            return Objects.hash(mark, location);
         }
 
         @Override
@@ -139,9 +139,6 @@ public interface Grid extends Iterable<Grid.Cell> {
 
         Triple(Mark mark, Location first, Location second, Location third) {
             verifyThat(mark, is(notNullValue()));
-            verifyThat(first, is(notNullValue()));
-            verifyThat(second, is(notNullValue()));
-            verifyThat(third, is(notNullValue()));
 
             this.mark = mark;
             this.first = first;
@@ -156,20 +153,15 @@ public interface Grid extends Iterable<Grid.Cell> {
 
             Triple triple = (Triple) o;
 
-            return first.equals(triple.first)
-                && mark.equals(triple.mark)
-                && second.equals(triple.second)
-                && third.equals(triple.third);
-
+            return !(first != null ? !first.equals(triple.first) : triple.first != null)
+                    && Objects.equals(mark, triple.mark)
+                    && Objects.equals(second, triple.second)
+                    && Objects.equals(third, triple.third);
         }
 
         @Override
         public int hashCode() {
-            int result = mark.hashCode();
-            result = 31 * result + first.hashCode();
-            result = 31 * result + second.hashCode();
-            result = 31 * result + third.hashCode();
-            return result;
+            return  Objects.hash(mark, first, second, third);
         }
 
         @Override

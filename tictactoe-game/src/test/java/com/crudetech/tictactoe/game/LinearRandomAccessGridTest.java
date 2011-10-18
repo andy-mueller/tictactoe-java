@@ -33,7 +33,7 @@ public class LinearRandomAccessGridTest {
         final Grid.Location location = Grid.Location.of(Grid.Row.First, Grid.Column.Second);
         grid.setAt(location, Grid.Mark.Nought);
 
-        UnaryFunction<Grid.Cell, Boolean> notChanged2 = new UnaryFunction<Grid.Cell, Boolean>() {
+        UnaryFunction<Grid.Cell, Boolean> notChanged = new UnaryFunction<Grid.Cell, Boolean>() {
             @Override
             public Boolean execute(Grid.Cell cell) {
                 return !cell.getLocation().equals(location);
@@ -46,7 +46,7 @@ public class LinearRandomAccessGridTest {
             }
         };
 
-        boolean othersAreNone = from(grid).where(notChanged2).select(gridMark).where(notEquals(Grid.Mark.None)).any();
+        boolean othersAreNone = from(grid.getCells()).where(notChanged).select(gridMark).where(notEquals(Grid.Mark.None)).any();
         assertThat(othersAreNone, is(false));
 
     }
@@ -105,7 +105,7 @@ public class LinearRandomAccessGridTest {
                     }
                 };
 
-                return from(template).select(createModifiedGrid).toList();
+                return from(template.getCells()).select(createModifiedGrid).toList();
             }
         };
     }
@@ -136,7 +136,7 @@ public class LinearRandomAccessGridTest {
         return new Iterable.Factory<Grid.Cell>() {
             @Override
             public java.lang.Iterable<Grid.Cell> createIterable() {
-                return new LinearRandomAccessGrid();
+                return new LinearRandomAccessGrid().getCells();
             }
         };
     }
