@@ -46,11 +46,11 @@ public interface Grid {
             this.column = column;
         }
 
-        Row getRow() {
+        public Row getRow() {
             return row;
         }
 
-        Column getColumn() {
+        public Column getColumn() {
             return column;
         }
 
