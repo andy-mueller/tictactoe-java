@@ -1,6 +1,7 @@
 package com.crudetech.tictactoe.client.jcurses;
 
 
+import com.crudetech.tictactoe.game.Grid;
 import jcurses.system.InputChar;
 import org.junit.Test;
 
@@ -10,7 +11,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-public class GridWidgetCursorArrowKeyTest {
+public class GridWidgetCursorMoveTest {
     @Test
     public void arrowDownMovesCursorOneDown() {
         GridWidget.Cursor cursor = spy(new GridWidget.Cursor());
@@ -54,4 +55,21 @@ public class GridWidgetCursorArrowKeyTest {
 
         verify(cursor).moveRight();
     }
+    @Test
+    public void cursorMoveRightSetsWidgetCursorPosition() {
+        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        cursor.setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.Second));
+
+        cursor.moveRight();
+
+        assertThat(cursor.getLocation(), is(Grid.Location.of(Grid.Row.First, Grid.Column.Third)));
+    }
+    // move left
+    //flip over right
+    //flip over left
+
+    // move up
+    // move down
+    //flip over bottom
+    //flip over top
 }

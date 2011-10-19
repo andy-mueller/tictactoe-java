@@ -36,21 +36,5 @@ public class GridWidgetTest {
     //set mark failswhenallready marked
 
 
-    @Test
-    public void cursorMoveRightSetsWidgetCursorPosition() {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
-        cursor.setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.Second));
 
-        cursor.moveRight();
-
-        assertThat(cursor.getLocation(), is(Grid.Location.of(Grid.Row.First, Grid.Column.Third)));
-    }
-    // move left
-    //flip over right
-    //flip over left
-
-    // move up
-    // move down
-    //flip over bottom
-    //flip over top
 }
