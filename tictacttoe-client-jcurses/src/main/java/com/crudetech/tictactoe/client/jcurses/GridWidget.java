@@ -21,7 +21,7 @@ public class GridWidget extends TextComponent {
     GridWidget(Cursor cursor) {
         super(TicTacToe);
         this.cursor = cursor;
-        cursor.setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.First));
+        cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
     }
 
     static class Cursor {
@@ -40,12 +40,16 @@ public class GridWidget extends TextComponent {
         }
 
         public void moveLeft() {
-
+            int col = location.getColumn().ordinal();
+            int newColumn =col > 0 ?  col - 1 : Grid.Column.Third.ordinal();
+            Grid.Column newCol = Enums.ofOrdinal(Grid.Column.class, newColumn);
+            setLocation(Grid.Location.of(location.getRow(), newCol));
         }
 
         public void moveRight() {
             int col = location.getColumn().ordinal();
-            Grid.Column newCol = Enums.ofOrdinal(Grid.Column.class, col + 1);
+            int newColumn = col < Grid.Column.Third.ordinal() ?  col + 1 : 0;
+            Grid.Column newCol = Enums.ofOrdinal(Grid.Column.class, newColumn);
             setLocation(Grid.Location.of(location.getRow(), newCol));
         }
 

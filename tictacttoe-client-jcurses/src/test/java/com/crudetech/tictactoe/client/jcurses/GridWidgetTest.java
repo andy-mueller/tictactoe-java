@@ -3,8 +3,6 @@ package com.crudetech.tictactoe.client.jcurses;
 import com.crudetech.tictactoe.game.Grid;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -22,7 +20,7 @@ public class GridWidgetTest {
         GridWidget.Cursor cursor = spy(new GridWidget.Cursor());
         GridWidget w = new GridWidget(cursor);
 
-        Grid.Location firstCell = Grid.Location.of(Grid.Row.First, Grid.Column.First);
+        Grid.Location firstCell = Grid.Location.of(Grid.Row.Second, Grid.Column.Second);
         verify(cursor).setLocation(firstCell);
     }
 
