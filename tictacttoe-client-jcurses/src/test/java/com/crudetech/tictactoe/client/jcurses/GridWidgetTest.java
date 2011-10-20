@@ -61,7 +61,42 @@ public class GridWidgetTest {
                         "   |   |   ";
 
         assertThat(w.getText(), is(expectedText));
+    }
+    @Test
+    public void userKeyPressReplacesCharacterUnderCursorInSecondRow() {
+        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        GridWidget w = new StandAloneGridWidget(cursor);
+        cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
 
+
+        w.handleInput(new InputChar('X'));
+
+        String expectedText =
+                        "   |   |   " + "\n" +
+                        "---+---+---" + "\n" +
+                        "   | X |   " + "\n" +
+                        "---+---+---" + "\n" +
+                        "   |   |   ";
+
+        assertThat(w.getText(), is(expectedText));
+    }
+    @Test
+    public void userKeyPressReplacesCharacterUnderCursorInThirdRow() {
+        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        GridWidget w = new StandAloneGridWidget(cursor);
+        cursor.setLocation(Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
+
+
+        w.handleInput(new InputChar('X'));
+
+        String expectedText =
+                        "   |   |   " + "\n" +
+                        "---+---+---" + "\n" +
+                        "   |   |   " + "\n" +
+                        "---+---+---" + "\n" +
+                        "   |   | X ";
+
+        assertThat(w.getText(), is(expectedText));
     }
 
 
