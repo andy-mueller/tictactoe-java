@@ -24,19 +24,27 @@ public class GridWidgetCursorMapsOnTextComponentCursorTest {
         this.expectedTextLocationY = expectedTextLocationY;
     }
 
+//   O |   | X    <0
+//  ---+---+---    1
+//   X | O | O    <2
+//  ---+---+---    3
+//   X | O |      <4
+//   ^   ^   ^
+//  01234567890
+
     @Parameterized.Parameters
     public static Collection<Object[]> createParameters() {
         return asList(new Object[][]{
                 {Grid.Location.of(Grid.Row.First, Grid.Column.First), 1, 0},
-                {Grid.Location.of(Grid.Row.First, Grid.Column.Second), 1, 2},
-                {Grid.Location.of(Grid.Row.First, Grid.Column.Third), 1, 4},
+                {Grid.Location.of(Grid.Row.First, Grid.Column.Second), 5, 0},
+                {Grid.Location.of(Grid.Row.First, Grid.Column.Third), 9, 0},
 
-                {Grid.Location.of(Grid.Row.Second, Grid.Column.First), 5, 0},
+                {Grid.Location.of(Grid.Row.Second, Grid.Column.First), 1, 2},
                 {Grid.Location.of(Grid.Row.Second, Grid.Column.Second), 5, 2},
-                {Grid.Location.of(Grid.Row.Second, Grid.Column.Third), 5, 4},
+                {Grid.Location.of(Grid.Row.Second, Grid.Column.Third), 9, 2},
 
-                {Grid.Location.of(Grid.Row.Third, Grid.Column.First), 9, 0},
-                {Grid.Location.of(Grid.Row.Third, Grid.Column.Second), 9, 2},
+                {Grid.Location.of(Grid.Row.Third, Grid.Column.First), 1, 4},
+                {Grid.Location.of(Grid.Row.Third, Grid.Column.Second), 5, 4},
                 {Grid.Location.of(Grid.Row.Third, Grid.Column.Third), 9, 4},
         });
     }

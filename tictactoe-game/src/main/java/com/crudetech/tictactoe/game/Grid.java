@@ -25,6 +25,16 @@ public interface Grid {
         static Row of(int row) {
             return Enums.ofOrdinal(Row.class, row);
         }
+
+        public Row nextOrFlip() {
+            return  compareTo(Third) < 0
+                ? Enums.ofOrdinal(Row.class,ordinal() + 1)
+                : First;
+        }
+
+        public Row previousOrFlip() {
+            return compareTo(First) > 0 ? Enums.ofOrdinal(Row.class, ordinal() - 1) : Third;
+        }
     }
 
     public static enum Column {
@@ -32,6 +42,19 @@ public interface Grid {
 
         static Column of(int row) {
             return Enums.ofOrdinal(Column.class, row);
+        }
+
+        public Column nextOrFlip() {
+            return compareTo(Third) < 0
+                 ? Enums.ofOrdinal(Column.class, ordinal() + 1)
+                 : First;
+        }
+
+        public Column previousOrFlip() {
+            return compareTo(First) > 0
+                 ? Enums.ofOrdinal(Column.class, ordinal() - 1)
+                 : Third;
+
         }
     }
 
@@ -161,7 +184,7 @@ public interface Grid {
 
         @Override
         public int hashCode() {
-            return  Objects.hash(mark, first, second, third);
+            return Objects.hash(mark, first, second, third);
         }
 
         @Override
