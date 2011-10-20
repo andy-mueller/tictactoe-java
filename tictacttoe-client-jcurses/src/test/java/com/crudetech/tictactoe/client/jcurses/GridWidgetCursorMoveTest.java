@@ -55,6 +55,7 @@ public class GridWidgetCursorMoveTest {
 
         verify(cursor).moveRight();
     }
+
     @Test
     public void cursorMoveRightSetsWidgetCursorPosition() {
         GridWidget.Cursor cursor = new GridWidget.Cursor();
@@ -64,6 +65,7 @@ public class GridWidgetCursorMoveTest {
 
         assertThat(cursor.getLocation(), is(Grid.Location.of(Grid.Row.First, Grid.Column.Third)));
     }
+
     @Test
     public void cursorMoveLeftSetsWidgetCursorPosition() {
         GridWidget.Cursor cursor = new GridWidget.Cursor();
@@ -73,7 +75,8 @@ public class GridWidgetCursorMoveTest {
 
         assertThat(cursor.getLocation(), is(Grid.Location.of(Grid.Row.First, Grid.Column.First)));
     }
-     @Test
+
+    @Test
     public void cursorMoveLeftFlipsOverCursorPosition() {
         GridWidget.Cursor cursor = new GridWidget.Cursor();
         cursor.setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.First));
@@ -82,6 +85,7 @@ public class GridWidgetCursorMoveTest {
 
         assertThat(cursor.getLocation(), is(Grid.Location.of(Grid.Row.First, Grid.Column.Third)));
     }
+
     @Test
     public void cursorMoveRightFlipsOverCursorPosition() {
         GridWidget.Cursor cursor = new GridWidget.Cursor();
@@ -91,11 +95,45 @@ public class GridWidgetCursorMoveTest {
 
         assertThat(cursor.getLocation(), is(Grid.Location.of(Grid.Row.First, Grid.Column.First)));
     }
-    //flip over right
-    //flip over left
 
-    // move up
-    // move down
-    //flip over bottom
-    //flip over top
+    @Test
+    public void cursorMoveUpSetsWidgetCursorPosition() {
+        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
+
+        cursor.moveUp();
+
+        assertThat(cursor.getLocation(), is(Grid.Location.of(Grid.Row.First, Grid.Column.Second)));
+    }
+
+    @Test
+    public void cursorMoveDownSetsWidgetCursorPosition() {
+        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
+
+        cursor.moveDown();
+
+        assertThat(cursor.getLocation(), is(Grid.Location.of(Grid.Row.Third, Grid.Column.Second)));
+    }
+
+    @Test
+    public void cursorMoveDownFlipsOverCursorPosition() {
+        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        cursor.setLocation(Grid.Location.of(Grid.Row.Third, Grid.Column.Second));
+
+        cursor.moveDown();
+
+        assertThat(cursor.getLocation(), is(Grid.Location.of(Grid.Row.First, Grid.Column.Second)));
+    }
+
+    @Test
+    public void cursorMoveUpFlipsOverCursorPosition() {
+        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        cursor.setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.Second));
+
+        cursor.moveUp();
+
+        assertThat(cursor.getLocation(), is(Grid.Location.of(Grid.Row.Third, Grid.Column.Second)));
+    }
+
 }

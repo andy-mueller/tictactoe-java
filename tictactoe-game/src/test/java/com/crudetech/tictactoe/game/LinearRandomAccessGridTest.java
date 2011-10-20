@@ -1,7 +1,6 @@
 package com.crudetech.tictactoe.game;
 
 import com.crudetech.functional.UnaryFunction;
-import com.crudetech.junit.collections.Iterable;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
 import com.crudetech.junit.feature.Features;
@@ -13,7 +12,6 @@ import java.util.Objects;
 
 import static com.crudetech.query.Query.from;
 import static com.crudetech.tictactoe.game.GridMatcher.isEmpty;
-import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -60,24 +58,6 @@ public class LinearRandomAccessGridTest {
         };
     }
 
-    @Feature(Equivalent.class)
-    public static Equivalent.Factory<Grid.Location> locationsAreEquivalent() {
-        return new Equivalent.Factory<Grid.Location>() {
-            @Override
-            public Grid.Location createItem() {
-                return new Grid.Location(Grid.Row.First, Grid.Column.Second);
-            }
-
-            @Override
-            public List<Grid.Location> createOtherItems() {
-                return asList(
-                        new Grid.Location(Grid.Row.First, Grid.Column.First),
-                        new Grid.Location(Grid.Row.Second, Grid.Column.Second),
-                        new Grid.Location(Grid.Row.Third, Grid.Column.Third)
-                );
-            }
-        };
-    }
 
     @Feature(Equivalent.class)
     public static Equivalent.Factory<Grid> isEquivalent() {
@@ -106,55 +86,6 @@ public class LinearRandomAccessGridTest {
                 };
 
                 return from(template.getCells()).select(createModifiedGrid).toList();
-            }
-        };
-    }
-
-    @Feature(Equivalent.class)
-    public static Equivalent.Factory<LinearRandomAccessGrid.Triple> winingTripleIsEquivalent() {
-        return new Equivalent.Factory<LinearRandomAccessGrid.Triple>() {
-            @Override
-            public LinearRandomAccessGrid.Triple createItem() {
-                return new LinearRandomAccessGrid.Triple(Grid.Mark.Nought, Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First));
-            }
-
-            @Override
-            public List<LinearRandomAccessGrid.Triple> createOtherItems() {
-                return asList(
-                        new LinearRandomAccessGrid.Triple(Grid.Mark.Cross, Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First)),
-                        new LinearRandomAccessGrid.Triple(Grid.Mark.Nought, Grid.Location.of(Grid.Row.Second, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First)),
-                        new LinearRandomAccessGrid.Triple(Grid.Mark.Nought, Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.Second, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First)),
-                        new LinearRandomAccessGrid.Triple(Grid.Mark.Nought, Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.Second, Grid.Column.First)),
-                        Grid.Triple.Empty
-                );
-            }
-        };
-    }
-
-    @Feature(Iterable.class)
-    public static Iterable.Factory<Grid.Cell> implementsIterable() {
-        return new Iterable.Factory<Grid.Cell>() {
-            @Override
-            public java.lang.Iterable<Grid.Cell> createIterable() {
-                return new LinearRandomAccessGrid().getCells();
-            }
-        };
-    }
-
-    @Feature(Equivalent.class)
-    public static Equivalent.Factory<Grid.Cell> cellsAreEquivalent() {
-        return new Equivalent.Factory<Grid.Cell>() {
-            @Override
-            public Grid.Cell createItem() {
-                return new Grid.Cell(Grid.Location.of(Grid.Row.Second, Grid.Column.First), Grid.Mark.Cross);
-            }
-
-            @Override
-            public List<Grid.Cell> createOtherItems() {
-                return asList(
-                        new Grid.Cell(Grid.Location.of(Grid.Row.Second, Grid.Column.Second), Grid.Mark.Cross),
-                        new Grid.Cell(Grid.Location.of(Grid.Row.Second, Grid.Column.First), Grid.Mark.Nought)
-                );
             }
         };
     }

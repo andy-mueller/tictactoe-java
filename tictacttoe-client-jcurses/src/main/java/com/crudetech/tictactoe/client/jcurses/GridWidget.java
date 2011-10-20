@@ -27,30 +27,37 @@ public class GridWidget extends TextComponent {
     static class Cursor {
         private Grid.Location location;
 
-        public void moveDown() {
-
-        }
 
         public void setLocation(Grid.Location location) {
             this.location = location;
         }
 
-        public void moveUp() {
+        public void moveDown() {
+            int currentRow = getLocation().getRow().ordinal();
+            int row = currentRow < Grid.Row.Third.ordinal() ? currentRow + 1 : 0;
+            Grid.Row newRow = Enums.ofOrdinal(Grid.Row.class, row);
+            setLocation(Grid.Location.of(newRow, getLocation().getColumn()));
+        }
 
+        public void moveUp() {
+            int currentRow = getLocation().getRow().ordinal();
+            int row = currentRow > 0 ? currentRow - 1 : Grid.Row.Third.ordinal();
+            Grid.Row newRow = Enums.ofOrdinal(Grid.Row.class, row);
+            setLocation(Grid.Location.of(newRow, getLocation().getColumn()));
         }
 
         public void moveLeft() {
-            int col = location.getColumn().ordinal();
-            int newColumn =col > 0 ?  col - 1 : Grid.Column.Third.ordinal();
+            int col = getLocation().getColumn().ordinal();
+            int newColumn = col > 0 ? col - 1 : Grid.Column.Third.ordinal();
             Grid.Column newCol = Enums.ofOrdinal(Grid.Column.class, newColumn);
-            setLocation(Grid.Location.of(location.getRow(), newCol));
+            setLocation(Grid.Location.of(getLocation().getRow(), newCol));
         }
 
         public void moveRight() {
-            int col = location.getColumn().ordinal();
-            int newColumn = col < Grid.Column.Third.ordinal() ?  col + 1 : 0;
+            int col = getLocation().getColumn().ordinal();
+            int newColumn = col < Grid.Column.Third.ordinal() ? col + 1 : 0;
             Grid.Column newCol = Enums.ofOrdinal(Grid.Column.class, newColumn);
-            setLocation(Grid.Location.of(location.getRow(), newCol));
+            setLocation(Grid.Location.of(getLocation().getRow(), newCol));
         }
 
         public Grid.Location getLocation() {
