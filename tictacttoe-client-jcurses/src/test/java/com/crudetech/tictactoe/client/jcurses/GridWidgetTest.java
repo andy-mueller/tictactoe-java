@@ -5,13 +5,13 @@ import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
 import com.crudetech.junit.feature.Features;
 import com.crudetech.tictactoe.game.Grid;
+import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import jcurses.system.InputChar;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static com.crudetech.matcher.ThrowsException.doesThrow;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -54,113 +54,86 @@ public class GridWidgetTest {
         assertThat("Grid content was not modified", originalContent, is(w.getText()));
     }
 
-    @Test
-    public void setCrossOnCursorPosIn1stRow() {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
-        GridWidget w = new StandAloneGridWidget(cursor);
-        cursor.setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.First));
-
-
-        w.setMarkAtCursor(Grid.Mark.Cross);
-
-        String expectedText =
-                " X |   |   " + "\n" +
-                        "---+---+---" + "\n" +
-                        "   |   |   " + "\n" +
-                        "---+---+---" + "\n" +
-                        "   |   |   ";
-
-        assertThat(w.getText(), is(expectedText));
-    }
 
     @Test
-    public void setMarkTriggersRepaint() {
+    public void setGridTriggersRepaint() {
         GridWidget.Cursor cursor = new GridWidget.Cursor();
         StandAloneGridWidget w = new StandAloneGridWidget(cursor);
         cursor.setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.First));
 
         assertThat(w.getRepaints(), is(0));
 
-        w.setMarkAtCursor(Grid.Mark.Cross);
+        Grid currentGrid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+                Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
+                Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross
+        });
+
+
+        w.setGrid(currentGrid);
 
         assertThat(w.getRepaints(), is(1));
     }
 
     @Test
-    public void setNoughtOnCursorPos() {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
-        GridWidget w = new StandAloneGridWidget(cursor);
-        cursor.setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.First));
-
-
-        w.setMarkAtCursor(Grid.Mark.Nought);
-
-        String expectedText =
-                " O |   |   " + "\n" +
-                        "---+---+---" + "\n" +
-                        "   |   |   " + "\n" +
-                        "---+---+---" + "\n" +
-                        "   |   |   ";
-
-        assertThat(w.getText(), is(expectedText));
-    }
-
-    @Test
-    public void setNoneMArkOnCursorPosThrows() {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
-        final GridWidget w = new StandAloneGridWidget(cursor);
-        cursor.setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.First));
-        final String originalContent = w.getText();
-
-        Runnable setNoMarkOnCursor = new Runnable() {
-            @Override
-            public void run() {
-                w.setMarkAtCursor(Grid.Mark.None);
-            }
-        };
-
-
-        assertThat(setNoMarkOnCursor, doesThrow(IllegalArgumentException.class));
-        assertThat(w.getText(), is(originalContent));
-    }
-
-
-    @Test
-    public void setCrossOnCursorPosIn2ndRowChangesContent() {
+    public void setGridChangesWidgetContent() {
         GridWidget.Cursor cursor = new GridWidget.Cursor();
         GridWidget w = new StandAloneGridWidget(cursor);
         cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
 
+        Grid currentGrid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+                Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
+                Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross
+        });
 
-        w.setMarkAtCursor(Grid.Mark.Cross);
+
+        w.setGrid(currentGrid);
 
         String expectedText =
-                "   |   |   " + "\n" +
-                        "---+---+---" + "\n" +
                         "   | X |   " + "\n" +
                         "---+---+---" + "\n" +
-                        "   |   |   ";
+                        " O | O |   " + "\n" +
+                        "---+---+---" + "\n" +
+                        "   |   | X ";
 
         assertThat(w.getText(), is(expectedText));
     }
 
     @Test
-    public void setCrossOnCursorPosIn3rdRowChangesContent() {
+    public void setGridLetsCursorInSameLocation() {
         GridWidget.Cursor cursor = new GridWidget.Cursor();
-        GridWidget w = new StandAloneGridWidget(cursor);
-        cursor.setLocation(Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
+        StandAloneGridWidget w = new StandAloneGridWidget(cursor);
+
+        final Grid.Location location = Grid.Location.of(Grid.Row.First, Grid.Column.First);
+        cursor.setLocation(location);
 
 
-        w.setMarkAtCursor(Grid.Mark.Cross);
+        Grid currentGrid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+                Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
+                Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross
+        });
 
-        String expectedText =
-                "   |   |   " + "\n" +
-                        "---+---+---" + "\n" +
-                        "   |   |   " + "\n" +
-                        "---+---+---" + "\n" +
-                        "   |   | X ";
 
-        assertThat(w.getText(), is(expectedText));
+        w.setGrid(currentGrid);
+
+        assertThat(cursor, is(new GridWidget.Cursor(location)));
+    }
+
+    @Feature(Equivalent.class)
+    public static Equivalent.Factory<GridWidget.Cursor> cursorIsEqual() {
+        return new Equivalent.Factory<GridWidget.Cursor>() {
+            @Override
+            public GridWidget.Cursor createItem() {
+                return new GridWidget.Cursor(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
+            }
+
+            @Override
+            public List<GridWidget.Cursor> createOtherItems() {
+                return asList(new GridWidget.Cursor(Grid.Location.of(Grid.Row.First, Grid.Column.Second)));
+            }
+        };
     }
 
     @Feature(Equivalent.class)
@@ -182,9 +155,4 @@ public class GridWidgetTest {
             }
         };
     }
-
-    ////handle fails on there chars
-    //set mark failswhenallready marked
-
-
 }

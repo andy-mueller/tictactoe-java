@@ -8,14 +8,16 @@ import com.crudetech.tictactoe.game.Grid;
 import jcurses.system.InputChar;
 import jcurses.widgets.TextComponent;
 
+import java.util.Objects;
+
 import static com.crudetech.matcher.Verify.verifyThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
 
 
 class GridWidget extends TextComponent {
     private final static String TicTacToe =
-                    "   |   |   " + "\n" +
+            "   |   |   " + "\n" +
                     "---+---+---" + "\n" +
                     "   |   |   " + "\n" +
                     "---+---+---" + "\n" +
@@ -33,12 +35,16 @@ class GridWidget extends TextComponent {
         this(new Cursor());
     }
 
-    void setMarkAtCursor(Grid.Mark mark) {
-        verifyThat(mark, is(not(Grid.Mark.None)));
+    void setGrid(Grid grid) {
+        verifyThat(grid, is(notNullValue()));
 
         StringBuilder b = new StringBuilder(getText());
-        int positionInLinearText = cursor.getTextPositionX() + cursor.getTextPositionY() * 12;
-        b.replace(positionInLinearText, positionInLinearText + 1, String.valueOf(characterSymbolOf(mark)));
+
+        for (Grid.Cell cell : grid.getCells()) {
+            Cursor tmpCursor = new Cursor(cell.getLocation());
+            int positionInLinearText = tmpCursor.getTextPositionX() + tmpCursor.getTextPositionY() * 12;
+            b.replace(positionInLinearText, positionInLinearText + 1, String.valueOf(characterSymbolOf(cell.getMark())));
+        }
         setText(b.toString());
         doRepaint();
     }
@@ -49,8 +55,10 @@ class GridWidget extends TextComponent {
                 return 'X';
             case Nought:
                 return 'O';
+            case None:
+                return ' ';
             default:
-                throw new IllegalArgumentException(String.format("Wrong mark %s! Must be either %s or %s", mark, Grid.Mark.Cross, Grid.Mark.Nought));
+                throw new IllegalArgumentException(String.format("Wrong mark %s! Must be either %s, %s or %s", mark, Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None));
         }
     }
 
@@ -90,6 +98,14 @@ class GridWidget extends TextComponent {
 
     static class Cursor {
         private Grid.Location location;
+
+        Cursor(Grid.Location location) {
+            setLocation(location);
+        }
+
+        Cursor() {
+            this(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
+        }
 
 
         void setLocation(Grid.Location location) {
@@ -143,6 +159,21 @@ class GridWidget extends TextComponent {
 
         int getTextPositionY() {
             return textLocationsY[location.getRow().ordinal()];
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Cursor cursor = (Cursor) o;
+
+            return Objects.equals(location, cursor.location);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(location);
         }
     }
 

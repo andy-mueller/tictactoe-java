@@ -12,7 +12,7 @@ import static com.crudetech.matcher.Verify.verifyThat;
 import static com.crudetech.query.Query.from;
 import static org.hamcrest.Matchers.*;
 
-class LinearRandomAccessGrid implements Grid {
+public class LinearRandomAccessGrid implements Grid {
     static final int Dimension = 3;
     private final Mark[] matrix;
 
@@ -28,7 +28,7 @@ class LinearRandomAccessGrid implements Grid {
         this.matrix = matrix;
     }
 
-    static LinearRandomAccessGrid of(Mark[] marks) {
+    public static LinearRandomAccessGrid of(Mark[] marks) {
         return new LinearRandomAccessGrid(marks);
     }
 
