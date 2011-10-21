@@ -122,7 +122,7 @@ public class GridWidgetTest {
     }
 
     @Feature(Equivalent.class)
-    public static Equivalent.Factory<GridWidget.Cursor> cursorIsEqual() {
+    public static Equivalent.Factory<GridWidget.Cursor> cursorEquvalentFeature() {
         return new Equivalent.Factory<GridWidget.Cursor>() {
             @Override
             public GridWidget.Cursor createItem() {
@@ -137,7 +137,7 @@ public class GridWidgetTest {
     }
 
     @Feature(Equivalent.class)
-    public static Equivalent.Factory<GridWidget.KeyDownEventObject> keyDownEventObjectIsEqual() {
+    public static Equivalent.Factory<GridWidget.KeyDownEventObject> keyDownEventObjectEquivalentFixture() {
         return new Equivalent.Factory<GridWidget.KeyDownEventObject>() {
             public GridWidget widget = new GridWidget();
 

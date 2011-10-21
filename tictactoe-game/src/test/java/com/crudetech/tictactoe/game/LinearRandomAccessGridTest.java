@@ -60,7 +60,7 @@ public class LinearRandomAccessGridTest {
 
 
     @Feature(Equivalent.class)
-    public static Equivalent.Factory<Grid> isEquivalent() {
+    public static Equivalent.Factory<Grid> equivalentFeature() {
         return new Equivalent.Factory<Grid>() {
             @Override
             public Grid createItem() {
