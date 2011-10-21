@@ -11,12 +11,11 @@ import jcurses.widgets.TextComponent;
 
 class GridWidget extends TextComponent {
     private final static String TicTacToe =
-            "   |   |   " + "\n" +
+                    "   |   |   " + "\n" +
                     "---+---+---" + "\n" +
                     "   |   |   " + "\n" +
                     "---+---+---" + "\n" +
                     "   |   |   ";
-    //  01234567890      2
 
     private final Cursor cursor;
 
@@ -26,8 +25,27 @@ class GridWidget extends TextComponent {
         cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
     }
 
-    public GridWidget() {
+    GridWidget() {
         this(new Cursor());
+    }
+
+    void setMarkAtCursor(Grid.Mark mark) {
+        StringBuilder b = new StringBuilder(getText());
+        int pos = cursor.getTextPositionX() + cursor.getTextPositionY() * 12;
+        b.replace(pos, pos + 1, String.valueOf(characterSymbolOf(mark)));
+        setText(b.toString());
+        doRepaint();
+    }
+
+    private char characterSymbolOf(Grid.Mark mark) {
+        switch (mark) {
+            case Cross:
+                return 'X';
+            case Nought:
+                return 'O';
+            default:
+                throw new IllegalArgumentException(String.format("Wrong mark %s! Must be either %s or %s", mark, Grid.Mark.Cross, Grid.Mark.Nought));
+        }
     }
 
     static class KeyDownEventObject extends EventObject<GridWidget> {
@@ -136,12 +154,6 @@ class GridWidget extends TextComponent {
             }
         } else {
             keyDownEvent.fireEvent(new KeyDownEventObject(this, ch.getCharacter()));
-
-            StringBuilder b = new StringBuilder(getText());
-            int pos = cursor.getTextPositionX() + cursor.getTextPositionY() * 12;
-            b.replace(pos, pos + 1, String.valueOf(ch.getCharacter()));
-            setText(b.toString());
-
         }
         doRepaint();
         return true;

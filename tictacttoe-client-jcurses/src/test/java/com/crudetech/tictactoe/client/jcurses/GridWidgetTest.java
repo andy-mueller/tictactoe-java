@@ -5,11 +5,10 @@ import com.crudetech.tictactoe.game.Grid;
 import jcurses.system.InputChar;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.is;
+import static com.crudetech.matcher.ThrowsException.doesThrow;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.*;
 
 public class GridWidgetTest {
 //   O |   | X    <0
@@ -35,6 +34,8 @@ public class GridWidgetTest {
         GridWidget w = new StandAloneGridWidget(cursor);
         cursor.setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.First));
 
+        final String originalContent = w.getText();
+
         @SuppressWarnings("unchecked")
         EventListener<GridWidget.KeyDownEventObject> keyDown = mock(EventListener.class);
         w.keyDownEvent().addListener(keyDown);
@@ -42,16 +43,17 @@ public class GridWidgetTest {
         w.handleInput(new InputChar('X'));
 
         verify(keyDown).onEvent(new GridWidget.KeyDownEventObject(w, 'X'));
+        assertThat("Grid content was not modified", originalContent, is(w.getText()));
     }
 
     @Test
-    public void userKeyPressReplacesCharacterUnderCursor() {
+    public void setCrossOnCursorPosIn1stRow() {
         GridWidget.Cursor cursor = new GridWidget.Cursor();
         GridWidget w = new StandAloneGridWidget(cursor);
         cursor.setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.First));
 
 
-        w.handleInput(new InputChar('X'));
+        w.setMarkAtCursor(Grid.Mark.Cross);
 
         String expectedText =
                         " X |   |   " + "\n" +
@@ -63,13 +65,66 @@ public class GridWidgetTest {
         assertThat(w.getText(), is(expectedText));
     }
     @Test
-    public void userKeyPressReplacesCharacterUnderCursorInSecondRow() {
+    public void setMarkTriggersRepaint() {
+        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        StandAloneGridWidget w = new StandAloneGridWidget(cursor);
+        cursor.setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.First));
+
+        assertThat(w.getRepaints(), is(0));
+
+        w.setMarkAtCursor(Grid.Mark.Cross);
+
+        assertThat(w.getRepaints(), is(1));
+    }
+
+    @Test
+    public void setNoughtOnCursorPos() {
+        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        GridWidget w = new StandAloneGridWidget(cursor);
+        cursor.setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.First));
+
+
+        w.setMarkAtCursor(Grid.Mark.Nought);
+
+        String expectedText =
+                        " O |   |   " + "\n" +
+                        "---+---+---" + "\n" +
+                        "   |   |   " + "\n" +
+                        "---+---+---" + "\n" +
+                        "   |   |   ";
+
+        assertThat(w.getText(), is(expectedText));
+    }
+
+    @Test
+    public void setNoneMArkOnCursorPosThrows() {
+        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        final GridWidget w = new StandAloneGridWidget(cursor);
+        cursor.setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.First));
+        final String originalContent = w.getText();
+
+        Runnable setNoMarkOnCursor = new Runnable() {
+            @Override
+            public void run() {
+                w.setMarkAtCursor(Grid.Mark.None);
+            }
+        };
+
+
+        assertThat(setNoMarkOnCursor, doesThrow(IllegalArgumentException.class));
+        assertThat(w.getText(), is(originalContent));
+    }
+
+
+
+    @Test
+    public void setCrossOnCursorPosIn2ndRowChangesContent() {
         GridWidget.Cursor cursor = new GridWidget.Cursor();
         GridWidget w = new StandAloneGridWidget(cursor);
         cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
 
 
-        w.handleInput(new InputChar('X'));
+        w.setMarkAtCursor(Grid.Mark.Cross);
 
         String expectedText =
                         "   |   |   " + "\n" +
@@ -80,14 +135,15 @@ public class GridWidgetTest {
 
         assertThat(w.getText(), is(expectedText));
     }
+
     @Test
-    public void userKeyPressReplacesCharacterUnderCursorInThirdRow() {
+    public void setCrossOnCursorPosIn3rdRowChangesContent() {
         GridWidget.Cursor cursor = new GridWidget.Cursor();
         GridWidget w = new StandAloneGridWidget(cursor);
         cursor.setLocation(Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
 
 
-        w.handleInput(new InputChar('X'));
+        w.setMarkAtCursor(Grid.Mark.Cross);
 
         String expectedText =
                         "   |   |   " + "\n" +
