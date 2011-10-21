@@ -1,15 +1,23 @@
 package com.crudetech.tictactoe.client.jcurses;
 
 import com.crudetech.event.EventListener;
+import com.crudetech.junit.feature.Equivalent;
+import com.crudetech.junit.feature.Feature;
+import com.crudetech.junit.feature.Features;
 import com.crudetech.tictactoe.game.Grid;
 import jcurses.system.InputChar;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.List;
 
 import static com.crudetech.matcher.ThrowsException.doesThrow;
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 
+@RunWith(Features.class)
 public class GridWidgetTest {
 //   O |   | X    <0
 //  ---+---+---    1
@@ -56,7 +64,7 @@ public class GridWidgetTest {
         w.setMarkAtCursor(Grid.Mark.Cross);
 
         String expectedText =
-                        " X |   |   " + "\n" +
+                " X |   |   " + "\n" +
                         "---+---+---" + "\n" +
                         "   |   |   " + "\n" +
                         "---+---+---" + "\n" +
@@ -64,6 +72,7 @@ public class GridWidgetTest {
 
         assertThat(w.getText(), is(expectedText));
     }
+
     @Test
     public void setMarkTriggersRepaint() {
         GridWidget.Cursor cursor = new GridWidget.Cursor();
@@ -87,7 +96,7 @@ public class GridWidgetTest {
         w.setMarkAtCursor(Grid.Mark.Nought);
 
         String expectedText =
-                        " O |   |   " + "\n" +
+                " O |   |   " + "\n" +
                         "---+---+---" + "\n" +
                         "   |   |   " + "\n" +
                         "---+---+---" + "\n" +
@@ -116,7 +125,6 @@ public class GridWidgetTest {
     }
 
 
-
     @Test
     public void setCrossOnCursorPosIn2ndRowChangesContent() {
         GridWidget.Cursor cursor = new GridWidget.Cursor();
@@ -127,7 +135,7 @@ public class GridWidgetTest {
         w.setMarkAtCursor(Grid.Mark.Cross);
 
         String expectedText =
-                        "   |   |   " + "\n" +
+                "   |   |   " + "\n" +
                         "---+---+---" + "\n" +
                         "   | X |   " + "\n" +
                         "---+---+---" + "\n" +
@@ -146,7 +154,7 @@ public class GridWidgetTest {
         w.setMarkAtCursor(Grid.Mark.Cross);
 
         String expectedText =
-                        "   |   |   " + "\n" +
+                "   |   |   " + "\n" +
                         "---+---+---" + "\n" +
                         "   |   |   " + "\n" +
                         "---+---+---" + "\n" +
@@ -155,6 +163,25 @@ public class GridWidgetTest {
         assertThat(w.getText(), is(expectedText));
     }
 
+    @Feature(Equivalent.class)
+    public static Equivalent.Factory<GridWidget.KeyDownEventObject> keyDownEventObjectIsEqual() {
+        return new Equivalent.Factory<GridWidget.KeyDownEventObject>() {
+            public GridWidget widget = new GridWidget();
+
+            @Override
+            public GridWidget.KeyDownEventObject createItem() {
+                return new GridWidget.KeyDownEventObject(widget, 'P');
+            }
+
+            @Override
+            public List<GridWidget.KeyDownEventObject> createOtherItems() {
+                return asList(
+                        new GridWidget.KeyDownEventObject(widget, 'Z'),
+                        new GridWidget.KeyDownEventObject(new GridWidget(), 'P')
+                );
+            }
+        };
+    }
 
     ////handle fails on there chars
     //set mark failswhenallready marked
