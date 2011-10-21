@@ -8,6 +8,10 @@ import com.crudetech.tictactoe.game.Grid;
 import jcurses.system.InputChar;
 import jcurses.widgets.TextComponent;
 
+import static com.crudetech.matcher.Verify.verifyThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+
 
 class GridWidget extends TextComponent {
     private final static String TicTacToe =
@@ -30,9 +34,11 @@ class GridWidget extends TextComponent {
     }
 
     void setMarkAtCursor(Grid.Mark mark) {
+        verifyThat(mark, is(not(Grid.Mark.None)));
+
         StringBuilder b = new StringBuilder(getText());
-        int pos = cursor.getTextPositionX() + cursor.getTextPositionY() * 12;
-        b.replace(pos, pos + 1, String.valueOf(characterSymbolOf(mark)));
+        int positionInLinearText = cursor.getTextPositionX() + cursor.getTextPositionY() * 12;
+        b.replace(positionInLinearText, positionInLinearText + 1, String.valueOf(characterSymbolOf(mark)));
         setText(b.toString());
         doRepaint();
     }
