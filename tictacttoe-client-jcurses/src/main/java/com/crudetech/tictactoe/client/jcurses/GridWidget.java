@@ -4,6 +4,7 @@ package com.crudetech.tictactoe.client.jcurses;
 import com.crudetech.event.Event;
 import com.crudetech.event.EventObject;
 import com.crudetech.event.EventSupport;
+import com.crudetech.functional.UnaryFunction;
 import com.crudetech.tictactoe.game.Grid;
 import jcurses.system.InputChar;
 import jcurses.widgets.TextComponent;
@@ -11,6 +12,7 @@ import jcurses.widgets.TextComponent;
 import java.util.Objects;
 
 import static com.crudetech.matcher.Verify.verifyThat;
+import static com.crudetech.query.Query.from;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
@@ -39,6 +41,12 @@ class GridWidget extends TextComponent implements GridWidgetView {
     public void setGrid(Grid grid) {
         verifyThat(grid, is(notNullValue()));
 
+        String gridAsText = buildTextRepresentation(grid);
+        setText(gridAsText);
+        doRepaint();
+    }
+
+    private String buildTextRepresentation(Grid grid) {
         StringBuilder b = new StringBuilder(getText());
 
         for (Grid.Cell cell : grid.getCells()) {
@@ -46,8 +54,7 @@ class GridWidget extends TextComponent implements GridWidgetView {
             int positionInLinearText = tmpCursor.getTextPositionX() + tmpCursor.getTextPositionY() * 12;
             b.replace(positionInLinearText, positionInLinearText + 1, String.valueOf(characterSymbolOf(cell.getMark())));
         }
-        setText(b.toString());
-        doRepaint();
+        return b.toString();
     }
 
     private char characterSymbolOf(Grid.Mark mark) {
@@ -61,6 +68,36 @@ class GridWidget extends TextComponent implements GridWidgetView {
             default:
                 throw new IllegalArgumentException(String.format("Wrong mark %s! Must be either %s, %s or %s", mark, Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None));
         }
+    }
+
+    @Override
+    public void moveCursorToFirstEmptyCell(Grid grid) {
+
+        Grid.Location cursorLocation =
+                from(grid.getCells())
+                        .where(markIsEqualTo(Grid.Mark.None))
+                        .select(location())
+                        .firstOr(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
+
+        cursor.setLocation(cursorLocation);
+    }
+
+    private UnaryFunction<Grid.Cell, Grid.Location> location() {
+        return new UnaryFunction<Grid.Cell, Grid.Location>() {
+            @Override
+            public Grid.Location execute(Grid.Cell cell) {
+                return cell.getLocation();
+            }
+        };
+    }
+
+    private UnaryFunction<? super Grid.Cell, Boolean> markIsEqualTo(final Grid.Mark mark) {
+        return new UnaryFunction<Grid.Cell, Boolean>() {
+            @Override
+            public Boolean execute(Grid.Cell cell) {
+                return cell.getMark().equals(mark);
+            }
+        };
     }
 
     static class KeyDownEventObject extends EventObject<GridWidget> {
@@ -84,7 +121,7 @@ class GridWidget extends TextComponent implements GridWidgetView {
             KeyDownEventObject that = (KeyDownEventObject) o;
 
             return character == that.character
-                && location.equals(that.location);
+                    && location.equals(that.location);
 
         }
 

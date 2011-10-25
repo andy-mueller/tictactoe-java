@@ -13,6 +13,7 @@ class GridWidgetPlayer implements Player {
     @Override
     public void yourTurn(Grid actualGrid) {
         widget.setGrid(actualGrid);
+        widget.moveCursorToFirstEmptyCell(actualGrid);
     }
 
     @Override

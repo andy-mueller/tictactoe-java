@@ -27,9 +27,9 @@ public interface Grid {
         }
 
         public Row nextOrFlip() {
-            return  compareTo(Third) < 0
-                ? Enums.ofOrdinal(Row.class,ordinal() + 1)
-                : First;
+            return compareTo(Third) < 0
+                    ? Enums.ofOrdinal(Row.class, ordinal() + 1)
+                    : First;
         }
 
         public Row previousOrFlip() {
@@ -46,14 +46,14 @@ public interface Grid {
 
         public Column nextOrFlip() {
             return compareTo(Third) < 0
-                 ? Enums.ofOrdinal(Column.class, ordinal() + 1)
-                 : First;
+                    ? Enums.ofOrdinal(Column.class, ordinal() + 1)
+                    : First;
         }
 
         public Column previousOrFlip() {
             return compareTo(First) > 0
-                 ? Enums.ofOrdinal(Column.class, ordinal() - 1)
-                 : Third;
+                    ? Enums.ofOrdinal(Column.class, ordinal() - 1)
+                    : Third;
 
         }
     }
@@ -84,8 +84,8 @@ public interface Grid {
 
             Location location = (Location) o;
 
-            return column == location.column
-                    && row == location.row;
+            return Objects.equals(column, location.column)
+                && Objects.equals(row, location.row);
 
         }
 
@@ -133,8 +133,8 @@ public interface Grid {
 
             Cell cell = (Cell) o;
 
-            return location.equals(cell.location)
-                    && mark == cell.mark;
+            return Objects.equals(location, cell.location)
+                    && Objects.equals(mark, cell.mark);
 
         }
 
@@ -176,8 +176,8 @@ public interface Grid {
 
             Triple triple = (Triple) o;
 
-            return !(first != null ? !first.equals(triple.first) : triple.first != null)
-                    && Objects.equals(mark, triple.mark)
+            return Objects.equals(mark, triple.mark)
+                    && Objects.equals(first, triple.first)
                     && Objects.equals(second, triple.second)
                     && Objects.equals(third, triple.third);
         }

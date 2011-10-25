@@ -15,7 +15,8 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(Features.class)
 public class GridWidgetTest {
@@ -123,7 +124,7 @@ public class GridWidgetTest {
     }
 
     @Feature(Equivalent.class)
-    public static Equivalent.Factory<GridWidget.Cursor> cursorEquvalentFeature() {
+    public static Equivalent.Factory<GridWidget.Cursor> cursorEquivalentFeature() {
         return new Equivalent.Factory<GridWidget.Cursor>() {
             @Override
             public GridWidget.Cursor createItem() {
@@ -138,7 +139,7 @@ public class GridWidgetTest {
     }
 
     @Feature(Equivalent.class)
-    public static Equivalent.Factory<GridWidget.KeyDownEventObject> keyDownEventObjectEquivalentFixture() {
+    public static Equivalent.Factory<GridWidget.KeyDownEventObject> keyDownEventObjectEquivalentFeature() {
         return new Equivalent.Factory<GridWidget.KeyDownEventObject>() {
             public GridWidget widget = new GridWidget();
 
@@ -156,5 +157,40 @@ public class GridWidgetTest {
                 );
             }
         };
+    }
+
+    @Test
+    public void moveCursorToFirstEmptyCell() throws Exception {
+        GridWidget.Cursor cursor = mock(GridWidget.Cursor.class);
+        GridWidget widget = new StandAloneGridWidget(cursor);
+
+        Grid grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+                Grid.Mark.Cross,Grid.Mark.None,Grid.Mark.Nought,
+                Grid.Mark.None,Grid.Mark.None,Grid.Mark.None,
+                Grid.Mark.None,Grid.Mark.None,Grid.Mark.None,
+        });
+
+        widget.setGrid(grid);
+
+        widget.moveCursorToFirstEmptyCell(grid);
+
+        verify(cursor).setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.Second));
+    }
+    @Test
+    public void moveCursorToFirstEmptyCellTakesMiddleWhenEverythingIsFull() throws Exception {
+        GridWidget.Cursor cursor = mock(GridWidget.Cursor.class);
+        GridWidget widget = new StandAloneGridWidget(cursor);
+
+        Grid grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+                Grid.Mark.Cross,Grid.Mark.None,Grid.Mark.Nought,
+                Grid.Mark.Cross,Grid.Mark.None,Grid.Mark.Nought,
+                Grid.Mark.Cross,Grid.Mark.None,Grid.Mark.Nought,
+        });
+
+        widget.setGrid(grid);
+
+        widget.moveCursorToFirstEmptyCell(grid);
+
+        verify(cursor).setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
     }
 }
