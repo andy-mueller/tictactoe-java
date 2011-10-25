@@ -36,6 +36,9 @@ public class TicTacToeGame {
     }
 
     public void addMark(Player player, Grid.Row row, Grid.Column column) {
+        verifyThat(row, is(notNullValue()));
+        verifyThat(column, is(notNullValue()));
+
         if (finished) {
             throw new GameIsFinishedException();
         }

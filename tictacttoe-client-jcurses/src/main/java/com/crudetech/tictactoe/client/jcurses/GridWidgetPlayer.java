@@ -4,14 +4,15 @@ import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.Player;
 
 class GridWidgetPlayer implements Player {
-    private final GridWidget widget;
+    private final GridWidgetView widget;
 
-    GridWidgetPlayer(GridWidget widget) {
+    GridWidgetPlayer(GridWidgetView widget) {
         this.widget = widget;
     }
 
     @Override
     public void yourTurn(Grid actualGrid) {
+        widget.setGrid(actualGrid);
     }
 
     @Override

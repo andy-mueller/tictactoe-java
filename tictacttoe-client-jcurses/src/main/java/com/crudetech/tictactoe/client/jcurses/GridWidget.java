@@ -15,7 +15,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 
-class GridWidget extends TextComponent {
+class GridWidget extends TextComponent implements GridWidgetView {
     private final static String TicTacToe =
             "   |   |   " + "\n" +
                     "---+---+---" + "\n" +
@@ -35,7 +35,8 @@ class GridWidget extends TextComponent {
         this(new Cursor());
     }
 
-    void setGrid(Grid grid) {
+    @Override
+    public void setGrid(Grid grid) {
         verifyThat(grid, is(notNullValue()));
 
         StringBuilder b = new StringBuilder(getText());
@@ -64,10 +65,14 @@ class GridWidget extends TextComponent {
 
     static class KeyDownEventObject extends EventObject<GridWidget> {
         private final char character;
+        private final Grid.Location location;
 
-        public KeyDownEventObject(GridWidget gridWidget, char character) {
+        public KeyDownEventObject(GridWidget gridWidget, char character, Grid.Location location) {
             super(gridWidget);
+            verifyThat(location, is(notNullValue()));
+
             this.character = character;
+            this.location = location;
         }
 
         @Override
@@ -78,7 +83,8 @@ class GridWidget extends TextComponent {
 
             KeyDownEventObject that = (KeyDownEventObject) o;
 
-            return character == that.character;
+            return character == that.character
+                && location.equals(that.location);
 
         }
 
@@ -86,7 +92,21 @@ class GridWidget extends TextComponent {
         public int hashCode() {
             int result = super.hashCode();
             result = 31 * result + (int) character;
+            result = 31 * result + location.hashCode();
             return result;
+        }
+
+        @Override
+        public String toString() {
+            return "KeyDownEventObject{" +
+                    "source=" + getSource() +
+                    "character=" + character +
+                    ", location=" + location +
+                    '}';
+        }
+
+        Grid.Location getLocation() {
+            return location;
         }
     }
 
@@ -115,15 +135,6 @@ class GridWidget extends TextComponent {
         void moveUp() {
             Grid.Row newRow = getLocation().getRow().previousOrFlip();
             setLocation(Grid.Location.of(newRow, getLocation().getColumn()));
-            // The following code is commented out and left in here for documentation
-            // purposes. This was the first version and drove the decision to
-            //  moveDown  it into the Row.previousOrFlip() method, as it
-            // relies on implementation details of the row
-            //
-//                  int currentRow = getLocation().getRow().ordinal();
-//                  int row = currentRow > 0 ? currentRow - 1 : Grid.Row.Third.ordinal();
-//                  Grid.Row newRow = Enums.ofOrdinal(Grid.Row.class, row);
-//                  setLocation(Grid.Location.of(newRow, getLocation().getColumn()));
         }
 
 
@@ -180,20 +191,24 @@ class GridWidget extends TextComponent {
     @Override
     protected boolean handleInput(InputChar ch) {
         if (ch.isSpecialCode()) {
-            if (ch.getCode() == InputChar.KEY_DOWN) {
-                cursor.moveDown();
-            } else if (ch.getCode() == InputChar.KEY_UP) {
-                cursor.moveUp();
-            } else if (ch.getCode() == InputChar.KEY_LEFT) {
-                cursor.moveLeft();
-            } else if (ch.getCode() == InputChar.KEY_RIGHT) {
-                cursor.moveRight();
-            }
+            dispatchSpecialKeyInput(ch.getCode());
         } else {
-            keyDownEvent.fireEvent(new KeyDownEventObject(this, ch.getCharacter()));
+            keyDownEvent.fireEvent(new KeyDownEventObject(this, ch.getCharacter(), cursor.getLocation()));
         }
         doRepaint();
         return true;
+    }
+
+    private void dispatchSpecialKeyInput(int keyCode) {
+        if (keyCode == InputChar.KEY_DOWN) {
+            cursor.moveDown();
+        } else if (keyCode == InputChar.KEY_UP) {
+            cursor.moveUp();
+        } else if (keyCode == InputChar.KEY_LEFT) {
+            cursor.moveLeft();
+        } else if (keyCode == InputChar.KEY_RIGHT) {
+            cursor.moveRight();
+        }
     }
 
     @Override

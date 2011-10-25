@@ -10,7 +10,6 @@ import java.util.Collection;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.spy;
 
 @RunWith(Parameterized.class)
 public class GridWidgetRaisesRepaintOnKeyInputTest {
@@ -34,7 +33,7 @@ public class GridWidgetRaisesRepaintOnKeyInputTest {
 
     @Test
     public void anyCharInputRaisesRepaint() {
-        GridWidget.Cursor cursor = spy(new GridWidget.Cursor());
+        GridWidget.Cursor cursor = new GridWidget.Cursor();
         StandAloneGridWidget w = new StandAloneGridWidget(cursor);
 
         w.handleInput(inputKey);

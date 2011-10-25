@@ -8,13 +8,13 @@ import org.junit.Test;
 import static jcurses.system.InputChar.*;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 public class GridWidgetCursorMoveTest {
     @Test
     public void arrowDownMovesCursorOneDown() {
-        GridWidget.Cursor cursor = spy(new GridWidget.Cursor());
+        GridWidget.Cursor cursor = mock(GridWidget.Cursor.class);
         GridWidget w = new StandAloneGridWidget(cursor);
 
         boolean handled = w.handleInput(new InputChar(KEY_DOWN));
@@ -25,7 +25,7 @@ public class GridWidgetCursorMoveTest {
 
     @Test
     public void arrowUpMovesCursorOneUp() {
-        GridWidget.Cursor cursor = spy(new GridWidget.Cursor());
+        GridWidget.Cursor cursor = mock(GridWidget.Cursor.class);
         GridWidget w = new StandAloneGridWidget(cursor);
 
         boolean handled = w.handleInput(new InputChar(KEY_UP));
@@ -36,7 +36,7 @@ public class GridWidgetCursorMoveTest {
 
     @Test
     public void arrowLeftMovesCursorOneLeft() {
-        GridWidget.Cursor cursor = spy(new GridWidget.Cursor());
+        GridWidget.Cursor cursor = mock(GridWidget.Cursor.class);
         GridWidget w = new StandAloneGridWidget(cursor);
 
         boolean handled = w.handleInput(new InputChar(KEY_LEFT));
@@ -47,7 +47,7 @@ public class GridWidgetCursorMoveTest {
 
     @Test
     public void arrowRightMovesCursorOneRight() {
-        GridWidget.Cursor cursor = spy(new GridWidget.Cursor());
+        GridWidget.Cursor cursor = mock(GridWidget.Cursor.class);
         GridWidget w = new StandAloneGridWidget(cursor);
 
         boolean handled = w.handleInput(new InputChar(KEY_RIGHT));
@@ -135,5 +135,4 @@ public class GridWidgetCursorMoveTest {
 
         assertThat(cursor.getLocation(), is(Grid.Location.of(Grid.Row.Third, Grid.Column.Second)));
     }
-
 }

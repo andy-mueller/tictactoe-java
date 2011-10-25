@@ -28,8 +28,8 @@ public class GridWidgetTest {
 //  01234567890
 
     @Test
-    public void ctorSetsCursorOnFirstCell() {
-        GridWidget.Cursor cursor = spy(new GridWidget.Cursor());
+    public void ctorSetsCursorIntoMiddleCell() {
+        GridWidget.Cursor cursor = mock(GridWidget.Cursor.class);
         GridWidget w = new GridWidget(cursor);
 
         Grid.Location firstCell = Grid.Location.of(Grid.Row.Second, Grid.Column.Second);
@@ -40,7 +40,8 @@ public class GridWidgetTest {
     public void userKeyPressSendsEvent() {
         GridWidget.Cursor cursor = new GridWidget.Cursor();
         GridWidget w = new StandAloneGridWidget(cursor);
-        cursor.setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.First));
+        final Grid.Location cursorLocation = Grid.Location.of(Grid.Row.First, Grid.Column.First);
+        cursor.setLocation(cursorLocation);
 
         final String originalContent = w.getText();
 
@@ -50,7 +51,7 @@ public class GridWidgetTest {
 
         w.handleInput(new InputChar('X'));
 
-        verify(keyDown).onEvent(new GridWidget.KeyDownEventObject(w, 'X'));
+        verify(keyDown).onEvent(new GridWidget.KeyDownEventObject(w, 'X', cursorLocation));
         assertThat("Grid content was not modified", originalContent, is(w.getText()));
     }
 
@@ -63,14 +64,14 @@ public class GridWidgetTest {
 
         assertThat(w.getRepaints(), is(0));
 
-        Grid currentGrid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+        Grid aGid = LinearRandomAccessGrid.of(new Grid.Mark[]{
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
                 Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross
         });
 
 
-        w.setGrid(currentGrid);
+        w.setGrid(aGid);
 
         assertThat(w.getRepaints(), is(1));
     }
@@ -91,7 +92,7 @@ public class GridWidgetTest {
         w.setGrid(currentGrid);
 
         String expectedText =
-                        "   | X |   " + "\n" +
+                "   | X |   " + "\n" +
                         "---+---+---" + "\n" +
                         " O | O |   " + "\n" +
                         "---+---+---" + "\n" +
@@ -143,14 +144,15 @@ public class GridWidgetTest {
 
             @Override
             public GridWidget.KeyDownEventObject createItem() {
-                return new GridWidget.KeyDownEventObject(widget, 'P');
+                return new GridWidget.KeyDownEventObject(widget, 'P', Grid.Location.of(Grid.Row.First, Grid.Column.First));
             }
 
             @Override
             public List<GridWidget.KeyDownEventObject> createOtherItems() {
                 return asList(
-                        new GridWidget.KeyDownEventObject(widget, 'Z'),
-                        new GridWidget.KeyDownEventObject(new GridWidget(), 'P')
+                        new GridWidget.KeyDownEventObject(widget, 'Z', Grid.Location.of(Grid.Row.First, Grid.Column.First)),
+                        new GridWidget.KeyDownEventObject(new GridWidget(), 'P', Grid.Location.of(Grid.Row.First, Grid.Column.First)),
+                        new GridWidget.KeyDownEventObject(widget, 'P', Grid.Location.of(Grid.Row.Second, Grid.Column.First))
                 );
             }
         };
