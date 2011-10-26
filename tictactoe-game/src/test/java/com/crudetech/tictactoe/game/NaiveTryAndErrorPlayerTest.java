@@ -52,7 +52,7 @@ public class NaiveTryAndErrorPlayerTest {
     }
 
     @Test
-    public void naivePlayerCanPlayAgainstEachOther() {
+    public void naivePlayersCanPlayAgainstEachOther() {
         NaiveTryAndErrorPlayer aNaivePlayer = spy(new NaiveTryAndErrorPlayer());
         NaiveTryAndErrorPlayer otherNaivePlayer = new NaiveTryAndErrorPlayer();
         TicTacToeGame aGame = new TicTacToeGame(aNaivePlayer, otherNaivePlayer);

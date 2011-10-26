@@ -4,7 +4,6 @@ package com.crudetech.tictactoe.client.jcurses;
 import com.crudetech.event.Event;
 import com.crudetech.event.EventObject;
 import com.crudetech.event.EventSupport;
-import com.crudetech.functional.UnaryFunction;
 import com.crudetech.tictactoe.game.Grid;
 import jcurses.system.InputChar;
 import jcurses.widgets.TextComponent;
@@ -13,6 +12,8 @@ import java.util.Objects;
 
 import static com.crudetech.matcher.Verify.verifyThat;
 import static com.crudetech.query.Query.from;
+import static com.crudetech.tictactoe.game.GridCells.location;
+import static com.crudetech.tictactoe.game.GridCells.markIsEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
@@ -82,24 +83,6 @@ class GridWidget extends TextComponent implements GridWidgetView {
         cursor.setLocation(cursorLocation);
     }
 
-    private UnaryFunction<Grid.Cell, Grid.Location> location() {
-        return new UnaryFunction<Grid.Cell, Grid.Location>() {
-            @Override
-            public Grid.Location execute(Grid.Cell cell) {
-                return cell.getLocation();
-            }
-        };
-    }
-
-    private UnaryFunction<? super Grid.Cell, Boolean> markIsEqualTo(final Grid.Mark mark) {
-        return new UnaryFunction<Grid.Cell, Boolean>() {
-            @Override
-            public Boolean execute(Grid.Cell cell) {
-                return cell.getMark().equals(mark);
-            }
-        };
-    }
-
     static class KeyDownEventObject extends EventObject<GridWidget> {
         private final char character;
         private final Grid.Location location;
@@ -127,10 +110,7 @@ class GridWidget extends TextComponent implements GridWidgetView {
 
         @Override
         public int hashCode() {
-            int result = super.hashCode();
-            result = 31 * result + (int) character;
-            result = 31 * result + location.hashCode();
-            return result;
+            return Objects.hash(super.hashCode(), (int)character, location);
         }
 
         @Override
