@@ -2,8 +2,8 @@ package com.crudetech.tictactoe.game;
 
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public class LinearRandomAccessGridWinningMarkTest {
     @Test
@@ -33,7 +33,7 @@ public class LinearRandomAccessGridWinningMarkTest {
         });
 
 
-        LinearRandomAccessGrid.Triple expected = new LinearRandomAccessGrid.Triple(
+        Grid.Triple expected = Grid.Triple.of(
                 Grid.Mark.Cross,
                 Grid.Location.of(Grid.Row.First, Grid.Column.First),
                 Grid.Location.of(Grid.Row.First, Grid.Column.Second),
@@ -52,7 +52,7 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.Cross,
         });
 
-        LinearRandomAccessGrid.Triple expected = new LinearRandomAccessGrid.Triple(
+        Grid.Triple expected = Grid.Triple.of(
                 Grid.Mark.Cross,
                 Grid.Location.of(Grid.Row.Second, Grid.Column.First),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
@@ -71,7 +71,7 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Cross,
         });
 
-        LinearRandomAccessGrid.Triple expected = new LinearRandomAccessGrid.Triple(
+        Grid.Triple expected = Grid.Triple.of(
                 Grid.Mark.Cross,
                 Grid.Location.of(Grid.Row.Third, Grid.Column.First),
                 Grid.Location.of(Grid.Row.Third, Grid.Column.Second),
@@ -90,7 +90,7 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None,
         });
 
-        LinearRandomAccessGrid.Triple expected = new LinearRandomAccessGrid.Triple(
+        Grid.Triple expected = Grid.Triple.of(
                 Grid.Mark.Cross,
                 Grid.Location.of(Grid.Row.First, Grid.Column.First),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.First),
@@ -109,7 +109,7 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None,
         });
 
-        LinearRandomAccessGrid.Triple expected = new LinearRandomAccessGrid.Triple(
+        Grid.Triple expected = Grid.Triple.of(
                 Grid.Mark.Nought,
                 Grid.Location.of(Grid.Row.First, Grid.Column.Second),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
@@ -128,7 +128,7 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.Nought,
         });
 
-        LinearRandomAccessGrid.Triple expected = new LinearRandomAccessGrid.Triple(
+        Grid.Triple expected = Grid.Triple.of(
                 Grid.Mark.Nought,
                 Grid.Location.of(Grid.Row.First, Grid.Column.Third),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.Third),
@@ -147,7 +147,7 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.Cross,
         });
 
-        LinearRandomAccessGrid.Triple expected = new LinearRandomAccessGrid.Triple(
+        Grid.Triple expected = Grid.Triple.of(
                 Grid.Mark.Cross,
                 Grid.Location.of(Grid.Row.First, Grid.Column.First),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
@@ -166,7 +166,7 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.Cross,
         });
 
-        LinearRandomAccessGrid.Triple expected = new LinearRandomAccessGrid.Triple(
+        Grid.Triple expected = Grid.Triple.of(
                 Grid.Mark.Cross,
                 Grid.Location.of(Grid.Row.Third, Grid.Column.First),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.Second),

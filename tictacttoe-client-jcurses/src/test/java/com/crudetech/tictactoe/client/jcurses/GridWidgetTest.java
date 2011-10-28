@@ -161,36 +161,82 @@ public class GridWidgetTest {
 
     @Test
     public void moveCursorToFirstEmptyCell() throws Exception {
-        GridWidget.Cursor cursor = mock(GridWidget.Cursor.class);
+        GridWidget.Cursor cursor = new GridWidget.Cursor();
         GridWidget widget = new StandAloneGridWidget(cursor);
-
+        cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
         Grid grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
-                Grid.Mark.Cross,Grid.Mark.None,Grid.Mark.Nought,
-                Grid.Mark.None,Grid.Mark.None,Grid.Mark.None,
-                Grid.Mark.None,Grid.Mark.None,Grid.Mark.None,
+                Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.Nought,
+                Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None,
         });
-
         widget.setGrid(grid);
 
-        widget.moveCursorToFirstEmptyCell(grid);
+        widget.moveCursorToFirstMarkedCell(grid);
 
-        verify(cursor).setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.Second));
+        assertThat(cursor.getLocation(), is(Grid.Location.of(Grid.Row.First, Grid.Column.Second)));
     }
+
+    @Test
+    public void moveCursorToFirstEmptyCellDoesNothingWhenCurrentCellIsAlreadyEmpty() throws Exception {
+        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        GridWidget widget = new StandAloneGridWidget(cursor);
+        cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
+        Grid grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+                Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.Nought,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None,
+        });
+        widget.setGrid(grid);
+
+        widget.moveCursorToFirstMarkedCell(grid);
+
+        assertThat(cursor.getLocation(), is(Grid.Location.of(Grid.Row.Second, Grid.Column.Second)));
+    }
+
     @Test
     public void moveCursorToFirstEmptyCellTakesMiddleWhenEverythingIsFull() throws Exception {
-        GridWidget.Cursor cursor = mock(GridWidget.Cursor.class);
+        GridWidget.Cursor cursor = new GridWidget.Cursor();
         GridWidget widget = new StandAloneGridWidget(cursor);
-
         Grid grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
-                Grid.Mark.Cross,Grid.Mark.None,Grid.Mark.Nought,
-                Grid.Mark.Cross,Grid.Mark.None,Grid.Mark.Nought,
-                Grid.Mark.Cross,Grid.Mark.None,Grid.Mark.Nought,
+                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought,
+                Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.Nought,
+                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought,
         });
-
         widget.setGrid(grid);
 
-        widget.moveCursorToFirstEmptyCell(grid);
+        widget.moveCursorToFirstMarkedCell(grid);
 
-        verify(cursor).setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
+        assertThat(cursor.getLocation(), is(Grid.Location.of(Grid.Row.Second, Grid.Column.Second)));
+    }
+
+    @Test
+    public void highlightChangesWidgetContent() {
+        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        GridWidget w = new StandAloneGridWidget(cursor);
+        cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
+
+        Grid currentGrid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+                Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
+                Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross
+        });
+        w.setGrid(currentGrid);
+
+        Grid.Triple diagonalTriple = Grid.Triple.of(Grid.Mark.Cross,
+                Grid.Location.of(Grid.Row.Third, Grid.Column.First),
+                Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
+                Grid.Location.of(Grid.Row.First, Grid.Column.Third));
+
+        w.highlight(diagonalTriple);
+
+
+        String expectedText =
+                        "   | X | # " + "\n" +
+                        "---+---+---" + "\n" +
+                        " O | # |   " + "\n" +
+                        "---+---+---" + "\n" +
+                        " # |   | X ";
+
+        assertThat(w.getText(), is(expectedText));
     }
 }

@@ -32,7 +32,6 @@ public class LinearRandomAccessGrid implements Grid {
         return new LinearRandomAccessGrid(marks);
     }
 
-    @Override
     public Mark getAt(Row row, Column column) {
         verifyThat(row, is(not(nullValue())));
         verifyThat(column, is(not(nullValue())));
@@ -110,7 +109,9 @@ public class LinearRandomAccessGrid implements Grid {
                 '}';
     }
 
-    Mark getAt(Location location) {
+    @Override
+    public Mark getAt(Location location) {
+        verifyThat(location, is(notNullValue()));
         return getAt(location.getRow(), location.getColumn());
     }
 
@@ -138,7 +139,7 @@ public class LinearRandomAccessGrid implements Grid {
 
             if (mark.equals(mark2)
                     && mark.equals(mark3)) {
-                return new Triple(mark, locationOfIndex(winningTriple[0]), locationOfIndex(winningTriple[1]), locationOfIndex(winningTriple[2]));
+                return Triple.of(mark, locationOfIndex(winningTriple[0]), locationOfIndex(winningTriple[1]), locationOfIndex(winningTriple[2]));
             }
         }
         return Triple.Empty;

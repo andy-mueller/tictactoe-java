@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.notNullValue;
 
 
 class GridWidget extends TextComponent implements GridWidgetView {
-    private final static String TicTacToe =
+    private final static String TicTacToeTextRepresentationTemplate =
             "   |   |   " + "\n" +
                     "---+---+---" + "\n" +
                     "   |   |   " + "\n" +
@@ -29,7 +29,7 @@ class GridWidget extends TextComponent implements GridWidgetView {
     private final Cursor cursor;
 
     GridWidget(Cursor cursor) {
-        super(TicTacToe);
+        super(TicTacToeTextRepresentationTemplate);
         this.cursor = cursor;
         cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
     }
@@ -48,31 +48,38 @@ class GridWidget extends TextComponent implements GridWidgetView {
     }
 
     private String buildTextRepresentation(Grid grid) {
-        StringBuilder b = new StringBuilder(getText());
+        StringBuilder textRepresentation = new StringBuilder(TicTacToeTextRepresentationTemplate);
 
         for (Grid.Cell cell : grid.getCells()) {
-            Cursor tmpCursor = new Cursor(cell.getLocation());
-            int positionInLinearText = tmpCursor.getTextPositionX() + tmpCursor.getTextPositionY() * 12;
-            b.replace(positionInLinearText, positionInLinearText + 1, String.valueOf(characterSymbolOf(cell.getMark())));
+            textRepresentation = replaceAtLocation(cell.getLocation(), textRepresentation, characterSymbolOf(cell.getMark()));
         }
-        return b.toString();
+        return textRepresentation.toString();
     }
 
-    private char characterSymbolOf(Grid.Mark mark) {
-        switch (mark) {
-            case Cross:
-                return 'X';
-            case Nought:
-                return 'O';
-            case None:
-                return ' ';
-            default:
-                throw new IllegalArgumentException(String.format("Wrong mark %s! Must be either %s, %s or %s", mark, Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None));
+        private static StringBuilder replaceAtLocation(Grid.Location location, StringBuilder inBuilder, char newValue) {
+            Cursor tmpCursor = new Cursor(location);
+            int positionInLinearText = tmpCursor.getTextPositionX() + tmpCursor.getTextPositionY() * 12;
+            return inBuilder.replace(positionInLinearText, positionInLinearText + 1, String.valueOf(newValue));
         }
-    }
+
+        private char characterSymbolOf(Grid.Mark mark) {
+            switch (mark) {
+                case Cross:
+                    return 'X';
+                case Nought:
+                    return 'O';
+                case None:
+                    return ' ';
+                default:
+                    throw new IllegalArgumentException(String.format("Wrong mark %s! Must be either %s, %s or %s", mark, Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None));
+            }
+        }
 
     @Override
-    public void moveCursorToFirstEmptyCell(Grid grid) {
+    public void moveCursorToFirstMarkedCell(Grid grid) {
+        if(currentCursorPositionIsOnMarkedCell(grid))                 {
+            return;
+        }
 
         Grid.Location cursorLocation =
                 from(grid.getCells())
@@ -81,6 +88,21 @@ class GridWidget extends TextComponent implements GridWidgetView {
                         .firstOr(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
 
         cursor.setLocation(cursorLocation);
+    }
+
+    private boolean currentCursorPositionIsOnMarkedCell(Grid grid) {
+        return grid.getAt(cursor.getLocation()).equals(Grid.Mark.None);
+    }
+
+    @Override
+    public void highlight(Grid.Triple triple) {
+        StringBuilder textRepresentation = new StringBuilder(getText());
+
+        for (Grid.Location location : triple.getLocations()) {
+            textRepresentation = replaceAtLocation(location, textRepresentation, '#');
+        }
+
+        setText(textRepresentation.toString());
     }
 
     static class KeyDownEventObject extends EventObject<GridWidget> {
@@ -110,7 +132,7 @@ class GridWidget extends TextComponent implements GridWidgetView {
 
         @Override
         public int hashCode() {
-            return Objects.hash(super.hashCode(), (int)character, location);
+            return Objects.hash(super.hashCode(), (int) character, location);
         }
 
         @Override

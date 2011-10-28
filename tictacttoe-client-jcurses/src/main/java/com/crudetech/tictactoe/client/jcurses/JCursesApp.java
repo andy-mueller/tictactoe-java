@@ -83,7 +83,8 @@ public class JCursesApp {
         }
 
         private void setupNewGame() {
-            gridWidgetPlayer = new GridWidgetPlayer(gridWidget);
+            UserFeedbackChannel userFeedback = new JCursesMessageBoxFeedbackChannel();
+            gridWidgetPlayer = new GridWidgetPlayer(gridWidget, userFeedback);
             computerPlayer = new NaiveTryAndErrorPlayer();
             game = new TicTacToeGame(gridWidgetPlayer, computerPlayer);
             computerPlayer.setGame(game);

@@ -3,11 +3,12 @@ package com.crudetech.tictactoe.game;
 import java.util.Objects;
 
 import static com.crudetech.matcher.Verify.verifyThat;
+import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 public interface Grid {
-    Mark getAt(Row row, Column column);
+    Mark getAt(Location location);
 
     Iterable<Cell> getCells();
 
@@ -85,7 +86,7 @@ public interface Grid {
             Location location = (Location) o;
 
             return Objects.equals(column, location.column)
-                && Objects.equals(row, location.row);
+                    && Objects.equals(row, location.row);
 
         }
 
@@ -169,6 +170,10 @@ public interface Grid {
             this.third = third;
         }
 
+        public static Triple of(Mark mark, Location first, Location second, Location third) {
+            return new Triple(mark, first, second, third);
+        }
+
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
@@ -195,6 +200,10 @@ public interface Grid {
                     ", second=" + second +
                     ", third=" + third +
                     '}';
+        }
+
+        public Iterable<Location> getLocations() {
+            return asList(first, second, third);
         }
     }
 

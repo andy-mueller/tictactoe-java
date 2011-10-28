@@ -67,7 +67,7 @@ public class NaiveTryAndErrorPlayerTest {
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
         });
 
-        Grid.Triple diagonalTriple = new Grid.Triple(Grid.Mark.Cross,
+        Grid.Triple diagonalTriple = Grid.Triple.of(Grid.Mark.Cross,
                 Grid.Location.of(Grid.Row.Third, Grid.Column.First),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
                 Grid.Location.of(Grid.Row.First, Grid.Column.Third));

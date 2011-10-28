@@ -227,7 +227,7 @@ public class TicTacToeGameTest {
         game.addMark(firstPlayer, Grid.Row.First, Grid.Column.First);
 
 
-        Grid.Triple expected = new Grid.Triple(Grid.Mark.Cross,
+        Grid.Triple expected = Grid.Triple.of(Grid.Mark.Cross,
                 Grid.Location.of(Grid.Row.First, Grid.Column.First),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.First),
                 Grid.Location.of(Grid.Row.Third, Grid.Column.First)
