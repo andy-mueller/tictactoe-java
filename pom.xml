@@ -12,17 +12,38 @@
     <packaging>pom</packaging>
 
     <properties>
-        <crudetech.libs.version>0.10-SNAPSHOT</crudetech.libs.version>
+        <crudetech.libs.version>0.11-SNAPSHOT</crudetech.libs.version>
         <hamcrest.version>1.3.RC2</hamcrest.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <pluginRepositories>
 
     </pluginRepositories>
+    <repositories>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+
+            <id>crudetech-repo</id>
+            <name>Crudetech Library Repository</name>
+            <url>http://crudetech-libs.googlecode.com/svn/java/repo</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
+
     <modules>
         <module>tictactoe-game</module>
         <module>tictacttoe-client-jcurses</module>
     </modules>
+
     <developers>
         <developer>
             <id>AndyM</id>
@@ -70,6 +91,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
             </plugin>
+
         </plugins>
         <extensions>
             <extension>
@@ -176,7 +198,6 @@
         <dependency>
             <groupId>com.crudetech</groupId>
             <artifactId>unittests</artifactId>
-            <version>${crudetech.libs.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

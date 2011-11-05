@@ -1,5 +1,7 @@
 package com.crudetech.tictactoe.game;
 
+import com.crudetech.lang.Enums;
+
 import java.util.Objects;
 
 import static com.crudetech.matcher.Verify.verifyThat;

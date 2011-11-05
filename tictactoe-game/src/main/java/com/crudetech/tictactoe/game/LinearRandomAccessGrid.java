@@ -13,7 +13,7 @@ import static com.crudetech.query.Query.from;
 import static org.hamcrest.Matchers.*;
 
 public class LinearRandomAccessGrid implements Grid {
-    static final int Dimension = 3;
+    private static final int Dimension = 3;
     private final Mark[] matrix;
 
     LinearRandomAccessGrid() {
@@ -105,7 +105,7 @@ public class LinearRandomAccessGrid implements Grid {
     @Override
     public String toString() {
         return "LinearRandomAccessGrid{" +
-                "matrix=" + (matrix == null ? null : Arrays.asList(matrix)) +
+                "matrix=" + Arrays.toString(matrix) +
                 '}';
     }
 
@@ -124,7 +124,7 @@ public class LinearRandomAccessGrid implements Grid {
     }
 
     Triple winningTriple() {
-        int[][] winningTriples = {
+        final int[][] winningTriples = {
                 {0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6},
                 {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {6, 4, 2},
         };
@@ -160,13 +160,7 @@ public class LinearRandomAccessGrid implements Grid {
             return false;
         }
 
-        UnaryFunction<Integer, Boolean> isNotMarked = new UnaryFunction<Integer, Boolean>() {
-            @Override
-            public Boolean execute(Integer integer) {
-                return matrix[integer].equals(Mark.None);
-            }
-        };
-        List<Integer> nonMarkedCells = from(0, 1, 2, 3, 4, 5, 6, 7, 8).where(isNotMarked).toList();
+        List<Integer> nonMarkedCells = from(0, 1, 2, 3, 4, 5, 6, 7, 8).where(isNotMarked()).toList();
         if (nonMarkedCells.size() == 1) {
             LinearRandomAccessGrid grid = new LinearRandomAccessGrid(this.matrix.clone());
             grid.setAt(locationOfIndex(nonMarkedCells.get(0)), firstMark);
@@ -174,5 +168,14 @@ public class LinearRandomAccessGrid implements Grid {
         } else {
             return nonMarkedCells.isEmpty();
         }
+    }
+
+    private UnaryFunction<? super Integer, Boolean> isNotMarked() {
+        return new UnaryFunction<Integer, Boolean>() {
+            @Override
+            public Boolean execute(Integer integer) {
+                return matrix[integer].equals(Mark.None);
+            }
+        };
     }
 }
