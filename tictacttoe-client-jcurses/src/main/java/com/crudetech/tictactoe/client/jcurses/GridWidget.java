@@ -90,9 +90,9 @@ class GridWidget extends TextComponent implements GridWidgetView {
         cursor.setLocation(cursorLocation);
     }
 
-    private boolean currentCursorPositionIsOnMarkedCell(Grid grid) {
-        return grid.getAt(cursor.getLocation()).equals(Grid.Mark.None);
-    }
+        private boolean currentCursorPositionIsOnMarkedCell(Grid grid) {
+            return grid.getAt(cursor.getLocation()).equals(Grid.Mark.None);
+        }
 
     @Override
     public void highlight(Grid.Triple triple) {
@@ -234,21 +234,25 @@ class GridWidget extends TextComponent implements GridWidgetView {
         } else {
             keyDownEvent.fireEvent(new KeyDownEventObject(this, ch.getCharacter(), cursor.getLocation()));
         }
-        doRepaint();
+        invalidate();
         return true;
     }
 
-    private void dispatchSpecialKeyInput(int keyCode) {
-        if (keyCode == InputChar.KEY_DOWN) {
-            cursor.moveDown();
-        } else if (keyCode == InputChar.KEY_UP) {
-            cursor.moveUp();
-        } else if (keyCode == InputChar.KEY_LEFT) {
-            cursor.moveLeft();
-        } else if (keyCode == InputChar.KEY_RIGHT) {
-            cursor.moveRight();
+        private void invalidate() {
+            doRepaint();
         }
-    }
+
+    private void dispatchSpecialKeyInput(int keyCode) {
+            if (keyCode == InputChar.KEY_DOWN) {
+                cursor.moveDown();
+            } else if (keyCode == InputChar.KEY_UP) {
+                cursor.moveUp();
+            } else if (keyCode == InputChar.KEY_LEFT) {
+                cursor.moveLeft();
+            } else if (keyCode == InputChar.KEY_RIGHT) {
+                cursor.moveRight();
+            }
+        }
 
     @Override
     protected void doPaint() {
