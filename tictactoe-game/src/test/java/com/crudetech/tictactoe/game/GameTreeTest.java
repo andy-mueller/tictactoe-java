@@ -1,27 +1,22 @@
 package com.crudetech.tictactoe.game;
 
-import com.crudetech.collections.Iterables;
-import com.crudetech.lang.Compare;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 public class GameTreeTest {
 
-    interface Node extends Comparable<Node> {
-        int getRecursiveValue();
+    interface Node {
+        public int getRecursiveValue(int alpha, int beta);
     }
 
-    abstract class ComparableNode implements Node {
-        @Override
-        public int compareTo(Node o) {
-            return Integer.valueOf(getRecursiveValue()).compareTo(o.getRecursiveValue());
-        }
-    }
 
-    class MinNode extends ComparableNode {
+
+    class MinNode implements Node {
         private final Iterable<? extends Node> children;
 
         MinNode(Iterable<? extends Node> children) {
@@ -33,17 +28,18 @@ public class GameTreeTest {
         }
 
         @Override
-        public int getRecursiveValue() {
-            Iterable<? extends Node> children = getChildren();
-            Node min = Iterables.firstOf(children);
+        public int getRecursiveValue(int alpha, int beta) {
             for (Node node : getChildren()) {
-                min = Compare.min(min, node);
+                beta = Math.min(beta, node.getRecursiveValue(alpha, beta));
+                if (beta <= alpha) {
+                    break;
+                }
             }
-            return min.getRecursiveValue();
+            return beta;
         }
     }
 
-    class MaxNode extends ComparableNode {
+    class MaxNode implements Node {
         private final Iterable<? extends Node> children;
 
         MaxNode(Iterable<? extends Node> children) {
@@ -55,17 +51,18 @@ public class GameTreeTest {
         }
 
         @Override
-        public int getRecursiveValue() {
-            Iterable<? extends Node> children = getChildren();
-            Node max = Iterables.firstOf(children);
+        public int getRecursiveValue(int alpha, int beta) {
             for (Node node : getChildren()) {
-                max = Compare.max(max, node);
+                alpha = Math.max(alpha, node.getRecursiveValue(alpha, beta));
+                if (beta <= alpha) {
+                    break;
+                }
             }
-            return max.getRecursiveValue();
+            return alpha;
         }
     }
 
-    abstract class LeafNode extends ComparableNode {
+    abstract class LeafNode implements Node {
     }
 
     class ValueLeafNode extends LeafNode {
@@ -76,7 +73,7 @@ public class GameTreeTest {
         }
 
         @Override
-        public int getRecursiveValue() {
+        public int getRecursiveValue(int alpha, int beta) {
             return value;
         }
     }
@@ -85,8 +82,9 @@ public class GameTreeTest {
     public void leafNodeGivesScore() {
         LeafNode node = new ValueLeafNode(42);
 
-        assertThat(node.getRecursiveValue(), is(42));
+        assertThat(node.getRecursiveValue(Integer.MIN_VALUE, Integer.MAX_VALUE), is(42));
     }
+
 
     @Test
     public void maxNodeGivesMaximizedScoreOfChildren() {
@@ -101,7 +99,7 @@ public class GameTreeTest {
             }
         };
 
-        assertThat(maxNode.getRecursiveValue(), is(42));
+        assertThat(maxNode.getRecursiveValue(Integer.MIN_VALUE, Integer.MAX_VALUE), is(42));
     }
 
     @Test
@@ -112,7 +110,7 @@ public class GameTreeTest {
 
         MinNode maxNode = new MinNode(asList(a, b, c));
 
-        assertThat(maxNode.getRecursiveValue(), is(-4));
+        assertThat(maxNode.getRecursiveValue(Integer.MIN_VALUE, Integer.MAX_VALUE), is(-4));
     }
 
     @Test
@@ -131,7 +129,7 @@ public class GameTreeTest {
 
         MaxNode a = new MaxNode(asList(b, c, d));
 
-        assertThat(a.getRecursiveValue(), is(-2));
+        assertThat(a.getRecursiveValue(Integer.MIN_VALUE, Integer.MAX_VALUE), is(-2));
     }
 
     @Test
@@ -150,76 +148,31 @@ public class GameTreeTest {
 
         MinNode a = new MinNode(asList(b, c, d));
 
-        assertThat(a.getRecursiveValue(), is(-3));
+        assertThat(a.getRecursiveValue(Integer.MIN_VALUE, Integer.MAX_VALUE), is(-3));
     }
 
+    @Test
+    public void alphaBetaCutOff() throws Exception {
+        LeafNode e = new ValueLeafNode(3);
+        LeafNode f = new ValueLeafNode(12);
+        LeafNode g = new ValueLeafNode(8);
+        LeafNode h = new ValueLeafNode(2);
+        LeafNode i = spy(new ValueLeafNode(4));
+        LeafNode j = spy(new ValueLeafNode(6));
+        LeafNode k = new ValueLeafNode(14);
+        LeafNode l = new ValueLeafNode(5);
+        LeafNode m = new ValueLeafNode(2);
 
-//    @Test
-//    public void alphaBetaRecursesTree() {
-//        GameTree gameTree = new GameTree();
-//
-//        class LeafNode implements GameTree.Node {
-//            private final int value;
-//
-//            LeafNode(int value) {
-//                this.value = value;
-//            }
-//
-//            @Override
-//            public Iterable<? extends GameTree.Node> getChildren() {
-//                return emptyList();
-//            }
-//
-//            @Override
-//            public int getValue() {
-//                return value;
-//            }
-//        }
-//
-//        LeafNode e = new LeafNode(9);
-//        LeafNode f = new LeafNode(-6);
-//        LeafNode g = new LeafNode(0);
-//        LeafNode h = new LeafNode(0);
-//        LeafNode i = new LeafNode(-2);
-//        LeafNode j = new LeafNode(-4);
-//        LeafNode k = new LeafNode(-3);
-//
-//        class Node implements GameTree.Node {
-//            private final Iterable<? extends GameTree.Node> children;
-//
-//            Node(Iterable<? extends GameTree.Node> children) {
-//                this.children = children;
-//            }
-//
-//            Node(GameTree.Node... children) {
-//                this(asList(children));
-//            }
-//
-//            @Override
-//            public Iterable<? extends GameTree.Node> getChildren() {
-//                return children;
-//            }
-//
-//            @Override
-//            public int getValue() {
-//                return 42;
-//            }
-//
-//            Node getChildNode(GameTree.PlayerStrategy playerStrategy){
-//                return null;
-//            }
-//        }
-//
-//        Node b = new Node(e, f, g);
-//        Node c = new Node(h, i);
-//        Node d = new Node(j, k);
-//
-//        Node a = new Node(b, c, d);
-//
-//
-//        Object maxPlayer = null;
-//        int max = gameTree.alphaBeta(a, 9, Integer.MIN_VALUE, Integer.MAX_VALUE, maxPlayer);
-//
-//        assertThat(max, is(-2));
-//    }
+        MinNode b = new MinNode(asList(e, f, g));
+        MinNode c = new MinNode(asList(h, i, j));
+        MinNode d = new MinNode(asList(k, l, m));
+
+        MaxNode a = new MaxNode(asList(b, c, d));
+
+        assertThat(a.getRecursiveValue(Integer.MIN_VALUE, Integer.MAX_VALUE), is(3));
+        verifyZeroInteractions(i, j);
+    }
+
+    // min node has max children
+    // max node has min children
 }
