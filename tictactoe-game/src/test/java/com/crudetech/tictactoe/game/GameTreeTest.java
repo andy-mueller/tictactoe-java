@@ -14,32 +14,51 @@ public class GameTreeTest {
         public int getRecursiveValue(int alpha, int beta);
     }
 
+    abstract class AlphaBetaNode implements Node {
+        abstract Iterable<? extends Node> getChildren();
+        int beta = 0;
+        int alpha = 0;
+        @Override
+        public int getRecursiveValue(int alpha, int beta) {
+            this.beta = beta;
+            this.alpha = alpha;
+            for (Node node : getChildren()) {
+                applyEvaluation(node.getRecursiveValue(this.alpha, this.beta));
+                if (this.beta <= this.alpha) {
+                    break;
+                }
+            }
+            return evaluatedValue();
+        }
 
+        protected abstract int evaluatedValue();
 
-    class MinNode implements Node {
+        abstract void applyEvaluation(int value);
+    }
+
+    class MinNode extends AlphaBetaNode{
         private final Iterable<? extends Node> children;
 
         MinNode(Iterable<? extends Node> children) {
             this.children = children;
         }
-
+        @Override
         protected Iterable<? extends Node> getChildren() {
             return children;
         }
 
         @Override
-        public int getRecursiveValue(int alpha, int beta) {
-            for (Node node : getChildren()) {
-                beta = Math.min(beta, node.getRecursiveValue(alpha, beta));
-                if (beta <= alpha) {
-                    break;
-                }
-            }
-            return beta;
+        protected int evaluatedValue() {
+            return this.beta;
+        }
+
+        @Override
+        void applyEvaluation(int value) {
+            this.beta = Math.min(beta, value);
         }
     }
 
-    class MaxNode implements Node {
+    class MaxNode extends AlphaBetaNode{
         private final Iterable<? extends Node> children;
 
         MaxNode(Iterable<? extends Node> children) {
@@ -51,14 +70,13 @@ public class GameTreeTest {
         }
 
         @Override
-        public int getRecursiveValue(int alpha, int beta) {
-            for (Node node : getChildren()) {
-                alpha = Math.max(alpha, node.getRecursiveValue(alpha, beta));
-                if (beta <= alpha) {
-                    break;
-                }
-            }
+        protected int evaluatedValue() {
             return alpha;
+        }
+
+        @Override
+        void applyEvaluation(int value) {
+            alpha = Math.max(alpha, value);
         }
     }
 
