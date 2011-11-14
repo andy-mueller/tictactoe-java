@@ -16,8 +16,6 @@ public class GameTreeTest {
 
     abstract class AlphaBetaNode implements Node {
         abstract Iterable<? extends Node> getChildren();
-
-        public abstract int getRecursiveValue(int alpha, int beta);
     }
 
     abstract class MinNode extends AlphaBetaNode {
@@ -47,24 +45,12 @@ public class GameTreeTest {
     }
 
     abstract class LeafNode implements Node {
-    }
 
-    class ValueLeafNode extends LeafNode {
-        private final int value;
-
-        ValueLeafNode(int value) {
-            this.value = value;
-        }
-
-        @Override
-        public int getRecursiveValue(int alpha, int beta) {
-            return value;
-        }
     }
 
     @Test
     public void leafNodeGivesScore() {
-        LeafNode node = createLeafNode(42);
+        Node node = createLeafNode(42);
 
         assertThat(node.getRecursiveValue(Integer.MIN_VALUE, Integer.MAX_VALUE), is(42));
     }
@@ -72,16 +58,29 @@ public class GameTreeTest {
 
     @Test
     public void maxNodeGivesMaximizedScoreOfChildren() {
-        final LeafNode a = createLeafNode(42);
-        final LeafNode b = createLeafNode(12);
-        final LeafNode c = createLeafNode(-4);
+        final Node a = createLeafNode(42);
+        final Node b = createLeafNode(12);
+        final Node c = createLeafNode(-4);
 
         MaxNode maxNode = createMaxNode(a, b, c);
 
         assertThat(maxNode.getRecursiveValue(Integer.MIN_VALUE, Integer.MAX_VALUE), is(42));
     }
 
-    private ValueLeafNode createLeafNode(int value) {
+    private Node createLeafNode(int value) {
+        class ValueLeafNode extends LeafNode {
+            private final int value;
+
+            ValueLeafNode(int value) {
+                this.value = value;
+            }
+
+            @Override
+            public int getRecursiveValue(int alpha, int beta) {
+                return value;
+            }
+        }
+
         return new ValueLeafNode(value);
     }
 
@@ -96,9 +95,9 @@ public class GameTreeTest {
 
     @Test
     public void minNodeGivesMaximizedScoreOfChildren() {
-        final LeafNode a = createLeafNode(42);
-        final LeafNode b = createLeafNode(12);
-        final LeafNode c = createLeafNode(-4);
+        final Node a = createLeafNode(42);
+        final Node b = createLeafNode(12);
+        final Node c = createLeafNode(-4);
 
         MinNode maxNode = createMinNode(a, b, c);
 
@@ -116,13 +115,13 @@ public class GameTreeTest {
 
     @Test
     public void threeLevelsWithMaxInRoot() {
-        LeafNode e = createLeafNode(9);
-        LeafNode f = createLeafNode(-6);
-        LeafNode g = createLeafNode(0);
-        LeafNode h = createLeafNode(0);
-        LeafNode i = createLeafNode(-2);
-        LeafNode j = createLeafNode(-4);
-        LeafNode k = createLeafNode(-3);
+        Node e = createLeafNode(9);
+        Node f = createLeafNode(-6);
+        Node g = createLeafNode(0);
+        Node h = createLeafNode(0);
+        Node i = createLeafNode(-2);
+        Node j = createLeafNode(-4);
+        Node k = createLeafNode(-3);
 
         MinNode b = createMinNode(e, f, g);
         MinNode c = createMinNode(h, i);
@@ -135,13 +134,13 @@ public class GameTreeTest {
 
     @Test
     public void threeLevelsWithMinInRoot() {
-        LeafNode e = createLeafNode(9);
-        LeafNode f = createLeafNode(-6);
-        LeafNode g = createLeafNode(0);
-        LeafNode h = createLeafNode(0);
-        LeafNode i = createLeafNode(-2);
-        LeafNode j = createLeafNode(-4);
-        LeafNode k = createLeafNode(-3);
+        Node e = createLeafNode(9);
+        Node f = createLeafNode(-6);
+        Node g = createLeafNode(0);
+        Node h = createLeafNode(0);
+        Node i = createLeafNode(-2);
+        Node j = createLeafNode(-4);
+        Node k = createLeafNode(-3);
 
         MaxNode b = createMaxNode(e, f, g);
         MaxNode c = createMaxNode(h, i);
@@ -154,15 +153,15 @@ public class GameTreeTest {
 
     @Test
     public void alphaBetaCutOff() throws Exception {
-        LeafNode e = createLeafNode(3);
-        LeafNode f = createLeafNode(12);
-        LeafNode g = createLeafNode(8);
-        LeafNode h = createLeafNode(2);
-        LeafNode i = spy(createLeafNode(4));
-        LeafNode j = spy(createLeafNode(6));
-        LeafNode k = createLeafNode(14);
-        LeafNode l = createLeafNode(5);
-        LeafNode m = createLeafNode(2);
+        Node e = createLeafNode(3);
+        Node f = createLeafNode(12);
+        Node g = createLeafNode(8);
+        Node h = createLeafNode(2);
+        Node i = spy(createLeafNode(4));
+        Node j = spy(createLeafNode(6));
+        Node k = createLeafNode(14);
+        Node l = createLeafNode(5);
+        Node m = createLeafNode(2);
 
         MinNode b = createMinNode(e, f, g);
         MinNode c = createMinNode(h, i, j);
