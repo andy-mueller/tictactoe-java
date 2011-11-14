@@ -16,67 +16,33 @@ public class GameTreeTest {
 
     abstract class AlphaBetaNode implements Node {
         abstract Iterable<? extends Node> getChildren();
-        int beta = 0;
-        int alpha = 0;
+
+        public abstract int getRecursiveValue(int alpha, int beta);
+    }
+
+    abstract class MinNode extends AlphaBetaNode {
         @Override
         public int getRecursiveValue(int alpha, int beta) {
-            this.beta = beta;
-            this.alpha = alpha;
             for (Node node : getChildren()) {
-                applyEvaluation(node.getRecursiveValue(this.alpha, this.beta));
-                if (this.beta <= this.alpha) {
+                beta = Math.min(beta, node.getRecursiveValue(alpha, beta));
+                if (beta <= alpha) {
                     break;
                 }
             }
-            return evaluatedValue();
-        }
-
-        protected abstract int evaluatedValue();
-
-        abstract void applyEvaluation(int value);
-    }
-
-    class MinNode extends AlphaBetaNode{
-        private final Iterable<? extends Node> children;
-
-        MinNode(Iterable<? extends Node> children) {
-            this.children = children;
-        }
-        @Override
-        protected Iterable<? extends Node> getChildren() {
-            return children;
-        }
-
-        @Override
-        protected int evaluatedValue() {
-            return this.beta;
-        }
-
-        @Override
-        void applyEvaluation(int value) {
-            this.beta = Math.min(beta, value);
+            return beta;
         }
     }
 
-    class MaxNode extends AlphaBetaNode{
-        private final Iterable<? extends Node> children;
-
-        MaxNode(Iterable<? extends Node> children) {
-            this.children = children;
-        }
-
-        protected Iterable<? extends Node> getChildren() {
-            return children;
-        }
-
+    abstract class MaxNode extends AlphaBetaNode {
         @Override
-        protected int evaluatedValue() {
+        public int getRecursiveValue(int alpha, int beta) {
+            for (Node node : getChildren()) {
+                alpha = Math.max(alpha, node.getRecursiveValue(alpha, beta));
+                if (beta <= alpha) {
+                    break;
+                }
+            }
             return alpha;
-        }
-
-        @Override
-        void applyEvaluation(int value) {
-            alpha = Math.max(alpha, value);
         }
     }
 
@@ -98,7 +64,7 @@ public class GameTreeTest {
 
     @Test
     public void leafNodeGivesScore() {
-        LeafNode node = new ValueLeafNode(42);
+        LeafNode node = createLeafNode(42);
 
         assertThat(node.getRecursiveValue(Integer.MIN_VALUE, Integer.MAX_VALUE), is(42));
     }
@@ -106,86 +72,103 @@ public class GameTreeTest {
 
     @Test
     public void maxNodeGivesMaximizedScoreOfChildren() {
-        final LeafNode a = new ValueLeafNode(42);
-        final LeafNode b = new ValueLeafNode(12);
-        final LeafNode c = new ValueLeafNode(-4);
+        final LeafNode a = createLeafNode(42);
+        final LeafNode b = createLeafNode(12);
+        final LeafNode c = createLeafNode(-4);
 
-        MaxNode maxNode = new MaxNode(asList(a, b, c)) {
-            @Override
-            protected Iterable<? extends Node> getChildren() {
-                return asList(a, b, c);
-            }
-        };
+        MaxNode maxNode = createMaxNode(a, b, c);
 
         assertThat(maxNode.getRecursiveValue(Integer.MIN_VALUE, Integer.MAX_VALUE), is(42));
     }
 
+    private ValueLeafNode createLeafNode(int value) {
+        return new ValueLeafNode(value);
+    }
+
+    private MaxNode createMaxNode(final Node... nodes) {
+        return new MaxNode() {
+            @Override
+            protected Iterable<? extends Node> getChildren() {
+                return asList(nodes);
+            }
+        };
+    }
+
     @Test
     public void minNodeGivesMaximizedScoreOfChildren() {
-        final LeafNode a = new ValueLeafNode(42);
-        final LeafNode b = new ValueLeafNode(12);
-        final LeafNode c = new ValueLeafNode(-4);
+        final LeafNode a = createLeafNode(42);
+        final LeafNode b = createLeafNode(12);
+        final LeafNode c = createLeafNode(-4);
 
-        MinNode maxNode = new MinNode(asList(a, b, c));
+        MinNode maxNode = createMinNode(a, b, c);
 
         assertThat(maxNode.getRecursiveValue(Integer.MIN_VALUE, Integer.MAX_VALUE), is(-4));
     }
 
+    private MinNode createMinNode(final Node... children) {
+        return new MinNode() {
+            @Override
+            Iterable<? extends Node> getChildren() {
+                return asList(children);
+            }
+        };
+    }
+
     @Test
     public void threeLevelsWithMaxInRoot() {
-        LeafNode e = new ValueLeafNode(9);
-        LeafNode f = new ValueLeafNode(-6);
-        LeafNode g = new ValueLeafNode(0);
-        LeafNode h = new ValueLeafNode(0);
-        LeafNode i = new ValueLeafNode(-2);
-        LeafNode j = new ValueLeafNode(-4);
-        LeafNode k = new ValueLeafNode(-3);
+        LeafNode e = createLeafNode(9);
+        LeafNode f = createLeafNode(-6);
+        LeafNode g = createLeafNode(0);
+        LeafNode h = createLeafNode(0);
+        LeafNode i = createLeafNode(-2);
+        LeafNode j = createLeafNode(-4);
+        LeafNode k = createLeafNode(-3);
 
-        MinNode b = new MinNode(asList(e, f, g));
-        MinNode c = new MinNode(asList(h, i));
-        MinNode d = new MinNode(asList(j, k));
+        MinNode b = createMinNode(e, f, g);
+        MinNode c = createMinNode(h, i);
+        MinNode d = createMinNode(j, k);
 
-        MaxNode a = new MaxNode(asList(b, c, d));
+        MaxNode a = createMaxNode(b, c, d);
 
         assertThat(a.getRecursiveValue(Integer.MIN_VALUE, Integer.MAX_VALUE), is(-2));
     }
 
     @Test
     public void threeLevelsWithMinInRoot() {
-        LeafNode e = new ValueLeafNode(9);
-        LeafNode f = new ValueLeafNode(-6);
-        LeafNode g = new ValueLeafNode(0);
-        LeafNode h = new ValueLeafNode(0);
-        LeafNode i = new ValueLeafNode(-2);
-        LeafNode j = new ValueLeafNode(-4);
-        LeafNode k = new ValueLeafNode(-3);
+        LeafNode e = createLeafNode(9);
+        LeafNode f = createLeafNode(-6);
+        LeafNode g = createLeafNode(0);
+        LeafNode h = createLeafNode(0);
+        LeafNode i = createLeafNode(-2);
+        LeafNode j = createLeafNode(-4);
+        LeafNode k = createLeafNode(-3);
 
-        MaxNode b = new MaxNode(asList(e, f, g));
-        MaxNode c = new MaxNode(asList(h, i));
-        MaxNode d = new MaxNode(asList(j, k));
+        MaxNode b = createMaxNode(e, f, g);
+        MaxNode c = createMaxNode(h, i);
+        MaxNode d = createMaxNode(j, k);
 
-        MinNode a = new MinNode(asList(b, c, d));
+        MinNode a = createMinNode(b, c, d);
 
         assertThat(a.getRecursiveValue(Integer.MIN_VALUE, Integer.MAX_VALUE), is(-3));
     }
 
     @Test
     public void alphaBetaCutOff() throws Exception {
-        LeafNode e = new ValueLeafNode(3);
-        LeafNode f = new ValueLeafNode(12);
-        LeafNode g = new ValueLeafNode(8);
-        LeafNode h = new ValueLeafNode(2);
-        LeafNode i = spy(new ValueLeafNode(4));
-        LeafNode j = spy(new ValueLeafNode(6));
-        LeafNode k = new ValueLeafNode(14);
-        LeafNode l = new ValueLeafNode(5);
-        LeafNode m = new ValueLeafNode(2);
+        LeafNode e = createLeafNode(3);
+        LeafNode f = createLeafNode(12);
+        LeafNode g = createLeafNode(8);
+        LeafNode h = createLeafNode(2);
+        LeafNode i = spy(createLeafNode(4));
+        LeafNode j = spy(createLeafNode(6));
+        LeafNode k = createLeafNode(14);
+        LeafNode l = createLeafNode(5);
+        LeafNode m = createLeafNode(2);
 
-        MinNode b = new MinNode(asList(e, f, g));
-        MinNode c = new MinNode(asList(h, i, j));
-        MinNode d = new MinNode(asList(k, l, m));
+        MinNode b = createMinNode(e, f, g);
+        MinNode c = createMinNode(h, i, j);
+        MinNode d = createMinNode(k, l, m);
 
-        MaxNode a = new MaxNode(asList(b, c, d));
+        MaxNode a = createMaxNode(b, c, d);
 
         assertThat(a.getRecursiveValue(Integer.MIN_VALUE, Integer.MAX_VALUE), is(3));
         verifyZeroInteractions(i, j);
