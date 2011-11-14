@@ -29,6 +29,17 @@ public class GameTreeTest {
             }
             return beta;
         }
+//        @Override
+//        Iterable<? extends Node> getChildren(){
+//            ArrayList<Node> nodes = new ArrayList<>();
+//             Iterable<T> plays = getPlays();
+//            for(T play : plays){
+//                Node n = play.finished() ? factory.createLeafNode(play) : factory.createMaxNode(play);
+//                nodes.add(n);
+//            }
+//            return nodes;
+//        }
+
     }
 
     abstract class MaxNode extends AlphaBetaNode {
