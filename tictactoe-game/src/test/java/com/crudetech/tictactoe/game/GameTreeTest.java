@@ -1,9 +1,8 @@
 package com.crudetech.tictactoe.game;
 
+import com.crudetech.collections.Iterables;
 import com.crudetech.collections.Pair;
 import org.junit.Test;
-
-import java.util.Comparator;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -14,97 +13,79 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 public class GameTreeTest {
 
     interface Node {
-        public Pair<Integer, Node> getRecursiveValue(int alpha, int beta);
+        boolean hasFinished();
+
+        int getValue();
+
+        Iterable<? extends Node> getChildren();
     }
 
-    abstract class AlphaBetaNode implements Node {
-        abstract Iterable<? extends Node> getChildren();
-
-        boolean isBetaCutOff(int beta, Integer alpha) {
-            return beta <= alpha;
-        }
-
-        abstract boolean compareByFirst(Pair<Integer, Node> pair, Pair<Integer, Node> currentValue);
-    }
-
-    abstract class MinNode extends AlphaBetaNode {
-        @Override
-        public Pair<Integer, Node> getRecursiveValue(int alpha, int beta) {
-            Pair<Integer, Node> betaPair = new Pair<>(beta, null);
-            for (Node node : getChildren()) {
-                Pair<Integer, Node> value = node.getRecursiveValue(alpha, betaPair.getFirst());
-                betaPair = minimum(betaPair, value, node);
-                if (isBetaCutOff(betaPair.getFirst(), alpha)) {
-                    break;
-                }
-            }
-            return betaPair;
-        }
-
-        boolean compareByFirst(Pair<Integer, Node> pair, Pair<Integer, Node> currentValue) {
-            return currentValue.getFirst() <= pair.getFirst();
-        }
-
-        private Pair<Integer, Node> minimum(Pair<Integer, Node> pair, Pair<Integer, Node> currentValue, Node currentNode) {
-            if (compareByFirst(pair, currentValue)) {
-                return new Pair<>(currentValue.getFirst(), currentNode);
-            }
-            return pair;
-        }
-
-    }
-
-    abstract class MaxNode extends AlphaBetaNode {
-        @Override
-        public Pair<Integer, Node> getRecursiveValue(int alpha, int beta) {
-            Pair<Integer, Node> alphaPair = new Pair<>(alpha, null);
-            for (Node node : getChildren()) {
-                Pair<Integer, Node> value = node.getRecursiveValue(alphaPair.getFirst(), beta);
-                alphaPair = maximum(alphaPair, value, node);
-                if (isBetaCutOff(beta, alphaPair.getFirst())) {
-                    break;
-                }
-            }
-            return alphaPair;
-        }
-
-        @Override
-        boolean compareByFirst(Pair<Integer, Node> pair, Pair<Integer, Node> currentValue) {
-            return currentValue.getFirst() >= pair.getFirst();
-        }
-
-        private Pair<Integer, Node> maximum(Pair<Integer, Node> pair, Pair<Integer, Node> currentValue, Node currentNode) {
-            if (compareByFirst(pair, currentValue)) {
-                return new Pair<>(currentValue.getFirst(), currentNode);
-            }
-            return pair;
-        }
-    }
-
-    static Comparator<? super Pair<Integer, Node>> compareByFirst() {
-        return new Comparator<Pair<Integer, Node>>() {
+    enum Player {
+        Max {
             @Override
-            public int compare(Pair<Integer, Node> lhs, Pair<Integer, Node> rhs) {
-                return lhs.getFirst().compareTo(rhs.getFirst());
+            Player nextPlayer() {
+                return Min;
             }
+
+            @Override
+            public Pair<Integer, Node> alphaBeta(Node node, int alpha, int beta) {
+                if (node.hasFinished()) {
+                    return new Pair<>(node.getValue(), node);
+                }
+                Pair<Integer, Node> alphaPair = new Pair<>(alpha, null);
+                for (Node child : node.getChildren()) {
+                    Pair<Integer, Node> value = nextPlayer().alphaBeta(child, alphaPair.getFirst(), beta);
+
+                    if (value.getFirst() >= alphaPair.getFirst()) {
+                        alphaPair = new Pair<>(value.getFirst(), child);
+                    }
+                    if (beta <= alphaPair.getFirst()) {
+                        break;
+                    }
+                }
+                return alphaPair;
+            }
+        },
+        Min {
+            @Override
+            Player nextPlayer() {
+                return Max;
+            }
+
+            @Override
+            public Pair<Integer, Node> alphaBeta(Node node, int alpha, int beta) {
+                if (node.hasFinished()) {
+                    return new Pair<>(node.getValue(), node);
+                }
+                Pair<Integer, Node> betaPair = new Pair<>(beta, null);
+                for (Node child : node.getChildren()) {
+                    Pair<Integer, Node> value = nextPlayer().alphaBeta(child, alpha, betaPair.getFirst());
+                    if (value.getFirst() <= betaPair.getFirst()) {
+                        betaPair = new Pair<>(value.getFirst(), child);
+                    }
+                    if (betaPair.getFirst() <= alpha) {
+                        break;
+                    }
+                }
+                return betaPair;
+            }
+
         };
+
+        abstract Player nextPlayer();
+
+        abstract Pair<Integer, Node> alphaBeta(Node node, int alpha, int beta);
     }
 
-    abstract class LeafNode implements Node {
-
-        @Override
-        public Pair<Integer, Node> getRecursiveValue(int alpha, int beta) {
-            return new Pair<>(getValue(), (Node) this);
-        }
-
-        protected abstract int getValue();
+    Pair<Integer, Node> alphaBeta(Node node, int alpha, int beta, Player player) {
+        return player.alphaBeta(node, alpha, beta);
     }
+
 
     @Test
     public void leafNodeGivesScore() {
         Node node = createLeafNode(42, "node");
-
-        assertThat(alphaBeta(node), is(42));
+        assertThat(node.getValue(), is(42));
     }
 
 
@@ -114,46 +95,65 @@ public class GameTreeTest {
         final Node b = createLeafNode(12, "b");
         final Node c = createLeafNode(-4, "c");
 
-        MaxNode maxNode = createMaxNode(a, b, c);
+        Node maxNode = createNode(a, b, c);
+        Pair<Integer, Node> value = alphaBeta(maxNode, Integer.MIN_VALUE, Integer.MAX_VALUE, Player.Max);
 
-        Pair<Integer, Node> value = maxNode.getRecursiveValue(Integer.MIN_VALUE, Integer.MAX_VALUE);
         assertThat(value.getFirst(), is(42));
         assertThat(value.getSecond(), is(a));
     }
 
-    private Node createLeafNode(int value, final String name) {
-        class ValueLeafNode extends LeafNode {
-            private final int value;
-
-            ValueLeafNode(int value) {
-                this.value = value;
+    private Node createNode(final Node... nodes) {
+        return new Node() {
+            @Override
+            public boolean hasFinished() {
+                return false;
             }
 
             @Override
-            protected int getValue() {
-                return value;
+            public int getValue() {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public Iterable<? extends Node> getChildren() {
+                return asList(nodes);
             }
 
             @Override
             public String toString() {
-                return "ValueLeafNode{" +
+                return "ANode{" +
+                        '}';
+            }
+        };
+    }
+
+    private Node createLeafNode(final int value, final String name) {
+        return new Node() {
+            @Override
+            public boolean hasFinished() {
+                return true;
+            }
+
+            @Override
+            public int getValue() {
+                return value;
+            }
+
+            @Override
+            public Iterable<? extends Node> getChildren() {
+                return Iterables.emptyListOf(Node.class);
+            }
+
+            @Override
+            public String toString() {
+                return "LeafNode{" +
                         "name=" + name +
                         ",value=" + value +
                         '}';
             }
-        }
-
-        return new ValueLeafNode(value);
-    }
-
-    private MaxNode createMaxNode(final Node... nodes) {
-        return new MaxNode() {
-            @Override
-            protected Iterable<? extends Node> getChildren() {
-                return asList(nodes);
-            }
         };
     }
+
 
     @Test
     public void minNodeGivesMaximizedScoreOfChildren() {
@@ -161,20 +161,11 @@ public class GameTreeTest {
         final Node b = createLeafNode(12, "b");
         final Node c = createLeafNode(-4, "c");
 
-        MinNode minNode = createMinNode(a, b, c);
+        Node minNode = createNode(a, b, c);
 
-        Pair<Integer, Node> recursiveValue = minNode.getRecursiveValue(Integer.MIN_VALUE, Integer.MAX_VALUE);
+        Pair<Integer, Node> recursiveValue = alphaBeta(minNode, Integer.MIN_VALUE, Integer.MAX_VALUE, Player.Min);
         assertThat(recursiveValue.getFirst(), is(-4));
         assertThat(recursiveValue.getSecond(), is(c));
-    }
-
-    private MinNode createMinNode(final Node... children) {
-        return new MinNode() {
-            @Override
-            Iterable<? extends Node> getChildren() {
-                return asList(children);
-            }
-        };
     }
 
     @Test
@@ -187,16 +178,16 @@ public class GameTreeTest {
         Node j = createLeafNode(-4, "j");
         Node k = createLeafNode(-3, "k");
 
-        MinNode b = createMinNode(e, f, g);
-        MinNode c = createMinNode(h, i);
-        MinNode d = createMinNode(j, k);
+        Node b = createNode(e, f, g);
+        Node c = createNode(h, i);
+        Node d = createNode(j, k);
 
-        MaxNode a = createMaxNode(b, c, d);
+        Node a = createNode(b, c, d);
 
-        Pair<Integer, Node> value = a.getRecursiveValue(Integer.MIN_VALUE, Integer.MAX_VALUE);
+        Pair<Integer, Node> value = alphaBeta(a, Integer.MIN_VALUE, Integer.MAX_VALUE, Player.Max);
         assertThat(value.getFirst(), is(-2));
-        assertThat(value.getSecond(), is((Node) c));
-        assertThat(value, is(new Pair<Integer, Node>(-2, c)));
+        assertThat(value.getSecond(), is(c));
+        assertThat(value, is(new Pair<>(-2, c)));
     }
 
     @Test
@@ -209,13 +200,14 @@ public class GameTreeTest {
         Node j = createLeafNode(-4, "j");
         Node k = createLeafNode(-3, "k");
 
-        MaxNode b = createMaxNode(e, f, g);
-        MaxNode c = createMaxNode(h, i);
-        MaxNode d = createMaxNode(j, k);
+        Node b = createNode(e, f, g);
+        Node c = createNode(h, i);
+        Node d = createNode(j, k);
 
-        MinNode a = createMinNode(b, c, d);
+        Node a = createNode(b, c, d);
 
-        assertThat(alphaBeta(a), is(-3));
+        Pair<Integer, Node> nodePair = alphaBeta(a, Integer.MIN_VALUE, Integer.MAX_VALUE, Player.Min);
+        assertThat(nodePair, is(new Pair<>(-3, d)));
     }
 
     @Test
@@ -230,18 +222,15 @@ public class GameTreeTest {
         Node l = createLeafNode(5, "l");
         Node m = createLeafNode(2, "m");
 
-        MinNode b = createMinNode(e, f, g);
-        MinNode c = createMinNode(h, i, j);
-        MinNode d = createMinNode(k, l, m);
+        Node b = createNode(e, f, g);
+        Node c = createNode(h, i, j);
+        Node d = createNode(k, l, m);
 
-        MaxNode a = createMaxNode(b, c, d);
+        Node a = createNode(b, c, d);//max
 
-        assertThat(alphaBeta(a), is(3));
+        Pair<Integer, Node> nodePair = alphaBeta(a, Integer.MIN_VALUE, Integer.MAX_VALUE, Player.Max);
+        assertThat(nodePair, is(new Pair<>(3, b)));
         verifyZeroInteractions(i, j);
-    }
-
-    private int alphaBeta(Node node) {
-        return node.getRecursiveValue(Integer.MIN_VALUE, Integer.MAX_VALUE).getFirst();
     }
 
     // min node has max children
