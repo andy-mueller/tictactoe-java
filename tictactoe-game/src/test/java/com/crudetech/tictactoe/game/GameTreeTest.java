@@ -35,6 +35,14 @@ public class GameTreeTest {
     }
 
     private Node createNode(final Node... nodes) {
+        return createNode("<UnNamed>", nodes);
+    }
+
+    private Node createNode(final String name, final Node... nodes) {
+        return createNode(name, -42, nodes);
+    }
+
+    private Node createNode(final String name, final int value, final Node... nodes) {
         return new Node() {
             @Override
             public boolean hasFinished() {
@@ -43,7 +51,7 @@ public class GameTreeTest {
 
             @Override
             public int getValue() {
-                throw new UnsupportedOperationException();
+                return value;
             }
 
             @Override
@@ -54,6 +62,7 @@ public class GameTreeTest {
             @Override
             public String toString() {
                 return "ANode{" +
+                        "name=" + name +
                         '}';
             }
         };
@@ -172,29 +181,34 @@ public class GameTreeTest {
         verifyZeroInteractions(i, j);
     }
 
-//    @Test
+    @Test
     public void levelCutOff() throws Exception {
         Node e = createLeafNode(3, "e");
         Node f = createLeafNode(12, "f");
         Node g = createLeafNode(8, "g");
-        Node h = createLeafNode(2, "h");
-        Node i = spy(createLeafNode(4, "i"));
-        Node j = spy(createLeafNode(6, "j"));
+
+        Node n = createLeafNode(0, "n");
+        Node o = createLeafNode(2, "o");
+        Node h = createNode("h", 4, n, o);
+//        Node h = createLeafNode(4, "h");
+
+        Node i = createLeafNode(4, "i");
+        Node j = createLeafNode(6, "j");
         Node k = createLeafNode(14, "k");
         Node l = createLeafNode(5, "l");
         Node m = createLeafNode(2, "m");
 
-        Node b = createNode(e, f, g);
-        Node c = createNode(h, i, j);
-        Node d = createNode(k, l, m);
+        Node b = createNode("b", e, f, g);
+        Node c = createNode("c", h, i, j);
+        Node d = createNode("e", k, l, m);
 
-        Node a = createNode(b, c, d);//max
+        Node a = createNode("a", b, c, d);//max
         GameTree gameTree = new GameTree(a);
 
 
-        Pair<Integer, Node> nodePair = gameTree.alphaBeta(Player.Max);
-        assertThat(nodePair, is(new Pair<>(3, b)));
-        verifyZeroInteractions(i, j);
+        Pair<Integer, Node> nodePair = gameTree.alphaBeta(Player.Max, 2);
+        assertThat(nodePair, is(new Pair<>(4, c)));
+//        verifyZeroInteractions(i, j);
     }
 
     // min node has max children
