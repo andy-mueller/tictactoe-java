@@ -10,7 +10,7 @@ class TicTacToeGameTree {
     private final GameTree<Grid> gameTree;
 
     static class Node implements GameTree.Node<Grid> {
-        private final LinearRandomAccessGrid grid;
+        private final Grid grid;
         private final Grid.Mark nextMark = Grid.Mark.Cross;
 
         public Node(LinearRandomAccessGrid grid) {
@@ -41,7 +41,7 @@ class TicTacToeGameTree {
                     .select(toNode());
         }
 
-        private UnaryFunction<Grid.Location, LinearRandomAccessGrid> permutationOf(final LinearRandomAccessGrid base) {
+        private UnaryFunction<Grid.Location, LinearRandomAccessGrid> permutationOf(final Grid base) {
             return new UnaryFunction<Grid.Location, LinearRandomAccessGrid>() {
                 @Override
                 public LinearRandomAccessGrid execute(Grid.Location location) {

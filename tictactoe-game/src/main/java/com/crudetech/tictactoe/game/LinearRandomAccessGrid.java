@@ -27,8 +27,11 @@ public class LinearRandomAccessGrid implements Grid {
     private LinearRandomAccessGrid(Mark[] matrix) {
         this.matrix = matrix;
     }
-    LinearRandomAccessGrid(LinearRandomAccessGrid src) {
-        this(src.matrix.clone());
+    LinearRandomAccessGrid(Grid src) {
+        this(new Mark[9]);
+        for (Cell cell : src.getCells()) {
+            matrix[computeIndexFrom(cell.getLocation().getRow(), cell.getLocation().getColumn())] = cell.getMark();
+        }
     }
 
     public static LinearRandomAccessGrid of(Mark[] marks) {
