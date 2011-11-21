@@ -22,7 +22,7 @@ public class TicTacToeGameTreeTest {
     @Before
     public void setUp() throws Exception {
         grid = new LinearRandomAccessGrid();
-        gameTree = new TicTacToeGameTree(grid);
+        gameTree = new TicTacToeGameTree(grid, Grid.Mark.Cross);
     }
 
     @Test
@@ -31,14 +31,14 @@ public class TicTacToeGameTreeTest {
     }
     @Test
     public void nodeHoldsGame(){
-        TicTacToeGameTree.Node node= new TicTacToeGameTree.Node(grid);
+        TicTacToeGameTree.Node node= new TicTacToeGameTree.Node(grid, Grid.Mark.Cross);
 
         assertThat(grid, is(node.getGameState()));
     }
 
     @Test
     public void nodeChildrenAreAllPossibleNextMovePermutations(){
-        TicTacToeGameTree.Node node= new TicTacToeGameTree.Node(grid);
+        TicTacToeGameTree.Node node= new TicTacToeGameTree.Node(grid, Grid.Mark.Cross);
 
         Iterable<Grid> childStates= from(node.getChildren()).select(toGrid());
 
@@ -69,10 +69,9 @@ public class TicTacToeGameTreeTest {
             }
         };
     }
-    @Ignore
     @Test
     public void nodeChildrenAreAllPossibleNextMovePermutationsForOtherMark(){
-        TicTacToeGameTree.Node node= new TicTacToeGameTree.Node(grid);
+        TicTacToeGameTree.Node node= new TicTacToeGameTree.Node(grid, Grid.Mark.Nought);
 
         Iterable<Grid> childStates= from(node.getChildren()).select(toGrid());
 

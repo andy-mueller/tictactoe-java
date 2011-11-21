@@ -11,10 +11,11 @@ class TicTacToeGameTree {
 
     static class Node implements GameTree.Node<Grid> {
         private final Grid grid;
-        private final Grid.Mark nextMark = Grid.Mark.Cross;
+        private final Grid.Mark nextMark;
 
-        public Node(LinearRandomAccessGrid grid) {
+        public Node(LinearRandomAccessGrid grid, Grid.Mark nextMark) {
             this.grid = grid;
+            this.nextMark = nextMark;
         }
 
         @Override
@@ -56,15 +57,15 @@ class TicTacToeGameTree {
             return new UnaryFunction<LinearRandomAccessGrid, Node>() {
                 @Override
                 public Node execute(LinearRandomAccessGrid grid) {
-                    return new Node(grid);
+                    return new Node(grid, nextMark);
                 }
             };
         }
     }
 
 
-    TicTacToeGameTree(LinearRandomAccessGrid grid) {
-        this.gameTree = new GameTree<>(new Node(grid));
+    TicTacToeGameTree(LinearRandomAccessGrid grid, Grid.Mark nextMark) {
+        this.gameTree = new GameTree<>(new Node(grid, nextMark));
     }
 
     GameTree<Grid> getGameTree() {
