@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
+import static com.crudetech.matcher.ThrowsException.doesThrow;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -95,5 +96,21 @@ public class GridTest {
                 );
             }
         };
+    }
+    @Test
+    public void markCanReturnItsOppositeMark(){
+        assertThat(Grid.Mark.Cross.getOpposite(), is(Grid.Mark.Nought));
+        assertThat(Grid.Mark.Nought.getOpposite(), is(Grid.Mark.Cross));
+    }
+    @Test
+    public void markNoneThrowsOnOppositeMark(){
+        Runnable askMarkNoneForOpposite = new Runnable() {
+            @Override
+            public void run() {
+                Grid.Mark.None.getOpposite();
+            }
+        };
+
+        assertThat(askMarkNoneForOpposite, doesThrow(IllegalStateException.class));
     }
 }

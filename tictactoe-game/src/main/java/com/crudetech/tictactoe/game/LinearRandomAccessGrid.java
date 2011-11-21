@@ -27,6 +27,9 @@ public class LinearRandomAccessGrid implements Grid {
     private LinearRandomAccessGrid(Mark[] matrix) {
         this.matrix = matrix;
     }
+    LinearRandomAccessGrid(LinearRandomAccessGrid src) {
+        this(src.matrix.clone());
+    }
 
     public static LinearRandomAccessGrid of(Mark[] marks) {
         return new LinearRandomAccessGrid(marks);

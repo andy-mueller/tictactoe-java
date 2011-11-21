@@ -1,13 +1,13 @@
 package com.crudetech.tictactoe.game;
 
 import com.crudetech.lang.Enums;
+import org.hamcrest.Matcher;
 
 import java.util.Objects;
 
 import static com.crudetech.matcher.Verify.verifyThat;
 import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 
 public interface Grid {
     Mark getAt(Location location);
@@ -15,11 +15,29 @@ public interface Grid {
     Iterable<Cell> getCells();
 
     public enum Mark {
-        Cross, Nought, None;
+        Cross {
+            @Override
+            public Mark getOpposite() {
+                return Nought;
+            }
+        },
+        Nought {
+            @Override
+            public Mark getOpposite() {
+                return Cross;
+            }
+        }, None {
+            @Override
+            public Mark getOpposite() {
+                throw new IllegalStateException("Can't be done for None!");
+            }
+        };
 
         boolean isNone() {
             return this == None;
         }
+
+        public abstract Mark getOpposite();
     }
 
     public static enum Row {
@@ -139,6 +157,10 @@ public interface Grid {
             return Objects.equals(location, cell.location)
                     && Objects.equals(mark, cell.mark);
 
+        }
+
+        private boolean xyz(Matcher<?> m) {
+            return m.matches(this);
         }
 
         @Override

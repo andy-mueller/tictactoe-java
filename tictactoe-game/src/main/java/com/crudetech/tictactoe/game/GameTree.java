@@ -3,19 +3,23 @@ package com.crudetech.tictactoe.game;
 
 import com.crudetech.collections.Pair;
 
-public class GameTree {
-    private final Node root;
+public class GameTree<TGameState> {
+    private final Node<TGameState> root;
 
-    public GameTree(Node root) {
+    public GameTree(Node<TGameState> root) {
         this.root = root;
     }
 
-    public interface Node {
+
+
+    public interface Node<TGameState> {
         boolean hasFinished();
 
         int getValue();
 
-        Iterable<? extends Node> getChildren();
+        Iterable<? extends Node<TGameState>> getChildren();
+
+        TGameState getGameState();
     }
 
     public enum Player {
@@ -26,13 +30,13 @@ public class GameTree {
             }
 
             @Override
-            public Pair<Integer, Node> alphaBeta(Node node, int alpha, int beta, int depth, Player player) {
+            public <TGameState> Pair<Integer, Node<TGameState>> alphaBeta(Node<TGameState> node, int alpha, int beta, int depth, Player player) {
                 if (hasSufficientDepth(node, depth)) {
                     return new Pair<>(node.getValue(), node);
                 }
-                Pair<Integer, Node> alphaPair = new Pair<>(alpha, null);
-                for (Node child : node.getChildren()) {
-                    Pair<Integer, Node> value = otherPlayer().alphaBeta(child, alphaPair.getFirst(), beta, depth - 1, player);
+                Pair<Integer, Node<TGameState>> alphaPair = new Pair<>(alpha, null);
+                for (Node<TGameState> child : node.getChildren()) {
+                    Pair<Integer, Node<TGameState>> value = otherPlayer().alphaBeta(child, alphaPair.getFirst(), beta, depth - 1, player);
 
                     if (value.getFirst() > alphaPair.getFirst()) {
                         alphaPair = new Pair<>(value.getFirst(), child);
@@ -51,13 +55,13 @@ public class GameTree {
             }
 
             @Override
-            public Pair<Integer, Node> alphaBeta(Node node, int alpha, int beta, int depth, Player player) {
+            public <TGameState> Pair<Integer, Node<TGameState>> alphaBeta(Node<TGameState> node, int alpha, int beta, int depth, Player player) {
                 if (hasSufficientDepth(node, depth)) {
                     return new Pair<>(node.getValue(), node);
                 }
-                Pair<Integer, Node> betaPair = new Pair<>(beta, null);
-                for (Node child : node.getChildren()) {
-                    Pair<Integer, Node> value = otherPlayer().alphaBeta(child, alpha, betaPair.getFirst(), depth - 1, player);
+                Pair<Integer, Node<TGameState>> betaPair = new Pair<>(beta, null);
+                for (Node<TGameState> child : node.getChildren()) {
+                    Pair<Integer, Node<TGameState>> value = otherPlayer().alphaBeta(child, alpha, betaPair.getFirst(), depth - 1, player);
                     if (value.getFirst() <= betaPair.getFirst()) {
                         betaPair = new Pair<>(value.getFirst(), child);
                     }
@@ -76,19 +80,22 @@ public class GameTree {
 
         abstract Player otherPlayer();
 
-        abstract Pair<Integer, Node> alphaBeta(Node node, int alpha, int beta, int depth, Player player);
+        abstract <TGameState> Pair<Integer, Node<TGameState>> alphaBeta(Node<TGameState> node, int alpha, int beta, int depth, Player player);
     }
 
+    public Node<TGameState> getRoot() {
+        return root;
+    }
 
-    static Pair<Integer, Node> alphaBeta(Node node, int alpha, int beta, int depth, Player player) {
+    static <TGameState> Pair<Integer, Node<TGameState>> alphaBeta(Node<TGameState> node, int alpha, int beta, int depth, Player player) {
         return player.alphaBeta(node, alpha, beta, depth, player);
     }
 
-    public Pair<Integer, Node> alphaBeta(Player player, int depth) {
+    public Pair<Integer, Node<TGameState>> alphaBeta(Player player, int depth) {
         return alphaBeta(root, Integer.MIN_VALUE, Integer.MAX_VALUE, depth, player);
     }
 
-    public Pair<Integer, Node> alphaBeta(Player player) {
+    public Pair<Integer, Node<TGameState>> alphaBeta(Player player) {
         return alphaBeta(player, Integer.MAX_VALUE);
     }
 }

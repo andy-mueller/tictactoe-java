@@ -7,7 +7,7 @@
         <version>0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>tictactoe-game</artifactId>
+    <artifactId>tictactoe-grid</artifactId>
 
     <packaging>jar</packaging>
 

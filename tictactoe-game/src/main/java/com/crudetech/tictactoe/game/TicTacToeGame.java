@@ -18,7 +18,6 @@ public class TicTacToeGame {
         this.player2 = player2;
     }
 
-
     static class GameIsFinishedException extends IllegalStateException {
         private GameIsFinishedException() {
             super("The game is finished!");
@@ -29,6 +28,10 @@ public class TicTacToeGame {
         private GameIsAlreadyStartedException() {
             super("The was already started!");
         }
+    }
+
+    Grid getGrid() {
+        return grid;
     }
 
     public void addMark(Player player, Grid.Location location) {

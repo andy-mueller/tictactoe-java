@@ -1,12 +1,12 @@
 package com.crudetech.tictactoe.game;
 
-import com.crudetech.collections.Iterables;
 import com.crudetech.collections.Pair;
 import com.crudetech.tictactoe.game.GameTree.Node;
 import com.crudetech.tictactoe.game.GameTree.Player;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.spy;
@@ -15,35 +15,39 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 public class GameTreeTest {
     @Test
     public void leafNodeGivesScore() {
-        GameTree.Node node = createLeafNode(42, "node");
+        GameTree.Node<Void> node = createLeafNode(42, "node");
         assertThat(node.getValue(), is(42));
     }
 
 
     @Test
     public void maxNodeGivesMaximizedScoreOfChildren() {
-        final Node a = createLeafNode(42, "a");
-        final Node b = createLeafNode(12, "b");
-        final Node c = createLeafNode(-4, "c");
+        final Node<Void> a = createLeafNode(42, "a");
+        final Node<Void> b = createLeafNode(12, "b");
+        final Node<Void> c = createLeafNode(-4, "c");
 
-        Node maxNode = createNode(a, b, c);
-        GameTree gameTree = new GameTree(maxNode);
-        Pair<Integer, Node> value = gameTree.alphaBeta(Player.Max);
+        Node<Void> maxNode = createNode(a, b, c);
+        GameTree<Void> gameTree = new GameTree<>(maxNode);
+        Pair<Integer, Node<Void>> value = gameTree.alphaBeta(Player.Max);
 
         assertThat(value.getFirst(), is(42));
         assertThat(value.getSecond(), is(a));
     }
 
-    private Node createNode(final Node... nodes) {
+
+    @SafeVarargs
+    final Node<Void> createNode(final Node<Void>... nodes) {
         return createNode("<UnNamed>", nodes);
     }
 
-    private Node createNode(final String name, final Node... nodes) {
+    @SafeVarargs
+    final Node<Void> createNode(final String name, final Node<Void>... nodes) {
         return createNode(name, -42, nodes);
     }
 
-    private Node createNode(final String name, final int value, final Node... nodes) {
-        return new Node() {
+    @SafeVarargs
+    final Node<Void> createNode(final String name, final int value, final Node<Void>... nodes) {
+        return new Node<Void>() {
             @Override
             public boolean hasFinished() {
                 return false;
@@ -55,8 +59,13 @@ public class GameTreeTest {
             }
 
             @Override
-            public Iterable<? extends Node> getChildren() {
+            public Iterable<? extends Node<Void>> getChildren() {
                 return asList(nodes);
+            }
+
+            @Override
+            public Void getGameState() {
+                return null;
             }
 
             @Override
@@ -68,8 +77,8 @@ public class GameTreeTest {
         };
     }
 
-    private Node createLeafNode(final int value, final String name) {
-        return new Node() {
+    private Node<Void> createLeafNode(final int value, final String name) {
+        return new Node<Void>() {
             @Override
             public boolean hasFinished() {
                 return true;
@@ -80,9 +89,15 @@ public class GameTreeTest {
                 return value;
             }
 
+            @SuppressWarnings("unchecked")
             @Override
-            public Iterable<? extends Node> getChildren() {
-                return Iterables.emptyListOf(Node.class);
+            public Iterable<Node<Void>> getChildren() {
+                return emptyList();
+            }
+
+            @Override
+            public Void getGameState() {
+                return null;
             }
 
             @Override
@@ -98,37 +113,37 @@ public class GameTreeTest {
 
     @Test
     public void minNodeGivesMaximizedScoreOfChildren() {
-        final Node a = createLeafNode(42, "a");
-        final Node b = createLeafNode(12, "b");
-        final Node c = createLeafNode(-4, "c");
+        final Node<Void> a = createLeafNode(42, "a");
+        final Node<Void> b = createLeafNode(12, "b");
+        final Node<Void> c = createLeafNode(-4, "c");
 
-        Node minNode = createNode(a, b, c);
-        GameTree gameTree = new GameTree(minNode);
+        Node<Void> minNode = createNode(a, b, c);
+        GameTree<Void> gameTree = new GameTree<>(minNode);
 
-        Pair<Integer, Node> recursiveValue = gameTree.alphaBeta(Player.Min);
+        Pair<Integer, Node<Void>> recursiveValue = gameTree.alphaBeta(Player.Min);
         assertThat(recursiveValue.getFirst(), is(-4));
         assertThat(recursiveValue.getSecond(), is(c));
     }
 
     @Test
     public void threeLevelsWithMaxInRoot() {
-        Node e = createLeafNode(9, "e");
-        Node f = createLeafNode(-6, "f");
-        Node g = createLeafNode(0, "g");
-        Node h = createLeafNode(0, "h");
-        Node i = createLeafNode(-2, "i");
-        Node j = createLeafNode(-4, "j");
-        Node k = createLeafNode(-3, "k");
+        Node<Void> e = createLeafNode(9, "e");
+        Node<Void> f = createLeafNode(-6, "f");
+        Node<Void> g = createLeafNode(0, "g");
+        Node<Void> h = createLeafNode(0, "h");
+        Node<Void> i = createLeafNode(-2, "i");
+        Node<Void> j = createLeafNode(-4, "j");
+        Node<Void> k = createLeafNode(-3, "k");
 
-        Node b = createNode(e, f, g);
-        Node c = createNode(h, i);
-        Node d = createNode(j, k);
+        Node<Void> b = createNode(e, f, g);
+        Node<Void> c = createNode(h, i);
+        Node<Void> d = createNode(j, k);
 
-        Node a = createNode(b, c, d);
-        GameTree gameTree = new GameTree(a);
+        Node<Void> a = createNode(b, c, d);
+        GameTree<Void> gameTree = new GameTree<>(a);
 
 
-        Pair<Integer, Node> value = gameTree.alphaBeta(Player.Max);
+        Pair<Integer, Node<Void>> value = gameTree.alphaBeta(Player.Max);
         assertThat(value.getFirst(), is(-2));
         assertThat(value.getSecond(), is(c));
         assertThat(value, is(new Pair<>(-2, c)));
@@ -136,81 +151,81 @@ public class GameTreeTest {
 
     @Test
     public void threeLevelsWithMinInRoot() {
-        Node e = createLeafNode(9, "e");
-        Node f = createLeafNode(-6, "f");
-        Node g = createLeafNode(0, "g");
-        Node h = createLeafNode(0, "h");
-        Node i = createLeafNode(-2, "i");
-        Node j = createLeafNode(-4, "j");
-        Node k = createLeafNode(-3, "k");
+        Node<Void> e = createLeafNode(9, "e");
+        Node<Void> f = createLeafNode(-6, "f");
+        Node<Void> g = createLeafNode(0, "g");
+        Node<Void> h = createLeafNode(0, "h");
+        Node<Void> i = createLeafNode(-2, "i");
+        Node<Void> j = createLeafNode(-4, "j");
+        Node<Void> k = createLeafNode(-3, "k");
 
-        Node b = createNode(e, f, g);
-        Node c = createNode(h, i);
-        Node d = createNode(j, k);
+        Node<Void> b = createNode(e, f, g);
+        Node<Void> c = createNode(h, i);
+        Node<Void> d = createNode(j, k);
 
-        Node a = createNode(b, c, d);
-        GameTree gameTree = new GameTree(a);
+        Node<Void> a = createNode(b, c, d);
+        GameTree<Void> gameTree = new GameTree<>(a);
 
 
-        Pair<Integer, Node> nodePair = gameTree.alphaBeta(Player.Min);
+        Pair<Integer, Node<Void>> nodePair = gameTree.alphaBeta(Player.Min);
         assertThat(nodePair, is(new Pair<>(-3, d)));
     }
 
     @Test
     public void alphaBetaCutOff() throws Exception {
-        Node e = createLeafNode(3, "e");
-        Node f = createLeafNode(12, "f");
-        Node g = createLeafNode(8, "g");
-        Node h = createLeafNode(2, "h");
-        Node i = spy(createLeafNode(4, "i"));
-        Node j = spy(createLeafNode(6, "j"));
-        Node k = createLeafNode(14, "k");
-        Node l = createLeafNode(5, "l");
-        Node m = createLeafNode(2, "m");
+        Node<Void> e = createLeafNode(3, "e");
+        Node<Void> f = createLeafNode(12, "f");
+        Node<Void> g = createLeafNode(8, "g");
+        Node<Void> h = createLeafNode(2, "h");
+        Node<Void> i = spy(createLeafNode(4, "i"));
+        Node<Void> j = spy(createLeafNode(6, "j"));
+        Node<Void> k = createLeafNode(14, "k");
+        Node<Void> l = createLeafNode(5, "l");
+        Node<Void> m = createLeafNode(2, "m");
 
-        Node b = createNode(e, f, g);
-        Node c = createNode(h, i, j);
-        Node d = createNode(k, l, m);
+        Node<Void> b = createNode(e, f, g);
+        Node<Void> c = createNode(h, i, j);
+        Node<Void> d = createNode(k, l, m);
 
-        Node a = createNode(b, c, d);//max
-        GameTree gameTree = new GameTree(a);
+        Node<Void> a = createNode(b, c, d);//max
+        GameTree<Void> gameTree = new GameTree<>(a);
 
 
-        Pair<Integer, Node> nodePair = gameTree.alphaBeta(Player.Max);
+        Pair<Integer, Node<Void>> nodePair = gameTree.alphaBeta(Player.Max);
         assertThat(nodePair, is(new Pair<>(3, b)));
         verifyZeroInteractions(i, j);
     }
 
     @Test
     public void levelCutOff() throws Exception {
-        Node e = createLeafNode(3, "e");
-        Node f = createLeafNode(12, "f");
-        Node g = createLeafNode(8, "g");
+        Node<Void> e = createLeafNode(3, "e");
+        Node<Void> f = createLeafNode(12, "f");
+        Node<Void> g = createLeafNode(8, "g");
 
-        Node n = createLeafNode(0, "n");
-        Node o = createLeafNode(2, "o");
-        Node h = createNode("h", 4, n, o);
-//        Node h = createLeafNode(4, "h");
+        Node<Void> n = createLeafNode(0, "n");
+        Node<Void> o = createLeafNode(2, "o");
+        Node<Void> h = createNode("h", 4, n, o);
+//        Node<Void> h = createLeafNode(4, "h");
 
-        Node i = createLeafNode(4, "i");
-        Node j = createLeafNode(6, "j");
-        Node k = createLeafNode(14, "k");
-        Node l = createLeafNode(5, "l");
-        Node m = createLeafNode(2, "m");
+        Node<Void> i = createLeafNode(4, "i");
+        Node<Void> j = createLeafNode(6, "j");
+        Node<Void> k = createLeafNode(14, "k");
+        Node<Void> l = createLeafNode(5, "l");
+        Node<Void> m = createLeafNode(2, "m");
 
-        Node b = createNode("b", e, f, g);
-        Node c = createNode("c", h, i, j);
-        Node d = createNode("e", k, l, m);
+        Node<Void> b = createNode("b", e, f, g);
+        Node<Void> c = createNode("c", h, i, j);
+        Node<Void> d = createNode("e", k, l, m);
 
-        Node a = createNode("a", b, c, d);//max
-        GameTree gameTree = new GameTree(a);
+        Node<Void> a = createNode("a", b, c, d);//max
+        GameTree<Void> gameTree = new GameTree<>(a);
 
 
-        Pair<Integer, Node> nodePair = gameTree.alphaBeta(Player.Max, 2);
+        Pair<Integer, Node<Void>> nodePair = gameTree.alphaBeta(Player.Max, 2);
         assertThat(nodePair, is(new Pair<>(4, c)));
 //        verifyZeroInteractions(i, j);
     }
 
-    // min node has max children
-    // max node has min children
+    // min Node<Void> has max children
+    // max Node<Void> has min children
 }

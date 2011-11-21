@@ -14,6 +14,7 @@ import static com.crudetech.query.Query.from;
 import static com.crudetech.tictactoe.game.GridMatcher.isEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 @RunWith(Features.class)
 public class LinearRandomAccessGridTest {
@@ -88,5 +89,30 @@ public class LinearRandomAccessGridTest {
                 return from(template.getCells()).select(createModifiedGrid).toList();
             }
         };
+    }
+    @Test
+    public void copyCtorCreatesCopy(){
+        LinearRandomAccessGrid grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+                Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross,
+        });
+
+        LinearRandomAccessGrid copy = new LinearRandomAccessGrid(grid);
+
+        assertThat(copy, is(grid));
+    }
+    @Test
+    public void copyCtorCreatesIndependentCopy(){
+        LinearRandomAccessGrid grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+                Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross,
+        });
+
+        LinearRandomAccessGrid copy = new LinearRandomAccessGrid(grid);
+        copy.setAt(Grid.Location.of(Grid.Row.Second, Grid.Column.Third),  Grid.Mark.Cross);
+
+        assertThat(copy, is(not(grid)));
     }
 }

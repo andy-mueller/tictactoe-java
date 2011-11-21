@@ -18,7 +18,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>tictactoe-game</artifactId>
+            <artifactId>tictactoe-grid</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
