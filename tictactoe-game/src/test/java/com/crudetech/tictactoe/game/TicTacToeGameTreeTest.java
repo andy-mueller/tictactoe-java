@@ -31,14 +31,14 @@ public class TicTacToeGameTreeTest {
     }
     @Test
     public void nodeHoldsGame(){
-        TicTacToeGameTree.Node node= new TicTacToeGameTree.Node(grid, Grid.Mark.Cross);
+        TicTacToeGameTree.Node node= new TicTacToeGameTree.Node(grid, Grid.Mark.Nought);
 
         assertThat(grid, is(node.getGameState()));
     }
 
     @Test
     public void nodeChildrenAreAllPossibleNextMovePermutations(){
-        TicTacToeGameTree.Node node= new TicTacToeGameTree.Node(grid, Grid.Mark.Cross);
+        TicTacToeGameTree.Node node= new TicTacToeGameTree.Node(grid, Grid.Mark.Nought);
 
         Iterable<Grid> childStates= from(node.getChildren()).select(toGrid());
 
@@ -75,21 +75,64 @@ public class TicTacToeGameTreeTest {
 
         Iterable<Grid> childStates= from(node.getChildren()).select(toGrid());
 
+        Iterable<Grid> expectedStates = allSingleMarkGridPermutationsOfEmptyGame(Grid.Mark.Cross);
+
+        assertThat(childStates, is(equivalentTo(expectedStates)));
+    }
+
+    @Test
+    public void winOfStartPlayerGivesValueOne(){
+        grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+                Grid.Mark.None,Grid.Mark.None,Grid.Mark.None,
+                Grid.Mark.None,Grid.Mark.None,Grid.Mark.None,
+                Grid.Mark.None,Grid.Mark.None,Grid.Mark.None,
+        });
+
+        TicTacToeGameTree.Node node= new TicTacToeGameTree.Node(grid, Grid.Mark.Cross);
+
+        Iterable<Grid> childStates= from(node.getChildren()).select(toGrid());
+
         Iterable<Grid> expectedStates = allSingleMarkGridPermutationsOfEmptyGame(Grid.Mark.Nought);
 
         assertThat(childStates, is(equivalentTo(expectedStates)));
     }
-    @Ignore
     @Test
-    public void evaluateCompleteGame(){
+    public void winOfStartPlayerResultsInNodeValueOne(){
+        LinearRandomAccessGrid playerOneWins = LinearRandomAccessGrid.of(new Grid.Mark[]{
+                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Cross,
+                Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought,
+        });
+        TicTacToeGameTree.Node node= new TicTacToeGameTree.Node(playerOneWins, Grid.Mark.Cross);
+
+        assertThat(node.getValue(), is(1));
     }
     @Ignore
     @Test
-    public void evaluatePartialGame(){
+    public void winOfNonStartingPlayerResultsInNodeValueOne(){
+        LinearRandomAccessGrid playerOneWins = LinearRandomAccessGrid.of(new Grid.Mark[]{
+                Grid.Mark.Nought, Grid.Mark.Cross, Grid.Mark.Cross,
+                Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought,
+        });
+        TicTacToeGameTree.Node node= new TicTacToeGameTree.Node(playerOneWins, Grid.Mark.Nought);
+
+        assertThat(node.getValue(), is(-1));
     }
 
     // win of start player gives value one
     // win second player gives value -1
     // tie gives value 0
     // open game throws IllegalStateException
+    @Ignore
+    @Test
+    public void evaluatePartialGame(){
+    }
+    @Ignore
+    @Test
+    public void evaluateCompleteGame(){
+    }
+
+
+
 }

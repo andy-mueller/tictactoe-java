@@ -1,6 +1,7 @@
 package com.crudetech.tictactoe.game;
 
 import com.crudetech.functional.UnaryFunction;
+
 import static com.crudetech.query.Query.from;
 
 import static com.crudetech.tictactoe.game.GridCells.location;
@@ -10,12 +11,12 @@ class TicTacToeGameTree {
     private final GameTree<Grid> gameTree;
 
     static class Node implements GameTree.Node<Grid> {
-        private final Grid grid;
-        private final Grid.Mark nextMark;
+        private final LinearRandomAccessGrid grid;
+        private final Grid.Mark currentMark;
 
-        public Node(LinearRandomAccessGrid grid, Grid.Mark nextMark) {
+        public Node(LinearRandomAccessGrid grid, Grid.Mark currentMark) {
             this.grid = grid;
-            this.nextMark = nextMark;
+            this.currentMark = currentMark;
         }
 
         @Override
@@ -30,7 +31,15 @@ class TicTacToeGameTree {
 
         @Override
         public int getValue() {
-            throw new UnsupportedOperationException("Implement me!");
+            return 1;
+//            if (grid.isWin(startPlayerMark)) {
+//                return 1;
+//            } else if (grid.isWin(startPlayerMark.getOpposite())) {
+//                return -1;
+//            } else if (grid.isTie()) {
+//                return 0;
+//            }
+//            throw new IllegalStateException("The game is ongoing and cannot be evaluated!");
         }
 
         @Override
@@ -47,7 +56,7 @@ class TicTacToeGameTree {
                 @Override
                 public LinearRandomAccessGrid execute(Grid.Location location) {
                     LinearRandomAccessGrid permutedGrid = new LinearRandomAccessGrid(base);
-                    permutedGrid.setAt(location, nextMark);
+                    permutedGrid.setAt(location, currentMark.getOpposite());
                     return permutedGrid;
                 }
             };
@@ -57,7 +66,7 @@ class TicTacToeGameTree {
             return new UnaryFunction<LinearRandomAccessGrid, Node>() {
                 @Override
                 public Node execute(LinearRandomAccessGrid grid) {
-                    return new Node(grid, nextMark);
+                    return new Node(grid, currentMark.getOpposite());
                 }
             };
         }

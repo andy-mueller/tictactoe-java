@@ -92,7 +92,7 @@ public class LinearRandomAccessGridTest {
     }
     @Test
     public void copyCtorCreatesCopy(){
-        LinearRandomAccessGrid grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+        Grid grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross,
@@ -104,7 +104,7 @@ public class LinearRandomAccessGridTest {
     }
     @Test
     public void copyCtorCreatesIndependentCopy(){
-        LinearRandomAccessGrid grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+        Grid grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross,
