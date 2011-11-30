@@ -13,6 +13,7 @@ class TicTacToeGameTree {
     static class Node implements GameTree.Node<Grid> {
         private final LinearRandomAccessGrid grid;
         private final Grid.Mark currentMark;
+        private Grid.Mark startPlayerMark = Grid.Mark.Cross;
 
         public Node(LinearRandomAccessGrid grid, Grid.Mark currentMark) {
             this.grid = grid;
@@ -31,15 +32,14 @@ class TicTacToeGameTree {
 
         @Override
         public int getValue() {
-            return 1;
-//            if (grid.isWin(startPlayerMark)) {
-//                return 1;
-//            } else if (grid.isWin(startPlayerMark.getOpposite())) {
-//                return -1;
+            if (grid.isWinForMark(startPlayerMark)) {
+                return 1;
+            } else if (grid.isWinForMark(startPlayerMark.getOpposite())) {
+                return -1;
 //            } else if (grid.isTie()) {
 //                return 0;
-//            }
-//            throw new IllegalStateException("The game is ongoing and cannot be evaluated!");
+            }
+            throw new IllegalStateException("The game is ongoing and cannot be evaluated!");
         }
 
         @Override

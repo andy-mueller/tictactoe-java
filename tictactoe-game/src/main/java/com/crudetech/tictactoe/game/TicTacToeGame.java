@@ -10,6 +10,7 @@ public class TicTacToeGame {
     private final Player player2;
     private Player currentPlayer;
     private Grid.Mark currentPlayersMark;
+
     private boolean finished = false;
     private Grid.Mark startingPlayersMark;
 

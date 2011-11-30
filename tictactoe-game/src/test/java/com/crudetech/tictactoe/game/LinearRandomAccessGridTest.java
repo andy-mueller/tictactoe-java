@@ -90,8 +90,9 @@ public class LinearRandomAccessGridTest {
             }
         };
     }
+
     @Test
-    public void copyCtorCreatesCopy(){
+    public void copyCtorCreatesCopy() {
         Grid grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None,
@@ -102,8 +103,9 @@ public class LinearRandomAccessGridTest {
 
         assertThat(copy, is(grid));
     }
+
     @Test
-    public void copyCtorCreatesIndependentCopy(){
+    public void copyCtorCreatesIndependentCopy() {
         Grid grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None,
@@ -111,7 +113,7 @@ public class LinearRandomAccessGridTest {
         });
 
         LinearRandomAccessGrid copy = new LinearRandomAccessGrid(grid);
-        copy.setAt(Grid.Location.of(Grid.Row.Second, Grid.Column.Third),  Grid.Mark.Cross);
+        copy.setAt(Grid.Location.of(Grid.Row.Second, Grid.Column.Third), Grid.Mark.Cross);
 
         assertThat(copy, is(not(grid)));
     }

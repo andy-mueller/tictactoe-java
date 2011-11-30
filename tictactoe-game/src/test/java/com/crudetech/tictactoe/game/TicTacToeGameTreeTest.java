@@ -107,7 +107,6 @@ public class TicTacToeGameTreeTest {
 
         assertThat(node.getValue(), is(1));
     }
-    @Ignore
     @Test
     public void winOfNonStartingPlayerResultsInNodeValueOne(){
         LinearRandomAccessGrid playerOneWins = LinearRandomAccessGrid.of(new Grid.Mark[]{

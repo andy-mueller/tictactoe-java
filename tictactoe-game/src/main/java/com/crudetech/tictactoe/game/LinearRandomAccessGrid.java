@@ -1,12 +1,10 @@
 package com.crudetech.tictactoe.game;
 
 import com.crudetech.collections.AbstractIterable;
+import com.crudetech.collections.Pair;
 import com.crudetech.functional.UnaryFunction;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static com.crudetech.matcher.Verify.verifyThat;
 import static com.crudetech.query.Query.from;
@@ -27,6 +25,7 @@ public class LinearRandomAccessGrid implements Grid {
     private LinearRandomAccessGrid(Mark[] matrix) {
         this.matrix = matrix;
     }
+
     LinearRandomAccessGrid(Grid src) {
         this(new Mark[9]);
         for (Cell cell : src.getCells()) {
@@ -125,30 +124,79 @@ public class LinearRandomAccessGrid implements Grid {
         setAt(location.getRow(), location.getColumn(), mark);
     }
 
-    private Mark getMarkAt(int index) {
-        return matrix[index];
+    private static class WinningTriples extends AbstractList<Pair<Mark[], Location[]>> {
+        private static final int[][] triples = {
+                {0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6},
+                {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {6, 4, 2}
+        };
+        private final Mark[] matrix;
+
+        WinningTriples(Mark[] matrix) {
+            this.matrix = matrix;
+        }
+
+        @Override
+        public Pair<Mark[], Location[]> get(int index) {
+            int[] indices = triples[index];
+            Mark[] marks = new Mark[indices.length];
+            Location[] locations = new Location[indices.length];
+            for (int i = 0; i < indices.length; ++i) {
+                final int idx = indices[i];
+                marks[i] = getMarkAt(idx);
+                locations[i] = locationOfIndex(idx);
+            }
+
+            return new Pair<>(marks, locations);
+        }
+
+        private Mark getMarkAt(int index) {
+            return matrix[index];
+        }
+
+        @Override
+        public int size() {
+            return triples.length;
+        }
     }
 
     Triple winningTriple() {
-        final int[][] winningTriples = {
-                {0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6},
-                {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {6, 4, 2},
-        };
-
-        for (int[] winningTriple : winningTriples) {
-            Mark mark = getMarkAt(winningTriple[0]);
-            if (mark.isNone()) {
-                continue;
-            }
-            Mark mark2 = getMarkAt(winningTriple[1]);
-            Mark mark3 = getMarkAt(winningTriple[2]);
-
-            if (mark.equals(mark2)
-                    && mark.equals(mark3)) {
-                return Triple.of(mark, locationOfIndex(winningTriple[0]), locationOfIndex(winningTriple[1]), locationOfIndex(winningTriple[2]));
+        for (Pair<Mark[], Location[]> triple : new WinningTriples(matrix)) {
+            if (isWin(triple.getFirst())) {
+                Location[] locations = triple.getSecond();
+                return Triple.of(triple.getFirst()[0], locations[0], locations[1], locations[2]);
             }
         }
         return Triple.Empty;
+    }
+
+    private static boolean isWin(Mark... marks) {
+        return containsNoNoneMarks(marks)
+            && allItemsAreEqual(marks);
+    }
+
+    private static boolean allItemsAreEqual(Mark[] marks) {
+        return !from(marks).where(notEqualTo(marks[0])).any();
+    }
+
+    private static boolean containsNoNoneMarks(Mark[] marks) {
+        return !from(marks).where(isEqualTo(Mark.None)).any();
+    }
+    private static <T> UnaryFunction<T, Boolean> notEqualTo(final T item) {
+        return new UnaryFunction<T, Boolean>() {
+            @Override
+            public Boolean execute(T t) {
+                return !Objects.equals(item, t);
+            }
+        };
+    }
+
+    private static <T> UnaryFunction<T, Boolean> isEqualTo(final T item) {
+        return new UnaryFunction<T, Boolean>() {
+            @Override
+            public Boolean execute(T t) {
+                return Objects.equals(t, item);
+            }
+        };
     }
 
     private static Location locationOfIndex(int idx) {
@@ -159,6 +207,11 @@ public class LinearRandomAccessGrid implements Grid {
 
     private boolean isWin() {
         return !winningTriple().equals(Triple.Empty);
+    }
+
+    boolean isWinForMark(Mark startPlayerMark) {
+        Triple triple = winningTriple();
+        return triple.isWinForMark(startPlayerMark);
     }
 
     boolean isTieForFirstPlayersMark(Mark firstMark) {

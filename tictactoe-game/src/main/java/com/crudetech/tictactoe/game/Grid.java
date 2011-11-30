@@ -229,5 +229,10 @@ public interface Grid {
         public Iterable<Location> getLocations() {
             return asList(first, second, third);
         }
+
+        public boolean isWinForMark(Mark mark) {
+            return !equals(Empty)
+                    && this.mark == mark;
+        }
     }
 }

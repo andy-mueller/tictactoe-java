@@ -176,4 +176,37 @@ public class LinearRandomAccessGridWinningMarkTest {
         LinearRandomAccessGrid.Triple triple = grid.winningTriple();
         assertThat(triple, is(expected));
     }
+    @Test
+    public void isWinForCrossPlayerIsFirst(){
+        LinearRandomAccessGrid grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+                Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.Cross,
+                Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.Nought,
+                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Cross,
+        });
+
+        assertThat(grid.isWinForMark(Grid.Mark.Cross), is(true));
+        assertThat(grid.isWinForMark(Grid.Mark.Nought), is(false));
+    }
+    @Test
+    public void isWinForNoughtPlayerIsFirst(){
+        LinearRandomAccessGrid grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+                Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.Nought,
+                Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.Nought,
+                Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.Cross,
+        });
+
+        assertThat(grid.isWinForMark(Grid.Mark.Nought), is(true));
+        assertThat(grid.isWinForMark(Grid.Mark.Cross), is(false));
+    }
+    @Test
+    public void isWinForIsFalseWhenGameIsOpen(){
+        LinearRandomAccessGrid grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+                Grid.Mark.Nought, Grid.Mark.None, Grid.Mark.Nought,
+                Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.Nought,
+                Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.Cross,
+        });
+
+        assertThat(grid.isWinForMark(Grid.Mark.Cross), is(false));
+        assertThat(grid.isWinForMark(Grid.Mark.Nought), is(false));
+    }
 }
