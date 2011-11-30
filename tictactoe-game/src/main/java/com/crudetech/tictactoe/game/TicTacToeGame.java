@@ -8,6 +8,7 @@ public class TicTacToeGame {
     private LinearRandomAccessGrid grid = new LinearRandomAccessGrid();
     private final Player player1;
     private final Player player2;
+
     private Player currentPlayer;
     private Grid.Mark currentPlayersMark;
 
