@@ -31,10 +31,6 @@ public class TicTacToeGame {
         }
     }
 
-    Grid getGrid() {
-        return grid;
-    }
-
     public void addMark(Player player, Grid.Location location) {
         addMark(player, location.getRow(), location.getColumn());
     }
