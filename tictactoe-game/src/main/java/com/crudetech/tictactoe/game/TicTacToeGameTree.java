@@ -1,9 +1,9 @@
 package com.crudetech.tictactoe.game;
 
+import com.crudetech.collections.Pair;
 import com.crudetech.functional.UnaryFunction;
 
 import static com.crudetech.query.Query.from;
-
 import static com.crudetech.tictactoe.game.GridCells.location;
 import static com.crudetech.tictactoe.game.GridCells.markIsEqualTo;
 
@@ -12,12 +12,12 @@ class TicTacToeGameTree {
 
     static class Node implements GameTree.Node<Grid> {
         private final LinearRandomAccessGrid grid;
-        private final Grid.Mark currentMark;
+        private final Grid.Mark nextMark;
         private Grid.Mark startPlayerMark = Grid.Mark.Cross;
 
-        public Node(LinearRandomAccessGrid grid, Grid.Mark currentMark) {
+        public Node(LinearRandomAccessGrid grid, Grid.Mark nextMark) {
             this.grid = grid;
-            this.currentMark = currentMark;
+            this.nextMark = nextMark;
         }
 
         @Override
@@ -27,7 +27,9 @@ class TicTacToeGameTree {
 
         @Override
         public boolean hasFinished() {
-            throw new UnsupportedOperationException("Implement me!");
+            return grid.isTieForFirstPlayersMark(startPlayerMark)
+                || grid.isWinForMark(startPlayerMark)
+                || grid.isWinForMark(startPlayerMark.getOpposite());
         }
 
         @Override
@@ -36,8 +38,8 @@ class TicTacToeGameTree {
                 return 1;
             } else if (grid.isWinForMark(startPlayerMark.getOpposite())) {
                 return -1;
-//            } else if (grid.isTie()) {
-//                return 0;
+            } else if (grid.isTieForFirstPlayersMark(startPlayerMark)) {
+                return 0;
             }
             throw new IllegalStateException("The game is ongoing and cannot be evaluated!");
         }
@@ -56,7 +58,7 @@ class TicTacToeGameTree {
                 @Override
                 public LinearRandomAccessGrid execute(Grid.Location location) {
                     LinearRandomAccessGrid permutedGrid = new LinearRandomAccessGrid(base);
-                    permutedGrid.setAt(location, currentMark.getOpposite());
+                    permutedGrid.setAt(location, nextMark);
                     return permutedGrid;
                 }
             };
@@ -66,7 +68,7 @@ class TicTacToeGameTree {
             return new UnaryFunction<LinearRandomAccessGrid, Node>() {
                 @Override
                 public Node execute(LinearRandomAccessGrid grid) {
-                    return new Node(grid, currentMark.getOpposite());
+                    return new Node(grid, nextMark);
                 }
             };
         }
@@ -81,4 +83,8 @@ class TicTacToeGameTree {
         return gameTree;
     }
 
+    Grid bestNextMove() {
+        Pair<Integer, GameTree.Node<Grid>> nextMove = getGameTree().alphaBeta(GameTree.Player.Max);
+        return nextMove.getSecond().getGameState();
+    }
 }

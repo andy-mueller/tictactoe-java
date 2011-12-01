@@ -70,7 +70,7 @@ public class TicTacToeGame {
         return currentPlayer == player1 ? player2 : player1;
     }
 
-    private boolean didWin(LinearRandomAccessGrid.Triple triple) {
+    private boolean didWin(Grid.Triple triple) {
         return !triple.equals(Grid.Triple.Empty);
     }
 

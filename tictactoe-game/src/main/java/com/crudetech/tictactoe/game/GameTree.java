@@ -6,12 +6,6 @@ import com.crudetech.collections.Pair;
 public class GameTree<TGameState> {
     private final Node<TGameState> root;
 
-    public GameTree(Node<TGameState> root) {
-        this.root = root;
-    }
-
-
-
     public interface Node<TGameState> {
         boolean hasFinished();
 
@@ -81,6 +75,10 @@ public class GameTree<TGameState> {
         abstract Player otherPlayer();
 
         abstract <TGameState> Pair<Integer, Node<TGameState>> alphaBeta(Node<TGameState> node, int alpha, int beta, int depth, Player player);
+    }
+
+    public GameTree(Node<TGameState> root) {
+        this.root = root;
     }
 
     public Node<TGameState> getRoot() {

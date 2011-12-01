@@ -23,6 +23,7 @@ public class LinearRandomAccessGrid implements Grid {
     }
 
     private LinearRandomAccessGrid(Mark[] matrix) {
+        verifyThat(matrix, is(allOf(notNullValue(), arrayWithSize(9))));
         this.matrix = matrix;
     }
 
@@ -33,7 +34,7 @@ public class LinearRandomAccessGrid implements Grid {
         }
     }
 
-    public static LinearRandomAccessGrid of(Mark[] marks) {
+    public static LinearRandomAccessGrid of(Mark... marks) {
         return new LinearRandomAccessGrid(marks);
     }
 

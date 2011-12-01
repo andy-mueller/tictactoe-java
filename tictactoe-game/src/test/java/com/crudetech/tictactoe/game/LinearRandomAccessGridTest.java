@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import java.util.List;
 import java.util.Objects;
 
+import static com.crudetech.matcher.ThrowsException.doesThrow;
 import static com.crudetech.query.Query.from;
 import static com.crudetech.tictactoe.game.GridMatcher.isEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -65,11 +66,10 @@ public class LinearRandomAccessGridTest {
         return new Equivalent.Factory<Grid>() {
             @Override
             public Grid createItem() {
-                return LinearRandomAccessGrid.of(new Grid.Mark[]{
+                return LinearRandomAccessGrid.of(
                         Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
                         Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
-                        Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
-                });
+                        Grid.Mark.None, Grid.Mark.None, Grid.Mark.None);
             }
 
             @Override
@@ -93,11 +93,10 @@ public class LinearRandomAccessGridTest {
 
     @Test
     public void copyCtorCreatesCopy() {
-        Grid grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+        Grid grid = LinearRandomAccessGrid.of(
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross,
-        });
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross);
 
         LinearRandomAccessGrid copy = new LinearRandomAccessGrid(grid);
 
@@ -106,15 +105,34 @@ public class LinearRandomAccessGridTest {
 
     @Test
     public void copyCtorCreatesIndependentCopy() {
-        Grid grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+        Grid grid = LinearRandomAccessGrid.of(
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross,
-        });
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross);
 
         LinearRandomAccessGrid copy = new LinearRandomAccessGrid(grid);
         copy.setAt(Grid.Location.of(Grid.Row.Second, Grid.Column.Third), Grid.Mark.Cross);
 
         assertThat(copy, is(not(grid)));
+    }
+    @Test
+    public void ofFactoryThrowsOnNull(){
+        Runnable ofWithNull = new Runnable() {
+            @Override
+            public void run() {
+                LinearRandomAccessGrid.of((Grid.Mark[])null);
+            }
+        };
+        assertThat(ofWithNull, doesThrow(IllegalArgumentException.class));
+    }
+    @Test
+    public void ofFactoryThrowsWithWrongArgCount(){
+        Runnable ofWithNull = new Runnable() {
+            @Override
+            public void run() {
+                LinearRandomAccessGrid.of(Grid.Mark.Nought);
+            }
+        };
+        assertThat(ofWithNull, doesThrow(IllegalArgumentException.class));
     }
 }
