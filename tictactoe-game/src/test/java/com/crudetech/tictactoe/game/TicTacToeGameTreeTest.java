@@ -11,6 +11,7 @@ import static com.crudetech.lang.Enums.iterableOf;
 import static com.crudetech.matcher.RangeIsEquivalent.equivalentTo;
 import static com.crudetech.matcher.ThrowsException.doesThrow;
 import static com.crudetech.query.Query.from;
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -22,7 +23,7 @@ public class TicTacToeGameTreeTest {
     @Before
     public void setUp() throws Exception {
         grid = new LinearRandomAccessGrid();
-        gameTree = new TicTacToeGameTree(grid, Grid.Mark.Cross);
+        gameTree = new TicTacToeGameTree(grid, Grid.Mark.Cross, GameTree.Player.Max);
     }
 
     @Test
@@ -47,6 +48,29 @@ public class TicTacToeGameTreeTest {
 
         assertThat(childStates, is(equivalentTo(expectedStates)));
     }
+
+    @Test
+    public void nodeChildrenAreProperlyMarked() {
+        LinearRandomAccessGrid grid = LinearRandomAccessGrid.of(
+                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.None,
+                Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.Cross,
+                Grid.Mark.Nought, Grid.Mark.Cross, Grid.Mark.Nought);
+        TicTacToeGameTree.Node node = new TicTacToeGameTree.Node(grid, Grid.Mark.Cross);
+
+        Iterable<TicTacToeGameTree.Node> children = node.getChildren();
+
+        Iterable<Grid> actualGrids = from(children).select(toGrid());
+
+        Iterable<Grid> expected = asList(
+                (Grid)LinearRandomAccessGrid.of(
+                        Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Cross,
+                        Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.Cross,
+                        Grid.Mark.Nought, Grid.Mark.Cross, Grid.Mark.Nought)
+        );
+
+        assertThat(actualGrids, is(equivalentTo(expected)));
+    }
+
 
     private Iterable<Grid> allSingleMarkGridPermutationsOfEmptyGame(Grid.Mark mark) {
         List<Grid> allSingleMarkGridPermutations = new ArrayList<>();
@@ -148,7 +172,8 @@ public class TicTacToeGameTreeTest {
 
         assertThat(getValueOnOpenGame, doesThrow(IllegalStateException.class));
     }
-     @Test
+
+    @Test
     public void hasFinishedIsTrueOnTie() {
         LinearRandomAccessGrid tie = LinearRandomAccessGrid.of(
                 Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought,
@@ -158,6 +183,7 @@ public class TicTacToeGameTreeTest {
 
         assertThat(node.hasFinished(), is(true));
     }
+
     @Test
     public void hasFinishedIsTrueForStartPlayerWin() {
         LinearRandomAccessGrid playerOneWins = LinearRandomAccessGrid.of(
@@ -168,6 +194,7 @@ public class TicTacToeGameTreeTest {
 
         assertThat(node.hasFinished(), is(true));
     }
+
     @Test
     public void hasFinishedIsTrueForSecondPlayerWin() {
         LinearRandomAccessGrid playerTwoWins = LinearRandomAccessGrid.of(
@@ -185,7 +212,7 @@ public class TicTacToeGameTreeTest {
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.Nought,
                 Grid.Mark.Nought, Grid.Mark.Cross, Grid.Mark.Cross,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought);
-        TicTacToeGameTree gameTree = new TicTacToeGameTree(open, Grid.Mark.Cross);
+        TicTacToeGameTree gameTree = new TicTacToeGameTree(open, Grid.Mark.Cross, GameTree.Player.Max);
 
         Grid nextMove = gameTree.bestNextMove();
 
@@ -193,6 +220,90 @@ public class TicTacToeGameTreeTest {
                 Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought,
                 Grid.Mark.Nought, Grid.Mark.Cross, Grid.Mark.Cross,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought);
+        assertThat(nextMove, is(expectedNextMove));
+    }
+
+    @Test
+    public void blocksIfNecessary() {
+        LinearRandomAccessGrid grid = LinearRandomAccessGrid.of(
+                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought);
+        TicTacToeGameTree gameTree = new TicTacToeGameTree(grid, Grid.Mark.Nought, GameTree.Player.Min);
+
+        Grid nextMove = gameTree.bestNextMove();
+
+        Grid expectedNextMove = LinearRandomAccessGrid.of(
+                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought);
+        assertThat(nextMove, is(expectedNextMove));
+    }
+
+    @Test
+    public void blocksIfNecessary2() {
+        LinearRandomAccessGrid grid = LinearRandomAccessGrid.of(
+                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.None,
+                Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.Cross,
+                Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.Nought);
+        TicTacToeGameTree gameTree = new TicTacToeGameTree(grid, Grid.Mark.Nought, GameTree.Player.Min);
+
+        Grid nextMove = gameTree.bestNextMove();
+
+        Grid expectedNextMove = LinearRandomAccessGrid.of(
+                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought,
+                Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.Cross,
+                Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.Nought);
+        assertThat(nextMove, is(expectedNextMove));
+    }
+
+    @Test
+    public void blocksIfNecessary3() {
+        LinearRandomAccessGrid grid = LinearRandomAccessGrid.of(
+                Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.Cross,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought);
+        TicTacToeGameTree gameTree = new TicTacToeGameTree(grid, Grid.Mark.Nought, GameTree.Player.Min);
+
+        Grid nextMove = gameTree.bestNextMove();
+
+        Grid expectedNextMove = LinearRandomAccessGrid.of(
+                Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.Cross,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought);
+        assertThat(nextMove, is(expectedNextMove));
+    }
+    @Test
+    public void blocksIfNecessary4() {
+        LinearRandomAccessGrid grid = LinearRandomAccessGrid.of(
+                Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.Cross,
+                Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
+                Grid.Mark.Nought, Grid.Mark.Cross, Grid.Mark.None);
+        TicTacToeGameTree gameTree = new TicTacToeGameTree(grid, Grid.Mark.Cross, GameTree.Player.Max);
+
+        Grid nextMove = gameTree.bestNextMove();
+
+        Grid expectedNextMove = LinearRandomAccessGrid.of(
+                Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.Cross,
+                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.None,
+                Grid.Mark.Nought, Grid.Mark.Cross, Grid.Mark.None);
+        assertThat(nextMove, is(expectedNextMove));
+    }
+
+    @Test
+    public void winsIfPossible() {
+        LinearRandomAccessGrid grid = LinearRandomAccessGrid.of(
+                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.Nought);
+        TicTacToeGameTree gameTree = new TicTacToeGameTree(grid, Grid.Mark.Cross, GameTree.Player.Max);
+
+        Grid nextMove = gameTree.bestNextMove();
+
+        Grid expectedNextMove = LinearRandomAccessGrid.of(
+                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Cross,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.Nought);
         assertThat(nextMove, is(expectedNextMove));
     }
 }

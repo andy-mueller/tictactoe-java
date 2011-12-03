@@ -4,15 +4,18 @@ import com.crudetech.functional.UnaryFunction;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
 import com.crudetech.junit.feature.Features;
+import com.crudetech.matcher.RangeIsEmpty;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
 import java.util.Objects;
 
+import static com.crudetech.matcher.RangeIsEquivalent.equivalentTo;
 import static com.crudetech.matcher.ThrowsException.doesThrow;
 import static com.crudetech.query.Query.from;
 import static com.crudetech.tictactoe.game.GridMatcher.isEmpty;
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -115,18 +118,20 @@ public class LinearRandomAccessGridTest {
 
         assertThat(copy, is(not(grid)));
     }
+
     @Test
-    public void ofFactoryThrowsOnNull(){
+    public void ofFactoryThrowsOnNull() {
         Runnable ofWithNull = new Runnable() {
             @Override
             public void run() {
-                LinearRandomAccessGrid.of((Grid.Mark[])null);
+                LinearRandomAccessGrid.of((Grid.Mark[]) null);
             }
         };
         assertThat(ofWithNull, doesThrow(IllegalArgumentException.class));
     }
+
     @Test
-    public void ofFactoryThrowsWithWrongArgCount(){
+    public void ofFactoryThrowsWithWrongArgCount() {
         Runnable ofWithNull = new Runnable() {
             @Override
             public void run() {
@@ -134,5 +139,43 @@ public class LinearRandomAccessGridTest {
             }
         };
         assertThat(ofWithNull, doesThrow(IllegalArgumentException.class));
+    }
+
+    @Test
+    public void differenceReturnsDifferentMarks() {
+
+        LinearRandomAccessGrid lhs = LinearRandomAccessGrid.of(
+                Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross
+        );
+        Grid rhs = LinearRandomAccessGrid.of(
+                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.Cross
+        );
+
+        Iterable<Grid.Cell> difference = lhs.difference(rhs);
+
+        Iterable<Grid.Cell> expected = asList(
+                new Grid.Cell(Grid.Location.of(Grid.Row.First, Grid.Column.Second), Grid.Mark.Cross ),
+                new Grid.Cell(Grid.Location.of(Grid.Row.Third, Grid.Column.Second), Grid.Mark.Nought)
+        );
+
+        assertThat(difference, is(equivalentTo(expected))) ;
+    }
+    @Test
+    public void differenceIsEmptyOnEqualGrids() {
+
+        LinearRandomAccessGrid lhs = LinearRandomAccessGrid.of(
+                Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross
+        );
+        Grid rhs = LinearRandomAccessGrid.of(lhs);
+
+        Iterable<Grid.Cell> difference = lhs.difference(rhs);
+
+        assertThat(difference, RangeIsEmpty.isEmpty()) ;
     }
 }

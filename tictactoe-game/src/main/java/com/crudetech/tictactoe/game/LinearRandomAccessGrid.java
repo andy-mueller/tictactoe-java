@@ -1,10 +1,13 @@
 package com.crudetech.tictactoe.game;
 
-import com.crudetech.collections.AbstractIterable;
 import com.crudetech.collections.Pair;
+import com.crudetech.functional.BinaryFunction;
 import com.crudetech.functional.UnaryFunction;
 
-import java.util.*;
+import java.util.AbstractList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 import static com.crudetech.matcher.Verify.verifyThat;
 import static com.crudetech.query.Query.from;
@@ -38,6 +41,10 @@ public class LinearRandomAccessGrid implements Grid {
         return new LinearRandomAccessGrid(marks);
     }
 
+    public static LinearRandomAccessGrid of(Grid grid) {
+        return new LinearRandomAccessGrid(grid);
+    }
+
     public Mark getAt(Row row, Column column) {
         verifyThat(row, is(not(nullValue())));
         verifyThat(column, is(not(nullValue())));
@@ -47,36 +54,19 @@ public class LinearRandomAccessGrid implements Grid {
 
     @Override
     public Iterable<Cell> getCells() {
-        return new AbstractIterable<Cell>() {
+        return from(matrix).select(toCell());
+    }
+
+    private static BinaryFunction<Mark, Integer, Cell> toCell() {
+        return new BinaryFunction<Mark, Integer, Cell>() {
             @Override
-            public Iterator<Cell> iterator() {
-                return new Iterator<Cell>() {
-                    private int idx = 0;
-
-                    @Override
-                    public boolean hasNext() {
-                        return idx < matrix.length;
-                    }
-
-                    @Override
-                    public Cell next() {
-                        if (!hasNext()) {
-                            throw new NoSuchElementException();
-                        }
-                        Location location = locationOfIndex(idx++);
-                        return new Cell(location, getAt(location));
-                    }
-
-                    @Override
-                    public void remove() {
-                        throw new UnsupportedOperationException();
-                    }
-                };
+            public Cell execute(Mark mark, Integer pos) {
+                return new Cell(locationOfIndex(pos), mark);
             }
         };
     }
 
-    private int computeIndexFrom(Row row, Column column) {
+    private static int computeIndexFrom(Row row, Column column) {
         return row.ordinal() * Dimension + column.ordinal();
     }
 
@@ -123,6 +113,23 @@ public class LinearRandomAccessGrid implements Grid {
 
     void setAt(Location location, Mark mark) {
         setAt(location.getRow(), location.getColumn(), mark);
+    }
+
+    Iterable<Cell> difference(final Grid right) {
+        return from(right.getCells()).where(differentFromThis());
+    }
+
+    private UnaryFunction<? super Cell, Boolean> differentFromThis() {
+        return new UnaryFunction<Cell, Boolean>() {
+            @Override
+            public Boolean execute(Cell cell) {
+                return !Objects.equals(cell, getCellAt(cell.getLocation()));
+            }
+        };
+    }
+
+    private Cell getCellAt(Location location) {
+        return new Cell(location, getAt(location));
     }
 
     private static class WinningTriples extends AbstractList<Pair<Mark[], Location[]>> {
@@ -172,7 +179,7 @@ public class LinearRandomAccessGrid implements Grid {
 
     private static boolean isWin(Mark... marks) {
         return containsNoNoneMarks(marks)
-            && allItemsAreEqual(marks);
+                && allItemsAreEqual(marks);
     }
 
     private static boolean allItemsAreEqual(Mark[] marks) {
@@ -182,6 +189,7 @@ public class LinearRandomAccessGrid implements Grid {
     private static boolean containsNoNoneMarks(Mark[] marks) {
         return !from(marks).where(isEqualTo(Mark.None)).any();
     }
+
     private static <T> UnaryFunction<T, Boolean> notEqualTo(final T item) {
         return new UnaryFunction<T, Boolean>() {
             @Override

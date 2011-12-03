@@ -56,7 +56,7 @@ public class GameTree<TGameState> {
                 Pair<Integer, Node<TGameState>> betaPair = new Pair<>(beta, null);
                 for (Node<TGameState> child : node.getChildren()) {
                     Pair<Integer, Node<TGameState>> value = otherPlayer().alphaBeta(child, alpha, betaPair.getFirst(), depth - 1, player);
-                    if (value.getFirst() <= betaPair.getFirst()) {
+                    if (value.getFirst() < betaPair.getFirst()) {
                         betaPair = new Pair<>(value.getFirst(), child);
                     }
                     if (betaPair.getFirst() <= alpha) {

@@ -9,6 +9,7 @@ import static com.crudetech.tictactoe.game.GridCells.markIsEqualTo;
 
 class TicTacToeGameTree {
     private final GameTree<Grid> gameTree;
+    private final GameTree.Player playerStrategy;
 
     static class Node implements GameTree.Node<Grid> {
         private final LinearRandomAccessGrid grid;
@@ -18,6 +19,15 @@ class TicTacToeGameTree {
         public Node(LinearRandomAccessGrid grid, Grid.Mark nextMark) {
             this.grid = grid;
             this.nextMark = nextMark;
+        }
+
+        @Override
+        public String toString() {
+            return "Node{" +
+                    "grid=" + grid +
+                    ", nextMark=" + nextMark +
+                    ", startPlayerMark=" + startPlayerMark +
+                    '}';
         }
 
         @Override
@@ -68,14 +78,15 @@ class TicTacToeGameTree {
             return new UnaryFunction<LinearRandomAccessGrid, Node>() {
                 @Override
                 public Node execute(LinearRandomAccessGrid grid) {
-                    return new Node(grid, nextMark);
+                    return new Node(grid, nextMark.getOpposite());
                 }
             };
         }
     }
 
 
-    TicTacToeGameTree(LinearRandomAccessGrid grid, Grid.Mark nextMark) {
+    TicTacToeGameTree(LinearRandomAccessGrid grid, Grid.Mark nextMark, GameTree.Player playerStrategy) {
+        this.playerStrategy = playerStrategy;
         this.gameTree = new GameTree<>(new Node(grid, nextMark));
     }
 
@@ -84,7 +95,7 @@ class TicTacToeGameTree {
     }
 
     Grid bestNextMove() {
-        Pair<Integer, GameTree.Node<Grid>> nextMove = getGameTree().alphaBeta(GameTree.Player.Max);
+        Pair<Integer, GameTree.Node<Grid>> nextMove = getGameTree().alphaBeta(playerStrategy);
         return nextMove.getSecond().getGameState();
     }
 }
