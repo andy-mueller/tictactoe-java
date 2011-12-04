@@ -60,7 +60,7 @@ public class TicTacToeGame {
             finished = true;
         } else {
             currentPlayer = currentPlayer == player1 ? player2 : player1;
-            currentPlayersMark = currentPlayersMark == Grid.Mark.Cross ? Grid.Mark.Nought : Grid.Mark.Cross;
+            currentPlayersMark = currentPlayersMark.getOpposite();
             currentPlayer.yourTurn(grid);
         }
     }
