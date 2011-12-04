@@ -31,10 +31,9 @@ public class GridWidgetTest {
     @Test
     public void ctorSetsCursorIntoMiddleCell() {
         GridWidget.Cursor cursor = mock(GridWidget.Cursor.class);
-        GridWidget w = new GridWidget(cursor);
+        new GridWidget(cursor);
 
-        Grid.Location firstCell = Grid.Location.of(Grid.Row.Second, Grid.Column.Second);
-        verify(cursor).setLocation(firstCell);
+        verify(cursor).setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
     }
 
     @Test
@@ -65,11 +64,10 @@ public class GridWidgetTest {
 
         assertThat(w.getRepaints(), is(0));
 
-        Grid aGid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+        Grid aGid = LinearRandomAccessGrid.of(
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
                 Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross
-        });
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross);
 
 
         w.setGrid(aGid);
@@ -83,11 +81,10 @@ public class GridWidgetTest {
         GridWidget w = new StandAloneGridWidget(cursor);
         cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
 
-        Grid currentGrid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+        Grid currentGrid = LinearRandomAccessGrid.of(
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
                 Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross
-        });
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross);
 
 
         w.setGrid(currentGrid);
@@ -111,11 +108,10 @@ public class GridWidgetTest {
         cursor.setLocation(location);
 
 
-        Grid currentGrid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+        Grid currentGrid = LinearRandomAccessGrid.of(
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
                 Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross
-        });
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross);
 
 
         w.setGrid(currentGrid);
@@ -164,11 +160,10 @@ public class GridWidgetTest {
         GridWidget.Cursor cursor = new GridWidget.Cursor();
         GridWidget widget = new StandAloneGridWidget(cursor);
         cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
-        Grid grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+        Grid grid = LinearRandomAccessGrid.of(
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.Nought,
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None,
-        });
+                Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None);
         widget.setGrid(grid);
 
         widget.moveCursorToFirstMarkedCell(grid);
@@ -181,11 +176,10 @@ public class GridWidgetTest {
         GridWidget.Cursor cursor = new GridWidget.Cursor();
         GridWidget widget = new StandAloneGridWidget(cursor);
         cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
-        Grid grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+        Grid grid = LinearRandomAccessGrid.of(
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.Nought,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None,
-        });
+                Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None);
         widget.setGrid(grid);
 
         widget.moveCursorToFirstMarkedCell(grid);
@@ -197,11 +191,10 @@ public class GridWidgetTest {
     public void moveCursorToFirstEmptyCellTakesMiddleWhenEverythingIsFull() throws Exception {
         GridWidget.Cursor cursor = new GridWidget.Cursor();
         GridWidget widget = new StandAloneGridWidget(cursor);
-        Grid grid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+        Grid grid = LinearRandomAccessGrid.of(
                 Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought,
                 Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.Nought,
-                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought,
-        });
+                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought);
         widget.setGrid(grid);
 
         widget.moveCursorToFirstMarkedCell(grid);
@@ -215,11 +208,10 @@ public class GridWidgetTest {
         GridWidget w = new StandAloneGridWidget(cursor);
         cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
 
-        Grid currentGrid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+        Grid currentGrid = LinearRandomAccessGrid.of(
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
                 Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross
-        });
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross);
         w.setGrid(currentGrid);
 
         Grid.Triple diagonalTriple = Grid.Triple.of(Grid.Mark.Cross,
