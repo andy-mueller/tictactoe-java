@@ -176,6 +176,7 @@ public class GameTreeTest {
         Node<Void> e = createLeafNode(3, "e");
         Node<Void> f = createLeafNode(12, "f");
         Node<Void> g = createLeafNode(8, "g");
+
         Node<Void> h = createLeafNode(2, "h");
         Node<Void> i = spy(createLeafNode(4, "i"));
         Node<Void> j = spy(createLeafNode(6, "j"));
@@ -202,10 +203,10 @@ public class GameTreeTest {
         Node<Void> f = createLeafNode(12, "f");
         Node<Void> g = createLeafNode(8, "g");
 
-        Node<Void> n = createLeafNode(0, "n");
-        Node<Void> o = createLeafNode(2, "o");
+        Node<Void> n = spy(createLeafNode(0, "n"));
+        Node<Void> o = spy(createLeafNode(2, "o"));
+
         Node<Void> h = createNode("h", 4, n, o);
-//        Node<Void> h = createLeafNode(4, "h");
 
         Node<Void> i = createLeafNode(4, "i");
         Node<Void> j = createLeafNode(6, "j");
@@ -215,7 +216,7 @@ public class GameTreeTest {
 
         Node<Void> b = createNode("b", e, f, g);
         Node<Void> c = createNode("c", h, i, j);
-        Node<Void> d = createNode("e", k, l, m);
+        Node<Void> d = createNode("d", k, l, m);
 
         Node<Void> a = createNode("a", b, c, d);//max
         GameTree<Void> gameTree = new GameTree<>(a);
@@ -223,9 +224,57 @@ public class GameTreeTest {
 
         Pair<Integer, Node<Void>> nodePair = gameTree.alphaBeta(Player.Max, 2);
         assertThat(nodePair, is(new Pair<>(4, c)));
-//        verifyZeroInteractions(i, j);
+        verifyZeroInteractions(n, o);
     }
 
-    // min Node<Void> has max children
-    // max Node<Void> has min children
+    @Test
+    public void anotherAlphaBetaCutOff() throws Exception {
+        Node<Void> t = createLeafNode(5, "t");
+        Node<Void> u = createLeafNode(6, "u");
+        Node<Void> v = createLeafNode(7, "v");
+        Node<Void> w = createLeafNode(4, "w");
+        Node<Void> x = spy(createLeafNode(5, "x"));
+
+        Node<Void> y = createLeafNode(3, "y");
+        Node<Void> z = createLeafNode(6, "z");
+        Node<Void> aa = createLeafNode(6, "aa");
+        Node<Void> bb = spy(createLeafNode(9, "bb"));
+        Node<Void> cc = createLeafNode(7, "c");
+
+        Node<Void> dd = createLeafNode(5, "dd");
+
+        Node<Void> ee = spy(createLeafNode(9, "ee"));
+        Node<Void> ff = spy(createLeafNode(8, "ff"));
+        Node<Void> gg = spy(createLeafNode(6, "gg"));
+
+        Node<Void> k = createNode(t, u);
+        Node<Void> l = createNode(v, w, x);
+        Node<Void> m = createNode(y);
+        Node<Void> n = createNode(z);
+        Node<Void> o = createNode(aa, bb);
+        Node<Void> p = createNode(cc);
+        Node<Void> q = createNode(dd);
+        Node<Void> r = spy(createNode(ee, ff));
+        Node<Void> s = spy(createNode(gg));
+
+        Node<Void> e = createNode(k, l);
+        Node<Void> f = createNode(m);
+        Node<Void> g = createNode(n, o);
+        Node<Void> h = createNode(p);
+        Node<Void> i = createNode(q);
+        Node<Void> j = spy(createNode(r, s));
+
+        Node<Void> b = createNode(e, f);
+        Node<Void> c = createNode(g, h);
+        Node<Void> d = createNode(i, j);
+
+        Node<Void> a = createNode(b, c, d);
+        GameTree<Void> gameTree = new GameTree<>(a);
+
+
+        Pair<Integer, Node<Void>> nodePair = gameTree.alphaBeta(Player.Max);
+
+        assertThat(nodePair, is(new Pair<>(6, c)));
+        verifyZeroInteractions(x, bb, ee, ff, gg, r, s, j);
+    }
 }

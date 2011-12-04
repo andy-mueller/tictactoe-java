@@ -27,11 +27,9 @@ public class TicTacToeGameTest {
 
         game.startWithPlayer(secondPlayer, Grid.Mark.Cross);
 
-        Grid emptyGrid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+        Grid emptyGrid = LinearRandomAccessGrid.of(Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
-        });
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None);
 
         assertThat(firstPlayer.getTurnCount(), is(0));
         assertThat(secondPlayer.getLastGrid(), is(emptyGrid));
@@ -108,11 +106,10 @@ public class TicTacToeGameTest {
 
         game.addMark(firstPlayer, Grid.Row.Second, Grid.Column.First);
 
-        Grid expectedGrid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+        Grid expectedGrid = LinearRandomAccessGrid.of(
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.Nought, Grid.Mark.None, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
-        });
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None);
 
         assertThat(secondPlayer.getLastGrid(), is(expectedGrid));
         assertThat(secondPlayer.getTurnCount(), is(1));
@@ -171,11 +168,10 @@ public class TicTacToeGameTest {
 
         setupAlmostFinishedGame(firstPlayer, secondPlayer, game);
 
-        Grid expectedGrid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+        Grid expectedGrid = LinearRandomAccessGrid.of(
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought,
                 Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought,
-                Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None,
-        });
+                Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None);
 
         assertThat(firstPlayer.getTurnCount(), is(4));
         assertThat(secondPlayer.getTurnCount(), is(3));
@@ -207,11 +203,10 @@ public class TicTacToeGameTest {
         game.addMark(firstPlayer, Grid.Row.First, Grid.Column.First);
 
 
-        Grid expectedGrid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+        Grid expectedGrid = LinearRandomAccessGrid.of(
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.Nought,
                 Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought,
-                Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None,
-        });
+                Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None);
 
 
         assertThat(firstPlayer.wasWinning(), is(true));
@@ -244,11 +239,10 @@ public class TicTacToeGameTest {
         game.addMark(firstPlayer, Grid.Row.First, Grid.Column.First);
 
 
-        Grid expectedGrid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+        Grid expectedGrid = LinearRandomAccessGrid.of(
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.Nought,
                 Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought,
-                Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None,
-        });
+                Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None);
 
         assertThat(secondPlayer.wasLoosing(), is(true));
         assertThat(secondPlayer.getLoosingGrid(), is(expectedGrid));
@@ -295,11 +289,10 @@ public class TicTacToeGameTest {
         game.addMark(secondPlayer, Grid.Row.First, Grid.Column.First);
 
 
-        Grid expectedGrid = LinearRandomAccessGrid.of(new Grid.Mark[]{
+        Grid expectedGrid = LinearRandomAccessGrid.of(
                 Grid.Mark.Nought, Grid.Mark.None, Grid.Mark.Nought,
                 Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought,
-                Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.Cross,
-        });
+                Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.Cross);
 
 
         assertThat(firstPlayer.wasTie(), is(true));
