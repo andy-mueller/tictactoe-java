@@ -51,15 +51,15 @@ class GridWidget extends TextComponent implements GridWidgetView {
         StringBuilder textRepresentation = new StringBuilder(TicTacToeTextRepresentationTemplate);
 
         for (Grid.Cell cell : grid.getCells()) {
-            textRepresentation = replaceAtLocation(cell.getLocation(), textRepresentation, characterSymbolOf(cell.getMark()));
+            textRepresentation = replaceAtLocation(textRepresentation, cell.getLocation(), characterSymbolOf(cell.getMark()));
         }
         return textRepresentation.toString();
     }
 
-        private static StringBuilder replaceAtLocation(Grid.Location location, StringBuilder inBuilder, char newValue) {
+        private static StringBuilder replaceAtLocation(StringBuilder builder, Grid.Location location, char newValue) {
             Cursor tmpCursor = new Cursor(location);
             int positionInLinearText = tmpCursor.getTextPositionX() + tmpCursor.getTextPositionY() * 12;
-            return inBuilder.replace(positionInLinearText, positionInLinearText + 1, String.valueOf(newValue));
+            return builder.replace(positionInLinearText, positionInLinearText + 1, String.valueOf(newValue));
         }
 
         private char characterSymbolOf(Grid.Mark mark) {
@@ -99,7 +99,7 @@ class GridWidget extends TextComponent implements GridWidgetView {
         StringBuilder textRepresentation = new StringBuilder(getText());
 
         for (Grid.Location location : triple.getLocations()) {
-            textRepresentation = replaceAtLocation(location, textRepresentation, '#');
+            textRepresentation = replaceAtLocation(textRepresentation, location, '#');
         }
 
         setText(textRepresentation.toString());

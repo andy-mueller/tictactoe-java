@@ -2,31 +2,53 @@ package com.crudetech.tictactoe.game;
 
 import java.io.PrintStream;
 import java.util.Random;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class AlmostEndlessComputerPlayerTournament {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         AlmostEndlessComputerPlayerTournament app = new AlmostEndlessComputerPlayerTournament();
-        app.battle(10, System.out);
+        app.battle(5000, System.out);
     }
 
     private final static Random random = new Random();
 
-    public void battle(int count, final PrintStream trace) {
-        Statistic stat = new Statistic();
-        while (count-- > 0) {
-            AlphaBetaPruningPlayer firstPlayer = createTracingPlayer(trace);
-            AlphaBetaPruningPlayer secondPlayer = new AlphaBetaPruningPlayer(Grid.Mark.Nought);
+    public void battle(int count, final PrintStream trace) throws Exception {
+        Stopwatch all = new Stopwatch();
+        final Statistic stat = new Statistic();
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+        CompletionService<Void> completionService = new ExecutorCompletionService<>(executor);
+
+        for (int i = 0; i < count; ++i) {
+            Runnable runner = new Runnable() {
+                @Override
+                public void run() {
+                    AlphaBetaPruningPlayer firstPlayer = createTracingPlayer(trace);
+                    AlphaBetaPruningPlayer secondPlayer = new AlphaBetaPruningPlayer(Grid.Mark.Nought);
 
 
-            TicTacToeGame game = new TicTacToeGame(firstPlayer, secondPlayer);
-            firstPlayer.setGame(game);
-            secondPlayer.setGame(game);
+                    TicTacToeGame game = new TicTacToeGame(firstPlayer, secondPlayer);
+                    firstPlayer.setGame(game);
+                    secondPlayer.setGame(game);
 
-            Stopwatch sw = new Stopwatch();
-            game.startWithPlayer(firstPlayer, Grid.Mark.Cross);
-            stat.add(sw.elapsedMilis());
-            trace.println(stat);
+                    Stopwatch sw = new Stopwatch();
+                    game.startWithPlayer(firstPlayer, Grid.Mark.Cross);
+                    stat.add(sw.elapsedMilis());
+                    trace.println(stat);
+                }
+            };
+
+            completionService.submit(Executors.callable(runner, (Void) null));
         }
+
+        for (int i = 0; i < count; ++i) {
+            completionService.take().get();
+        }
+
+        trace.println("Finished in: " + all.elapsedMilis() + " ms");
+        executor.shutdown();
     }
 
     private AlphaBetaPruningPlayer createTracingPlayer(final PrintStream trace) {
@@ -84,32 +106,39 @@ public class AlmostEndlessComputerPlayerTournament {
         private long min = Long.MAX_VALUE;
         private long max = Long.MIN_VALUE;
 
-        void add(long val) {
+        synchronized void add(long val) {
             sum += val;
             count++;
             max = Math.max(max, val);
             min = Math.min(min, val);
         }
 
-        double average() {
+        synchronized double average() {
             return sum / count;
         }
 
-        double deviation() {
+        synchronized double deviation() {
             return Math.sqrt(Math.pow((max - min), 2) / 12);
         }
 
-        long min() {
+        synchronized long min() {
             return min;
         }
 
-        long max() {
+        synchronized long max() {
             return max;
         }
 
+        synchronized private long count() {
+            return count;
+        }
+
         @Override
-        public String toString() {
-            return String.format("Statistic{count=%1$d, min=%2$d, max=%3$d, average=%4$5.2f, deviation=%5$5.2f}", count, min, max, average(), deviation());
+        synchronized public String toString() {
+            return String.format(
+                    "Statistic{count=%1$d, min=%2$d, max=%3$d, average=%4$5.2f, deviation=%5$5.2f}",
+                    count(), min(), max(), average(), deviation()
+            );
 
         }
     }

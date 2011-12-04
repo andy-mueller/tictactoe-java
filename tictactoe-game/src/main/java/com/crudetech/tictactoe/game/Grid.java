@@ -26,7 +26,8 @@ public interface Grid {
             public Mark getOpposite() {
                 return Cross;
             }
-        }, None {
+        },
+        None {
             @Override
             public Mark getOpposite() {
                 throw new IllegalStateException("Can't be done for None!");
