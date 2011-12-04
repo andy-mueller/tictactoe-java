@@ -13,8 +13,6 @@ import jcurses.widgets.WidgetsConstants;
 import jcurses.widgets.Window;
 
 public class JCursesApp {
-
-
     static class MainWindow extends Window {
         private final DefaultLayoutManager layoutManager;
         private TicTacToeGame game;
