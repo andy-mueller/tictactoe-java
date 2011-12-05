@@ -26,11 +26,12 @@ class GridWidgetPlayer implements Player {
 
     @Override
     public void youLoose(Grid actualGrid, Grid.Triple triple) {
-        throw new UnsupportedOperationException("Implement me!");
+        userFeedback.showMessage("You loose!");
+        widget.highlight(triple);
     }
 
     @Override
     public void tie(Grid actualGrid) {
-        throw new UnsupportedOperationException("Implement me!");
+        userFeedback.showMessage("Tie!");
     }
 }
