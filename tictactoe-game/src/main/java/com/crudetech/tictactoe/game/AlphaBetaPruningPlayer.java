@@ -26,6 +26,4 @@ public class AlphaBetaPruningPlayer extends ComputerPlayer{
     private GameTree.Player getStrategy() {
         return mark.equals(Grid.Mark.Cross) ? GameTree.Player.Max : GameTree.Player.Min;
     }
-
-
 }
