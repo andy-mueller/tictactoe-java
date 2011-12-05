@@ -1,9 +1,7 @@
 package com.crudetech.tictactoe.client.jcurses;
 
 import com.crudetech.event.EventListener;
-import com.crudetech.tictactoe.game.Grid;
-import com.crudetech.tictactoe.game.NaiveTryAndErrorPlayer;
-import com.crudetech.tictactoe.game.TicTacToeGame;
+import com.crudetech.tictactoe.game.*;
 import jcurses.event.ItemEvent;
 import jcurses.event.ItemListener;
 import jcurses.system.CharColor;
@@ -18,7 +16,10 @@ public class JCursesApp {
         private TicTacToeGame game;
         private GridWidget gridWidget;
         private GridWidgetPlayer gridWidgetPlayer;
-        private NaiveTryAndErrorPlayer computerPlayer;
+        EventListener<GridWidget.KeyDownEventObject> keyDownListener = new EventListener<GridWidget.KeyDownEventObject>() {
+            @Override
+            public void onEvent(GridWidget.KeyDownEventObject e) {}
+        };
 
         MainWindow(int x, int y) {
             super(x, y, true, "Tic Tac Toe");
@@ -29,23 +30,20 @@ public class JCursesApp {
         }
 
         private void hookGridWidgetsKeyDownEventToAddAMarkOfTheGame() {
-            gridWidget.keyDownEvent().addListener(new EventListener<GridWidget.KeyDownEventObject>() {
-                @Override
-                public void onEvent(GridWidget.KeyDownEventObject e) {
-                    game.addMark(gridWidgetPlayer, e.getLocation());
-                }
-            });
+            gridWidget.keyDownEvent().addListener(keyDownListener);
         }
 
         private void installMenu(DefaultLayoutManager layoutManager) {
-            final String NewGame = "New Game";
+            final String NewEasyGame = "New Easy Game";
+            final String NewAdvancedGame = "New Advanced Game";
             final String Exit = "Exit";
 
             MenuList menu = new MenuList();
-            menu.add(NewGame);
+            menu.add(NewEasyGame);
+            menu.add(NewAdvancedGame);
             menu.add(Exit);
             menu.setSelectable(true);
-            menu.setTitle("File");
+            menu.setTitle("Games");
             menu.setTitleColors(new CharColor(menu.getTitleColors().getBackground(), CharColor.NORMAL));
             layoutManager.addWidget(menu, 0, 0, 50, 3, WidgetsConstants.ALIGNMENT_TOP, WidgetsConstants.ALIGNMENT_LEFT);
             menu.addListener(new ItemListener() {
@@ -53,8 +51,10 @@ public class JCursesApp {
                 @Override
                 public void stateChanged(ItemEvent itemEvent) {
                     String item = (String) itemEvent.getItem();
-                    if (NewGame.equalsIgnoreCase(item)) {
-                        onMnuNewGame();
+                    if (NewEasyGame.equalsIgnoreCase(item)) {
+                        onMnuNewEasyGame();
+                    } else if (NewAdvancedGame.equalsIgnoreCase(item)) {
+                        onMnuNewAdvancedGame();
                     } else if (Exit.equalsIgnoreCase(item)) {
                     }
                 }
@@ -74,20 +74,31 @@ public class JCursesApp {
             return mgr;
         }
 
-        private void onMnuNewGame() {
-            gridWidget.getFocus();
-            setupNewGame();
-            game.startWithPlayer(gridWidgetPlayer, Grid.Mark.Cross);
+        private void onMnuNewEasyGame() {
+            startNewGameWithComputerOpponent(new NaiveTryAndErrorPlayer());
         }
 
-        private void setupNewGame() {
+        private void onMnuNewAdvancedGame() {
+            startNewGameWithComputerOpponent(new AlphaBetaPruningPlayer(Grid.Mark.Nought));
+        }
+
+        private void startNewGameWithComputerOpponent(ComputerPlayer computerPlayer) {
+            gridWidget.getFocus();
+            gridWidget.keyDownEvent().removeListener(keyDownListener);
             UserFeedbackChannel userFeedback = new JCursesMessageBoxFeedbackChannel();
             gridWidgetPlayer = new GridWidgetPlayer(gridWidget, userFeedback);
-            computerPlayer = new NaiveTryAndErrorPlayer();
+
             game = new TicTacToeGame(gridWidgetPlayer, computerPlayer);
             computerPlayer.setGame(game);
+            keyDownListener = new EventListener<GridWidget.KeyDownEventObject>() {
+                @Override
+                public void onEvent(GridWidget.KeyDownEventObject e) {
+                    game.addMark(gridWidgetPlayer, e.getLocation());
+                }
+            };
+            gridWidget.keyDownEvent().addListener(keyDownListener);
+            game.startWithPlayer(gridWidgetPlayer, Grid.Mark.Cross);
         }
-
     }
 
 

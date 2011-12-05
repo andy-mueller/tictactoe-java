@@ -64,7 +64,7 @@ public class AlmostEndlessComputerPlayerTournament {
                 Grid.Row row = Grid.Row.of(random.nextInt(3));
                 Grid.Column col = Grid.Column.of(random.nextInt(3));
                 initialized = true;
-                game.addMark(this, Grid.Location.of(row, col));
+                addMark(Grid.Location.of(row, col));
             }
 
             @Override

@@ -2,14 +2,12 @@ package com.crudetech.tictactoe.game;
 
 import com.crudetech.collections.Iterables;
 
-public class AlphaBetaPruningPlayer implements Player {
-    protected TicTacToeGame game;
+public class AlphaBetaPruningPlayer extends ComputerPlayer{
     private final Grid.Mark mark;
 
     public AlphaBetaPruningPlayer(Grid.Mark mark) {
         this.mark = mark;
     }
-
     @Override
     public void yourTurn(Grid actualGrid) {
         LinearRandomAccessGrid currentGrid = LinearRandomAccessGrid.of(actualGrid);
@@ -17,7 +15,7 @@ public class AlphaBetaPruningPlayer implements Player {
         Iterable<Grid.Cell> difference = currentGrid.difference(nextBestMove);
         Grid.Cell cell = Iterables.firstOf(difference);
 
-        game.addMark(this, cell.getLocation());
+        addMark(cell.getLocation());
     }
 
     private Grid nextBestMove(LinearRandomAccessGrid currentGrid) {
@@ -29,22 +27,5 @@ public class AlphaBetaPruningPlayer implements Player {
         return mark.equals(Grid.Mark.Cross) ? GameTree.Player.Max : GameTree.Player.Min;
     }
 
-    @Override
-    public void youWin(Grid actualGrid, Grid.Triple triple) {
-        throw new UnsupportedOperationException("Implement me!");
-    }
 
-    @Override
-    public void youLoose(Grid actualGrid, Grid.Triple triple) {
-        throw new UnsupportedOperationException("Implement me!");
-    }
-
-    @Override
-    public void tie(Grid g) {
-    }
-
-
-    public void setGame(TicTacToeGame game) {
-        this.game = game;
-    }
 }
