@@ -28,7 +28,7 @@ public class TicTacToeGame {
 
     static class GameIsAlreadyStartedException extends IllegalStateException {
         private GameIsAlreadyStartedException() {
-            super("The was already started!");
+            super("The game was already started!");
         }
     }
 
