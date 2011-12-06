@@ -35,7 +35,7 @@ public class AlmostEndlessComputerPlayerTournament {
 
                     Stopwatch sw = new Stopwatch();
                     game.startWithPlayer(firstPlayer, Grid.Mark.Cross);
-                    stat.add(sw.elapsedMilis());
+                    stat.add(sw.elapsedMilliseconds());
                     trace.println(stat);
                 }
             };
@@ -47,7 +47,7 @@ public class AlmostEndlessComputerPlayerTournament {
             completionService.take().get();
         }
 
-        trace.println("Finished in: " + all.elapsedMilis() + " ms");
+        trace.println("Finished in: " + all.elapsedMilliseconds() + " ms");
         executor.shutdown();
     }
 
@@ -95,7 +95,7 @@ public class AlmostEndlessComputerPlayerTournament {
             start = System.currentTimeMillis();
         }
 
-        long elapsedMilis() {
+        long elapsedMilliseconds() {
             return System.currentTimeMillis() - start;
         }
     }
