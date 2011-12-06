@@ -18,7 +18,7 @@ public class AlmostEndlessComputerPlayerTournament {
     public void battle(int count, final PrintStream trace) throws Exception {
         Stopwatch all = new Stopwatch();
         final Statistic stat = new Statistic();
-        ExecutorService executor = Executors.newFixedThreadPool(10);
+        ExecutorService executor = Executors.newFixedThreadPool(8);
         CompletionService<Void> completionService = new ExecutorCompletionService<>(executor);
 
         for (int i = 0; i < count; ++i) {
@@ -86,7 +86,6 @@ public class AlmostEndlessComputerPlayerTournament {
             }
         };
     }
-
     static class Stopwatch {
 
         private long start;
