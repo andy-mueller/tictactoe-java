@@ -41,7 +41,7 @@
 
     <modules>
         <module>tictactoe-game</module>
-        <module>tictacttoe-client-jcurses</module>
+        <module>tictacttoe-client</module>
     </modules>
 
     <developers>
