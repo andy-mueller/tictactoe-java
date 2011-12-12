@@ -16,7 +16,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <!--<module>tictactoe-client-swing</module>-->
+        <module>tictactoe-client-swing</module>
         <module>tictacttoe-client-jcurses</module>
     </modules>
 

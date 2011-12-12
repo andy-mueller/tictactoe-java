@@ -9,13 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>tictacttoe-client-jcurses</artifactId>
+    <artifactId>tictacttoe-client-swing</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>com.baulsupp.kolja</groupId>
-            <artifactId>jcurses</artifactId>
-        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>tictactoe-game</artifactId>
@@ -37,7 +33,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.crudetech.tictactoe.client.jcurses.JCursesApp</mainClass>
+                    <mainClass>com.crudetech.tictactoe.client.swing.SwingApp</mainClass>
                     <classpathScope>runtime</classpathScope>
                 </configuration>
             </plugin>
