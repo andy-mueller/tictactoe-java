@@ -6,7 +6,7 @@ public class SwingApp {
     public static void main(String[] args) {
         setSystemLookAndFeel();
 
-        final JFrame frame = new JFrame("Tic Tac Toe (c) 2011 Andreas Mueller");
+        final JFrame frame = new TicTacToeGameForm();
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {

@@ -1,4 +1,4 @@
-package com.crudetech.tictactoe.client.swing;
+package com.crudetech.tictactoe.client.swing.grid;
 
 import org.junit.Test;
 
