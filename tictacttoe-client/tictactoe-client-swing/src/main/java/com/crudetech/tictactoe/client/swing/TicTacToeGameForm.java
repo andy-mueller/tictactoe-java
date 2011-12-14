@@ -9,7 +9,6 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
      * Creates new form TicTacToeGameForm
      */
     public TicTacToeGameForm() {
-        setTitle("Tic Tac Toe (c) 2011 Andreas Mueller");
         initComponents();
         setSize(950, 1000);
     }
@@ -33,6 +32,8 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
         editMenu = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/crudetech/tictactoe/client/swing/Bundle"); // NOI18N
+        setTitle(bundle.getString("TicTacToeGameForm.title")); // NOI18N
 
         javax.swing.GroupLayout ticTacToeGridLayout = new javax.swing.GroupLayout(ticTacToeGrid);
         ticTacToeGrid.setLayout(ticTacToeGridLayout);
@@ -47,7 +48,6 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
 
         ticTacToesGridPane.setViewportView(ticTacToeGrid);
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/crudetech/tictactoe/client/swing/Bundle"); // NOI18N
         gameMenu.setText(bundle.getString("TicTacToeGameForm.gameMenu.text")); // NOI18N
 
         newSimpleGameMenu.setText(bundle.getString("TicTacToeGameForm.newSimpleGameMenu.text")); // NOI18N
