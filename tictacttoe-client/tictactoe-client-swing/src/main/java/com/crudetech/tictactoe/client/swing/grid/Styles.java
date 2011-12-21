@@ -7,23 +7,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
-public enum Styles implements Style{
+public enum Styles implements Style {
     Brush;
     private BufferedImage background;
 
     private Styles() {
 
     }
-    @Override
-    public BufferedImage getBackgroundImage() {
-        return loadBackGroundImage();
-    }
 
     @Override
-    public Color getBackgroundColor() {
-        return Color.WHITE;
-    }
-    BufferedImage loadBackGroundImage() {
+    public BufferedImage getBackgroundImage() {
         if (background == null) {
             try {
                 background = loadImage("tic-tac-toe-grid.jpg");
@@ -34,9 +27,15 @@ public enum Styles implements Style{
         return background;
     }
 
+    @Override
+    public Color getBackgroundColor() {
+        return Color.ORANGE;
+    }
+
+
     private BufferedImage loadImage(String resourceId) throws IOException {
         String resourcePath = getResourcePath(resourceId);
-        try(InputStream in = Objects.requireNonNull(getClass().getResourceAsStream(resourcePath))){
+        try (InputStream in = Objects.requireNonNull(getClass().getResourceAsStream(resourcePath))) {
             return ImageIO.read(in);
         }
     }

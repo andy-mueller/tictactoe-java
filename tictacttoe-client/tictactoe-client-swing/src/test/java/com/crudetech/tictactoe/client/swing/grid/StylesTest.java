@@ -34,13 +34,13 @@ public class StylesTest {
 
     @Test
     public void backGroundImageLoads() {
-        assertThat(style.loadBackGroundImage(), is(notNullValue()));
+        assertThat(style.getBackgroundImage(), is(notNullValue()));
     }
 
     @Test
     public void backGroundImageIsCorrect() throws Exception {
         BufferedImage expected = loadBackGroundImageFromResources();
-        assertImagesAreEqual(style.loadBackGroundImage(), expected);
+        assertImagesAreEqual(style.getBackgroundImage(), expected);
     }
 
     private BufferedImage loadBackGroundImageFromResources() throws Exception {
@@ -63,6 +63,6 @@ public class StylesTest {
 
     @Test
     public void backgroundImageIsCached() {
-        assertThat(style.loadBackGroundImage(), is(sameInstance(style.loadBackGroundImage())));
+        assertThat(style.getBackgroundImage(), is(sameInstance(style.getBackgroundImage())));
     }
 }
