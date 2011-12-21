@@ -1,9 +1,5 @@
 package com.crudetech.tictactoe.client.swing.grid;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.*;
@@ -44,14 +40,5 @@ public class JTicTacToeGridTest {
         jgrid.setUI(new TicTacToeUI());
 
         verify(oldUI).uninstallUI(jgrid);
-    }
-    @Test
-    public void loadImage() throws IOException {
-        InputStream in = getClass().getResourceAsStream("/com/crudetech/tictactoe/client/swing/grid/brushstyle/tic-tac-toe-grid.jpg");
-        assertThat(in, is(notNullValue()));
-        BufferedImage image = ImageIO.read(in);
-        assertThat(image, is(notNullValue()));
-        assertThat(image.getWidth(), is(900));
-        assertThat(image.getHeight(), is(800));
     }
 }
