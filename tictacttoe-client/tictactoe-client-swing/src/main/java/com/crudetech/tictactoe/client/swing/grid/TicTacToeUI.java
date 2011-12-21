@@ -9,15 +9,15 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static java.lang.Math.max;
+
 public class TicTacToeUI extends ComponentUI {
-    private BufferedImage grid;
     private BufferedImage cross;
     private BufferedImage nought;
     private Style style = Styles.Brush;
     private JTicTacToeGrid component;
 
     public TicTacToeUI() {
-        grid = loadImage("/com/crudetech/tictactoe/client/swing/grid/brushstyle/tic-tac-toe-grid.jpg");
         cross = loadImage("/com/crudetech/tictactoe/client/swing/grid/brushstyle/tic-tac-toe-cross.jpg");
         nought = loadImage("/com/crudetech/tictactoe/client/swing/grid/brushstyle/tic-tac-toe-nought.jpg");
     }
@@ -35,7 +35,7 @@ public class TicTacToeUI extends ComponentUI {
 
     @Override
     public void installUI(JComponent c) {
-        component = (JTicTacToeGrid)c;
+        component = (JTicTacToeGrid) c;
         super.installUI(c);
     }
 
@@ -49,7 +49,10 @@ public class TicTacToeUI extends ComponentUI {
         pipe.setPaint(style.getBackgroundColor());
         pipe.fillRect(0, 0, component.getWidth(), component.getHeight());
 
-        ImageWidget backGround = new ImageWidget(new Point(0, 0), style.getBackgroundImage());
+        BufferedImage backgroundImage = style.getBackgroundImage();
+        int backgroundX = max((component.getWidth() - backgroundImage.getWidth())/2, 0);
+        int backgroundY = max((component.getHeight() - backgroundImage.getHeight())/2, 0);
+        ImageWidget backGround = new ImageWidget(new Point(backgroundX, backgroundY), backgroundImage);
         backGround.paint(pipe);
     }
 
@@ -66,7 +69,7 @@ public class TicTacToeUI extends ComponentUI {
 
     @Override
     public Dimension getMinimumSize(JComponent c) {
-        return new Dimension(this.grid.getWidth(), this.grid.getHeight());
+        return style.getPreferredSize();
     }
 
     @Override

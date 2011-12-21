@@ -15,22 +15,36 @@ public class TicTacToeUITest {
     private Graphics2D g2d;
     private JTicTacToeGrid grid;
     private BufferedImage background;
-    private Style styleStub;
+    private Style style;
 
     @Before
     public void setUp() throws Exception {
         g2d = mock(Graphics2D.class);
         grid = new JTicTacToeGrid();
-        background = mock(BufferedImage.class);
-        styleStub = mock(Style.class);
-        when(styleStub.getBackgroundImage()).thenReturn(background);
-        when(styleStub.getBackgroundColor()).thenReturn(Color.ORANGE);
+        grid.setSize(1000, 2000);
 
-        grid.getUI().setStyle(styleStub);
+        background = mock(BufferedImage.class);
+        when(background.getWidth()).thenReturn(500);
+        when(background.getHeight()).thenReturn(1000);
+
+        style = mock(Style.class);
+        when(style.getBackgroundImage()).thenReturn(background);
+        when(style.getBackgroundColor()).thenReturn(Color.ORANGE);
+        when(style.getPreferredSize()).thenReturn(new Dimension(100, 200));
+
+        grid.getUI().setStyle(style);
     }
 
     @Test
-    public void backGroundIsPainted() {
+    public void backGroundIsPaintedInMiddle() {
+        grid.getUI().paint(g2d);
+
+        verify(g2d).drawImage(background, null, 250, 500);
+    }
+
+    @Test
+    public void backgroundIsPositionedAtOriginIfComponentIsSmaller() {
+        grid.setSize(10, 10);
         grid.getUI().paint(g2d);
 
         verify(g2d).drawImage(background, null, 0, 0);
@@ -50,4 +64,11 @@ public class TicTacToeUITest {
         assertThat(Styles.Brush, is(grid.getUI().getStyle()));
     }
 
+    @Test
+    public void preferredSizeIsStyleSize() throws Exception {
+        Dimension expected = style.getPreferredSize();
+        
+        assertThat(grid.getUI().getPreferredSize(grid), is(expected));
+    }
+    //  paint order: background invalidate, background image, marks
 }

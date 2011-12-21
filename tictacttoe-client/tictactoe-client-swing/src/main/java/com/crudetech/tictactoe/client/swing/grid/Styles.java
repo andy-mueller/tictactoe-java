@@ -32,6 +32,11 @@ public enum Styles implements Style {
         return Color.ORANGE;
     }
 
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(getBackgroundImage().getWidth(), getBackgroundImage().getHeight());
+    }
+
 
     private BufferedImage loadImage(String resourceId) throws IOException {
         String resourcePath = getResourcePath(resourceId);
