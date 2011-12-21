@@ -41,8 +41,9 @@ public enum Styles implements Style {
     }
 
     private String getResourcePath(String resource) {
-        return String.format("/%s/%s/%s",
+        return String.format("/%s/%sstyle/%s",
                 getClass().getPackage().getName().replace('.', '/'),
-                this.name().toLowerCase(), resource);
+                this.name().toLowerCase(),
+                resource);
     }
 }

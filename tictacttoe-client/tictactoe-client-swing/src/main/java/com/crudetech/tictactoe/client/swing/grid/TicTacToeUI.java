@@ -17,9 +17,9 @@ public class TicTacToeUI extends ComponentUI {
     private JTicTacToeGrid component;
 
     public TicTacToeUI() {
-        grid = loadImage("/com/crudetech/tictactoe/client/swing/grid/brush/tic-tac-toe-grid.jpg");
-        cross = loadImage("/com/crudetech/tictactoe/client/swing/grid/brush/tic-tac-toe-cross.jpg");
-        nought = loadImage("/com/crudetech/tictactoe/client/swing/grid/brush/tic-tac-toe-nought.jpg");
+        grid = loadImage("/com/crudetech/tictactoe/client/swing/grid/brushstyle/tic-tac-toe-grid.jpg");
+        cross = loadImage("/com/crudetech/tictactoe/client/swing/grid/brushstyle/tic-tac-toe-cross.jpg");
+        nought = loadImage("/com/crudetech/tictactoe/client/swing/grid/brushstyle/tic-tac-toe-nought.jpg");
     }
 
     public static TicTacToeUI createUI(JComponent component) {

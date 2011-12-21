@@ -44,7 +44,7 @@ public class StylesTest {
     }
 
     private BufferedImage loadBackGroundImageFromResources() throws Exception {
-        try (InputStream in = getClass().getResourceAsStream("/com/crudetech/tictactoe/client/swing/grid/" + style.name().toLowerCase() + "/tic-tac-toe-grid.jpg")) {
+        try (InputStream in = getClass().getResourceAsStream("/com/crudetech/tictactoe/client/swing/grid/" + style.name().toLowerCase() + "style/tic-tac-toe-grid.jpg")) {
             return ImageIO.read(in);
         }
     }
