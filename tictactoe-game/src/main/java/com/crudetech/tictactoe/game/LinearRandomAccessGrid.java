@@ -37,6 +37,10 @@ public class LinearRandomAccessGrid implements Grid {
         }
     }
 
+    public static Grid empty() {
+        return new LinearRandomAccessGrid();
+    }
+
     public static LinearRandomAccessGrid of(Mark... marks) {
         return new LinearRandomAccessGrid(marks);
     }

@@ -9,4 +9,11 @@ public interface Style {
     Color getBackgroundColor();
 
     Dimension getPreferredSize();
+
+    Rectangle[][] getGridMarkLocations();
+
+    BufferedImage getCrossImage();
+
+    BufferedImage getNoughtImage();
+
 }

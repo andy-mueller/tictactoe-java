@@ -6,6 +6,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.io.InputStream;
@@ -64,5 +65,42 @@ public class StylesTest {
     @Test
     public void backgroundImageIsCached() {
         assertThat(style.getBackgroundImage(), is(sameInstance(style.getBackgroundImage())));
+    }
+
+    @Test
+    public void crossImageLoads() {
+        assertThat(style.getCrossImage(), is(notNullValue()));
+    }
+    @Test
+    public void crossImageIsCached() {
+        assertThat(style.getCrossImage(), is(sameInstance(style.getCrossImage())));
+    }
+    @Test
+    public void noughtImageLoads() {
+        assertThat(style.getNoughtImage(), is(notNullValue()));
+    }
+    @Test
+    public void noughtImageIsCached() {
+        assertThat(style.getNoughtImage(), is(sameInstance(style.getNoughtImage())));
+    }
+
+    @Test
+    public void markImagesHaveSameDimensions(){
+        assertThat(style.getCrossImage().getWidth(), is(style.getNoughtImage().getWidth()));
+        assertThat(style.getCrossImage().getHeight(), is(style.getNoughtImage().getHeight()));
+
+        for (Rectangle[] rectangles : style.getGridMarkLocations()) {
+            for (Rectangle rectangle : rectangles) {
+                assertThat(rectangle.width, is(style.getCrossImage().getWidth()));
+                assertThat(rectangle.height, is(style.getCrossImage().getHeight()));
+            }
+        }
+    }
+    @Test
+    public void markBounds(){
+        assertThat(style.getGridMarkLocations().length, is(3));
+        assertThat(style.getGridMarkLocations()[0].length, is(3));
+        assertThat(style.getGridMarkLocations()[1].length, is(3));
+        assertThat(style.getGridMarkLocations()[2].length, is(3));
     }
 }
