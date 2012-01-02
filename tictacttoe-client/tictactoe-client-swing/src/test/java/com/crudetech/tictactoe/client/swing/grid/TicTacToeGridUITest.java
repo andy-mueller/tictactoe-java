@@ -106,6 +106,7 @@ public class TicTacToeGridUITest {
                 new ImageWidget(loc(locations[0][1].getLocation()), nought),
                 new FilledRectangleWidget(loc(locations[0][2]), backGroundColor),
 
+
                 new ImageWidget(loc(locations[1][0].getLocation()), cross),
                 new FilledRectangleWidget(loc(locations[1][1]), backGroundColor),
                 new FilledRectangleWidget(loc(locations[1][2]), backGroundColor),
