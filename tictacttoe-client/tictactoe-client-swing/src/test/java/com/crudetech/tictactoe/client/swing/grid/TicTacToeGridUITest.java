@@ -22,6 +22,8 @@ public class TicTacToeGridUITest {
     private JTicTacToeGrid grid;
     private TicTacToeGridUI ui;
     private Style style;
+    private final int paintOffsetX = 250;
+    private final int paintOffsetY = 500;
 
     @Before
     public void setUp() throws Exception {
@@ -85,7 +87,7 @@ public class TicTacToeGridUITest {
 
     @Test
     public void gridMarksArePaintedFromModel() {
-        List<Widget> widgets = ui.buildGridMarkWidgetList();
+        List<Widget> widgets = ui.buildGridMarkWidgetList(paintOffsetX, paintOffsetY);
 
 
         List<Widget> expected = expectedGridMarkWidgets();
@@ -100,19 +102,40 @@ public class TicTacToeGridUITest {
         Rectangle[][] locations = style.getGridMarkLocations();
 
         return asList(
-                new ImageWidget(locations[0][0].getLocation(), cross),
-                new ImageWidget(locations[0][1].getLocation(), nought),
-                new FilledRectangleWidget(locations[0][2], backGroundColor),
+                new ImageWidget(loc(locations[0][0].getLocation()), cross),
+                new ImageWidget(loc(locations[0][1].getLocation()), nought),
+                new FilledRectangleWidget(loc(locations[0][2]), backGroundColor),
 
-                new ImageWidget(locations[1][0].getLocation(), cross),
-                new FilledRectangleWidget(locations[1][1], backGroundColor),
-                new FilledRectangleWidget(locations[1][2], backGroundColor),
+                new ImageWidget(loc(locations[1][0].getLocation()), cross),
+                new FilledRectangleWidget(loc(locations[1][1]), backGroundColor),
+                new FilledRectangleWidget(loc(locations[1][2]), backGroundColor),
 
-                new ImageWidget(locations[2][0].getLocation(), nought),
-                new ImageWidget(locations[2][1].getLocation(), nought),
-                new ImageWidget(locations[2][2].getLocation(), cross)
+                new ImageWidget(loc(locations[2][0].getLocation()), nought),
+                new ImageWidget(loc(locations[2][1].getLocation()), nought),
+                new ImageWidget(loc(locations[2][2].getLocation()), cross)
         );
     }
+
+    private Rectangle loc(Rectangle rectangle) {
+        Rectangle r = new Rectangle(rectangle);
+        r.x += paintOffsetX;
+        r.y += paintOffsetY;
+        return r;
+    }
+
+    private Point loc(Point location) {
+        return new Point(location.x + paintOffsetX, location.y + paintOffsetY);
+    }
+
+    @Test
+    public void backgroundIsInMiddle() {
+        List<Widget> widgets = ui.buildPaintList();
+        Widget backgroundImage = widgets.get(1);
+
+        assertThat(backgroundImage, is((Widget) new ImageWidget(new Point(paintOffsetX, paintOffsetY), style.getBackgroundImage())));
+    }
+
+
     // paint stack is painted in order
     //  paint order: background invalidate, background image, marks
     // model change

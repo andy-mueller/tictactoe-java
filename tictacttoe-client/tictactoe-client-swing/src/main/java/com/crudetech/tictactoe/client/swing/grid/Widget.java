@@ -6,4 +6,6 @@ public interface Widget {
     void paint(Graphics2D g2d);
 
     void setLocation(int x, int y);
+
+    void moveBy(int dx, int dy);
 }

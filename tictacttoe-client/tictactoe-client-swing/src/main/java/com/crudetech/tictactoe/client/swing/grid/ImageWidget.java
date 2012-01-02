@@ -27,6 +27,12 @@ class ImageWidget implements Widget {
         this.y = y;
     }
 
+    @Override
+    public void moveBy(int dx, int dy) {
+        x += dx;
+        y += dy;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -44,5 +50,14 @@ class ImageWidget implements Widget {
     @Override
     public int hashCode() {
         return Objects.hash(x, y, image);
+    }
+
+    @Override
+    public String toString() {
+        return "ImageWidget{" +
+                "x=" + x +
+                ", y=" + y +
+                ", image=" + image +
+                '}';
     }
 }

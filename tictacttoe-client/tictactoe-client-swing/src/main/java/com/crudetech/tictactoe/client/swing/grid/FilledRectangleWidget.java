@@ -26,6 +26,12 @@ public class FilledRectangleWidget implements Widget {
     }
 
     @Override
+    public void moveBy(int dx, int dy) {
+        boundary.x += dx;
+        boundary.y += dy;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
