@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.crudetech.matcher.RangeIsEquivalent.equivalentTo;
@@ -67,8 +68,7 @@ public class TicTacToeGridUITest {
         List<Widget> widgets = ui.buildPaintList();
         Widget background = widgets.get(0);
 
-        Widget expectedBackground = new FilledRectangleWidget(
-                new Rectangle(0, 0, grid.getWidth(), grid.getHeight()), style.getBackgroundColor());
+        Widget expectedBackground = getExpectedBackground();
         assertThat(background, is(expectedBackground));
     }
 
@@ -133,12 +133,28 @@ public class TicTacToeGridUITest {
         List<Widget> widgets = ui.buildPaintList();
         Widget backgroundImage = widgets.get(1);
 
-        assertThat(backgroundImage, is((Widget) new ImageWidget(new Point(paintOffsetX, paintOffsetY), style.getBackgroundImage())));
+        assertThat(backgroundImage, is((Widget) getExpectedBackgroundImage()));
     }
 
+    @Test
+    public void paintListIsPaintedInOrder() {
+        List<Widget> widgets = ui.buildPaintList();
 
-    // paint stack is painted in order
-    //  paint order: background invalidate, background image, marks
-    // model change
-    // setStyle triggers repaint
+
+        List<Widget> expectedList = new ArrayList<>();
+        expectedList.add(getExpectedBackground());
+        expectedList.add(getExpectedBackgroundImage());
+        expectedList.addAll(expectedGridMarkWidgets());
+
+
+        assertThat(widgets, is(expectedList));
+    }
+
+    private ImageWidget getExpectedBackgroundImage() {
+        return new ImageWidget(new Point(paintOffsetX, paintOffsetY), style.getBackgroundImage());
+    }
+
+    private FilledRectangleWidget getExpectedBackground() {
+        return new FilledRectangleWidget(new Rectangle(0, 0, grid.getWidth(), grid.getHeight()), style.getBackgroundColor());
+    }
 }
