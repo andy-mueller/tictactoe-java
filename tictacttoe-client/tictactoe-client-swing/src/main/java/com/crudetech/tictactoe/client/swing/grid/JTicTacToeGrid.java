@@ -135,10 +135,10 @@ public class JTicTacToeGrid extends JComponent {
         super.processMouseEvent(e);
     }
 
-    static class CellClickedEventObject extends EventObject<JTicTacToeGrid> {
+    public static class CellClickedEventObject extends EventObject<JTicTacToeGrid> {
         private final Grid.Location expectedCell;
 
-        CellClickedEventObject(JTicTacToeGrid jTicTacToeGrid, Grid.Location expectedCell) {
+        private CellClickedEventObject(JTicTacToeGrid jTicTacToeGrid, Grid.Location expectedCell) {
             super(jTicTacToeGrid);
             this.expectedCell = expectedCell;
         }
