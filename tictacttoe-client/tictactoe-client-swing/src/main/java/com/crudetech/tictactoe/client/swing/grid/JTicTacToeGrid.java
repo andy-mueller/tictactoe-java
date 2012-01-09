@@ -51,7 +51,22 @@ public class JTicTacToeGrid extends JComponent {
             public void mouseClicked(MouseEvent e) {
                 onMouseClicked(e);
             }
+      });
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                 onMouseMoved(e);
+            }
         });
+    }
+
+    private void onMouseMoved(MouseEvent e) {
+        CellHit hit = cellHitFromMouseEvent(e);
+        if (hit.hasHit()) {
+            getModel().highlight(hit.getHit());
+        }  else{
+            getModel().unHighlight();
+        }
     }
 
     private void onMouseClicked(MouseEvent e) {
@@ -133,6 +148,7 @@ public class JTicTacToeGrid extends JComponent {
 
     void raiseMouseEvent(MouseEvent e) {
         super.processMouseEvent(e);
+        super.processMouseMotionEvent(e);
     }
 
     public static class CellClickedEventObject extends EventObject<JTicTacToeGrid> {

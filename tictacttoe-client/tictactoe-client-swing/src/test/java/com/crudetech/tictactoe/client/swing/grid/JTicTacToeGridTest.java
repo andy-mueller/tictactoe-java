@@ -1,6 +1,5 @@
 package com.crudetech.tictactoe.client.swing.grid;
 
-import com.crudetech.event.EventListener;
 import com.crudetech.event.EventSupport;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
@@ -9,8 +8,6 @@ import com.crudetech.tictactoe.game.Grid;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.awt.*;
-import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -19,8 +16,8 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(Features.class)
 public class JTicTacToeGridTest {
@@ -106,49 +103,6 @@ public class JTicTacToeGridTest {
             }
         };
     }
-
-    @Test
-    public void mouseClickOutsideOfCellDoesNotRaiseCellClickedEvent() throws Exception {
-        JTicTacToeGrid grid = new JTicTacToeGrid();
-
-        @SuppressWarnings("unchecked")
-        EventListener<JTicTacToeGrid.CellClickedEventObject> cellClicked = mock(EventListener.class);
-        grid.cellClicked().addListener(cellClicked);
-
-        int x = 4000;
-        int y = 4000;
-        MouseEvent click = new MouseEvent(grid, MouseEvent.MOUSE_CLICKED,
-                42L, 0, x, y, 1, false, MouseEvent.BUTTON1);
-
-        grid.raiseMouseEvent(click);
-
-        verify(cellClicked, never()).onEvent(any(JTicTacToeGrid.CellClickedEventObject.class));
-    }
-
-    @Test
-    public void mouseClickOnCellRaisesCellClickedEventWithCorrectCells() throws Exception {
-        JTicTacToeGrid grid = new JTicTacToeGrid();
-        Style style = new StyleStub();
-        grid.getUI().setStyle(style);
-
-        @SuppressWarnings("unchecked")
-        EventListener<JTicTacToeGrid.CellClickedEventObject> cellClicked = mock(EventListener.class);
-        grid.cellClicked().addListener(cellClicked);
-
-        Rectangle cell = style.getGridMarkLocations()[2][2];
-        int x = cell.x + 1;
-        int y = cell.y + 1;
-        MouseEvent click = new MouseEvent(grid, MouseEvent.MOUSE_CLICKED,
-                42L, 0, x, y, 1, false, MouseEvent.BUTTON1);
-
-        grid.raiseMouseEvent(click);
-
-        Grid.Location expectedCell = Grid.Location.of(Grid.Row.First, Grid.Column.First);
-        verify(cellClicked).onEvent(new JTicTacToeGrid.CellClickedEventObject(grid, expectedCell));
-    }
-
-    //
-    // mouseClickOutsideOfCellDoesNotRaiseCellClickedEvent
-    // mouseHoverOnCellHighlightsCell
-    // mouseHoverOutsideOfCellsUnHighlights
+    // setModelUnhooksOldModelEvents
+    // setModelHooksOldModelEvents
 }
