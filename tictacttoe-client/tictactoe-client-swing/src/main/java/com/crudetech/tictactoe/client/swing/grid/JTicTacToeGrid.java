@@ -18,8 +18,14 @@ import java.util.Objects;
 import static com.crudetech.query.Query.from;
 
 public class JTicTacToeGrid extends JComponent {
-    private final TicTacToeGridModel model;
+    private TicTacToeGridModel model;
     private EventSupport<CellClickedEventObject> clickedEvent = new EventSupport<>();
+    private EventListener<Model.ChangedEventObject<Model<Grid>>> modelChangedListener = new EventListener<Model.ChangedEventObject<Model<Grid>>>() {
+        @Override
+        public void onEvent(Model.ChangedEventObject<Model<Grid>> e) {
+            throw new UnsupportedOperationException("Implement me!");
+        }
+    };
 
     static {
         UIManager.getDefaults().put(TicTacToeGridUI.class.getSimpleName(), TicTacToeGridUI.class.getName());
@@ -80,6 +86,12 @@ public class JTicTacToeGrid extends JComponent {
         Iterable<Grid.Cell> allCells = getModel().getModelObject().getCells();
         Rectangle[][] hitBoundaries = getUI().getStyle().getGridMarkLocations();
         return new CellHit(allCells, e.getX(), e.getY(), hitBoundaries);
+    }
+
+    public void setModel(TicTacToeGridModel model) {
+        getModel().changed().removeListener(modelChangedListener);
+        model.changed().addListener(modelChangedListener);
+        this.model = model;
     }
 
     private static class CellHit {

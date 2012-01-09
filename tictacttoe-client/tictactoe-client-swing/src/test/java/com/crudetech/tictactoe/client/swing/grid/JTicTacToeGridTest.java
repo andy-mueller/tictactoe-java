@@ -1,5 +1,7 @@
 package com.crudetech.tictactoe.client.swing.grid;
 
+import com.crudetech.event.Event;
+import com.crudetech.event.EventListener;
 import com.crudetech.event.EventSupport;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
@@ -7,17 +9,20 @@ import com.crudetech.junit.feature.Features;
 import com.crudetech.tictactoe.game.Grid;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.crudetech.tictactoe.client.swing.grid.Model.ChangedEventObject;
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith(Features.class)
 public class JTicTacToeGridTest {
@@ -103,6 +108,53 @@ public class JTicTacToeGridTest {
             }
         };
     }
-    // setModelUnhooksOldModelEvents
-    // setModelHooksOldModelEvents
+
+
+    private static class TicTacToeGridModelEventRegistrationTrackingStub extends TicTacToeGridModel {
+        Event<ChangedEventObject<Model<Grid>>> changedEventSpy;
+        EventListener<ChangedEventObject<Model<Grid>>> addedHandler;
+        EventListener<ChangedEventObject<Model<Grid>>> removedHandler;
+
+        @Override
+        public Event<ChangedEventObject<Model<Grid>>> changed() {
+            if (changedEventSpy == null) {
+                changedEventSpy = createAndPrepareEventSpy();
+            }
+            return changedEventSpy;
+        }
+
+        @SuppressWarnings("unchecked")
+        private Event<ChangedEventObject<Model<Grid>>> createAndPrepareEventSpy() {
+            Event<ChangedEventObject<Model<Grid>>> spy = spy(super.changed());
+            doAnswer(new Answer<Object>() {
+                @Override
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    addedHandler = (EventListener<ChangedEventObject<Model<Grid>>>) invocation.getArguments()[0];
+                    return invocation.callRealMethod();
+                }
+            }).when(spy).addListener(any(EventListener.class));
+            doAnswer(new Answer<Object>() {
+                @Override
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    removedHandler = (EventListener<ChangedEventObject<Model<Grid>>>) invocation.getArguments()[0];
+                    return invocation.callRealMethod();
+                }
+            }).when(spy).removeListener(any(EventListener.class));
+            return spy;
+        }
+    }
+
+    @Test
+    public void setModelUnhooksOldModelEvents() {
+        JTicTacToeGrid jgrid = new JTicTacToeGrid();
+
+        TicTacToeGridModelEventRegistrationTrackingStub firstModel = new TicTacToeGridModelEventRegistrationTrackingStub();
+        jgrid.setModel(firstModel);
+        assertThat(firstModel.addedHandler, is(notNullValue()));
+
+        TicTacToeGridModelEventRegistrationTrackingStub secondModel = new TicTacToeGridModelEventRegistrationTrackingStub();
+        jgrid.setModel(secondModel);
+        assertThat(firstModel.removedHandler, is(firstModel.addedHandler));
+        assertThat(secondModel.addedHandler, is(firstModel.addedHandler));
+    }
 }
