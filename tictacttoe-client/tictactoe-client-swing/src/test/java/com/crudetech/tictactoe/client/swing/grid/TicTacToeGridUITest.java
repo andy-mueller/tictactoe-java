@@ -157,4 +157,18 @@ public class TicTacToeGridUITest {
     private FilledRectangleWidget getExpectedBackground() {
         return new FilledRectangleWidget(new Rectangle(0, 0, grid.getWidth(), grid.getHeight()), style.getBackgroundColor());
     }
+
+    @Test
+    public void highlightedRectangleIsAddedWhenModelIsHighlighted() {
+        grid.getModel().highlight(Grid.Location.of(Grid.Row.First, Grid.Column.Third));
+        List<Widget> widgets = ui.buildPaintList();
+
+
+        Rectangle rect = style.getGridMarkLocations()[0][2];
+        assertThat(getLastOf(widgets), is((Widget)new RectangleWidget(rect, Color.CYAN)));
+    }
+
+    private <T> T getLastOf(List<T> items) {
+        return items.get(items.size() - 1);
+    }
 }

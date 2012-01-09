@@ -77,20 +77,27 @@ public class TicTacToeGridUI extends ComponentUI {
         paintList.add(backGround);
 
         paintList.addAll(buildGridMarkWidgetList(backgroundX, backgroundY));
+
+        if (component.getModel().hasHighlight()) {
+            paintList.add(new RectangleWidget(getBoundaryForLocation(component.getModel().getHighlighted()), Color.CYAN));
+        }
         return paintList;
     }
 
+
     List<Widget> buildGridMarkWidgetList(int paintOffsetX, int paintOffsetY) {
         List<Widget> gridMArks = new ArrayList<>(9);
-        final Rectangle[][] markBounds = style.getGridMarkLocations();
         for (Grid.Cell cell : component.getModel().getModelObject().getCells()) {
-            Grid.Location location = cell.getLocation();
-            Rectangle bounds = markBounds[location.getRow().ordinal()][location.getColumn().ordinal()];
+            Rectangle bounds = getBoundaryForLocation(cell.getLocation());
             Widget widget = createMarkWidget(cell.getMark(), bounds);
             widget.moveBy(paintOffsetX, paintOffsetY);
             gridMArks.add(widget);
         }
         return gridMArks;
+    }
+
+    private Rectangle getBoundaryForLocation(Grid.Location location) {
+        return style.getGridMarkLocations()[location.getRow().ordinal()][location.getColumn().ordinal()];
     }
 
     private Widget createMarkWidget(Grid.Mark mark, Rectangle bounds) {
