@@ -7,6 +7,7 @@ public interface Style {
     BufferedImage getBackgroundImage();
 
     Color getBackgroundColor();
+    Color getHighlightColor();
 
     Dimension getPreferredSize();
 

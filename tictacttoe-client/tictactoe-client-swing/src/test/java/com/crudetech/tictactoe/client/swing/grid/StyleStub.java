@@ -33,6 +33,11 @@ class StyleStub implements Style {
     }
 
     @Override
+    public Color getHighlightColor() {
+        return Color.PINK;
+    }
+
+    @Override
     public Dimension getPreferredSize() {
         return new Dimension(42, 42);
     }

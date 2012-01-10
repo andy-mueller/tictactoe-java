@@ -73,6 +73,7 @@ public class JTicTacToeGrid extends JComponent {
         }  else{
             getModel().unHighlight();
         }
+        repaint();
     }
 
     private void onMouseClicked(MouseEvent e) {

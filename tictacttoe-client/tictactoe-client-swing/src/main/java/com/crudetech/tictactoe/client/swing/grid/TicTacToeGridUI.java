@@ -66,31 +66,54 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     List<Widget> buildPaintList() {
+        Point origin = computeOrigin();
         List<Widget> paintList = new ArrayList<>(11);
-        Widget cleanBackground = new FilledRectangleWidget(component.getBounds(), style.getBackgroundColor());
-        paintList.add(cleanBackground);
 
-        BufferedImage backgroundImage = style.getBackgroundImage();
-        int backgroundX = max((component.getWidth() - backgroundImage.getWidth()) / 2, 0);
-        int backgroundY = max((component.getHeight() - backgroundImage.getHeight()) / 2, 0);
-        Widget backGround = new ImageWidget(new Point(backgroundX, backgroundY), backgroundImage);
-        paintList.add(backGround);
+        paintList.add(backgroundWidget());
 
-        paintList.addAll(buildGridMarkWidgetList(backgroundX, backgroundY));
+        paintList.add(getBackgroundImageWidget(origin));
+
+        paintList.addAll(buildGridMarkWidgetList(origin));
+
+        paintList.add(highlightWidget());
 
         if (component.getModel().hasHighlight()) {
-            paintList.add(new RectangleWidget(getBoundaryForLocation(component.getModel().getHighlighted()), Color.CYAN));
+            paintList.add(new RectangleWidget(getBoundaryForLocation(component.getModel().getHighlighted()), style.getHighlightColor()));
         }
         return paintList;
     }
 
+    private Widget highlightWidget() {
+        if (component.getModel().hasHighlight()) {
+            return new RectangleWidget(getBoundaryForLocation(component.getModel().getHighlighted()), style.getHighlightColor());
+        } else {
+            return new EmptyWidget();
+        }
+    }
 
-    List<Widget> buildGridMarkWidgetList(int paintOffsetX, int paintOffsetY) {
+    private Widget backgroundWidget() {
+        return new FilledRectangleWidget(component.getBounds(), style.getBackgroundColor());
+    }
+
+    private Point computeOrigin() {
+        BufferedImage backgroundImage = style.getBackgroundImage();
+        int x = max((component.getWidth() - backgroundImage.getWidth()) / 2, 0);
+        int y = max((component.getHeight() - backgroundImage.getHeight()) / 2, 0);
+        return new Point(x, y);
+    }
+
+    private Widget getBackgroundImageWidget(Point origin) {
+        BufferedImage backgroundImage = style.getBackgroundImage();
+        return new ImageWidget(origin, backgroundImage);
+    }
+
+
+    List<Widget> buildGridMarkWidgetList(Point gridOrigin) {
         List<Widget> gridMArks = new ArrayList<>(9);
         for (Grid.Cell cell : component.getModel().getModelObject().getCells()) {
             Rectangle bounds = getBoundaryForLocation(cell.getLocation());
             Widget widget = createMarkWidget(cell.getMark(), bounds);
-            widget.moveBy(paintOffsetX, paintOffsetY);
+            widget.moveBy(gridOrigin.x, gridOrigin.y);
             gridMArks.add(widget);
         }
         return gridMArks;

@@ -47,6 +47,10 @@ public enum Styles implements Style {
             return "tic-tac-toe-grid.jpg";
         }
 
+        @Override
+        public Color getHighlightColor() {
+            return Color.RED;
+        }
     };
 
     private BufferedImage background;

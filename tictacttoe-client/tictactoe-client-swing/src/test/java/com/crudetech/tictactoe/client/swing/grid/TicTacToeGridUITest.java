@@ -87,7 +87,7 @@ public class TicTacToeGridUITest {
 
     @Test
     public void gridMarksArePaintedFromModel() {
-        List<Widget> widgets = ui.buildGridMarkWidgetList(paintOffsetX, paintOffsetY);
+        List<Widget> widgets = ui.buildGridMarkWidgetList(new Point(paintOffsetX, paintOffsetY));
 
 
         List<Widget> expected = expectedGridMarkWidgets();
@@ -145,6 +145,8 @@ public class TicTacToeGridUITest {
         expectedList.add(getExpectedBackground());
         expectedList.add(getExpectedBackgroundImage());
         expectedList.addAll(expectedGridMarkWidgets());
+        expectedList.add(new EmptyWidget());
+
 
 
         assertThat(widgets, is(expectedList));
@@ -165,7 +167,7 @@ public class TicTacToeGridUITest {
 
 
         Rectangle rect = style.getGridMarkLocations()[0][2];
-        assertThat(getLastOf(widgets), is((Widget)new RectangleWidget(rect, Color.CYAN)));
+        assertThat(getLastOf(widgets), is((Widget)new RectangleWidget(rect, style.getHighlightColor())));
     }
 
     private <T> T getLastOf(List<T> items) {
