@@ -16,6 +16,7 @@ public class TicTacToeGridUI extends ComponentUI {
     private Style style = Styles.Brush;
     private JTicTacToeGrid component;
 
+    @SuppressWarnings("unused")
     public static TicTacToeGridUI createUI(JComponent component) {
         return new TicTacToeGridUI();
     }
@@ -67,7 +68,7 @@ public class TicTacToeGridUI extends ComponentUI {
 
     List<Widget> buildPaintList() {
         Point origin = computeOrigin();
-        List<Widget> paintList = new ArrayList<>(11);
+        List<Widget> paintList = new ArrayList<>();
 
         paintList.add(backgroundWidget());
 
@@ -75,17 +76,16 @@ public class TicTacToeGridUI extends ComponentUI {
 
         paintList.addAll(buildGridMarkWidgetList(origin));
 
-        paintList.add(highlightWidget());
+        paintList.add(highlightWidget(origin));
 
-        if (component.getModel().hasHighlight()) {
-            paintList.add(new RectangleWidget(getBoundaryForLocation(component.getModel().getHighlighted()), style.getHighlightColor()));
-        }
         return paintList;
     }
 
-    private Widget highlightWidget() {
+    private Widget highlightWidget(Point origin) {
         if (component.getModel().hasHighlight()) {
-            return new RectangleWidget(getBoundaryForLocation(component.getModel().getHighlighted()), style.getHighlightColor());
+            Rectangle boundaryForLocation = (Rectangle) getBoundaryForLocation(component.getModel().getHighlighted()).clone();
+            boundaryForLocation.translate(origin.x, origin.y);
+            return new RectangleWidget(boundaryForLocation, style.getHighlightColor());
         } else {
             return new EmptyWidget();
         }
@@ -134,5 +134,17 @@ public class TicTacToeGridUI extends ComponentUI {
             default:
                 throw new RuntimeException("This is no sensible state!");
         }
+    }
+
+    public GridCellHit checkGridCellHit(int x, int y) {
+        Point ptInUiCoordinates = inUiCoordinates(x, y);
+        Iterable<Grid.Cell> allCells = component.getModel().getModelObject().getCells();
+        Rectangle[][] hitBoundaries = getStyle().getGridMarkLocations();
+        return new GridCellHit(allCells, ptInUiCoordinates.x, ptInUiCoordinates.y, hitBoundaries);
+    }
+
+    private Point inUiCoordinates(int x, int y) {
+        Point o = computeOrigin();
+        return new Point(x - o.x, y - o.y);
     }
 }

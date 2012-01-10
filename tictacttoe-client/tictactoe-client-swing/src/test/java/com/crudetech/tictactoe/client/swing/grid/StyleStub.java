@@ -7,19 +7,30 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class StyleStub implements Style {
+    static final int Width = 500;
+    static final int Height = 1000;
+
+    static final int GridCellWidth = 10;
+    static final int GridCellDistance = 10;
+
     private final BufferedImage nought = mock(BufferedImage.class);
     private final BufferedImage cross = mock(BufferedImage.class);
     private final BufferedImage back;
-    private final Rectangle[][] locations = {
-            {new Rectangle(0, 0, 10, 10), new Rectangle(0, 1, 10, 11), new Rectangle(0, 2, 10, 12)},
-            {new Rectangle(1, 0, 11, 10), new Rectangle(1, 1, 11, 11), new Rectangle(1, 2, 11, 12)},
-            {new Rectangle(2, 0, 12, 10), new Rectangle(2, 1, 12, 11), new Rectangle(2, 2, 12, 12)},
-    };
+    private final Rectangle[][] locations = new Rectangle[3][3];
 
     StyleStub() {
+        fillLocations();
         back = mock(BufferedImage.class);
-        when(back.getWidth()).thenReturn(500);
-        when(back.getHeight()).thenReturn(1000);
+        when(back.getWidth()).thenReturn(Width);
+        when(back.getHeight()).thenReturn(Height);
+    }
+
+    private void fillLocations() {
+        for(int row = 0; row < 3; ++row){
+            for(int col = 0; col < 3; ++col){
+                locations[row][col] = new Rectangle(row*(GridCellDistance+GridCellWidth), col*(GridCellDistance+GridCellWidth), GridCellWidth, GridCellWidth);
+            }
+        }
     }
 
     @Override

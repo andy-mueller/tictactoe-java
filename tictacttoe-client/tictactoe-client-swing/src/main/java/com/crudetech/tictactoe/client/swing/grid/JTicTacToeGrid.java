@@ -1,21 +1,16 @@
 package com.crudetech.tictactoe.client.swing.grid;
 
-import com.crudetech.collections.Pair;
 import com.crudetech.event.Event;
 import com.crudetech.event.EventListener;
 import com.crudetech.event.EventObject;
 import com.crudetech.event.EventSupport;
-import com.crudetech.functional.UnaryFunction;
 import com.crudetech.tictactoe.game.Grid;
 
 import javax.swing.*;
 import javax.swing.plaf.ComponentUI;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Objects;
-
-import static com.crudetech.query.Query.from;
 
 public class JTicTacToeGrid extends JComponent {
     private TicTacToeGridModel model;
@@ -67,7 +62,7 @@ public class JTicTacToeGrid extends JComponent {
     }
 
     private void onMouseMoved(MouseEvent e) {
-        CellHit hit = cellHitFromMouseEvent(e);
+        GridCellHit hit = cellHitFromMouseEvent(e);
         if (hit.hasHit()) {
             getModel().highlight(hit.getHit());
         }  else{
@@ -77,63 +72,20 @@ public class JTicTacToeGrid extends JComponent {
     }
 
     private void onMouseClicked(MouseEvent e) {
-        CellHit hit = cellHitFromMouseEvent(e);
+        GridCellHit hit = cellHitFromMouseEvent(e);
         if (hit.hasHit()) {
             clickedEvent.fireEvent(new CellClickedEventObject(JTicTacToeGrid.this, hit.getHit()));
         }
     }
 
-    private CellHit cellHitFromMouseEvent(MouseEvent e) {
-        Iterable<Grid.Cell> allCells = getModel().getModelObject().getCells();
-        Rectangle[][] hitBoundaries = getUI().getStyle().getGridMarkLocations();
-        return new CellHit(allCells, e.getX(), e.getY(), hitBoundaries);
+    private GridCellHit cellHitFromMouseEvent(MouseEvent e) {
+        return getUI().checkGridCellHit(e.getX(), e.getY());
     }
 
     public void setModel(TicTacToeGridModel model) {
         getModel().changed().removeListener(modelChangedListener);
         model.changed().addListener(modelChangedListener);
         this.model = model;
-    }
-
-    private static class CellHit {
-        private final Pair<Rectangle, Grid.Location> hitInfo;
-
-        CellHit(Iterable<Grid.Cell> cells, int x, int y, Rectangle[][] cellBoundaries) {
-            hitInfo = from(cells).select(isContainedIn(x, y, cellBoundaries)).where(notNoHit()).firstOr(NoHit);
-        }
-
-        Grid.Location getHit() {
-            return hitInfo.getSecond();
-        }
-
-        boolean hasHit() {
-            return !NoHit.equals(hitInfo);
-        }
-
-        private static Pair<Rectangle, Grid.Location> NoHit = new Pair<>(new Rectangle(-1, -1, -1, -1), Grid.Location.of(Grid.Row.First, Grid.Column.First));
-
-        private UnaryFunction<Pair<Rectangle, Grid.Location>, Boolean> notNoHit() {
-            return new UnaryFunction<Pair<Rectangle, Grid.Location>, Boolean>() {
-                @Override
-                public Boolean execute(Pair<Rectangle, Grid.Location> rectangleLocationPair) {
-                    return !rectangleLocationPair.equals(NoHit);
-                }
-            };
-        }
-
-        private UnaryFunction<Grid.Cell, Pair<Rectangle, Grid.Location>> isContainedIn(final int x, final int y, final Rectangle[][] gridMarkLocations) {
-            return new UnaryFunction<Grid.Cell, Pair<Rectangle, Grid.Location>>() {
-                @Override
-                public Pair<Rectangle, Grid.Location> execute(Grid.Cell cell) {
-                    Grid.Location location = cell.getLocation();
-                    Rectangle hitRect = gridMarkLocations[location.getRow().ordinal()][location.getColumn().ordinal()];
-                    if (hitRect.contains(x, y)) {
-                        return new Pair<>(hitRect, location);
-                    }
-                    return NoHit;
-                }
-            };
-        }
     }
 
     @Override

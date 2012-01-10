@@ -20,11 +20,24 @@ public class JTicTacToeGridMouseMoveTest {
     private JTicTacToeGrid grid;
     private Style style;
 
+    private Point outsideAnyCell;
+    private Point inFirstCell;
+    private Point inLastCell;
+
     @Before
     public void setUp() throws Exception {
         grid = new JTicTacToeGrid();
+        grid.setSize(StyleStub.Width * 2, StyleStub.Height * 2);
         style = new StyleStub();
         grid.getUI().setStyle(style);
+
+        outsideAnyCell = new Point(10, 10);
+        inFirstCell = getPointInsideOfRectangle(style.getGridMarkLocations()[0][0]);
+        inLastCell = getPointInsideOfRectangle(style.getGridMarkLocations()[2][2]);
+    }
+
+    private Point getPointInsideOfRectangle(Rectangle rectangle) {
+        return new Point(rectangle.x + 1 + StyleStub.Width / 2, rectangle.y + 1 + StyleStub.Height / 2);
     }
 
     @Test
@@ -32,7 +45,7 @@ public class JTicTacToeGridMouseMoveTest {
         EventListener<JTicTacToeGrid.CellClickedEventObject> cellClicked = newEventListenerMock();
         grid.cellClicked().addListener(cellClicked);
 
-        MouseEvent click = buildLButtonClickedEvent(4000, 4000);
+        MouseEvent click = buildLButtonClickedEvent(outsideAnyCell);
         grid.raiseMouseEvent(click);
 
         verify(cellClicked, never()).onEvent(any(JTicTacToeGrid.CellClickedEventObject.class));
@@ -41,11 +54,6 @@ public class JTicTacToeGridMouseMoveTest {
     @SuppressWarnings("unchecked")
     private <T extends EventObject<?>> EventListener<T> newEventListenerMock() {
         return mock(EventListener.class);
-    }
-
-    private MouseEvent buildLButtonClickedEvent(int x, int y) {
-        return new MouseEvent(grid, MouseEvent.MOUSE_CLICKED,
-                System.currentTimeMillis(), 1, x, y, 1, false, MouseEvent.BUTTON1);
     }
 
     private MouseEvent buildLButtonClickedEvent(Point pos) {
@@ -60,42 +68,36 @@ public class JTicTacToeGridMouseMoveTest {
         EventListener<JTicTacToeGrid.CellClickedEventObject> cellClicked = newEventListenerMock();
         grid.cellClicked().addListener(cellClicked);
 
-        Rectangle cell = style.getGridMarkLocations()[2][2];
-
-        MouseEvent click = buildLButtonClickedEvent(getPointInsideOfRectangle(cell));
+        MouseEvent click = buildLButtonClickedEvent(inLastCell);
 
         grid.raiseMouseEvent(click);
 
-        Grid.Location expectedCell = Grid.Location.of(Grid.Row.First, Grid.Column.First);
+        Grid.Location expectedCell = Grid.Location.of(Grid.Row.Third, Grid.Column.Third);
         verify(cellClicked).onEvent(new JTicTacToeGrid.CellClickedEventObject(grid, expectedCell));
-    }
-
-    private Point getPointInsideOfRectangle(Rectangle rectangle) {
-        return new Point(rectangle.x + 1, rectangle.y + 1);
     }
 
     @Test
     public void mouseHoverOnCellHighlightsCell() throws Exception {
         TicTacToeGridModel model = grid.getModel();
 
-        Rectangle cell = style.getGridMarkLocations()[2][2];
-        MouseEvent move = buildMouseMovedEvent(getPointInsideOfRectangle(cell));
+        MouseEvent move = buildMouseMovedEvent(inLastCell);
 
         grid.raiseMouseEvent(move);
 
         assertThat(model.hasHighlight(), is(true));
-        assertThat(model.getHighlighted(), is(Grid.Location.of(Grid.Row.First, Grid.Column.First)));
+        assertThat(model.getHighlighted(), is(Grid.Location.of(Grid.Row.Third, Grid.Column.Third)));
     }
 
     private MouseEvent buildMouseMovedEvent(Point pos) {
         return new MouseEvent(grid, MouseEvent.MOUSE_MOVED,
                 System.currentTimeMillis(), 0, pos.x, pos.y, 1, false, MouseEvent.NOBUTTON);
     }
+
     @Test
     public void mouseHoverOutsideOfCellsUnHighlights() throws Exception {
         TicTacToeGridModel model = grid.getModel();
         model.highlight(Grid.Location.of(Grid.Row.First, Grid.Column.Third));
-        MouseEvent move = buildMouseMovedEvent(new Point(40000, 40000));
+        MouseEvent move = buildMouseMovedEvent(outsideAnyCell);
 
         grid.raiseMouseEvent(move);
 

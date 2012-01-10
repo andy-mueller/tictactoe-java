@@ -166,7 +166,8 @@ public class TicTacToeGridUITest {
         List<Widget> widgets = ui.buildPaintList();
 
 
-        Rectangle rect = style.getGridMarkLocations()[0][2];
+        Rectangle rect = (Rectangle) style.getGridMarkLocations()[0][2].clone();
+        rect.translate(StyleStub.Width/2, StyleStub.Height/2);
         assertThat(getLastOf(widgets), is((Widget)new RectangleWidget(rect, style.getHighlightColor())));
     }
 
