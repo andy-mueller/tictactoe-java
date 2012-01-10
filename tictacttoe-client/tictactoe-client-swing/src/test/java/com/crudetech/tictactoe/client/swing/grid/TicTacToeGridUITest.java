@@ -98,30 +98,22 @@ public class TicTacToeGridUITest {
     private List<Widget> expectedGridMarkWidgets() {
         final BufferedImage cross = style.getCrossImage();
         final BufferedImage nought = style.getNoughtImage();
-        final Color backGroundColor = style.getBackgroundColor();
         Rectangle[][] locations = style.getGridMarkLocations();
 
         return asList(
                 new ImageWidget(loc(locations[0][0].getLocation()), cross),
                 new ImageWidget(loc(locations[0][1].getLocation()), nought),
-                new FilledRectangleWidget(loc(locations[0][2]), backGroundColor),
+                new EmptyWidget(),
 
 
                 new ImageWidget(loc(locations[1][0].getLocation()), cross),
-                new FilledRectangleWidget(loc(locations[1][1]), backGroundColor),
-                new FilledRectangleWidget(loc(locations[1][2]), backGroundColor),
+                new EmptyWidget(),
+                new EmptyWidget(),
 
                 new ImageWidget(loc(locations[2][0].getLocation()), nought),
                 new ImageWidget(loc(locations[2][1].getLocation()), nought),
                 new ImageWidget(loc(locations[2][2].getLocation()), cross)
         );
-    }
-
-    private Rectangle loc(Rectangle rectangle) {
-        Rectangle r = new Rectangle(rectangle);
-        r.x += paintOffsetX;
-        r.y += paintOffsetY;
-        return r;
     }
 
     private Point loc(Point location) {
@@ -156,7 +148,7 @@ public class TicTacToeGridUITest {
         return new ImageWidget(new Point(paintOffsetX, paintOffsetY), style.getBackgroundImage());
     }
 
-    private FilledRectangleWidget getExpectedBackground() {
+    private Widget getExpectedBackground() {
         return new FilledRectangleWidget(new Rectangle(0, 0, grid.getWidth(), grid.getHeight()), style.getBackgroundColor());
     }
 

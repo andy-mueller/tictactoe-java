@@ -130,7 +130,7 @@ public class TicTacToeGridUI extends ComponentUI {
             case Nought:
                 return new ImageWidget(bounds.getLocation(), style.getNoughtImage());
             case None:
-                return new FilledRectangleWidget(bounds, style.getBackgroundColor());
+                return new EmptyWidget();
             default:
                 throw new RuntimeException("This is no sensible state!");
         }
