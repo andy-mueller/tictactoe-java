@@ -18,21 +18,18 @@ import static org.mockito.Mockito.*;
 public class JTicTacToeGridMouseMoveTest {
 
     private JTicTacToeGrid grid;
-    private Style style;
 
     private Point outsideAnyCell;
-    private Point inFirstCell;
     private Point inLastCell;
 
     @Before
     public void setUp() throws Exception {
         grid = new JTicTacToeGrid();
         grid.setSize(StyleStub.Width * 2, StyleStub.Height * 2);
-        style = new StyleStub();
+        Style style = new StyleStub();
         grid.getUI().setStyle(style);
 
         outsideAnyCell = new Point(10, 10);
-        inFirstCell = getPointInsideOfRectangle(style.getGridMarkLocations()[0][0]);
         inLastCell = getPointInsideOfRectangle(style.getGridMarkLocations()[2][2]);
     }
 

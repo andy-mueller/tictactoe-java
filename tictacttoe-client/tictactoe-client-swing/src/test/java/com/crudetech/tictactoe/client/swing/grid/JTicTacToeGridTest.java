@@ -17,8 +17,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.crudetech.tictactoe.client.swing.grid.Model.ChangedEventObject;
 import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;

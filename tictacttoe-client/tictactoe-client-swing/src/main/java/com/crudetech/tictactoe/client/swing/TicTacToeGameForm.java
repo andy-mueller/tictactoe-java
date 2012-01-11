@@ -30,6 +30,8 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
         newSimpleGameMenu = new javax.swing.JMenuItem();
         newAdvancedGameMenu = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
+        helpMenu = new javax.swing.JMenu();
+        aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/crudetech/tictactoe/client/swing/Bundle"); // NOI18N
@@ -38,12 +40,12 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
         javax.swing.GroupLayout ticTacToeGridLayout = new javax.swing.GroupLayout(ticTacToeGrid);
         ticTacToeGrid.setLayout(ticTacToeGridLayout);
         ticTacToeGridLayout.setHorizontalGroup(
-            ticTacToeGridLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 632, Short.MAX_VALUE)
+                ticTacToeGridLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 900, Short.MAX_VALUE)
         );
         ticTacToeGridLayout.setVerticalGroup(
-            ticTacToeGridLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 391, Short.MAX_VALUE)
+                ticTacToeGridLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 800, Short.MAX_VALUE)
         );
 
         ticTacToesGridPane.setViewportView(ticTacToeGrid);
@@ -59,6 +61,11 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
         gameMenu.add(newSimpleGameMenu);
 
         newAdvancedGameMenu.setText(bundle.getString("TicTacToeGameForm.newAdvancedGameMenu.text")); // NOI18N
+        newAdvancedGameMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newAdvancedGameMenuActionPerformed(evt);
+            }
+        });
         gameMenu.add(newAdvancedGameMenu);
 
         mainMenu.add(gameMenu);
@@ -66,17 +73,24 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
         editMenu.setText(bundle.getString("TicTacToeGameForm.editMenu.text")); // NOI18N
         mainMenu.add(editMenu);
 
+        helpMenu.setText(bundle.getString("TicTacToeGameForm.helpMenu.text")); // NOI18N
+
+        aboutMenuItem.setText(bundle.getString("TicTacToeGameForm.aboutMenuItem.text")); // NOI18N
+        helpMenu.add(aboutMenuItem);
+
+        mainMenu.add(helpMenu);
+
         setJMenuBar(mainMenu);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(ticTacToesGridPane, javax.swing.GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(ticTacToesGridPane, javax.swing.GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(ticTacToesGridPane, javax.swing.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(ticTacToesGridPane, javax.swing.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE)
         );
 
         pack();
@@ -86,8 +100,14 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_newSimpleGameMenuActionPerformed
 
+    private void newAdvancedGameMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newAdvancedGameMenuActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_newAdvancedGameMenuActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenu editMenu;
+    private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuBar mainMenu;
     private javax.swing.JMenuItem newAdvancedGameMenu;
     private javax.swing.JMenuItem newSimpleGameMenu;

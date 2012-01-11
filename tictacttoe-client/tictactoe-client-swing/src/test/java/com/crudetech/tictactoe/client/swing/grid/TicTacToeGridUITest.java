@@ -89,7 +89,6 @@ public class TicTacToeGridUITest {
     public void gridMarksArePaintedFromModel() {
         List<Widget> widgets = ui.buildGridMarkWidgetList(new Point(paintOffsetX, paintOffsetY));
 
-
         List<Widget> expected = expectedGridMarkWidgets();
 
         assertThat(widgets, is(equivalentTo(expected)));
@@ -104,7 +103,6 @@ public class TicTacToeGridUITest {
                 new ImageWidget(loc(locations[0][0].getLocation()), cross),
                 new ImageWidget(loc(locations[0][1].getLocation()), nought),
                 new EmptyWidget(),
-
 
                 new ImageWidget(loc(locations[1][0].getLocation()), cross),
                 new EmptyWidget(),
@@ -132,14 +130,11 @@ public class TicTacToeGridUITest {
     public void paintListIsPaintedInOrder() {
         List<Widget> widgets = ui.buildPaintList();
 
-
         List<Widget> expectedList = new ArrayList<>();
         expectedList.add(getExpectedBackground());
         expectedList.add(getExpectedBackgroundImage());
         expectedList.addAll(expectedGridMarkWidgets());
         expectedList.add(new EmptyWidget());
-
-
 
         assertThat(widgets, is(expectedList));
     }
