@@ -14,15 +14,15 @@ public class UiPlayerTest {
             Grid.Location.of(Grid.Row.First, Grid.Column.First),
             Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
             Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
-    private UserFeedbackChannel userFeedback;
+    private UiFeedbackChannel uiFeedback;
     private UiPlayer player;
     private UiView widget;
 
     @Before
     public void setUp() throws Exception {
         widget = mock(UiView.class);
-        userFeedback = mock(UserFeedbackChannel.class);
-        player = new UiPlayer(widget, userFeedback);
+        uiFeedback = mock(UiFeedbackChannel.class);
+        player = new UiPlayer(widget, uiFeedback);
     }
 
     @Test
@@ -58,7 +58,7 @@ public class UiPlayerTest {
 
         player.youWin(winningGrid, DiagonalTriple);
 
-        verify(userFeedback).showMessage("You win!");
+        verify(uiFeedback).showMessage("You win!");
     }
 
     @Test
@@ -82,7 +82,7 @@ public class UiPlayerTest {
 
         player.youLoose(winningGrid, DiagonalTriple);
 
-        verify(userFeedback).showMessage("You loose!");
+        verify(uiFeedback).showMessage("You loose!");
     }
 
     @Test
@@ -107,6 +107,6 @@ public class UiPlayerTest {
 
         player.tie(winningGrid);
 
-        verify(userFeedback).showMessage("Tie!");
+        verify(uiFeedback).showMessage("Tie!");
     }
 }

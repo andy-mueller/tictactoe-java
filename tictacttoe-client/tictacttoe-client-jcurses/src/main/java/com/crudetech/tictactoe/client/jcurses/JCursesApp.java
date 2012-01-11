@@ -85,8 +85,8 @@ public class JCursesApp {
         private void startNewGameWithComputerOpponent(ComputerPlayer computerPlayer) {
             gridWidget.getFocus();
             gridWidget.keyDownEvent().removeListener(keyDownListener);
-            UserFeedbackChannel userFeedback = new JCursesMessageBoxFeedbackChannel();
-            gridWidgetPlayer = new UiPlayer(gridWidget, userFeedback);
+            UiFeedbackChannel uiFeedback = new JCursesMessageBoxFeedbackChannel();
+            gridWidgetPlayer = new UiPlayer(gridWidget, uiFeedback);
 
             game = new TicTacToeGame(gridWidgetPlayer, computerPlayer);
             computerPlayer.setGame(game);

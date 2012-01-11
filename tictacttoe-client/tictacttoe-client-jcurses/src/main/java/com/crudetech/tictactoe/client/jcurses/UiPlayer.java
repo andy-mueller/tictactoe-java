@@ -5,11 +5,11 @@ import com.crudetech.tictactoe.game.Player;
 
 class UiPlayer implements Player {
     private final UiView widget;
-    private final UserFeedbackChannel userFeedback;
+    private final UiFeedbackChannel uiFeedback;
 
-    UiPlayer(UiView widget, UserFeedbackChannel userFeedback) {
+    UiPlayer(UiView widget, UiFeedbackChannel uiFeedback) {
         this.widget = widget;
-        this.userFeedback = userFeedback;
+        this.uiFeedback = uiFeedback;
     }
 
     @Override
@@ -20,18 +20,18 @@ class UiPlayer implements Player {
 
     @Override
     public void youWin(Grid actualGrid, Grid.Triple triple) {
-        userFeedback.showMessage("You win!");
+        uiFeedback.showMessage("You win!");
         widget.highlight(triple);
     }
 
     @Override
     public void youLoose(Grid actualGrid, Grid.Triple triple) {
-        userFeedback.showMessage("You loose!");
+        uiFeedback.showMessage("You loose!");
         widget.highlight(triple);
     }
 
     @Override
     public void tie(Grid actualGrid) {
-        userFeedback.showMessage("Tie!");
+        uiFeedback.showMessage("Tie!");
     }
 }
