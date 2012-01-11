@@ -15,7 +15,7 @@ public class JCursesApp {
         private final DefaultLayoutManager layoutManager;
         private TicTacToeGame game;
         private GridWidget gridWidget;
-        private GridWidgetPlayer gridWidgetPlayer;
+        private UiPlayer gridWidgetPlayer;
         EventListener<GridWidget.KeyDownEventObject> keyDownListener = new EventListener<GridWidget.KeyDownEventObject>() {
             @Override
             public void onEvent(GridWidget.KeyDownEventObject e) {}
@@ -86,7 +86,7 @@ public class JCursesApp {
             gridWidget.getFocus();
             gridWidget.keyDownEvent().removeListener(keyDownListener);
             UserFeedbackChannel userFeedback = new JCursesMessageBoxFeedbackChannel();
-            gridWidgetPlayer = new GridWidgetPlayer(gridWidget, userFeedback);
+            gridWidgetPlayer = new UiPlayer(gridWidget, userFeedback);
 
             game = new TicTacToeGame(gridWidgetPlayer, computerPlayer);
             computerPlayer.setGame(game);

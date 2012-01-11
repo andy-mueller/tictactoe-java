@@ -3,11 +3,11 @@ package com.crudetech.tictactoe.client.jcurses;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.Player;
 
-class GridWidgetPlayer implements Player {
-    private final GridWidgetView widget;
+class UiPlayer implements Player {
+    private final UiView widget;
     private final UserFeedbackChannel userFeedback;
 
-    GridWidgetPlayer(GridWidgetView widget, UserFeedbackChannel userFeedback) {
+    UiPlayer(UiView widget, UserFeedbackChannel userFeedback) {
         this.widget = widget;
         this.userFeedback = userFeedback;
     }

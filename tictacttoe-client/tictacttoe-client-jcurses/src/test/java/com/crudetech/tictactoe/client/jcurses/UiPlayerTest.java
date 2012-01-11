@@ -8,21 +8,21 @@ import org.junit.Test;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class GridWidgetPlayerTest {
+public class UiPlayerTest {
     private static final Grid.Triple DiagonalTriple = Grid.Triple.of(
             Grid.Mark.Nought,
             Grid.Location.of(Grid.Row.First, Grid.Column.First),
             Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
             Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
     private UserFeedbackChannel userFeedback;
-    private GridWidgetPlayer player;
-    private GridWidgetView widget;
+    private UiPlayer player;
+    private UiView widget;
 
     @Before
     public void setUp() throws Exception {
-        widget = mock(GridWidgetView.class);
+        widget = mock(UiView.class);
         userFeedback = mock(UserFeedbackChannel.class);
-        player = new GridWidgetPlayer(widget, userFeedback);
+        player = new UiPlayer(widget, userFeedback);
     }
 
     @Test

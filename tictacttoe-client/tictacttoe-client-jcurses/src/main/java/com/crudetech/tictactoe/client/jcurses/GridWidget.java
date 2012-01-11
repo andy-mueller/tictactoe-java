@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 
-class GridWidget extends TextComponent implements GridWidgetView {
+class GridWidget extends TextComponent implements UiView {
     private final static String TicTacToeTextRepresentationTemplate =
             "   |   |   " + "\n" +
                     "---+---+---" + "\n" +
