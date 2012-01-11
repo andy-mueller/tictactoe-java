@@ -1,4 +1,4 @@
-package com.crudetech.tictactoe.client.jcurses;
+package com.crudetech.tictactoe.ui;
 
 public interface UiFeedbackChannel {
     void showMessage(String message);

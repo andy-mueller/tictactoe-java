@@ -1,13 +1,13 @@
-package com.crudetech.tictactoe.client.jcurses;
+package com.crudetech.tictactoe.ui;
 
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.Player;
 
-class UiPlayer implements Player {
+public class UiPlayer implements Player {
     private final UiView widget;
     private final UiFeedbackChannel uiFeedback;
 
-    UiPlayer(UiView widget, UiFeedbackChannel uiFeedback) {
+    public UiPlayer(UiView widget, UiFeedbackChannel uiFeedback) {
         this.widget = widget;
         this.uiFeedback = uiFeedback;
     }

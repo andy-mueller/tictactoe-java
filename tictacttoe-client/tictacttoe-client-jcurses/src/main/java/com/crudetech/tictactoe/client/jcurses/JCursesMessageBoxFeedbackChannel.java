@@ -1,5 +1,6 @@
 package com.crudetech.tictactoe.client.jcurses;
 
+import com.crudetech.tictactoe.ui.UiFeedbackChannel;
 import jcurses.util.Message;
 
 class JCursesMessageBoxFeedbackChannel implements UiFeedbackChannel {

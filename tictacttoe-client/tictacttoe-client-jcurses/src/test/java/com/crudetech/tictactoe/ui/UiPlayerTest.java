@@ -1,4 +1,4 @@
-package com.crudetech.tictactoe.client.jcurses;
+package com.crudetech.tictactoe.ui;
 
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.LinearRandomAccessGrid;

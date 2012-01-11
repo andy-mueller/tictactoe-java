@@ -5,6 +5,7 @@ import com.crudetech.event.Event;
 import com.crudetech.event.EventObject;
 import com.crudetech.event.EventSupport;
 import com.crudetech.tictactoe.game.Grid;
+import com.crudetech.tictactoe.ui.UiView;
 import jcurses.system.InputChar;
 import jcurses.widgets.TextComponent;
 

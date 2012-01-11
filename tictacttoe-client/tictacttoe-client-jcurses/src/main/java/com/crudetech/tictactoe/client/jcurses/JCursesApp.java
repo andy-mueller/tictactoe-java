@@ -2,6 +2,8 @@ package com.crudetech.tictactoe.client.jcurses;
 
 import com.crudetech.event.EventListener;
 import com.crudetech.tictactoe.game.*;
+import com.crudetech.tictactoe.ui.UiFeedbackChannel;
+import com.crudetech.tictactoe.ui.UiPlayer;
 import jcurses.event.ItemEvent;
 import jcurses.event.ItemListener;
 import jcurses.system.CharColor;
