@@ -117,7 +117,7 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
         if(cellClickedListener != null){
             ticTacToeGrid.cellClicked().removeListener(cellClickedListener);
         }
-        UiFeedbackChannel uiFeedback = new JOptionsPaneUiFeedback(ticTacToeGrid);
+        UiFeedbackChannel uiFeedback = new JOptionsPaneUiFeedback(this);
         UiView view = new TicTacToeGridUiView(ticTacToeGrid.getModel());
         final Player gridWidgetPlayer = new UiPlayer(view, uiFeedback);
 
