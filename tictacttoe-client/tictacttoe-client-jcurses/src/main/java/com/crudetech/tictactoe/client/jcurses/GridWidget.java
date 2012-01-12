@@ -103,6 +103,7 @@ class GridWidget extends TextComponent implements UiView {
         }
 
         setText(textRepresentation.toString());
+        repaint();
     }
 
     static class KeyDownEventObject extends EventObject<GridWidget> {

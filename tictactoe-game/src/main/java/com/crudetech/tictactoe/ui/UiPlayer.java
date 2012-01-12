@@ -19,14 +19,14 @@ public class UiPlayer implements Player {
 
     @Override
     public void youWin(Grid actualGrid, Grid.Triple triple) {
-        uiFeedback.showMessage("You win!");
         view.highlight(triple);
+        uiFeedback.showMessage("You win!");
     }
 
     @Override
     public void youLoose(Grid actualGrid, Grid.Triple triple) {
-        uiFeedback.showMessage("You loose!");
         view.highlight(triple);
+        uiFeedback.showMessage("You loose!");
     }
 
     @Override

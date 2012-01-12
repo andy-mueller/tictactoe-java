@@ -223,12 +223,34 @@ public class GridWidgetTest {
 
 
         String expectedText =
-                        "   | X | # " + "\n" +
+                "   | X | # " + "\n" +
                         "---+---+---" + "\n" +
                         " O | # |   " + "\n" +
                         "---+---+---" + "\n" +
                         " # |   | X ";
 
         assertThat(w.getText(), is(expectedText));
+    }
+
+    @Test
+    public void highlightTriggersRepaint() {
+        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        StandAloneGridWidget w = new StandAloneGridWidget(cursor);
+        cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
+        Grid currentGrid = LinearRandomAccessGrid.of(
+                Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
+                Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross);
+        w.setGrid(currentGrid);
+
+        Grid.Triple diagonalTriple = Grid.Triple.of(Grid.Mark.Cross,
+                Grid.Location.of(Grid.Row.Third, Grid.Column.First),
+                Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
+                Grid.Location.of(Grid.Row.First, Grid.Column.Third));
+        final int currentPaintCount = w.getRepaints();
+
+        w.highlight(diagonalTriple);
+
+        assertThat(w.getRepaints(), is(currentPaintCount + 1));
     }
 }

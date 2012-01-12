@@ -15,6 +15,11 @@ class StandAloneGridWidget extends GridWidget {
         repaints++;
     }
 
+    @Override
+    protected void repaint() {
+        doRepaint();
+    }
+
     int getRepaints() {
         return repaints;
     }
