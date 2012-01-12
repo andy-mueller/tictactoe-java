@@ -76,8 +76,7 @@ class GridWidget extends TextComponent implements UiView {
             }
         }
 
-    @Override
-    public void moveCursorToFirstMarkedCell(Grid grid) {
+    void moveCursorToFirstMarkedCell(Grid grid) {
         if(currentCursorPositionIsOnMarkedCell(grid))                 {
             return;
         }

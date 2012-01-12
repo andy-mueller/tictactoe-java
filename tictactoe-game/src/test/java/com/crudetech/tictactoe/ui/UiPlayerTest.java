@@ -37,17 +37,6 @@ public class UiPlayerTest {
         verify(widget).setGrid(currentGrid);
     }
 
-    @Test
-    public void yourTurnMovesCursorToNextOpenSpot() {
-        Grid currentGrid = LinearRandomAccessGrid.of(
-                Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
-                Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross);
-
-        player.yourTurn(currentGrid);
-
-        verify(widget).moveCursorToFirstMarkedCell(currentGrid);
-    }
 
     @Test
     public void youWinGivesUserFeedback() {

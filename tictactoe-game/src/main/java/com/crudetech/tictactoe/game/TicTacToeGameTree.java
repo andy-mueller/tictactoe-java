@@ -13,19 +13,19 @@ class TicTacToeGameTree {
 
     static class Node implements GameTree.Node<Grid> {
         private final LinearRandomAccessGrid grid;
-        private final Grid.Mark nextMark;
+        private final Grid.Mark mark;
         private Grid.Mark startPlayerMark = Grid.Mark.Cross;
 
-        public Node(LinearRandomAccessGrid grid, Grid.Mark nextMark) {
+        public Node(LinearRandomAccessGrid grid, Grid.Mark mark) {
             this.grid = grid;
-            this.nextMark = nextMark;
+            this.mark = mark;
         }
 
         @Override
         public String toString() {
             return "Node{" +
                     "grid=" + grid +
-                    ", nextMark=" + nextMark +
+                    ", mark=" + mark +
                     ", startPlayerMark=" + startPlayerMark +
                     '}';
         }
@@ -68,7 +68,7 @@ class TicTacToeGameTree {
                 @Override
                 public LinearRandomAccessGrid execute(Grid.Location location) {
                     LinearRandomAccessGrid permutedGrid = new LinearRandomAccessGrid(base);
-                    permutedGrid.setAt(location, nextMark);
+                    permutedGrid.setAt(location, mark);
                     return permutedGrid;
                 }
             };
@@ -78,7 +78,7 @@ class TicTacToeGameTree {
             return new UnaryFunction<LinearRandomAccessGrid, Node>() {
                 @Override
                 public Node execute(LinearRandomAccessGrid grid) {
-                    return new Node(grid, nextMark.getOpposite());
+                    return new Node(grid, mark.getOpposite());
                 }
             };
         }

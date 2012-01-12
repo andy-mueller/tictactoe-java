@@ -117,11 +117,11 @@ public class JTicTacToeGrid extends JComponent {
     }
 
     public static class CellClickedEventObject extends EventObject<JTicTacToeGrid> {
-        private final Grid.Location expectedCell;
+        private final Grid.Location clickedCellLocation;
 
-        CellClickedEventObject(JTicTacToeGrid jTicTacToeGrid, Grid.Location expectedCell) {
+        CellClickedEventObject(JTicTacToeGrid jTicTacToeGrid, Grid.Location clickedCellLocation) {
             super(jTicTacToeGrid);
-            this.expectedCell = expectedCell;
+            this.clickedCellLocation = clickedCellLocation;
         }
 
         @Override
@@ -132,13 +132,13 @@ public class JTicTacToeGrid extends JComponent {
 
             CellClickedEventObject that = (CellClickedEventObject) o;
 
-            return Objects.equals(expectedCell, that.expectedCell);
+            return Objects.equals(clickedCellLocation, that.clickedCellLocation);
         }
 
         @Override
         public int hashCode() {
             int result = super.hashCode();
-            result = 31 * result + Objects.hashCode(expectedCell);
+            result = 31 * result + Objects.hashCode(clickedCellLocation);
             return result;
         }
 
@@ -146,8 +146,12 @@ public class JTicTacToeGrid extends JComponent {
         public String toString() {
             return "CellClickedEventObject{" +
                     "source=" + getSource() +
-                    "expectedCell=" + expectedCell +
+                    "clickedCellLocation=" + clickedCellLocation +
                     '}';
+        }
+
+        public Grid.Location getClickedCellLocation() {
+            return clickedCellLocation;
         }
     }
 

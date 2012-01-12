@@ -1,9 +1,18 @@
 package com.crudetech.tictactoe.client.swing;
 
+import com.crudetech.event.EventListener;
+import com.crudetech.tictactoe.client.swing.grid.JTicTacToeGrid;
+import com.crudetech.tictactoe.game.*;
+import com.crudetech.tictactoe.ui.UiFeedbackChannel;
+import com.crudetech.tictactoe.ui.UiPlayer;
+import com.crudetech.tictactoe.ui.UiView;
+
 /**
  *
  */
 public class TicTacToeGameForm extends javax.swing.JFrame {
+    private EventListener<JTicTacToeGrid.CellClickedEventObject> cellClickedListener;
+    private TicTacToeGame game;
 
     /**
      * Creates new form TicTacToeGameForm
@@ -101,8 +110,28 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
     }//GEN-LAST:event_newSimpleGameMenuActionPerformed
 
     private void newAdvancedGameMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newAdvancedGameMenuActionPerformed
-        // TODO add your handling code here:
+        startNewGameWithComputerOpponent(AlphaBetaPruningPlayer.withMark(Grid.Mark.Nought));
     }//GEN-LAST:event_newAdvancedGameMenuActionPerformed
+
+    private void startNewGameWithComputerOpponent(ComputerPlayer computerPlayer) {
+        if(cellClickedListener != null){
+            ticTacToeGrid.cellClicked().removeListener(cellClickedListener);
+        }
+        UiFeedbackChannel uiFeedback = new JOptionsPaneUiFeedback(ticTacToeGrid);
+        UiView view = new TicTacToeGridUiView(ticTacToeGrid.getModel());
+        final Player gridWidgetPlayer = new UiPlayer(view, uiFeedback);
+
+        game = new TicTacToeGame(gridWidgetPlayer, computerPlayer);
+        computerPlayer.setGame(game);
+        cellClickedListener = new EventListener<JTicTacToeGrid.CellClickedEventObject>() {
+            @Override
+            public void onEvent(JTicTacToeGrid.CellClickedEventObject e) {
+                game.addMark(gridWidgetPlayer, e.getClickedCellLocation());
+            }
+        };
+        ticTacToeGrid.cellClicked().addListener(cellClickedListener);
+        game.startWithPlayer(gridWidgetPlayer, Grid.Mark.Cross);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;

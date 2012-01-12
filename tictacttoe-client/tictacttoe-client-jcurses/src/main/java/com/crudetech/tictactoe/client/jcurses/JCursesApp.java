@@ -81,14 +81,14 @@ public class JCursesApp {
         }
 
         private void onMnuNewAdvancedGame() {
-            startNewGameWithComputerOpponent(new AlphaBetaPruningPlayer(Grid.Mark.Nought));
+            startNewGameWithComputerOpponent(AlphaBetaPruningPlayer.withMark(Grid.Mark.Nought));
         }
 
         private void startNewGameWithComputerOpponent(ComputerPlayer computerPlayer) {
             gridWidget.getFocus();
             gridWidget.keyDownEvent().removeListener(keyDownListener);
             UiFeedbackChannel uiFeedback = new JCursesMessageBoxFeedbackChannel();
-            gridWidgetPlayer = new UiPlayer(gridWidget, uiFeedback);
+            gridWidgetPlayer = new GridWidgetPlayer(gridWidget, uiFeedback);
 
             game = new TicTacToeGame(gridWidgetPlayer, computerPlayer);
             computerPlayer.setGame(game);

@@ -8,6 +8,10 @@ public class AlphaBetaPruningPlayer extends ComputerPlayer{
     public AlphaBetaPruningPlayer(Grid.Mark mark) {
         this.mark = mark;
     }
+    public static ComputerPlayer withMark(Grid.Mark mark) {
+        return new AlphaBetaPruningPlayer(mark);
+    }
+
     @Override
     public void yourTurn(Grid actualGrid) {
         LinearRandomAccessGrid currentGrid = LinearRandomAccessGrid.of(actualGrid);
