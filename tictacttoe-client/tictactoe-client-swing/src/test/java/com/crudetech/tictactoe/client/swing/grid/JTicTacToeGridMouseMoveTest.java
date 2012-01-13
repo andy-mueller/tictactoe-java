@@ -7,13 +7,16 @@ import com.crudetech.tictactoe.game.Grid;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.*;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 public class JTicTacToeGridMouseMoveTest {
 
@@ -81,8 +84,8 @@ public class JTicTacToeGridMouseMoveTest {
 
         grid.raiseMouseEvent(move);
 
-        assertThat(model.hasHighlight(), is(true));
-        assertThat(model.getHighlighted(), is(Grid.Location.of(Grid.Row.Third, Grid.Column.Third)));
+        assertThat(model.hasHighlightedCell(), is(true));
+        assertThat(model.getHighlightedCell(), is(Grid.Location.of(Grid.Row.Third, Grid.Column.Third)));
     }
 
     private MouseEvent buildMouseMovedEvent(Point pos) {
@@ -93,11 +96,11 @@ public class JTicTacToeGridMouseMoveTest {
     @Test
     public void mouseHoverOutsideOfCellsUnHighlights() throws Exception {
         TicTacToeGridModel model = grid.getModel();
-        model.highlight(Grid.Location.of(Grid.Row.First, Grid.Column.Third));
+        model.highlightCell(Grid.Location.of(Grid.Row.First, Grid.Column.Third));
         MouseEvent move = buildMouseMovedEvent(outsideAnyCell);
 
         grid.raiseMouseEvent(move);
 
-        assertThat(model.hasHighlight(), is(false));
+        assertThat(model.hasHighlightedCell(), is(false));
     }
 }

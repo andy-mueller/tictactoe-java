@@ -95,8 +95,8 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     private Widget highlightWidget(Point origin) {
-        if (component.getModel().hasHighlight()) {
-            Rectangle boundaryForLocation = (Rectangle) getBoundaryForLocation(component.getModel().getHighlighted()).clone();
+        if (component.getModel().hasHighlightedCell()) {
+            Rectangle boundaryForLocation = (Rectangle) getBoundaryForLocation(component.getModel().getHighlightedCell()).clone();
             boundaryForLocation.translate(origin.x, origin.y);
             return new RectangleWidget(boundaryForLocation, style.getHighlightColor());
         } else {

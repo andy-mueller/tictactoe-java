@@ -69,10 +69,10 @@ public class TicTacToeGridModelTest {
     public void highlight() {
         TicTacToeGridModel model = new TicTacToeGridModel();
 
-        model.highlight(Grid.Location.of(Grid.Row.Second, Grid.Column.Third));
+        model.highlightCell(Grid.Location.of(Grid.Row.Second, Grid.Column.Third));
 
-        assertThat(model.getHighlighted(), is(Grid.Location.of(Grid.Row.Second, Grid.Column.Third)));
-        assertThat(model.hasHighlight(), is(true));
+        assertThat(model.getHighlightedCell(), is(Grid.Location.of(Grid.Row.Second, Grid.Column.Third)));
+        assertThat(model.hasHighlightedCell(), is(true));
     }
 
     @Test
@@ -82,7 +82,7 @@ public class TicTacToeGridModelTest {
         Runnable highlightWithNull = new Runnable() {
             @Override
             public void run() {
-                model.highlight(null);
+                model.highlightCell(null);
             }
         };
 
@@ -92,9 +92,9 @@ public class TicTacToeGridModelTest {
     public void unHighlight() {
         TicTacToeGridModel model = new TicTacToeGridModel();
 
-        model.highlight(Grid.Location.of(Grid.Row.Second, Grid.Column.Third));
+        model.highlightCell(Grid.Location.of(Grid.Row.Second, Grid.Column.Third));
         model.unHighlight();
 
-        assertThat(model.hasHighlight(), is(false));
+        assertThat(model.hasHighlightedCell(), is(false));
     }
 }

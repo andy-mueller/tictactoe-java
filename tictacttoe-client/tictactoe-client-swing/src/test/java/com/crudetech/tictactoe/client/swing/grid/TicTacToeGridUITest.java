@@ -153,7 +153,7 @@ public class TicTacToeGridUITest {
 
     @Test
     public void highlightedRectangleIsAddedWhenModelIsHighlighted() {
-        grid.getModel().highlight(Grid.Location.of(Grid.Row.First, Grid.Column.Third));
+        grid.getModel().highlightCell(Grid.Location.of(Grid.Row.First, Grid.Column.Third));
         List<Widget> widgets = ui.buildPaintList();
 
 

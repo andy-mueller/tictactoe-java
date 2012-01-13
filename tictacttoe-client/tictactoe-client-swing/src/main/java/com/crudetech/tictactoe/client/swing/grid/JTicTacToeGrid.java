@@ -6,7 +6,8 @@ import com.crudetech.event.EventObject;
 import com.crudetech.event.EventSupport;
 import com.crudetech.tictactoe.game.Grid;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.UIManager;
 import javax.swing.plaf.ComponentUI;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -64,7 +65,7 @@ public class JTicTacToeGrid extends JComponent {
     private void onMouseMoved(MouseEvent e) {
         GridCellHit hit = cellHitFromMouseEvent(e);
         if (hit.hasHit()) {
-            getModel().highlight(hit.getHit());
+            getModel().highlightCell(hit.getHit());
         }  else{
             getModel().unHighlight();
         }

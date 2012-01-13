@@ -20,16 +20,16 @@ public class TicTacToeGridModel extends Model<Grid> {
         this(LinearRandomAccessGrid.empty());
     }
 
-    public void highlight(Grid.Location highlightedCell) {
+    public void highlightCell(Grid.Location highlightedCell) {
         verifyThat(highlightedCell, is(notNullValue()));
         this.highlightedCell = highlightedCell;
     }
 
-    public Grid.Location getHighlighted() {
+    public Grid.Location getHighlightedCell() {
         return highlightedCell;
     }
 
-    public boolean hasHighlight() {
+    public boolean hasHighlightedCell() {
         return highlightedCell != null;
     }
 
