@@ -6,7 +6,8 @@ import com.crudetech.junit.feature.Features;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
@@ -17,27 +18,16 @@ import static org.mockito.Mockito.verify;
 @RunWith(Features.class)
 public class ImageWidgetTest {
     @Test
-    public void widgetPaintsImageOnSpecifiedLocation() throws Exception {
+    public void widgetPaintsImageInEcs() throws Exception {
         BufferedImage image = mock(BufferedImage.class);
         Widget w = new ImageWidget(new Point(1, 1), image);
 
         Graphics2D g2d = mock(Graphics2D.class);
-        w.paint(g2d);
+        w.paintEcs(g2d);
 
-        verify(g2d).drawImage(image, null, 1, 1);
+        verify(g2d).drawImage(image, null, 0, 0);
     }
 
-    @Test
-    public void setLocationMovesImage() throws Exception {
-        BufferedImage image = mock(BufferedImage.class);
-        Widget w = new ImageWidget(new Point(1, 1), image);
-        Graphics2D g2d = mock(Graphics2D.class);
-
-        w.setLocation(42, 42);
-        w.paint(g2d);
-
-        verify(g2d).drawImage(image, null, 42, 42);
-    }
 
     @Feature(Equivalent.class)
     public static Equivalent.Factory<ImageWidget> imageWidgetEqualityFeature() {

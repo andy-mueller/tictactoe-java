@@ -2,7 +2,7 @@ package com.crudetech.tictactoe.client.swing.grid;
 
 import org.junit.Test;
 
-import java.awt.*;
+import java.awt.Graphics2D;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -15,7 +15,7 @@ public class EmptyWidgetTest {
         EmptyWidget empty = new EmptyWidget();
         Graphics2D g2d = mock(Graphics2D.class);
 
-        empty.paint(g2d);
+        empty.paintEcs(g2d);
 
         verifyZeroInteractions(g2d);
     }

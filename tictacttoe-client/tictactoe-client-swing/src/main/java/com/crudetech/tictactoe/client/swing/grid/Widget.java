@@ -1,11 +1,11 @@
 package com.crudetech.tictactoe.client.swing.grid;
 
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.Point;
 
 public interface Widget {
-    void paint(Graphics2D g2d);
-
+    void paintEcs(Graphics2D g2d);
     void setLocation(int x, int y);
-
+    Point getLocation();
     void moveBy(int dx, int dy);
 }

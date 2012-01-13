@@ -1,19 +1,11 @@
 package com.crudetech.tictactoe.client.swing.grid;
 
 
-import java.awt.*;
+import java.awt.Graphics2D;
 
-public class EmptyWidget implements Widget{
+public class EmptyWidget extends EcsWidget{
     @Override
-    public void paint(Graphics2D g2d) {
-    }
-
-    @Override
-    public void setLocation(int x, int y) {
-    }
-
-    @Override
-    public void moveBy(int dx, int dy) {
+    public void paintEcs(Graphics2D g2d) {
     }
 
     @Override
@@ -23,6 +15,6 @@ public class EmptyWidget implements Widget{
 
     @Override
     public int hashCode() {
-        return 0;
+        return -42;
     }
 }

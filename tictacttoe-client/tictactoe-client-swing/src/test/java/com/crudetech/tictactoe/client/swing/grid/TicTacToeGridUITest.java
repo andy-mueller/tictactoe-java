@@ -5,13 +5,16 @@ import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.crudetech.matcher.RangeIsEquivalent.equivalentTo;
-import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
@@ -48,9 +51,10 @@ public class TicTacToeGridUITest {
 
     @Test
     public void backGroundIsPaintedInMiddle() {
-        grid.getUI().paint(g2d);
+        List<Widget> widgets = ui.buildPaintList();
 
-        verify(g2d).drawImage(style.getBackgroundImage(), null, 250, 500);
+        ImageWidget backGroundImage = (ImageWidget) widgets.get(1);
+        assertThat(backGroundImage.getLocation(), is(new Point(250, 500)));
     }
 
     @Test
@@ -99,7 +103,7 @@ public class TicTacToeGridUITest {
         final BufferedImage nought = style.getNoughtImage();
         Rectangle[][] locations = style.getGridMarkLocations();
 
-        return asList(
+        return Arrays.<Widget>asList(
                 new ImageWidget(loc(locations[0][0].getLocation()), cross),
                 new ImageWidget(loc(locations[0][1].getLocation()), nought),
                 new EmptyWidget(),

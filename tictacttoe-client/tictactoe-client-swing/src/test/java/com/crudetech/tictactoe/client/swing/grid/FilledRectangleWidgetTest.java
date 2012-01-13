@@ -6,7 +6,9 @@ import com.crudetech.junit.feature.Features;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -16,14 +18,14 @@ import static org.mockito.Mockito.verify;
 @RunWith(Features.class)
 public class FilledRectangleWidgetTest {
     @Test
-    public void locationIsUsedOnPainting() {
+    public void paintingIsInEcs() {
         Widget w = new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), Color.ORANGE);
         w.setLocation(42, 42);
         Graphics2D g2d = mock(Graphics2D.class);
 
-        w.paint(g2d);
+        w.paintEcs(g2d);
 
-        verify(g2d).fill(new Rectangle(42, 42, 84, 966));
+        verify(g2d).fill(new Rectangle(0, 0, 84, 966));
     }
 
     @Test
@@ -31,7 +33,7 @@ public class FilledRectangleWidgetTest {
         FilledRectangleWidget w = new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), Color.ORANGE);
         Graphics2D g2d = mock(Graphics2D.class);
 
-        w.paint(g2d);
+        w.paintEcs(g2d);
 
         verify(g2d).setPaint(Color.ORANGE);
     }

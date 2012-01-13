@@ -3,9 +3,14 @@ package com.crudetech.tictactoe.client.swing.grid;
 
 import com.crudetech.tictactoe.game.Grid;
 
-import javax.swing.*;
+import javax.swing.JComponent;
 import javax.swing.plaf.ComponentUI;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,13 +46,21 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     void paint(Graphics2D pipe) {
-        List<Widget> paintList = buildPaintList();
-
-        for (Widget w : paintList) {
-            w.paint(pipe);
+        for (Widget w : buildPaintList()) {
+            paintWidget(w, pipe);
         }
     }
 
+    private void paintWidget(Widget widget, Graphics2D pipe) {
+        AffineTransform oldTransform = pipe.getTransform();
+        Point loc = widget.getLocation();
+        pipe.setTransform(AffineTransform.getTranslateInstance(loc.getX(), loc.getY()));
+        try {
+            widget.paintEcs(pipe);
+        } finally {
+            pipe.setTransform(oldTransform);
+        }
+    }
     @Override
     public Dimension getMinimumSize(JComponent c) {
         return getPreferredSize(c);
