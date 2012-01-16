@@ -1,10 +1,13 @@
 package com.crudetech.tictactoe.client.swing.grid;
 
 
+import com.crudetech.collections.Iterables;
 import com.crudetech.tictactoe.game.Grid;
 
 import javax.swing.JComponent;
 import javax.swing.plaf.ComponentUI;
+import java.awt.AlphaComposite;
+import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -20,6 +23,7 @@ import static java.lang.Math.max;
 public class TicTacToeGridUI extends ComponentUI {
     private Style style = Styles.Brush;
     private JTicTacToeGrid component;
+    static final Composite WinningTripleAlpha = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f);
 
     @SuppressWarnings("unused")
     public static TicTacToeGridUI createUI(JComponent component) {
@@ -61,6 +65,7 @@ public class TicTacToeGridUI extends ComponentUI {
             pipe.setTransform(oldTransform);
         }
     }
+
     @Override
     public Dimension getMinimumSize(JComponent c) {
         return getPreferredSize(c);
@@ -80,21 +85,22 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     List<Widget> buildPaintList() {
-        Point origin = computeOrigin();
+        Point origin = getUiOrigin();
         List<Widget> paintList = new ArrayList<>();
 
         paintList.add(backgroundWidget());
 
-        paintList.add(getBackgroundImageWidget(origin));
+        paintList.add(getBackgroundImageWidget());
 
-        paintList.addAll(buildGridMarkWidgetList(origin));
+        paintList.addAll(buildGridMarkWidgetList());
 
-        paintList.add(highlightWidget(origin));
+        paintList.add(highlightWidget());
 
         return paintList;
     }
 
-    private Widget highlightWidget(Point origin) {
+    private Widget highlightWidget() {
+        Point origin = getUiOrigin();
         if (component.getModel().hasHighlightedCell()) {
             Rectangle boundaryForLocation = (Rectangle) getBoundaryForLocation(component.getModel().getHighlightedCell()).clone();
             boundaryForLocation.translate(origin.x, origin.y);
@@ -108,28 +114,45 @@ public class TicTacToeGridUI extends ComponentUI {
         return new FilledRectangleWidget(component.getBounds(), style.getBackgroundColor());
     }
 
-    private Point computeOrigin() {
+    private Point getUiOrigin() {
         BufferedImage backgroundImage = style.getBackgroundImage();
         int x = max((component.getWidth() - backgroundImage.getWidth()) / 2, 0);
         int y = max((component.getHeight() - backgroundImage.getHeight()) / 2, 0);
         return new Point(x, y);
     }
 
-    private Widget getBackgroundImageWidget(Point origin) {
+    private Widget getBackgroundImageWidget() {
+        Point origin = getUiOrigin();
         BufferedImage backgroundImage = style.getBackgroundImage();
         return new ImageWidget(origin, backgroundImage);
     }
 
 
-    List<Widget> buildGridMarkWidgetList(Point gridOrigin) {
+    List<Widget> buildGridMarkWidgetList() {
+        Point gridOrigin = getUiOrigin();
         List<Widget> gridMArks = new ArrayList<>(9);
         for (Grid.Cell cell : component.getModel().getModelObject().getCells()) {
             Rectangle bounds = getBoundaryForLocation(cell.getLocation());
-            Widget widget = createMarkWidget(cell.getMark(), bounds);
+            Widget widget = wrapTransparentIfIsNotInHighlightedWinningTriple(createMarkWidget(cell.getMark(), bounds), cell.getLocation());
             widget.moveBy(gridOrigin.x, gridOrigin.y);
             gridMArks.add(widget);
         }
         return gridMArks;
+    }
+
+    private Widget wrapTransparentIfIsNotInHighlightedWinningTriple(Widget widget, Grid.Location location) {
+        if (noWinningTripleHighlighted() || isInWinningTriple(location)) {
+            return widget;
+        }
+        return new CompositeDecoratorWidget(widget, WinningTripleAlpha);
+    }
+
+    private boolean isInWinningTriple(Grid.Location location) {
+        return Iterables.contains(getModel().getHighlightedTriple().getLocations(), location);
+    }
+
+    private boolean noWinningTripleHighlighted() {
+        return !getModel().hasHighlightedTriple();
     }
 
     private Rectangle getBoundaryForLocation(Grid.Location location) {
@@ -157,7 +180,11 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     private Point inUiCoordinates(int x, int y) {
-        Point o = computeOrigin();
+        Point o = getUiOrigin();
         return new Point(x - o.x, y - o.y);
+    }
+
+    private TicTacToeGridModel getModel() {
+        return component.getModel();
     }
 }

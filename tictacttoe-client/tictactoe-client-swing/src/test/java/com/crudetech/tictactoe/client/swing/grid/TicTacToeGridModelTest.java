@@ -97,4 +97,42 @@ public class TicTacToeGridModelTest {
 
         assertThat(model.hasHighlightedCell(), is(false));
     }
+
+    private static Grid.Triple diagonal = Grid.Triple.of(Grid.Mark.Nought,
+            Grid.Location.of(Grid.Row.First, Grid.Column.First),
+            Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
+            Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
+
+    @Test
+    public void highlightWinningTriple(){
+        TicTacToeGridModel model = new TicTacToeGridModel();
+
+        model.highlightTriple(diagonal);
+
+        assertThat(model.getHighlightedTriple(), is(diagonal));
+    }
+
+    @Test
+    public void hasHighlightedTripleShowsTrueWhenTripleIsSet(){
+        TicTacToeGridModel model = new TicTacToeGridModel();
+
+        assertThat(model.hasHighlightedTriple(), is(false));
+
+        model.highlightTriple(diagonal);
+
+        assertThat(model.hasHighlightedTriple(), is(true));
+    }
+    @Test
+    public void highlIghtTripleThrowsOnNull(){
+        final TicTacToeGridModel model = new TicTacToeGridModel();
+
+        Runnable highlightTripleWithNull = new Runnable() {
+            @Override
+            public void run() {
+                model.highlightTriple(null);
+            }
+        };
+
+        assertThat(highlightTripleWithNull, doesThrow(IllegalArgumentException.class));
+    }
 }

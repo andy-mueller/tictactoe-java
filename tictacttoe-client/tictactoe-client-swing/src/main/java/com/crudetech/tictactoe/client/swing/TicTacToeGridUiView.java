@@ -18,6 +18,6 @@ class TicTacToeGridUiView implements UiView {
 
     @Override
     public void highlight(Grid.Triple triple) {
-        System.out.println("Highlight: " + triple);
+        gridModel.highlightTriple(triple);
     }
 }

@@ -2,8 +2,9 @@ package com.crudetech.tictactoe.client.swing;
 
 import com.crudetech.tictactoe.ui.UiFeedbackChannel;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JOptionPane;
+import java.awt.EventQueue;
+import java.awt.Frame;
 
 class JOptionsPaneUiFeedback implements UiFeedbackChannel{
     private final Frame parent;
@@ -13,7 +14,14 @@ class JOptionsPaneUiFeedback implements UiFeedbackChannel{
     }
 
     @Override
-    public void showMessage(String message) {
-        JOptionPane.showMessageDialog(parent, message, parent.getTitle(), JOptionPane.INFORMATION_MESSAGE);
+    public void showMessage(final String message) {
+        Runnable shoMessage = new Runnable() {
+            @Override
+            public void run() {
+                JOptionPane.showMessageDialog(parent, message, parent.getTitle(), JOptionPane.INFORMATION_MESSAGE);
+            }
+        };
+
+        EventQueue.invokeLater(shoMessage);
     }
 }

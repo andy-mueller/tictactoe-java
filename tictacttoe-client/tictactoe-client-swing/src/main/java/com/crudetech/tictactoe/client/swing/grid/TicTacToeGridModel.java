@@ -9,8 +9,8 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 public class TicTacToeGridModel extends Model<Grid> {
-
     private Grid.Location highlightedCell;
+    private Grid.Triple highlightedTriple;
 
     public TicTacToeGridModel(Grid grid) {
         super(grid);
@@ -35,5 +35,18 @@ public class TicTacToeGridModel extends Model<Grid> {
 
     public void unHighlight() {
         highlightedCell = null;
+    }
+
+    public void highlightTriple(Grid.Triple highlightedTriple) {
+        verifyThat(highlightedTriple, is(notNullValue()));
+        this.highlightedTriple = highlightedTriple;
+    }
+
+    public Grid.Triple getHighlightedTriple() {
+        return highlightedTriple;
+    }
+
+    public boolean hasHighlightedTriple() {
+        return highlightedTriple != null;
     }
 }

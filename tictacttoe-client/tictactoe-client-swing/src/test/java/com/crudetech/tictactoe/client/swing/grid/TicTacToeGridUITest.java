@@ -91,11 +91,12 @@ public class TicTacToeGridUITest {
 
     @Test
     public void gridMarksArePaintedFromModel() {
-        List<Widget> widgets = ui.buildGridMarkWidgetList(new Point(paintOffsetX, paintOffsetY));
+        List<Widget> widgets = ui.buildGridMarkWidgetList();
 
         List<Widget> expected = expectedGridMarkWidgets();
 
         assertThat(widgets, is(equivalentTo(expected)));
+//        assertThat(grid.getModel().hasHighlightedTriple(), is(false));
     }
 
     private List<Widget> expectedGridMarkWidgets() {
@@ -158,11 +159,51 @@ public class TicTacToeGridUITest {
 
 
         Rectangle rect = (Rectangle) style.getGridMarkLocations()[0][2].clone();
-        rect.translate(StyleStub.Width/2, StyleStub.Height/2);
-        assertThat(getLastOf(widgets), is((Widget)new RectangleWidget(rect, style.getHighlightColor())));
+        rect.translate(StyleStub.Width / 2, StyleStub.Height / 2);
+        assertThat(getLastOf(widgets), is((Widget) new RectangleWidget(rect, style.getHighlightColor())));
     }
 
     private <T> T getLastOf(List<T> items) {
         return items.get(items.size() - 1);
+    }
+
+    @Test
+    public void allNonWinningTripleAreTransparent() {
+        Grid.Triple diagonal = Grid.Triple.of(Grid.Mark.Nought,
+                Grid.Location.of(Grid.Row.First, Grid.Column.First),
+                Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
+                Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
+        grid.getModel().highlightTriple(diagonal);
+
+        List<Widget> widgets = ui.buildGridMarkWidgetList();
+
+        List<Widget> expected = expectedGridMarkWidgetsWithHighlight();
+        assertThat(widgets, is(equivalentTo(expected)));
+    }
+
+    private List<Widget> expectedGridMarkWidgetsWithHighlight() {
+        final BufferedImage cross = style.getCrossImage();
+        final BufferedImage nought = style.getNoughtImage();
+        Rectangle[][] locations = style.getGridMarkLocations();
+
+        return Arrays.<Widget>asList(
+                new ImageWidget(loc(locations[0][0].getLocation()), cross),
+                new CompositeDecoratorWidget(
+                        new ImageWidget(loc(locations[0][1].getLocation()), nought), TicTacToeGridUI.WinningTripleAlpha),
+                new CompositeDecoratorWidget(
+                        new EmptyWidget(), TicTacToeGridUI.WinningTripleAlpha),
+
+                new CompositeDecoratorWidget(
+                        new ImageWidget(loc(locations[1][0].getLocation()), cross), TicTacToeGridUI.WinningTripleAlpha),
+                new EmptyWidget(),
+                new CompositeDecoratorWidget(
+                        new EmptyWidget(), TicTacToeGridUI.WinningTripleAlpha),
+
+                new CompositeDecoratorWidget(
+                        new ImageWidget(loc(locations[2][0].getLocation()), nought), TicTacToeGridUI.WinningTripleAlpha),
+                new CompositeDecoratorWidget(
+                        new ImageWidget(loc(locations[2][1].getLocation()), nought), TicTacToeGridUI.WinningTripleAlpha),
+                new ImageWidget(loc(locations[2][2].getLocation()), cross)
+        );
     }
 }
