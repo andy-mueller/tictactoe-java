@@ -2,7 +2,13 @@ package com.crudetech.tictactoe.client.swing;
 
 import com.crudetech.event.EventListener;
 import com.crudetech.tictactoe.client.swing.grid.JTicTacToeGrid;
-import com.crudetech.tictactoe.game.*;
+import com.crudetech.tictactoe.client.swing.grid.TicTacToeGridModel;
+import com.crudetech.tictactoe.game.AlphaBetaPruningPlayer;
+import com.crudetech.tictactoe.game.ComputerPlayer;
+import com.crudetech.tictactoe.game.Grid;
+import com.crudetech.tictactoe.game.NaiveTryAndErrorPlayer;
+import com.crudetech.tictactoe.game.Player;
+import com.crudetech.tictactoe.game.TicTacToeGame;
 import com.crudetech.tictactoe.ui.UiFeedbackChannel;
 import com.crudetech.tictactoe.ui.UiPlayer;
 import com.crudetech.tictactoe.ui.UiView;
@@ -106,7 +112,7 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void newSimpleGameMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newSimpleGameMenuActionPerformed
-        // TODO add your handling code here:
+        startNewGameWithComputerOpponent(new NaiveTryAndErrorPlayer());
     }//GEN-LAST:event_newSimpleGameMenuActionPerformed
 
     private void newAdvancedGameMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newAdvancedGameMenuActionPerformed
@@ -118,7 +124,9 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
             ticTacToeGrid.cellClicked().removeListener(cellClickedListener);
         }
         UiFeedbackChannel uiFeedback = new JOptionsPaneUiFeedback(this);
-        UiView view = new TicTacToeGridUiView(ticTacToeGrid.getModel());
+        TicTacToeGridModel newModel = new TicTacToeGridModel();
+        ticTacToeGrid.setModel(newModel);
+        UiView view = new TicTacToeGridUiView(newModel);
         final Player gridWidgetPlayer = new UiPlayer(view, uiFeedback);
 
         game = new TicTacToeGame(gridWidgetPlayer, computerPlayer);
@@ -132,7 +140,6 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
         ticTacToeGrid.cellClicked().addListener(cellClickedListener);
         game.startWithPlayer(gridWidgetPlayer, Grid.Mark.Cross);
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenu editMenu;

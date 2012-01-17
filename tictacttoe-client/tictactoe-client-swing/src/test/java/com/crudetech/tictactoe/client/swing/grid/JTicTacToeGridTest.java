@@ -17,19 +17,61 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.crudetech.tictactoe.client.swing.grid.Model.ChangedEventObject;
 import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(Features.class)
 public class JTicTacToeGridTest {
     @Test
-    public void componentUIIsCreated() {
+    public void componentUIIsCreatedOnDefaultCtor() {
         JTicTacToeGrid jgrid = new JTicTacToeGrid();
         assertThat(jgrid.getUI(), is(instanceOf(TicTacToeGridUI.class)));
     }
 
+    @Test
+    public void modelIsCreatedOnDefaultCtor() {
+        JTicTacToeGrid jgrid = new JTicTacToeGrid();
+        assertThat(jgrid.getModel(), is(notNullValue()));
+    }
+
+    @Test
+    public void modelIsSetOnCtor() {
+        TicTacToeGridModel model = spy(new TicTacToeGridModel());
+        JTicTacToeGrid jgrid = new JTicTacToeGrid(model);
+
+        verify(model).changed();
+        assertThat(jgrid.getModel(), is(model));
+    }
+
+    @Test
+    public void uiIsSetOnCtor() {
+        TicTacToeGridUI ui = spy(new TicTacToeGridUI());
+        JTicTacToeGrid jgrid = new JTicTacToeGrid(ui);
+
+        verify(ui).installUI(jgrid);
+        assertThat(jgrid.getUI(), is(ui));
+    }
+
+    @Test
+    public void uiAndModelAreSetOnCtor() {
+        TicTacToeGridModel model = spy(new TicTacToeGridModel());
+        TicTacToeGridUI ui = spy(new TicTacToeGridUI());
+        JTicTacToeGrid jgrid = new JTicTacToeGrid(model, ui);
+
+        verify(ui).installUI(jgrid);
+        assertThat(jgrid.getUI(), is(ui));
+        verify(model).changed();
+        assertThat(jgrid.getModel(), is(model));
+    }
 
     @Test
     public void setUIOverridesInitialUI() {

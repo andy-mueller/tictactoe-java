@@ -19,7 +19,7 @@ public class JTicTacToeGrid extends JComponent {
     private EventListener<Model.ChangedEventObject<Model<Grid>>> modelChangedListener = new EventListener<Model.ChangedEventObject<Model<Grid>>>() {
         @Override
         public void onEvent(Model.ChangedEventObject<Model<Grid>> e) {
-            throw new UnsupportedOperationException("Implement me!");
+            repaint();
         }
     };
 
@@ -38,35 +38,33 @@ public class JTicTacToeGrid extends JComponent {
     }
 
     public JTicTacToeGrid(TicTacToeGridModel model) {
-        this.model = model;
+        setModel(model);
         updateUI();
-
-        model.changed().addListener(new EventListener<Model.ChangedEventObject<Model<Grid>>>() {
-            @Override
-            public void onEvent(Model.ChangedEventObject<Model<Grid>> e) {
-                repaint();
-            }
-        });
 
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 onMouseClicked(e);
             }
-      });
+        });
         addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
-                 onMouseMoved(e);
+                onMouseMoved(e);
             }
         });
+    }
+
+    public JTicTacToeGrid(TicTacToeGridModel model, TicTacToeGridUI ui) {
+        setModel(model);
+        setUI(ui);
     }
 
     private void onMouseMoved(MouseEvent e) {
         GridCellHit hit = cellHitFromMouseEvent(e);
         if (hit.hasHit()) {
             getModel().highlightCell(hit.getHit());
-        }  else{
+        } else {
             getModel().unHighlight();
         }
         repaint();
@@ -84,9 +82,15 @@ public class JTicTacToeGrid extends JComponent {
     }
 
     public void setModel(TicTacToeGridModel model) {
-        getModel().changed().removeListener(modelChangedListener);
+        if (hasModel()) {
+            getModel().changed().removeListener(modelChangedListener);
+        }
         model.changed().addListener(modelChangedListener);
         this.model = model;
+    }
+
+    private boolean hasModel() {
+        return getModel() != null;
     }
 
     @Override
