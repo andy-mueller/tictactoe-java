@@ -33,7 +33,6 @@ public class TicTacToeGridUI extends ComponentUI {
     @Override
     public void paint(Graphics g, JComponent c) {
         Graphics2D g2d = (Graphics2D) g;
-
         paint(g2d);
     }
 
@@ -85,7 +84,6 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     List<Widget> buildPaintList() {
-        Point origin = getUiOrigin();
         List<Widget> paintList = new ArrayList<>();
 
         paintList.add(backgroundWidget());
@@ -122,16 +120,15 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     private Widget getBackgroundImageWidget() {
-        Point origin = getUiOrigin();
         BufferedImage backgroundImage = style.getBackgroundImage();
-        return new ImageWidget(origin, backgroundImage);
+        return new ImageWidget(getUiOrigin(), backgroundImage);
     }
 
 
     List<Widget> buildGridMarkWidgetList() {
         Point gridOrigin = getUiOrigin();
         List<Widget> gridMArks = new ArrayList<>(9);
-        for (Grid.Cell cell : component.getModel().getModelObject().getCells()) {
+        for (Grid.Cell cell : component.getModel().getGrid().getCells()) {
             Rectangle bounds = getBoundaryForLocation(cell.getLocation());
             Widget widget = wrapTransparentIfIsNotInHighlightedWinningTriple(createMarkWidget(cell.getMark(), bounds), cell.getLocation());
             widget.moveBy(gridOrigin.x, gridOrigin.y);
@@ -174,7 +171,7 @@ public class TicTacToeGridUI extends ComponentUI {
 
     public GridCellHit checkGridCellHit(int x, int y) {
         Point ptInUiCoordinates = inUiCoordinates(x, y);
-        Iterable<Grid.Cell> allCells = component.getModel().getModelObject().getCells();
+        Iterable<Grid.Cell> allCells = component.getModel().getGrid().getCells();
         Rectangle[][] hitBoundaries = getStyle().getGridMarkLocations();
         return new GridCellHit(allCells, ptInUiCoordinates.x, ptInUiCoordinates.y, hitBoundaries);
     }

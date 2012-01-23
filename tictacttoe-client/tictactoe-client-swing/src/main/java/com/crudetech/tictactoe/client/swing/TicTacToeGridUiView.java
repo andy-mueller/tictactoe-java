@@ -13,7 +13,7 @@ class TicTacToeGridUiView implements UiView {
 
     @Override
     public void setGrid(Grid grid) {
-        gridModel.setModelObject(grid);
+        gridModel.setGrid(grid);
     }
 
     @Override

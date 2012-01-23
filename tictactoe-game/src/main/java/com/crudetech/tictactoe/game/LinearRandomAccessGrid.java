@@ -11,7 +11,12 @@ import java.util.Objects;
 
 import static com.crudetech.matcher.Verify.verifyThat;
 import static com.crudetech.query.Query.from;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.arrayWithSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 
 public class LinearRandomAccessGrid implements Grid {
     private static final int Dimension = 3;
@@ -119,7 +124,8 @@ public class LinearRandomAccessGrid implements Grid {
         setAt(location.getRow(), location.getColumn(), mark);
     }
 
-    Iterable<Cell> difference(final Grid right) {
+    @Override
+    public Iterable<Cell> difference(final Grid right) {
         return from(right.getCells()).where(differentFromThis());
     }
 

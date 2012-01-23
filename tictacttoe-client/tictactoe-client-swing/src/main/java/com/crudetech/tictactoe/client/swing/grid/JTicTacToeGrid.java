@@ -16,9 +16,9 @@ import java.util.Objects;
 public class JTicTacToeGrid extends JComponent {
     private TicTacToeGridModel model;
     private EventSupport<CellClickedEventObject> clickedEvent = new EventSupport<>();
-    private EventListener<Model.ChangedEventObject<Model<Grid>>> modelChangedListener = new EventListener<Model.ChangedEventObject<Model<Grid>>>() {
+    private EventListener<TicTacToeGridModel.ChangedEventObject> modelChangedListener = new EventListener<TicTacToeGridModel.ChangedEventObject>() {
         @Override
-        public void onEvent(Model.ChangedEventObject<Model<Grid>> e) {
+        public void onEvent(TicTacToeGridModel.ChangedEventObject e) {
             repaint();
         }
     };
@@ -65,7 +65,7 @@ public class JTicTacToeGrid extends JComponent {
         if (hit.hasHit()) {
             getModel().highlightCell(hit.getHit());
         } else {
-            getModel().unHighlight();
+            getModel().unHighlightCell();
         }
         repaint();
     }
