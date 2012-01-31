@@ -1,6 +1,8 @@
 package com.crudetech.tictactoe.client.swing.grid;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import static org.mockito.Mockito.mock;
@@ -12,6 +14,7 @@ class StyleStub implements Style {
 
     static final int GridCellWidth = 10;
     static final int GridCellDistance = 10;
+    public static int GridCellHeight = 10   ;
 
     private final BufferedImage nought = mock(BufferedImage.class);
     private final BufferedImage cross = mock(BufferedImage.class);
@@ -28,7 +31,7 @@ class StyleStub implements Style {
     private void fillLocations() {
         for(int row = 0; row < 3; ++row){
             for(int col = 0; col < 3; ++col){
-                locations[row][col] = new Rectangle(row*(GridCellDistance+GridCellWidth), col*(GridCellDistance+GridCellWidth), GridCellWidth, GridCellWidth);
+                locations[row][col] = new Rectangle(row*(GridCellDistance+GridCellHeight), col*(GridCellDistance+GridCellWidth), GridCellWidth, GridCellHeight);
             }
         }
     }

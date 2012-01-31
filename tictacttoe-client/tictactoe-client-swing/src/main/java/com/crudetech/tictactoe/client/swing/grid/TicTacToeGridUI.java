@@ -2,22 +2,18 @@ package com.crudetech.tictactoe.client.swing.grid;
 
 
 import com.crudetech.collections.Iterables;
+import com.crudetech.functional.UnaryFunction;
 import com.crudetech.tictactoe.game.Grid;
 
 import javax.swing.JComponent;
 import javax.swing.plaf.ComponentUI;
-import java.awt.AlphaComposite;
-import java.awt.Composite;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.crudetech.query.Query.from;
 import static java.lang.Math.max;
 
 public class TicTacToeGridUI extends ComponentUI {
@@ -57,7 +53,9 @@ public class TicTacToeGridUI extends ComponentUI {
     private void paintWidget(Widget widget, Graphics2D pipe) {
         AffineTransform oldTransform = pipe.getTransform();
         Point loc = widget.getLocation();
-        pipe.setTransform(AffineTransform.getTranslateInstance(loc.getX(), loc.getY()));
+        AffineTransform newXform = AffineTransform.getTranslateInstance(loc.getX(), loc.getY());
+        newXform.concatenate(oldTransform);
+        pipe.setTransform(newXform);
         try {
             widget.paintEcs(pipe);
         } finally {
@@ -94,7 +92,33 @@ public class TicTacToeGridUI extends ComponentUI {
 
         paintList.add(highlightWidget());
 
+        if (isDebug) {
+            paintList.add(new DebugWidget());
+        }
+
         return paintList;
+    }
+
+    private boolean isDebug = false;
+
+    void turnOnDebug() {
+        isDebug = true;
+    }
+
+    class DebugWidget extends EcsWidget {
+        private int paintCount = 0;
+
+        @Override
+        public void paintEcs(Graphics2D pipe) {
+            System.out.println("---->Painting #" + paintCount++);
+            pipe.setPaint(Color.RED);
+            for (int row = 0; row < component.getHeight(); row += 50) {
+                pipe.drawLine(0, row, component.getWidth(), row);
+            }
+            for (int col = 0; col < component.getWidth(); col += 50) {
+                pipe.drawLine(col, 0, col, component.getHeight());
+            }
+        }
     }
 
     private Widget highlightWidget() {
@@ -112,7 +136,7 @@ public class TicTacToeGridUI extends ComponentUI {
         return new FilledRectangleWidget(component.getBounds(), style.getBackgroundColor());
     }
 
-    private Point getUiOrigin() {
+    Point getUiOrigin() {
         BufferedImage backgroundImage = style.getBackgroundImage();
         int x = max((component.getWidth() - backgroundImage.getWidth()) / 2, 0);
         int y = max((component.getHeight() - backgroundImage.getHeight()) / 2, 0);
@@ -183,5 +207,37 @@ public class TicTacToeGridUI extends ComponentUI {
 
     private TicTacToeGridModel getModel() {
         return component.getModel();
+    }
+
+    public void repaintCells(Iterable<Grid.Location> changedCells) {
+        Iterable<Rectangle> repaintedInComponentCoordinates =
+                from(changedCells).select(toBoundary()).select(toComponentCoos());
+
+        for (Rectangle rect : repaintedInComponentCoordinates) {
+            component.repaint(rect);
+        }
+    }
+
+    private UnaryFunction<Rectangle, Rectangle> toComponentCoos() {
+        return new UnaryFunction<Rectangle, Rectangle>() {
+            @Override
+            public Rectangle execute(Rectangle rectangle) {
+                rectangle = new Rectangle(rectangle);
+                Point origin = getUiOrigin();
+                rectangle.translate(origin.x, origin.y);
+                rectangle.width += 1;
+                rectangle.height += 1;
+                return rectangle;
+            }
+        };
+    }
+
+    private UnaryFunction<Grid.Location, Rectangle> toBoundary() {
+        return new UnaryFunction<Grid.Location, Rectangle>() {
+            @Override
+            public Rectangle execute(Grid.Location location) {
+                return getStyle().getGridMarkLocations()[location.getRow().ordinal()][location.getColumn().ordinal()];
+            }
+        };
     }
 }

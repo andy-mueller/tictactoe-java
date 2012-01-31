@@ -19,9 +19,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 public class JTicTacToeGridMouseMoveTest {
-
     private JTicTacToeGrid grid;
-
     private Point outsideAnyCell;
     private Point inLastCell;
 
@@ -63,13 +61,10 @@ public class JTicTacToeGridMouseMoveTest {
 
     @Test
     public void mouseClickOnCellRaisesCellClickedEventWithCorrectCells() throws Exception {
-
-        @SuppressWarnings("unchecked")
         EventListener<JTicTacToeGrid.CellClickedEventObject> cellClicked = newEventListenerMock();
         grid.cellClicked().addListener(cellClicked);
 
         MouseEvent click = buildLButtonClickedEvent(inLastCell);
-
         grid.raiseMouseEvent(click);
 
         Grid.Location expectedCell = Grid.Location.of(Grid.Row.Third, Grid.Column.Third);

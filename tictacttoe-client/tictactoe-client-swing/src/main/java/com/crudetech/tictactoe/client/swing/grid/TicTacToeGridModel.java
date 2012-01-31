@@ -78,6 +78,9 @@ public class TicTacToeGridModel {
             super(model);
             this.changedCells = changedCells;
         }
+        public Iterable<Grid.Location> getChangedCells() {
+            return changedCells;
+        }
 
         @Override
         public boolean equals(Object o) {

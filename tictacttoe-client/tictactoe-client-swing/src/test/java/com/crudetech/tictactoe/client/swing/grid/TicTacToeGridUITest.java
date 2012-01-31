@@ -1,5 +1,6 @@
 package com.crudetech.tictactoe.client.swing.grid;
 
+import com.crudetech.functional.UnaryFunction;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import org.junit.Before;
@@ -9,16 +10,20 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static com.crudetech.matcher.RangeIsEquivalent.equivalentTo;
+import static com.crudetech.query.Query.from;
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class TicTacToeGridUITest {
 
@@ -32,7 +37,7 @@ public class TicTacToeGridUITest {
     @Before
     public void setUp() throws Exception {
         g2d = mock(Graphics2D.class);
-
+        when(g2d.getTransform()).thenReturn(new AffineTransform());
         TicTacToeGridModel model = new TicTacToeGridModel(
                 LinearRandomAccessGrid.of(
                         Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None,
@@ -50,7 +55,7 @@ public class TicTacToeGridUITest {
     }
 
     @Test
-    public void backGroundIsPaintedInMiddle() {
+    public void backGroundIsPaintedInMiddleOfComponent() {
         List<Widget> widgets = ui.buildPaintList();
 
         ImageWidget backGroundImage = (ImageWidget) widgets.get(1);
@@ -96,7 +101,7 @@ public class TicTacToeGridUITest {
         List<Widget> expected = expectedGridMarkWidgets();
 
         assertThat(widgets, is(equivalentTo(expected)));
-//        assertThat(grid.getModel().hasHighlightedTriple(), is(false));
+        assertThat(grid.getModel().hasHighlightedTriple(), is(false));
     }
 
     private List<Widget> expectedGridMarkWidgets() {
@@ -186,7 +191,7 @@ public class TicTacToeGridUITest {
         final BufferedImage nought = style.getNoughtImage();
         Rectangle[][] locations = style.getGridMarkLocations();
 
-        return Arrays.<Widget>asList(
+        return asList(
                 new ImageWidget(loc(locations[0][0].getLocation()), cross),
                 new CompositeDecoratorWidget(
                         new ImageWidget(loc(locations[0][1].getLocation()), nought), TicTacToeGridUI.WinningTripleAlpha),
@@ -205,5 +210,40 @@ public class TicTacToeGridUITest {
                         new ImageWidget(loc(locations[2][1].getLocation()), nought), TicTacToeGridUI.WinningTripleAlpha),
                 new ImageWidget(loc(locations[2][2].getLocation()), cross)
         );
+    }
+
+
+    @Test
+    public void debugIsNotPaintedIfDebugModeIsNotOn() {
+        List<Widget> widgets = ui.buildPaintList();
+        boolean hasDebugWidget = from(widgets).select(classOf()).where(isKindOf(TicTacToeGridUI.DebugWidget.class)).any();
+        assertThat(hasDebugWidget, is(false));
+    }
+
+    private <T> UnaryFunction<T, Class<T>> classOf() {
+        return new UnaryFunction<T, Class<T>>() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public Class<T> execute(T t) {
+                return (Class<T>) t.getClass();
+            }
+        };
+    }
+
+    private UnaryFunction<Class<?>, Boolean> isKindOf(final Class<?> rhs) {
+        return new UnaryFunction<Class<?>, Boolean>() {
+            @Override
+            public Boolean execute(Class<?> clazz) {
+                return rhs.isAssignableFrom(clazz);
+            }
+        };
+    }
+
+    @Test
+    public void debugIsOnlyPaintedIfDebugModeIsOn() {
+        ui.turnOnDebug();
+        List<Widget> widgets = ui.buildPaintList();
+        boolean hasDebugWidget = from(widgets).select(classOf()).where(isKindOf(TicTacToeGridUI.DebugWidget.class)).any();
+        assertThat(hasDebugWidget, is(true));
     }
 }

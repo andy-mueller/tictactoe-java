@@ -16,12 +16,7 @@ import java.util.Objects;
 public class JTicTacToeGrid extends JComponent {
     private TicTacToeGridModel model;
     private EventSupport<CellClickedEventObject> clickedEvent = new EventSupport<>();
-    private EventListener<TicTacToeGridModel.ChangedEventObject> modelChangedListener = new EventListener<TicTacToeGridModel.ChangedEventObject>() {
-        @Override
-        public void onEvent(TicTacToeGridModel.ChangedEventObject e) {
-            repaint();
-        }
-    };
+    private EventListener<TicTacToeGridModel.ChangedEventObject> modelChangedListener;
 
     static {
         UIManager.getDefaults().put(TicTacToeGridUI.class.getSimpleName(), TicTacToeGridUI.class.getName());
@@ -38,9 +33,18 @@ public class JTicTacToeGrid extends JComponent {
     }
 
     public JTicTacToeGrid(TicTacToeGridModel model) {
+        initializeListeners();
         setModel(model);
         updateUI();
+    }
 
+    public JTicTacToeGrid(TicTacToeGridModel model, TicTacToeGridUI ui) {
+        initializeListeners();
+        setModel(model);
+        setUI(ui);
+    }
+
+    private void initializeListeners() {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -53,11 +57,12 @@ public class JTicTacToeGrid extends JComponent {
                 onMouseMoved(e);
             }
         });
-    }
-
-    public JTicTacToeGrid(TicTacToeGridModel model, TicTacToeGridUI ui) {
-        setModel(model);
-        setUI(ui);
+        modelChangedListener = new EventListener<TicTacToeGridModel.ChangedEventObject>() {
+            @Override
+            public void onEvent(TicTacToeGridModel.ChangedEventObject e) {
+                getUI().repaintCells(e.getChangedCells());
+            }
+        };
     }
 
     private void onMouseMoved(MouseEvent e) {
@@ -67,7 +72,7 @@ public class JTicTacToeGrid extends JComponent {
         } else {
             getModel().unHighlightCell();
         }
-        repaint();
+        //repaint();
     }
 
     private void onMouseClicked(MouseEvent e) {

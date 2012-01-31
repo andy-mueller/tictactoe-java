@@ -2,7 +2,6 @@ package com.crudetech.tictactoe.client.swing.grid;
 
 import com.crudetech.event.Event;
 import com.crudetech.event.EventListener;
-import com.crudetech.event.EventSupport;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
 import com.crudetech.junit.feature.Features;
@@ -13,9 +12,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.crudetech.collections.Iterables.emptyListOf;
 import static com.crudetech.tictactoe.client.swing.grid.TicTacToeGridModel.ChangedEventObject;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.instanceOf;
@@ -29,6 +26,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(Features.class)
 public class JTicTacToeGridTest {
@@ -47,9 +45,12 @@ public class JTicTacToeGridTest {
     @Test
     public void modelIsSetOnCtor() {
         TicTacToeGridModel model = spy(new TicTacToeGridModel());
+        Event<ChangedEventObject> changedEvent = eventMock();
+        when(model.changed()).thenReturn(changedEvent);
         JTicTacToeGrid jgrid = new JTicTacToeGrid(model);
 
         verify(model).changed();
+        verify(changedEvent).addListener(anyListener());
         assertThat(jgrid.getModel(), is(model));
     }
 
@@ -65,13 +66,26 @@ public class JTicTacToeGridTest {
     @Test
     public void uiAndModelAreSetOnCtor() {
         TicTacToeGridModel model = spy(new TicTacToeGridModel());
+        Event<ChangedEventObject> changedEvent = eventMock();
+        when(model.changed()).thenReturn(changedEvent);
         TicTacToeGridUI ui = spy(new TicTacToeGridUI());
         JTicTacToeGrid jgrid = new JTicTacToeGrid(model, ui);
 
         verify(ui).installUI(jgrid);
         assertThat(jgrid.getUI(), is(ui));
         verify(model).changed();
+        verify(changedEvent).addListener(anyListener());
         assertThat(jgrid.getModel(), is(model));
+    }
+
+    @SuppressWarnings("unchecked")
+    private Event<ChangedEventObject> eventMock() {
+        return mock(Event.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    private EventListener<ChangedEventObject> anyListener() {
+        return any(EventListener.class);
     }
 
     @Test
@@ -103,29 +117,6 @@ public class JTicTacToeGridTest {
         jgrid.setUI(new TicTacToeGridUI());
 
         verify(oldGridUI).uninstallUI(jgrid);
-    }
-
-    @Test
-    public void modelChangedEvenTriggersRepaint() {
-        final EventSupport<TicTacToeGridModel.ChangedEventObject> modelChanged = new EventSupport<>();
-        final TicTacToeGridModel model = new TicTacToeGridModel() {
-            @Override
-            public EventSupport<ChangedEventObject> changed() {
-                return modelChanged;
-            }
-        };
-
-        final AtomicBoolean painted = new AtomicBoolean(false);
-        JTicTacToeGrid aGrid = new JTicTacToeGrid(model) {
-            @Override
-            public void repaint() {
-                painted.getAndSet(true);
-            }
-        };
-
-        modelChanged.fireEvent(new ChangedEventObject(aGrid.getModel(), emptyListOf(Grid.Location.class)));
-
-        assertThat(painted.get(), is(true));
     }
 
     @Feature(Equivalent.class)
