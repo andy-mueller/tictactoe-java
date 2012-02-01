@@ -78,6 +78,7 @@ public class TicTacToeGridModel {
             super(model);
             this.changedCells = changedCells;
         }
+
         public Iterable<Grid.Location> getChangedCells() {
             return changedCells;
         }
@@ -111,7 +112,9 @@ public class TicTacToeGridModel {
 
     public void highlightCell(Grid.Location highlightedCell) {
         verifyThat(highlightedCell, is(notNullValue()));
-        onChanged(asList(replaceHighlightedCell(highlightedCell), highlightedCell));
+        if (!highlightedCell.equals(getHighlightedCell())) {
+            onChanged(asList(replaceHighlightedCell(highlightedCell), highlightedCell));
+        }
     }
 
     private Grid.Location replaceHighlightedCell(Grid.Location newCell) {

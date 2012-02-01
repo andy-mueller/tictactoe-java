@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.crudetech.query.Query.from;
@@ -100,18 +101,16 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     private boolean isDebug = false;
-
     void turnOnDebug() {
         isDebug = true;
     }
 
     class DebugWidget extends EcsWidget {
-        private int paintCount = 0;
 
         @Override
         public void paintEcs(Graphics2D pipe) {
-            System.out.println("---->Painting #" + paintCount++);
-            pipe.setPaint(Color.RED);
+            System.out.println("---->Painting @" + new Date());
+            pipe.setPaint(Color.ORANGE);
             for (int row = 0; row < component.getHeight(); row += 50) {
                 pipe.drawLine(0, row, component.getWidth(), row);
             }

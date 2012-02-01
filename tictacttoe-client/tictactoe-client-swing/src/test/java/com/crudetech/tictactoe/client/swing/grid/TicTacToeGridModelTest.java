@@ -4,6 +4,7 @@ import com.crudetech.event.EventListener;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static com.crudetech.collections.Iterables.emptyListOf;
 import static com.crudetech.matcher.ThrowsException.doesThrow;
@@ -11,6 +12,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 public class TicTacToeGridModelTest {
@@ -95,7 +97,7 @@ public class TicTacToeGridModelTest {
     }
 
     @Test
-    public void changingHighlightRaisesChangedEvent() {
+    public void changingHighlightCellRaisesChangedEvent() {
         TicTacToeGridModel model = new TicTacToeGridModel();
         EventListener<TicTacToeGridModel.ChangedEventObject> changedListener = createListenerStub();
         model.changed().addListener(changedListener);
@@ -105,9 +107,20 @@ public class TicTacToeGridModelTest {
 
         verify(changedListener).onEvent(new TicTacToeGridModel.ChangedEventObject(model, asList(Grid.Location.of(Grid.Row.Second, Grid.Column.Third), Grid.Location.of(Grid.Row.Second, Grid.Column.First))));
     }
+    @Test
+    public void changingHighlightCellDoesNotRaiseChangedEventOnSameValue() {
+        TicTacToeGridModel model = new TicTacToeGridModel();
+        model.highlightCell(Grid.Location.of(Grid.Row.Second, Grid.Column.Third));
+        EventListener<TicTacToeGridModel.ChangedEventObject> changedListener = createListenerStub();
+        model.changed().addListener(changedListener);
+
+        model.highlightCell(Grid.Location.of(Grid.Row.Second, Grid.Column.Third));
+
+        verify(changedListener, never()).onEvent(Mockito.any(TicTacToeGridModel.ChangedEventObject.class));
+    }
 
     @Test
-    public void unhighlightRaisesChangedEvent() {
+    public void unhighlightCellRaisesChangedEvent() {
         TicTacToeGridModel model = new TicTacToeGridModel();
         EventListener<TicTacToeGridModel.ChangedEventObject> changedListener = createListenerStub();
         model.changed().addListener(changedListener);
@@ -123,7 +136,7 @@ public class TicTacToeGridModelTest {
     }
 
     @Test
-    public void highlightDoesNotAcceptNull() {
+    public void highlightCellDoesNotAcceptNull() {
         final TicTacToeGridModel model = new TicTacToeGridModel();
 
         Runnable highlightWithNull = new Runnable() {
@@ -137,7 +150,7 @@ public class TicTacToeGridModelTest {
     }
 
     @Test
-    public void unHighlight() {
+    public void unHighlightCell() {
         TicTacToeGridModel model = new TicTacToeGridModel();
 
         model.highlightCell(Grid.Location.of(Grid.Row.Second, Grid.Column.Third));
