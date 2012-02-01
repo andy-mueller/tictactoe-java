@@ -51,16 +51,31 @@ public class TicTacToeGridUI extends ComponentUI {
         }
     }
 
+    private static class Graphics2dTransform implements AutoCloseable {
+        private final AffineTransform originalXForm;
+        private final Graphics2D pipe;
+
+        Graphics2dTransform(Graphics2D pipe) {
+            this.pipe = pipe;
+            originalXForm = pipe.getTransform();
+        }
+
+        @Override
+        public void close() {
+            pipe.setTransform(originalXForm);
+        }
+
+        void pushTranslation(double dx, double dy) {
+            AffineTransform translate = AffineTransform.getTranslateInstance(dx, dy);
+            pipe.transform(translate);
+        }
+    }
+
     private void paintWidget(Widget widget, Graphics2D pipe) {
-        AffineTransform oldTransform = pipe.getTransform();
-        Point loc = widget.getLocation();
-        AffineTransform newXform = AffineTransform.getTranslateInstance(loc.getX(), loc.getY());
-        newXform.concatenate(oldTransform);
-        pipe.setTransform(newXform);
-        try {
+        try (Graphics2dTransform xform = new Graphics2dTransform(pipe)) {
+            Point loc = widget.getLocation();
+            xform.pushTranslation(loc.getX(), loc.getY());
             widget.paintEcs(pipe);
-        } finally {
-            pipe.setTransform(oldTransform);
         }
     }
 
@@ -101,12 +116,12 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     private boolean isDebug = false;
+
     void turnOnDebug() {
         isDebug = true;
     }
 
     class DebugWidget extends EcsWidget {
-
         @Override
         public void paintEcs(Graphics2D pipe) {
             System.out.println("---->Painting @" + new Date());
