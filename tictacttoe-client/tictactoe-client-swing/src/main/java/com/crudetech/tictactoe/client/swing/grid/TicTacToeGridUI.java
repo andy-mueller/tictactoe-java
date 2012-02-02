@@ -101,24 +101,23 @@ public class TicTacToeGridUI extends ComponentUI {
         List<Widget> paintList = new ArrayList<>();
 
         paintList.add(backgroundWidget());
-
-        paintList.add(getBackgroundImageWidget());
-
-        paintList.addAll(buildGridMarkWidgetList());
-
+        paintList.add(backgroundImageWidget());
+        paintList.addAll(gridMarkWidgetList());
         paintList.add(highlightWidget());
+        paintList.add(debugInfoWidget());
 
-        if (isDebug) {
-            paintList.add(new DebugWidget());
-        }
 
         return paintList;
     }
 
-    private boolean isDebug = false;
+    private Widget debugInfoWidget() {
+        return isDebugMode ? new DebugWidget() : new EmptyWidget();
+    }
+
+    private boolean isDebugMode = false;
 
     void turnOnDebug() {
-        isDebug = true;
+        isDebugMode = true;
     }
 
     class DebugWidget extends EcsWidget {
@@ -157,13 +156,13 @@ public class TicTacToeGridUI extends ComponentUI {
         return new Point(x, y);
     }
 
-    private Widget getBackgroundImageWidget() {
+    private Widget backgroundImageWidget() {
         BufferedImage backgroundImage = style.getBackgroundImage();
         return new ImageWidget(getUiOrigin(), backgroundImage);
     }
 
 
-    List<Widget> buildGridMarkWidgetList() {
+    List<Widget> gridMarkWidgetList() {
         Point gridOrigin = getUiOrigin();
         List<Widget> gridMArks = new ArrayList<>(9);
         for (Grid.Cell cell : component.getModel().getGrid().getCells()) {

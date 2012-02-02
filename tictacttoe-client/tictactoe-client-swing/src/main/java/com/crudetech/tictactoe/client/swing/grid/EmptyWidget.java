@@ -5,8 +5,7 @@ import java.awt.Graphics2D;
 
 public class EmptyWidget extends EcsWidget{
     @Override
-    public void paintEcs(Graphics2D g2d) {
-    }
+    public void paintEcs(Graphics2D g2d) {}
 
     @Override
     public boolean equals(Object o) {
@@ -14,7 +13,5 @@ public class EmptyWidget extends EcsWidget{
     }
 
     @Override
-    public int hashCode() {
-        return -42;
-    }
+    public int hashCode() { return -42; }
 }

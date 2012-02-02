@@ -3,10 +3,12 @@ package com.crudetech.tictactoe.game;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.is;
+import java.util.List;
+
+import static com.crudetech.query.Query.from;
+import static com.crudetech.tictactoe.game.GridCells.markIsEqualTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 
 public class NaiveTryAndErrorPlayerTest {
 
@@ -27,13 +29,9 @@ public class NaiveTryAndErrorPlayerTest {
 
         game.startWithPlayer(naivePlayer, Grid.Mark.Cross);
 
-        Grid expectedGrid = LinearRandomAccessGrid.of(new Grid.Mark[]{
-                Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
-        });
+        List<Grid.Cell> crossedCells = from(otherPlayer.getLastGrid().getCells()).where(markIsEqualTo(Grid.Mark.Cross)).toList();
 
-        assertThat(otherPlayer.getLastGrid(), is(expectedGrid));
+        assertThat(crossedCells, hasSize(1));
     }
 
     @Test
@@ -42,38 +40,10 @@ public class NaiveTryAndErrorPlayerTest {
         game.startWithPlayer(naivePlayer, Grid.Mark.Cross);
         game.addMark(otherPlayer, Grid.Row.First, Grid.Column.Second);
 
-        Grid expectedGrid = LinearRandomAccessGrid.of(new Grid.Mark[]{
-                Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.Cross,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
-        });
+        List<Grid.Cell> crossedCells = from(otherPlayer.getLastGrid().getCells()).where(markIsEqualTo(Grid.Mark.Cross)).toList();
+        List<Grid.Cell> noughtCells= from(otherPlayer.getLastGrid().getCells()).where(markIsEqualTo(Grid.Mark.Nought)).toList();
 
-        assertThat(otherPlayer.getLastGrid(), is(expectedGrid));
+        assertThat(crossedCells, hasSize(2));
+        assertThat(noughtCells, hasSize(1));
     }
-
-    @Test
-    public void naivePlayersCanPlayAgainstEachOther() {
-        NaiveTryAndErrorPlayer aNaivePlayer = spy(new NaiveTryAndErrorPlayer());
-        NaiveTryAndErrorPlayer otherNaivePlayer = new NaiveTryAndErrorPlayer();
-        TicTacToeGame aGame = new TicTacToeGame(aNaivePlayer, otherNaivePlayer);
-        otherNaivePlayer.setGame(aGame);
-        aNaivePlayer.setGame(aGame);
-
-        aGame.startWithPlayer(aNaivePlayer, Grid.Mark.Cross);
-
-        Grid expectedGrid = LinearRandomAccessGrid.of(new Grid.Mark[]{
-                Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.Cross,
-                Grid.Mark.Nought, Grid.Mark.Cross, Grid.Mark.Nought,
-                Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
-        });
-
-        Grid.Triple diagonalTriple = Grid.Triple.of(Grid.Mark.Cross,
-                Grid.Location.of(Grid.Row.Third, Grid.Column.First),
-                Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
-                Grid.Location.of(Grid.Row.First, Grid.Column.Third));
-
-
-        verify(aNaivePlayer).youWin(expectedGrid, diagonalTriple);
-    }
-
 }

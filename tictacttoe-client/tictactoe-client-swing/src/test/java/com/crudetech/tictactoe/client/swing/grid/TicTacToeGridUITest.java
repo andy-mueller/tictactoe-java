@@ -96,7 +96,7 @@ public class TicTacToeGridUITest {
 
     @Test
     public void gridMarksArePaintedFromModel() {
-        List<Widget> widgets = ui.buildGridMarkWidgetList();
+        List<Widget> widgets = ui.gridMarkWidgetList();
 
         List<Widget> expected = expectedGridMarkWidgets();
 
@@ -145,6 +145,7 @@ public class TicTacToeGridUITest {
         expectedList.add(getExpectedBackgroundImage());
         expectedList.addAll(expectedGridMarkWidgets());
         expectedList.add(new EmptyWidget());
+        expectedList.add(new EmptyWidget());
 
         assertThat(widgets, is(expectedList));
     }
@@ -165,11 +166,7 @@ public class TicTacToeGridUITest {
 
         Rectangle rect = (Rectangle) style.getGridMarkLocations()[0][2].clone();
         rect.translate(StyleStub.Width / 2, StyleStub.Height / 2);
-        assertThat(getLastOf(widgets), is((Widget) new RectangleWidget(rect, style.getHighlightColor())));
-    }
-
-    private <T> T getLastOf(List<T> items) {
-        return items.get(items.size() - 1);
+        assertThat(widgets.get(widgets.size() - 2), is((Widget) new RectangleWidget(rect, style.getHighlightColor())));
     }
 
     @Test
@@ -180,7 +177,7 @@ public class TicTacToeGridUITest {
                 Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
         grid.getModel().highlightTriple(diagonal);
 
-        List<Widget> widgets = ui.buildGridMarkWidgetList();
+        List<Widget> widgets = ui.gridMarkWidgetList();
 
         List<Widget> expected = expectedGridMarkWidgetsWithHighlight();
         assertThat(widgets, is(equivalentTo(expected)));
