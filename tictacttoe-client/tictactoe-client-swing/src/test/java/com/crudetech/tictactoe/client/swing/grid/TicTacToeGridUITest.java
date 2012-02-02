@@ -155,7 +155,7 @@ public class TicTacToeGridUITest {
     }
 
     private Widget getExpectedBackground() {
-        return new FilledRectangleWidget(new Rectangle(0, 0, grid.getWidth(), grid.getHeight()), style.getBackgroundColor());
+        return new FilledRectangleWidget(new Rectangle(0, 0, grid.getWidth(), grid.getHeight() + 500), style.getBackgroundColor());
     }
 
     @Test

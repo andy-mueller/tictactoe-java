@@ -146,7 +146,9 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     private Widget backgroundWidget() {
-        return new FilledRectangleWidget(component.getBounds(), style.getBackgroundColor());
+        Rectangle bounds = component.getBounds();
+        bounds.height += 500;
+        return new FilledRectangleWidget(bounds, style.getBackgroundColor());
     }
 
     Point getUiOrigin() {
