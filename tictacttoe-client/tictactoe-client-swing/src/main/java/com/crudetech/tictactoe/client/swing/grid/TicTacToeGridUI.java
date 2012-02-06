@@ -160,7 +160,14 @@ public class TicTacToeGridUI extends ComponentUI {
 
     private Widget backgroundImageWidget() {
         BufferedImage backgroundImage = style.getBackgroundImage();
-        return new ImageWidget(getUiOrigin(), backgroundImage);
+
+        ImageWidget imageWidget = new ImageWidget(getUiOrigin(), backgroundImage);
+
+        return hasHighlightedTriple() ? new CompositeDecoratorWidget(imageWidget, WinningTripleAlpha) : imageWidget;
+    }
+
+    private boolean hasHighlightedTriple() {
+        return getModel().hasHighlightedTriple();
     }
 
 
@@ -222,6 +229,10 @@ public class TicTacToeGridUI extends ComponentUI {
 
     private TicTacToeGridModel getModel() {
         return component.getModel();
+    }
+
+    public void repaintAll() {
+        component.repaint();
     }
 
     public void repaintCells(Iterable<Grid.Location> changedCells) {

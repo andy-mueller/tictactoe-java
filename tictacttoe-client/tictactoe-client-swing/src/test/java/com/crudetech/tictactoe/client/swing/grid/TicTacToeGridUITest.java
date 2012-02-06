@@ -20,6 +20,7 @@ import static com.crudetech.matcher.RangeIsEquivalent.equivalentTo;
 import static com.crudetech.query.Query.from;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -181,6 +182,26 @@ public class TicTacToeGridUITest {
 
         List<Widget> expected = expectedGridMarkWidgetsWithHighlight();
         assertThat(widgets, is(equivalentTo(expected)));
+    }
+    @Test
+    public void backgroundImageIsTransparentWhenWinningTripleIsSet() {
+        Grid.Triple diagonal = Grid.Triple.of(Grid.Mark.Nought,
+                Grid.Location.of(Grid.Row.First, Grid.Column.First),
+                Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
+                Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
+        grid.getModel().highlightTriple(diagonal);
+
+        List<Widget> widgets = ui.buildPaintList();
+
+        assertThat(widgets.get(1), is(instanceOf(CompositeDecoratorWidget.class)));
+    }
+    @Test
+    public void backgroundImageIsNotTransparentWhenNoWinningTripleIsSet() {
+        grid.getModel().unHighlightTriple();
+
+        List<Widget> widgets = ui.buildPaintList();
+
+        assertThat(widgets.get(1), is(instanceOf(ImageWidget.class)));
     }
 
     private List<Widget> expectedGridMarkWidgetsWithHighlight() {

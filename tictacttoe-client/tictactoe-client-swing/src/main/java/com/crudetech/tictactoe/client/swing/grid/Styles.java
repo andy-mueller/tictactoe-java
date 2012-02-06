@@ -1,7 +1,9 @@
 package com.crudetech.tictactoe.client.swing.grid;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +23,7 @@ public enum Styles implements Style {
 
         @Override
         public Color getBackgroundColor() {
-            return Color.ORANGE;
+            return Color.WHITE;
         }
 
         @Override

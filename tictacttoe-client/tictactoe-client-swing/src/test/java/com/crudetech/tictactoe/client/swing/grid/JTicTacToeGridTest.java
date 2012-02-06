@@ -13,7 +13,6 @@ import org.mockito.stubbing.Answer;
 
 import java.util.List;
 
-import static com.crudetech.tictactoe.client.swing.grid.TicTacToeGridModel.ChangedEventObject;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -45,11 +44,11 @@ public class JTicTacToeGridTest {
     @Test
     public void modelIsSetOnCtor() {
         TicTacToeGridModel model = spy(new TicTacToeGridModel());
-        Event<ChangedEventObject> changedEvent = eventMock();
-        when(model.changed()).thenReturn(changedEvent);
+        Event<TicTacToeGridModel.CellsChangedEventObject> changedEvent = eventMock();
+        when(model.cellsChanged()).thenReturn(changedEvent);
         JTicTacToeGrid jgrid = new JTicTacToeGrid(model);
 
-        verify(model).changed();
+        verify(model).cellsChanged();
         verify(changedEvent).addListener(anyListener());
         assertThat(jgrid.getModel(), is(model));
     }
@@ -66,25 +65,25 @@ public class JTicTacToeGridTest {
     @Test
     public void uiAndModelAreSetOnCtor() {
         TicTacToeGridModel model = spy(new TicTacToeGridModel());
-        Event<ChangedEventObject> changedEvent = eventMock();
-        when(model.changed()).thenReturn(changedEvent);
+        Event<TicTacToeGridModel.CellsChangedEventObject> changedEvent = eventMock();
+        when(model.cellsChanged()).thenReturn(changedEvent);
         TicTacToeGridUI ui = spy(new TicTacToeGridUI());
         JTicTacToeGrid jgrid = new JTicTacToeGrid(model, ui);
 
         verify(ui).installUI(jgrid);
         assertThat(jgrid.getUI(), is(ui));
-        verify(model).changed();
+        verify(model).cellsChanged();
         verify(changedEvent).addListener(anyListener());
         assertThat(jgrid.getModel(), is(model));
     }
 
     @SuppressWarnings("unchecked")
-    private Event<ChangedEventObject> eventMock() {
+    private Event<TicTacToeGridModel.CellsChangedEventObject> eventMock() {
         return mock(Event.class);
     }
 
     @SuppressWarnings("unchecked")
-    private EventListener<ChangedEventObject> anyListener() {
+    private EventListener<TicTacToeGridModel.CellsChangedEventObject> anyListener() {
         return any(EventListener.class);
     }
 
@@ -143,32 +142,64 @@ public class JTicTacToeGridTest {
 
 
     private static class TicTacToeGridModelEventRegistrationTrackingStub extends TicTacToeGridModel {
+        Event<CellsChangedEventObject> cellsChangedEventSpy;
+        EventListener<CellsChangedEventObject> cellsAddedHandler;
+        EventListener<CellsChangedEventObject> cellsRemovedHandler;
+
         Event<ChangedEventObject> changedEventSpy;
-        EventListener<ChangedEventObject> addedHandler;
-        EventListener<ChangedEventObject> removedHandler;
+        EventListener<ChangedEventObject> changedAddedHandler;
+        EventListener<ChangedEventObject> changedRemovedHandler;
+
+        @Override
+        public Event<CellsChangedEventObject> cellsChanged() {
+            if (cellsChangedEventSpy == null) {
+                cellsChangedEventSpy = createAndPrepareEventSpy();
+            }
+            return cellsChangedEventSpy;
+        }
 
         @Override
         public Event<ChangedEventObject> changed() {
             if (changedEventSpy == null) {
-                changedEventSpy = createAndPrepareEventSpy();
+                changedEventSpy = createAndPrepareChangedEventSpy();
             }
             return changedEventSpy;
         }
 
         @SuppressWarnings("unchecked")
-        private Event<ChangedEventObject> createAndPrepareEventSpy() {
+        private Event<ChangedEventObject> createAndPrepareChangedEventSpy() {
             Event<ChangedEventObject> spy = spy(super.changed());
             doAnswer(new Answer<Object>() {
                 @Override
                 public Object answer(InvocationOnMock invocation) throws Throwable {
-                    addedHandler = (EventListener<ChangedEventObject>) invocation.getArguments()[0];
+                    changedAddedHandler = (EventListener<ChangedEventObject>) invocation.getArguments()[0];
                     return invocation.callRealMethod();
                 }
             }).when(spy).addListener(any(EventListener.class));
             doAnswer(new Answer<Object>() {
                 @Override
                 public Object answer(InvocationOnMock invocation) throws Throwable {
-                    removedHandler = (EventListener<ChangedEventObject>) invocation.getArguments()[0];
+                    changedRemovedHandler = (EventListener<ChangedEventObject>) invocation.getArguments()[0];
+                    return invocation.callRealMethod();
+                }
+            }).when(spy).removeListener(any(EventListener.class));
+            return spy;
+        }
+
+        @SuppressWarnings("unchecked")
+        private Event<CellsChangedEventObject> createAndPrepareEventSpy() {
+            Event<CellsChangedEventObject> spy = spy(super.cellsChanged());
+            doAnswer(new Answer<Object>() {
+                @Override
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    cellsAddedHandler = (EventListener<CellsChangedEventObject>) invocation.getArguments()[0];
+                    return invocation.callRealMethod();
+                }
+            }).when(spy).addListener(any(EventListener.class));
+            doAnswer(new Answer<Object>() {
+                @Override
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    cellsRemovedHandler = (EventListener<CellsChangedEventObject>) invocation.getArguments()[0];
                     return invocation.callRealMethod();
                 }
             }).when(spy).removeListener(any(EventListener.class));
@@ -177,16 +208,30 @@ public class JTicTacToeGridTest {
     }
 
     @Test
-    public void setModelUnhooksOldModelEvents() {
+    public void setModelUnhooksOldModelCellChangedEvents() {
         JTicTacToeGrid jgrid = new JTicTacToeGrid();
 
         TicTacToeGridModelEventRegistrationTrackingStub firstModel = new TicTacToeGridModelEventRegistrationTrackingStub();
         jgrid.setModel(firstModel);
-        assertThat(firstModel.addedHandler, is(notNullValue()));
+        assertThat(firstModel.cellsAddedHandler, is(notNullValue()));
 
         TicTacToeGridModelEventRegistrationTrackingStub secondModel = new TicTacToeGridModelEventRegistrationTrackingStub();
         jgrid.setModel(secondModel);
-        assertThat(firstModel.removedHandler, is(firstModel.addedHandler));
-        assertThat(secondModel.addedHandler, is(firstModel.addedHandler));
+        assertThat(firstModel.cellsRemovedHandler, is(firstModel.cellsAddedHandler));
+        assertThat(secondModel.cellsAddedHandler, is(firstModel.cellsAddedHandler));
+    }
+
+    @Test
+    public void setModelUnhooksOldModelChangedEvents() {
+        JTicTacToeGrid jgrid = new JTicTacToeGrid();
+
+        TicTacToeGridModelEventRegistrationTrackingStub firstModel = new TicTacToeGridModelEventRegistrationTrackingStub();
+        jgrid.setModel(firstModel);
+        assertThat(firstModel.changedAddedHandler, is(notNullValue()));
+
+        TicTacToeGridModelEventRegistrationTrackingStub secondModel = new TicTacToeGridModelEventRegistrationTrackingStub();
+        jgrid.setModel(secondModel);
+        assertThat(firstModel.changedRemovedHandler, is(firstModel.changedAddedHandler));
+        assertThat(secondModel.changedAddedHandler, is(firstModel.changedAddedHandler));
     }
 }

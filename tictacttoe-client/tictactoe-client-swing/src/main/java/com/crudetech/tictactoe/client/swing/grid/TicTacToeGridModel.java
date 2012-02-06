@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 public class TicTacToeGridModel {
+    private final EventSupport<CellsChangedEventObject> cellChangedEvent = new EventSupport<>();
     private final EventSupport<ChangedEventObject> changedEvent = new EventSupport<>();
     private Grid.Location highlightedCell;
     private Grid.Triple highlightedTriple;
@@ -42,7 +43,7 @@ public class TicTacToeGridModel {
     public void setGrid(Grid grid) {
         verifyThat(grid, is((notNullValue())));
         this.grid = grid;
-        onChanged(allCells());
+        onCellsChanged(allCells());
     }
 
     private Iterable<Grid.Location> allCells() {
@@ -51,11 +52,6 @@ public class TicTacToeGridModel {
         } else {
             return from(grid.getCells()).select(location());
         }
-    }
-
-    private void onChanged(Iterable<Grid.Location> changed) {
-        List<Grid.Location> changedLocations = from(changed).where(notNull()).toList();
-        changedEvent.fireEvent(new ChangedEventObject(this, changedLocations));
     }
 
     private UnaryFunction<? super Grid.Location, Boolean> notNull() {
@@ -67,14 +63,19 @@ public class TicTacToeGridModel {
         };
     }
 
-    public Event<ChangedEventObject> changed() {
-        return changedEvent;
+    public Event<CellsChangedEventObject> cellsChanged() {
+        return cellChangedEvent;
     }
 
-    public static class ChangedEventObject extends EventObject<TicTacToeGridModel> {
+    private void onCellsChanged(Iterable<Grid.Location> changed) {
+        List<Grid.Location> changedLocations = from(changed).where(notNull()).toList();
+        cellChangedEvent.fireEvent(new CellsChangedEventObject(this, changedLocations));
+    }
+
+    public static class CellsChangedEventObject extends EventObject<TicTacToeGridModel> {
         private final Iterable<Grid.Location> changedCells;
 
-        public ChangedEventObject(TicTacToeGridModel model, Iterable<Grid.Location> changedCells) {
+        public CellsChangedEventObject(TicTacToeGridModel model, Iterable<Grid.Location> changedCells) {
             super(model);
             this.changedCells = changedCells;
         }
@@ -89,7 +90,7 @@ public class TicTacToeGridModel {
             if (o == null || getClass() != o.getClass()) return false;
             if (!super.equals(o)) return false;
 
-            ChangedEventObject that = (ChangedEventObject) o;
+            CellsChangedEventObject that = (CellsChangedEventObject) o;
 
             return Compare.equals(changedCells, that.changedCells);
         }
@@ -103,7 +104,7 @@ public class TicTacToeGridModel {
 
         @Override
         public String toString() {
-            return "ChangedEventObject{" +
+            return "CellsChangedEventObject{" +
                     "source=" + getSource() +
                     ",changedCells=" + changedCells +
                     '}';
@@ -113,7 +114,7 @@ public class TicTacToeGridModel {
     public void highlightCell(Grid.Location highlightedCell) {
         verifyThat(highlightedCell, is(notNullValue()));
         if (!highlightedCell.equals(getHighlightedCell())) {
-            onChanged(asList(replaceHighlightedCell(highlightedCell), highlightedCell));
+            onCellsChanged(asList(replaceHighlightedCell(highlightedCell), highlightedCell));
         }
     }
 
@@ -132,14 +133,15 @@ public class TicTacToeGridModel {
     }
 
     public void unHighlightCell() {
-        onChanged(asList(replaceHighlightedCell(null)));
+        onCellsChanged(asList(replaceHighlightedCell(null)));
     }
 
     public void highlightTriple(Grid.Triple highlightedTriple) {
         verifyThat(highlightedTriple, is(notNullValue()));
 
         Iterable<Grid.Location> oldLocations = cellsOf(replaceHighlightedTriple(highlightedTriple));
-        onChanged(concat(oldLocations, highlightedTriple.getLocations()));
+        onCellsChanged(concat(oldLocations, highlightedTriple.getLocations()));
+        onChanged();
     }
 
     private Iterable<Grid.Location> cellsOf(Grid.Triple triple) {
@@ -165,6 +167,21 @@ public class TicTacToeGridModel {
     }
 
     public void unHighlightTriple() {
-        onChanged(cellsOf(replaceHighlightedTriple(null)));
+        onCellsChanged(cellsOf(replaceHighlightedTriple(null)));
+        onChanged();
+    }
+
+    public static class ChangedEventObject extends EventObject<TicTacToeGridModel> {
+        ChangedEventObject(TicTacToeGridModel ticTacToeGridModel) {
+            super(ticTacToeGridModel);
+        }
+    }
+
+    public Event<ChangedEventObject> changed() {
+        return changedEvent;
+    }
+
+    private void onChanged() {
+        changedEvent.fireEvent(new ChangedEventObject(this));
     }
 }

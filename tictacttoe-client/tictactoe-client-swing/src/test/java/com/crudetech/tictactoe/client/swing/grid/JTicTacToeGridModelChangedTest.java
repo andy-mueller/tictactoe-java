@@ -17,7 +17,7 @@ import static org.junit.Assert.assertThat;
 
 public class JTicTacToeGridModelChangedTest {
 
-    private EventSupport<TicTacToeGridModel.ChangedEventObject> modelChanged;
+    private EventSupport<TicTacToeGridModel.CellsChangedEventObject> modelCellChanged;
     private List<Rectangle> repaintedRegions;
     private AtomicBoolean painted;
     private JTicTacToeGrid aGrid;
@@ -25,11 +25,11 @@ public class JTicTacToeGridModelChangedTest {
 
     @Before
     public void before() {
-        modelChanged = new EventSupport<>();
+        modelCellChanged = new EventSupport<>();
         TicTacToeGridModel model = new TicTacToeGridModel() {
             @Override
-            public EventSupport<ChangedEventObject> changed() {
-                return modelChanged;
+            public EventSupport<CellsChangedEventObject> cellsChanged() {
+                return modelCellChanged;
             }
         };
         repaintedRegions = new ArrayList<>();
@@ -48,14 +48,14 @@ public class JTicTacToeGridModelChangedTest {
     }
 
     @Test
-    public void modelChangedEvenTriggersRepaint() {
+    public void modelCellChangedEvenTriggersRepaint() {
         Iterable<Grid.Location> changedCells = asList(
                 Grid.Location.of(Grid.Row.First, Grid.Column.Third),
                 Grid.Location.of(Grid.Row.First, Grid.Column.Second),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.Third)
         );
 
-        modelChanged.fireEvent(new TicTacToeGridModel.ChangedEventObject(aGrid.getModel(), changedCells));
+        modelCellChanged.fireEvent(new TicTacToeGridModel.CellsChangedEventObject(aGrid.getModel(), changedCells));
 
         assertThat(painted.get(), is(true));
         assertThat(repaintedRegions, is(equivalentTo(expectedRepaintedRegions())));

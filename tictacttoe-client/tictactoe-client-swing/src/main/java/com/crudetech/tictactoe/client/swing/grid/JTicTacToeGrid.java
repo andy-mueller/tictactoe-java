@@ -16,6 +16,7 @@ import java.util.Objects;
 public class JTicTacToeGrid extends JComponent {
     private TicTacToeGridModel model;
     private EventSupport<CellClickedEventObject> clickedEvent = new EventSupport<>();
+    private EventListener<TicTacToeGridModel.CellsChangedEventObject> modelCellChangedListener;
     private EventListener<TicTacToeGridModel.ChangedEventObject> modelChangedListener;
 
     static {
@@ -57,10 +58,16 @@ public class JTicTacToeGrid extends JComponent {
                 onMouseMoved(e);
             }
         });
+        modelCellChangedListener = new EventListener<TicTacToeGridModel.CellsChangedEventObject>() {
+            @Override
+            public void onEvent(TicTacToeGridModel.CellsChangedEventObject e) {
+                getUI().repaintCells(e.getChangedCells());
+            }
+        };
         modelChangedListener = new EventListener<TicTacToeGridModel.ChangedEventObject>() {
             @Override
             public void onEvent(TicTacToeGridModel.ChangedEventObject e) {
-                getUI().repaintCells(e.getChangedCells());
+                getUI().repaintAll();
             }
         };
     }
@@ -72,7 +79,6 @@ public class JTicTacToeGrid extends JComponent {
         } else {
             getModel().unHighlightCell();
         }
-        //repaint();
     }
 
     private void onMouseClicked(MouseEvent e) {
@@ -88,8 +94,10 @@ public class JTicTacToeGrid extends JComponent {
 
     public void setModel(TicTacToeGridModel model) {
         if (hasModel()) {
+            getModel().cellsChanged().removeListener(modelCellChangedListener);
             getModel().changed().removeListener(modelChangedListener);
         }
+        model.cellsChanged().addListener(modelCellChangedListener);
         model.changed().addListener(modelChangedListener);
         this.model = model;
     }
