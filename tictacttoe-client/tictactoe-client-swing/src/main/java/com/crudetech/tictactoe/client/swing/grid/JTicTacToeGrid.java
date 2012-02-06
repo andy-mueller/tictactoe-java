@@ -100,6 +100,7 @@ public class JTicTacToeGrid extends JComponent {
         model.cellsChanged().addListener(modelCellChangedListener);
         model.changed().addListener(modelChangedListener);
         this.model = model;
+        repaint();
     }
 
     private boolean hasModel() {

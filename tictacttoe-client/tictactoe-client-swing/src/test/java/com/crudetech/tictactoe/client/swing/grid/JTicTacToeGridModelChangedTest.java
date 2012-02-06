@@ -8,7 +8,6 @@ import org.junit.Test;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.crudetech.matcher.RangeIsEquivalent.equivalentTo;
 import static java.util.Arrays.asList;
@@ -16,12 +15,30 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 public class JTicTacToeGridModelChangedTest {
-
     private EventSupport<TicTacToeGridModel.CellsChangedEventObject> modelCellChanged;
-    private List<Rectangle> repaintedRegions;
-    private AtomicBoolean painted;
-    private JTicTacToeGrid aGrid;
+    private PaintTrackingTicTacToeGrid aGrid;
 
+    static class PaintTrackingTicTacToeGrid extends JTicTacToeGrid {
+        private boolean areaRepainted = false;
+        private List<Rectangle> repaintedRegions = new ArrayList<>();
+        public boolean fullRepaint = false;
+
+        PaintTrackingTicTacToeGrid(TicTacToeGridModel model) {
+            super(model);
+        }
+
+        @Override
+        public void repaint(Rectangle repaintedRegion) {
+            areaRepainted = true;
+            repaintedRegions.add(repaintedRegion);
+            super.repaint(repaintedRegion);
+        }
+
+        @Override
+        public void repaint() {
+            fullRepaint = true;
+        }
+    }
 
     @Before
     public void before() {
@@ -32,16 +49,7 @@ public class JTicTacToeGridModelChangedTest {
                 return modelCellChanged;
             }
         };
-        repaintedRegions = new ArrayList<>();
-        painted = new AtomicBoolean(false);
-        aGrid = new JTicTacToeGrid(model) {
-            @Override
-            public void repaint(Rectangle repaintedRegion) {
-                painted.getAndSet(true);
-                repaintedRegions.add(repaintedRegion);
-                super.repaint(repaintedRegion);
-            }
-        };
+        aGrid = new PaintTrackingTicTacToeGrid(model);
         aGrid.setSize(StyleStub.Width * 2, StyleStub.Height * 2);
         Style style = new StyleStub();
         aGrid.getUI().setStyle(style);
@@ -57,15 +65,22 @@ public class JTicTacToeGridModelChangedTest {
 
         modelCellChanged.fireEvent(new TicTacToeGridModel.CellsChangedEventObject(aGrid.getModel(), changedCells));
 
-        assertThat(painted.get(), is(true));
-        assertThat(repaintedRegions, is(equivalentTo(expectedRepaintedRegions())));
+        assertThat(aGrid.areaRepainted, is(true));
+        assertThat(aGrid.repaintedRegions, is(equivalentTo(expectedRepaintedRegions())));
     }
 
     private static List<Rectangle> expectedRepaintedRegions() {
         return asList(
-                new Rectangle(StyleStub.Width / 2, StyleStub.Height / 2 + 2 * StyleStub.GridCellWidth + 2 * StyleStub.GridCellDistance, StyleStub.GridCellWidth+1, StyleStub.GridCellHeight+1),
-                new Rectangle(StyleStub.Width / 2, StyleStub.Height / 2 + StyleStub.GridCellWidth + StyleStub.GridCellDistance, StyleStub.GridCellWidth+1, StyleStub.GridCellHeight+1),
-                new Rectangle(StyleStub.Width / 2+ StyleStub.GridCellWidth + StyleStub.GridCellDistance, StyleStub.Height / 2 + 2 * StyleStub.GridCellWidth + 2 * StyleStub.GridCellDistance, StyleStub.GridCellWidth+1, StyleStub.GridCellHeight+1)
+                new Rectangle(StyleStub.Width / 2, StyleStub.Height / 2 + 2 * StyleStub.GridCellWidth + 2 * StyleStub.GridCellDistance, StyleStub.GridCellWidth + 1, StyleStub.GridCellHeight + 1),
+                new Rectangle(StyleStub.Width / 2, StyleStub.Height / 2 + StyleStub.GridCellWidth + StyleStub.GridCellDistance, StyleStub.GridCellWidth + 1, StyleStub.GridCellHeight + 1),
+                new Rectangle(StyleStub.Width / 2 + StyleStub.GridCellWidth + StyleStub.GridCellDistance, StyleStub.Height / 2 + 2 * StyleStub.GridCellWidth + 2 * StyleStub.GridCellDistance, StyleStub.GridCellWidth + 1, StyleStub.GridCellHeight + 1)
         );
+    }
+
+    @Test
+    public void changingModelTriggersFullRepaint() {
+        aGrid.setModel(new TicTacToeGridModel());
+
+        assertThat(aGrid.fullRepaint, is(true));
     }
 }
