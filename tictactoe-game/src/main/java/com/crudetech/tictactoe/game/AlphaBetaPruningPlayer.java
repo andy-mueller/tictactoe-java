@@ -18,7 +18,7 @@ public class AlphaBetaPruningPlayer extends ComputerPlayer {
 
         this.playersMark = playersMark;
         this.playersStrategy = playersStrategy;
-        this.startPlayersMark= startPlayersMark;
+        this.startPlayersMark = startPlayersMark;
     }
 
     public static Builder builder() {
@@ -34,7 +34,6 @@ public class AlphaBetaPruningPlayer extends ComputerPlayer {
             this.playersMark = playersMark;
             return this;
         }
-
 
         public Builder withStartPlayerMark(Grid.Mark startPlayersMark) {
             verifyThat(startPlayersMark, is(notNullValue()));
