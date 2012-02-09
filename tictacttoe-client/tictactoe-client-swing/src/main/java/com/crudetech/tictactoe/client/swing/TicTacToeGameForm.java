@@ -116,7 +116,8 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
     }//GEN-LAST:event_newSimpleGameMenuActionPerformed
 
     private void newAdvancedGameMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newAdvancedGameMenuActionPerformed
-        startNewGameWithComputerOpponent(AlphaBetaPruningPlayer.withMark(Grid.Mark.Nought));
+        ComputerPlayer alphaBetaPlayer = AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Nought).asMin();
+        startNewGameWithComputerOpponent(alphaBetaPlayer);
     }//GEN-LAST:event_newAdvancedGameMenuActionPerformed
 
     private void startNewGameWithComputerOpponent(ComputerPlayer computerPlayer) {

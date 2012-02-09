@@ -2,14 +2,40 @@ package com.crudetech.tictactoe.game;
 
 import com.crudetech.collections.Iterables;
 
-public class AlphaBetaPruningPlayer extends ComputerPlayer{
-    private final Grid.Mark mark;
+import static com.crudetech.matcher.Verify.verifyThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
-    public AlphaBetaPruningPlayer(Grid.Mark mark) {
-        this.mark = mark;
+public class AlphaBetaPruningPlayer extends ComputerPlayer {
+    private final Grid.Mark playersMark;
+    private final GameTree.Player playersStrategy;
+    private final Grid.Mark startPlayersMark = Grid.Mark.Cross;
+
+    AlphaBetaPruningPlayer(Grid.Mark playersMark, GameTree.Player playersStrategy) {
+        this.playersMark = playersMark;
+        this.playersStrategy = playersStrategy;
     }
-    public static ComputerPlayer withMark(Grid.Mark mark) {
-        return new AlphaBetaPruningPlayer(mark);
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private Grid.Mark playersMark;
+
+        public Builder withMark(Grid.Mark playersMark) {
+            verifyThat(playersMark, is(notNullValue()));
+            this.playersMark = playersMark;
+            return this;
+        }
+
+        public AlphaBetaPruningPlayer asMin() {
+            return new AlphaBetaPruningPlayer(playersMark, GameTree.Player.Min);
+        }
+
+        public AlphaBetaPruningPlayer asMax() {
+            return new AlphaBetaPruningPlayer(playersMark, GameTree.Player.Max);
+        }
     }
 
     @Override
@@ -23,11 +49,7 @@ public class AlphaBetaPruningPlayer extends ComputerPlayer{
     }
 
     private Grid nextBestMove(LinearRandomAccessGrid currentGrid) {
-        TicTacToeGameTree gameTree = new TicTacToeGameTree(currentGrid, mark, getStrategy());
+        TicTacToeGameTree gameTree = new TicTacToeGameTree(currentGrid, playersMark, playersStrategy, startPlayersMark);
         return gameTree.bestNextMove();
-    }
-
-    private GameTree.Player getStrategy() {
-        return mark.equals(Grid.Mark.Cross) ? GameTree.Player.Max : GameTree.Player.Min;
     }
 }

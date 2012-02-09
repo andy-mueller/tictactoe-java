@@ -23,7 +23,7 @@ public class TicTacToeGameTreeTest {
     @Before
     public void setUp() throws Exception {
         grid = new LinearRandomAccessGrid();
-        gameTree = new TicTacToeGameTree(grid, Grid.Mark.Cross, GameTree.Player.Max);
+        gameTree = new TicTacToeGameTree(grid, Grid.Mark.Cross, GameTree.Player.Max, Grid.Mark.Cross);
     }
 
     @Test
@@ -212,7 +212,7 @@ public class TicTacToeGameTreeTest {
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.Nought,
                 Grid.Mark.Nought, Grid.Mark.Cross, Grid.Mark.Cross,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought);
-        TicTacToeGameTree gameTree = new TicTacToeGameTree(open, Grid.Mark.Cross, GameTree.Player.Max);
+        TicTacToeGameTree gameTree = new TicTacToeGameTree(open, Grid.Mark.Cross, GameTree.Player.Max, Grid.Mark.Cross);
 
         Grid nextMove = gameTree.bestNextMove();
 
@@ -229,7 +229,7 @@ public class TicTacToeGameTreeTest {
                 Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought);
-        TicTacToeGameTree gameTree = new TicTacToeGameTree(grid, Grid.Mark.Nought, GameTree.Player.Min);
+        TicTacToeGameTree gameTree = new TicTacToeGameTree(grid, Grid.Mark.Nought, GameTree.Player.Min, Grid.Mark.Cross);
 
         Grid nextMove = gameTree.bestNextMove();
 
@@ -246,7 +246,7 @@ public class TicTacToeGameTreeTest {
                 Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.None,
                 Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.Cross,
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.Nought);
-        TicTacToeGameTree gameTree = new TicTacToeGameTree(grid, Grid.Mark.Nought, GameTree.Player.Min);
+        TicTacToeGameTree gameTree = new TicTacToeGameTree(grid, Grid.Mark.Nought, GameTree.Player.Min, Grid.Mark.Cross);
 
         Grid nextMove = gameTree.bestNextMove();
 
@@ -263,7 +263,7 @@ public class TicTacToeGameTreeTest {
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.Cross,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought);
-        TicTacToeGameTree gameTree = new TicTacToeGameTree(grid, Grid.Mark.Nought, GameTree.Player.Min);
+        TicTacToeGameTree gameTree = new TicTacToeGameTree(grid, Grid.Mark.Nought, GameTree.Player.Min, Grid.Mark.Cross);
 
         Grid nextMove = gameTree.bestNextMove();
 
@@ -279,7 +279,7 @@ public class TicTacToeGameTreeTest {
                 Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.Cross,
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
                 Grid.Mark.Nought, Grid.Mark.Cross, Grid.Mark.None);
-        TicTacToeGameTree gameTree = new TicTacToeGameTree(grid, Grid.Mark.Cross, GameTree.Player.Max);
+        TicTacToeGameTree gameTree = new TicTacToeGameTree(grid, Grid.Mark.Cross, GameTree.Player.Max, Grid.Mark.Cross);
 
         Grid nextMove = gameTree.bestNextMove();
 
@@ -296,7 +296,7 @@ public class TicTacToeGameTreeTest {
                 Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.Nought);
-        TicTacToeGameTree gameTree = new TicTacToeGameTree(grid, Grid.Mark.Cross, GameTree.Player.Max);
+        TicTacToeGameTree gameTree = new TicTacToeGameTree(grid, Grid.Mark.Cross, GameTree.Player.Max, Grid.Mark.Cross);
 
         Grid nextMove = gameTree.bestNextMove();
 

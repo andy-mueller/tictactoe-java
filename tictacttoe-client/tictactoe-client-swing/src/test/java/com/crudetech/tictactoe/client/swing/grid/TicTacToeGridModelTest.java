@@ -1,10 +1,16 @@
 package com.crudetech.tictactoe.client.swing.grid;
 
 import com.crudetech.event.EventListener;
+import com.crudetech.junit.feature.Equivalent;
+import com.crudetech.junit.feature.Feature;
+import com.crudetech.junit.feature.Features;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+
+import java.util.List;
 
 import static com.crudetech.collections.Iterables.emptyListOf;
 import static com.crudetech.matcher.ThrowsException.doesThrow;
@@ -15,6 +21,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+@RunWith(Features.class)
 public class TicTacToeGridModelTest {
     @Test
     public void ctorSetsModelData() {
@@ -107,6 +114,7 @@ public class TicTacToeGridModelTest {
 
         verify(changedListener).onEvent(new TicTacToeGridModel.CellsChangedEventObject(model, asList(Grid.Location.of(Grid.Row.Second, Grid.Column.Third), Grid.Location.of(Grid.Row.Second, Grid.Column.First))));
     }
+
     @Test
     public void changingHighlightCellDoesNotRaiseChangedEventOnSameValue() {
         TicTacToeGridModel model = new TicTacToeGridModel();
@@ -225,6 +233,7 @@ public class TicTacToeGridModelTest {
 
         verify(changedListener).onEvent(new TicTacToeGridModel.ChangedEventObject(model));
     }
+
     @Test
     public void highlightTripleRaisesCellChangedEvent() {
         TicTacToeGridModel model = new TicTacToeGridModel();
@@ -246,5 +255,43 @@ public class TicTacToeGridModelTest {
         model.unHighlightTriple();
 
         verify(changedListener).onEvent(new TicTacToeGridModel.CellsChangedEventObject(model, diagonal.getLocations()));
+    }
+
+    @Feature(Equivalent.class)
+    public static Equivalent.Factory<TicTacToeGridModel.CellsChangedEventObject> cellsChangedEventObjectIsEquivalent() {
+        return new Equivalent.Factory<TicTacToeGridModel.CellsChangedEventObject>() {
+            private final TicTacToeGridModel model = new TicTacToeGridModel();
+
+            @Override
+            public TicTacToeGridModel.CellsChangedEventObject createItem() {
+                return new TicTacToeGridModel.CellsChangedEventObject(model, asList(Grid.Location.of(Grid.Row.Third, Grid.Column.Second)));
+            }
+
+            @Override
+            public List<TicTacToeGridModel.CellsChangedEventObject> createOtherItems() {
+                return asList(
+                        new TicTacToeGridModel.CellsChangedEventObject(model, asList(Grid.Location.of(Grid.Row.First, Grid.Column.Second))),
+                        new TicTacToeGridModel.CellsChangedEventObject(new TicTacToeGridModel(), asList(Grid.Location.of(Grid.Row.Third, Grid.Column.Second)))
+                );
+            }
+        };
+    }
+
+    @Feature(Equivalent.class)
+    public static Equivalent.Factory<TicTacToeGridModel.ChangedEventObject> changedEventObjectIsEquivalent() {
+        return new Equivalent.Factory<TicTacToeGridModel.ChangedEventObject>() {
+            private final TicTacToeGridModel model = new TicTacToeGridModel();
+            @Override
+            public TicTacToeGridModel.ChangedEventObject createItem() {
+                return new TicTacToeGridModel.ChangedEventObject(model);
+            }
+
+            @Override
+            public List<TicTacToeGridModel.ChangedEventObject> createOtherItems() {
+                return asList(
+                        new TicTacToeGridModel.ChangedEventObject(new TicTacToeGridModel())
+                );
+            }
+        };
     }
 }

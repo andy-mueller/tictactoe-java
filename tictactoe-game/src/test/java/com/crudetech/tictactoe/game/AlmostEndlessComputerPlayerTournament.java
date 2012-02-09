@@ -26,7 +26,7 @@ public class AlmostEndlessComputerPlayerTournament {
                 @Override
                 public void run() {
                     AlphaBetaPruningPlayer firstPlayer = createTracingPlayer(trace);
-                    AlphaBetaPruningPlayer secondPlayer = new AlphaBetaPruningPlayer(Grid.Mark.Nought);
+                    AlphaBetaPruningPlayer secondPlayer = AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Nought).asMin();
 
 
                     TicTacToeGame game = new TicTacToeGame(firstPlayer, secondPlayer);
@@ -52,7 +52,7 @@ public class AlmostEndlessComputerPlayerTournament {
     }
 
     private AlphaBetaPruningPlayer createTracingPlayer(final PrintStream trace) {
-        return new AlphaBetaPruningPlayer(Grid.Mark.Cross) {
+        return new AlphaBetaPruningPlayer(Grid.Mark.Cross, GameTree.Player.Min) {
             boolean initialized = false;
 
             @Override

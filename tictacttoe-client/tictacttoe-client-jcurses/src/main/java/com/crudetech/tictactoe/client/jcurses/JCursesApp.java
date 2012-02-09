@@ -1,7 +1,11 @@
 package com.crudetech.tictactoe.client.jcurses;
 
 import com.crudetech.event.EventListener;
-import com.crudetech.tictactoe.game.*;
+import com.crudetech.tictactoe.game.AlphaBetaPruningPlayer;
+import com.crudetech.tictactoe.game.ComputerPlayer;
+import com.crudetech.tictactoe.game.Grid;
+import com.crudetech.tictactoe.game.NaiveTryAndErrorPlayer;
+import com.crudetech.tictactoe.game.TicTacToeGame;
 import com.crudetech.tictactoe.ui.UiFeedbackChannel;
 import com.crudetech.tictactoe.ui.UiPlayer;
 import jcurses.event.ItemEvent;
@@ -81,7 +85,7 @@ public class JCursesApp {
         }
 
         private void onMnuNewAdvancedGame() {
-            startNewGameWithComputerOpponent(AlphaBetaPruningPlayer.withMark(Grid.Mark.Nought));
+            startNewGameWithComputerOpponent(AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Nought).asMax());
         }
 
         private void startNewGameWithComputerOpponent(ComputerPlayer computerPlayer) {

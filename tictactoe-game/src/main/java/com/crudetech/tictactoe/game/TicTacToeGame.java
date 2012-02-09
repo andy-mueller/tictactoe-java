@@ -1,11 +1,16 @@
 package com.crudetech.tictactoe.game;
 
 import static com.crudetech.matcher.Verify.verifyThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.sameInstance;
 
 public class TicTacToeGame {
 
-    private LinearRandomAccessGrid grid = new LinearRandomAccessGrid();
+    private final LinearRandomAccessGrid grid = new LinearRandomAccessGrid();
     private final Player player1;
     private final Player player2;
 

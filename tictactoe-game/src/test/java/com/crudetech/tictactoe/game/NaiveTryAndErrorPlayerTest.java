@@ -38,12 +38,22 @@ public class NaiveTryAndErrorPlayerTest {
     public void naivePlayerMarksNextUnMarkedFieldOnSecondMove() {
 
         game.startWithPlayer(naivePlayer, Grid.Mark.Cross);
-        game.addMark(otherPlayer, Grid.Row.First, Grid.Column.Second);
+        
+        game.addMark(otherPlayer, nextFreeLocation());
 
         List<Grid.Cell> crossedCells = from(otherPlayer.getLastGrid().getCells()).where(markIsEqualTo(Grid.Mark.Cross)).toList();
         List<Grid.Cell> noughtCells= from(otherPlayer.getLastGrid().getCells()).where(markIsEqualTo(Grid.Mark.Nought)).toList();
 
         assertThat(crossedCells, hasSize(2));
         assertThat(noughtCells, hasSize(1));
+    }
+
+    private Grid.Location nextFreeLocation() {
+        for (Grid.Cell cell : otherPlayer.getLastGrid().getCells()) {
+            if(cell.getMark().equals(Grid.Mark.None))         {
+                return cell.getLocation();
+            }
+        }
+        throw new RuntimeException();
     }
 }
