@@ -9,7 +9,7 @@ public class AlphaBetaPruningPlayerTest {
     @Test
     public void playerMakesBestNextMove() {
         TicTacToeGame game = mock(TicTacToeGame.class);
-        AlphaBetaPruningPlayer player = AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Cross).asMax();
+        AlphaBetaPruningPlayer player = AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Cross).withStartPlayerMark(Grid.Mark.Cross).asMax();
         player.setGame(game);
         Grid currentGrid = LinearRandomAccessGrid.of(
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.Nought,

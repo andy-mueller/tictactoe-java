@@ -85,7 +85,7 @@ public class JCursesApp {
         }
 
         private void onMnuNewAdvancedGame() {
-            startNewGameWithComputerOpponent(AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Nought).asMax());
+            startNewGameWithComputerOpponent(AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Nought).withStartPlayerMark(Grid.Mark.Cross).asMax());
         }
 
         private void startNewGameWithComputerOpponent(ComputerPlayer computerPlayer) {

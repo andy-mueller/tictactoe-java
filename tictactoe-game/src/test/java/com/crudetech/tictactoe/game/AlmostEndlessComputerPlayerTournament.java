@@ -26,7 +26,7 @@ public class AlmostEndlessComputerPlayerTournament {
                 @Override
                 public void run() {
                     AlphaBetaPruningPlayer firstPlayer = createTracingPlayer(trace);
-                    AlphaBetaPruningPlayer secondPlayer = AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Nought).asMin();
+                    AlphaBetaPruningPlayer secondPlayer = AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Nought).withStartPlayerMark(Grid.Mark.Cross).asMin();
 
 
                     TicTacToeGame game = new TicTacToeGame(firstPlayer, secondPlayer);
@@ -52,7 +52,7 @@ public class AlmostEndlessComputerPlayerTournament {
     }
 
     private AlphaBetaPruningPlayer createTracingPlayer(final PrintStream trace) {
-        return new AlphaBetaPruningPlayer(Grid.Mark.Cross, GameTree.Player.Min) {
+        return new AlphaBetaPruningPlayer(Grid.Mark.Cross, GameTree.Player.Max, Grid.Mark.Cross) {
             boolean initialized = false;
 
             @Override
@@ -83,6 +83,18 @@ public class AlmostEndlessComputerPlayerTournament {
                 if (m == Grid.Mark.Cross) return "x";
                 if (m == Grid.Mark.Nought) return "o";
                 return "-";
+            }
+
+            @Override
+            public void youWin(Grid actualGrid, Grid.Triple triple) {
+                System.exit(100);
+                throw new UnsupportedOperationException("Win: Override not implemented!");
+            }
+
+            @Override
+            public void youLoose(Grid actualGrid, Grid.Triple triple) {
+                System.exit(100);
+                throw new UnsupportedOperationException("Override not implemented!");
             }
         };
     }

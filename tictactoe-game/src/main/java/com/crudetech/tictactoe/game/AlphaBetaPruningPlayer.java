@@ -9,11 +9,16 @@ import static org.hamcrest.Matchers.notNullValue;
 public class AlphaBetaPruningPlayer extends ComputerPlayer {
     private final Grid.Mark playersMark;
     private final GameTree.Player playersStrategy;
-    private final Grid.Mark startPlayersMark = Grid.Mark.Cross;
+    private final Grid.Mark startPlayersMark;
 
-    AlphaBetaPruningPlayer(Grid.Mark playersMark, GameTree.Player playersStrategy) {
+    AlphaBetaPruningPlayer(Grid.Mark playersMark, GameTree.Player playersStrategy, Grid.Mark startPlayersMark) {
+        verifyThat(playersMark, is(notNullValue()));
+        verifyThat(playersStrategy, is(notNullValue()));
+        verifyThat(startPlayersMark, is(notNullValue()));
+
         this.playersMark = playersMark;
         this.playersStrategy = playersStrategy;
+        this.startPlayersMark= startPlayersMark;
     }
 
     public static Builder builder() {
@@ -22,6 +27,7 @@ public class AlphaBetaPruningPlayer extends ComputerPlayer {
 
     public static class Builder {
         private Grid.Mark playersMark;
+        private Grid.Mark startPlayersMark;
 
         public Builder withMark(Grid.Mark playersMark) {
             verifyThat(playersMark, is(notNullValue()));
@@ -29,12 +35,19 @@ public class AlphaBetaPruningPlayer extends ComputerPlayer {
             return this;
         }
 
+
+        public Builder withStartPlayerMark(Grid.Mark startPlayersMark) {
+            verifyThat(startPlayersMark, is(notNullValue()));
+            this.startPlayersMark = startPlayersMark;
+            return this;
+        }
+
         public AlphaBetaPruningPlayer asMin() {
-            return new AlphaBetaPruningPlayer(playersMark, GameTree.Player.Min);
+            return new AlphaBetaPruningPlayer(playersMark, GameTree.Player.Min, startPlayersMark);
         }
 
         public AlphaBetaPruningPlayer asMax() {
-            return new AlphaBetaPruningPlayer(playersMark, GameTree.Player.Max);
+            return new AlphaBetaPruningPlayer(playersMark, GameTree.Player.Max, startPlayersMark);
         }
     }
 
