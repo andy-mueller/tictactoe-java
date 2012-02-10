@@ -24,7 +24,6 @@ public class TicTacToeGameTest {
 
     @Test
     public void startHasEmptyBoard() {
-
         game.startWithPlayer(secondPlayer, Grid.Mark.Cross);
 
         Grid emptyGrid = LinearRandomAccessGrid.of(Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
@@ -49,7 +48,6 @@ public class TicTacToeGameTest {
 
     @Test
     public void startWithNullThrows() {
-
         Runnable startWithNull = new Runnable() {
             @Override
             public void run() {
@@ -118,7 +116,6 @@ public class TicTacToeGameTest {
     @Test
     public void addSameMarkTwiceThrows() {
         game.startWithPlayer(firstPlayer, Grid.Mark.Nought);
-
         game.addMark(firstPlayer, Grid.Row.Second, Grid.Column.First);
 
         Runnable addSameMarkSecondTime = new Runnable() {
@@ -136,7 +133,6 @@ public class TicTacToeGameTest {
     public void addingSomethingWithNullRowThrows() {
         game.startWithPlayer(firstPlayer, Grid.Mark.Cross);
 
-
         Runnable addWithNullRow = new Runnable() {
             @Override
             public void run() {
@@ -150,7 +146,6 @@ public class TicTacToeGameTest {
     @Test
     public void addingSomethingWithNullColumnThrows() {
         game.startWithPlayer(firstPlayer, Grid.Mark.Cross);
-
 
         Runnable addWithNullColumn = new Runnable() {
             @Override

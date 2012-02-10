@@ -13,9 +13,10 @@ public class NaiveTryAndErrorPlayer extends ComputerPlayer{
     public void yourTurn(Grid actualGrid) {
         List<Grid.Location> cells =
                 from(actualGrid.getCells()).where(markIsEqualTo(Grid.Mark.None)).select(location()).toList();
-        if (!cells.isEmpty()) {
-            shuffle(cells);
-            addMark(cells.get(0));
+        if (cells.isEmpty()) {
+            throw new IllegalStateException();
         }
+        shuffle(cells);
+        addMark(cells.get(0));
     }
 }
