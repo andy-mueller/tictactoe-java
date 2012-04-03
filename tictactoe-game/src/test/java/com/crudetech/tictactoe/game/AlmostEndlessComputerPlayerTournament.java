@@ -25,7 +25,7 @@ public class AlmostEndlessComputerPlayerTournament {
             Runnable runner = new Runnable() {
                 @Override
                 public void run() {
-                    AlphaBetaPruningPlayer firstPlayer = createTracingPlayer(trace);
+                    AlphaBetaPruningPlayer firstPlayer = tracingAlphaBetaPruningPlayerBuilder(trace).withMark(Grid.Mark.Cross).withStartPlayerMark(Grid.Mark.Cross).asMax();
                     AlphaBetaPruningPlayer secondPlayer = AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Nought).withStartPlayerMark(Grid.Mark.Cross).asMin();
 
 
@@ -51,50 +51,55 @@ public class AlmostEndlessComputerPlayerTournament {
         executor.shutdown();
     }
 
-    private AlphaBetaPruningPlayer createTracingPlayer(final PrintStream trace) {
-        return new AlphaBetaPruningPlayer(Grid.Mark.Cross, GameTree.Player.Max, Grid.Mark.Cross) {
-            boolean initialized = false;
-
+    private AlphaBetaPruningPlayer.Builder tracingAlphaBetaPruningPlayerBuilder(final PrintStream trace){
+        return new AlphaBetaPruningPlayer.Builder(){
             @Override
-            public void yourTurn(Grid actualGrid) {
-                if (initialized) {
-                    super.yourTurn(actualGrid);
-                    return;
-                }
-                Grid.Row row = Grid.Row.of(random.nextInt(3));
-                Grid.Column col = Grid.Column.of(random.nextInt(3));
-                initialized = true;
-                addMark(Grid.Location.of(row, col));
-            }
+            AlphaBetaPruningPlayer newPlayerInstance(Grid.Mark playersMark, GameTree.Player strategy, Grid.Mark startPlayersMark) {
+                return new AlphaBetaPruningPlayer(Grid.Mark.Cross, GameTree.Player.Max, Grid.Mark.Cross) {
+                    boolean initialized = false;
 
-            @Override
-            public void tie(Grid g) {
-                StringBuilder b = new StringBuilder(50);
-                b.append(cell(g, 0, 0)).append(" | ").append(cell(g, 0, 1)).append(" | ").append(cell(g, 0, 2)).append("\n");
-                b.append("--+---+--").append("\n");
-                b.append(cell(g, 1, 0)).append(" | ").append(cell(g, 1, 1)).append(" | ").append(cell(g, 1, 2)).append("\n");
-                b.append("--+---+--").append("\n");
-                b.append(cell(g, 2, 0)).append(" | ").append(cell(g, 2, 1)).append(" | ").append(cell(g, 2, 2)).append("\n");
-                trace.println(b.toString());
-            }
+                    @Override
+                    public void yourTurn(Grid actualGrid) {
+                        if (initialized) {
+                            super.yourTurn(actualGrid);
+                            return;
+                        }
+                        Grid.Row row = Grid.Row.of(random.nextInt(3));
+                        Grid.Column col = Grid.Column.of(random.nextInt(3));
+                        initialized = true;
+                        addMark(Grid.Location.of(row, col));
+                    }
 
-            private String cell(Grid g, int row, int col) {
-                Grid.Mark m = g.getAt(Grid.Location.of(Grid.Row.of(row), Grid.Column.of(col)));
-                if (m == Grid.Mark.Cross) return "x";
-                if (m == Grid.Mark.Nought) return "o";
-                return "-";
-            }
+                    @Override
+                    public void tie(Grid g) {
+                        StringBuilder b = new StringBuilder(50);
+                        b.append(cell(g, 0, 0)).append(" | ").append(cell(g, 0, 1)).append(" | ").append(cell(g, 0, 2)).append("\n");
+                        b.append("--+---+--").append("\n");
+                        b.append(cell(g, 1, 0)).append(" | ").append(cell(g, 1, 1)).append(" | ").append(cell(g, 1, 2)).append("\n");
+                        b.append("--+---+--").append("\n");
+                        b.append(cell(g, 2, 0)).append(" | ").append(cell(g, 2, 1)).append(" | ").append(cell(g, 2, 2)).append("\n");
+                        trace.println(b.toString());
+                    }
 
-            @Override
-            public void youWin(Grid actualGrid, Grid.Triple triple) {
-                System.exit(100);
-                throw new UnsupportedOperationException("Win: Override not implemented!");
-            }
+                    private String cell(Grid g, int row, int col) {
+                        Grid.Mark m = g.getAt(Grid.Location.of(Grid.Row.of(row), Grid.Column.of(col)));
+                        if (m == Grid.Mark.Cross) return "x";
+                        if (m == Grid.Mark.Nought) return "o";
+                        return "-";
+                    }
 
-            @Override
-            public void youLoose(Grid actualGrid, Grid.Triple triple) {
-                System.exit(100);
-                throw new UnsupportedOperationException("Override not implemented!");
+                    @Override
+                    public void youWin(Grid actualGrid, Grid.Triple triple) {
+                        System.exit(100);
+                        throw new UnsupportedOperationException("Win: Override not implemented!");
+                    }
+
+                    @Override
+                    public void youLoose(Grid actualGrid, Grid.Triple triple) {
+                        System.exit(100);
+                        throw new UnsupportedOperationException("Override not implemented!");
+                    }
+                };
             }
         };
     }

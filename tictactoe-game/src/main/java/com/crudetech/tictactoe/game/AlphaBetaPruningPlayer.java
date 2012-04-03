@@ -42,11 +42,15 @@ public class AlphaBetaPruningPlayer extends ComputerPlayer {
         }
 
         public AlphaBetaPruningPlayer asMin() {
-            return new AlphaBetaPruningPlayer(playersMark, GameTree.Player.Min, startPlayersMark);
+            return newPlayerInstance(playersMark, GameTree.Player.Min, startPlayersMark);
         }
 
         public AlphaBetaPruningPlayer asMax() {
-            return new AlphaBetaPruningPlayer(playersMark, GameTree.Player.Max, startPlayersMark);
+            return newPlayerInstance(playersMark, GameTree.Player.Max, startPlayersMark);
+        }
+
+        AlphaBetaPruningPlayer newPlayerInstance(Grid.Mark playersMark, GameTree.Player strategy, Grid.Mark startPlayersMark) {
+            return new AlphaBetaPruningPlayer(playersMark, strategy, startPlayersMark);
         }
     }
 
