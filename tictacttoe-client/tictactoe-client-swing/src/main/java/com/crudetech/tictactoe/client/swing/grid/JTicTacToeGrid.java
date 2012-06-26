@@ -84,7 +84,7 @@ public class JTicTacToeGrid extends JComponent {
     private void onMouseClicked(MouseEvent e) {
         GridCellHit hit = cellHitFromMouseEvent(e);
         if (hit.hasHit()) {
-            clickedEvent.fireEvent(new CellClickedEventObject(JTicTacToeGrid.this, hit.getHit()));
+            clickedEvent.fireEvent(new CellClickedEventObject(this, hit.getHit()));
         }
     }
 
