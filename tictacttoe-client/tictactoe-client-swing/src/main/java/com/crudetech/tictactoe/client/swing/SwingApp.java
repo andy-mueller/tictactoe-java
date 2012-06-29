@@ -3,7 +3,7 @@ package com.crudetech.tictactoe.client.swing;
 import javax.swing.*;
 
 public class SwingApp {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         setSystemLookAndFeel();
 
         final JFrame frame = new TicTacToeGameForm();
@@ -15,11 +15,7 @@ public class SwingApp {
         });
     }
 
-    private static void setSystemLookAndFeel() {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    private static void setSystemLookAndFeel() throws Exception {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     }
 }
