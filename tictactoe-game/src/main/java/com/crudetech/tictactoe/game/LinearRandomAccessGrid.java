@@ -164,7 +164,7 @@ public class LinearRandomAccessGrid implements Grid {
                 locations[i] = locationOfIndex(idx);
             }
 
-            return new Pair<>(marks, locations);
+            return new Pair<Mark[], Location[]>(marks, locations);
         }
 
         private Mark getMarkAt(int index) {

@@ -150,7 +150,7 @@ class GridWidget extends TextComponent implements UiView {
         }
     }
 
-    private final EventSupport<KeyDownEventObject> keyDownEvent = new EventSupport<>();
+    private final EventSupport<KeyDownEventObject> keyDownEvent = new EventSupport<KeyDownEventObject>();
 
     Event<KeyDownEventObject> keyDownEvent() {
         return keyDownEvent;

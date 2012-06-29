@@ -19,7 +19,7 @@ public class AlmostEndlessComputerPlayerTournament {
         Stopwatch all = new Stopwatch();
         final Statistic stat = new Statistic();
         ExecutorService executor = Executors.newFixedThreadPool(8);
-        CompletionService<Void> completionService = new ExecutorCompletionService<>(executor);
+        CompletionService<Void> completionService = new ExecutorCompletionService<Void>(executor);
 
         for (int i = 0; i < count; ++i) {
             Runnable runner = new Runnable() {

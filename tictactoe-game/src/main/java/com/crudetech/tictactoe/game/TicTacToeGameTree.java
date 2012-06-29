@@ -90,7 +90,7 @@ class TicTacToeGameTree {
 
     TicTacToeGameTree(LinearRandomAccessGrid grid, Grid.Mark mark, GameTree.Player playerStrategy, Grid.Mark startPlayerMark) {
         this.playerStrategy = playerStrategy;
-        this.gameTree = new GameTree<>(new Node(grid, mark, startPlayerMark));
+        this.gameTree = new GameTree<Grid>(new Node(grid, mark, startPlayerMark));
     }
 
     GameTree<Grid> getGameTree() {

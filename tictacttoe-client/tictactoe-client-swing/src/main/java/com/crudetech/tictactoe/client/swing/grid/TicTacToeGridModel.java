@@ -22,8 +22,8 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 public class TicTacToeGridModel {
-    private final EventSupport<CellsChangedEventObject> cellChangedEvent = new EventSupport<>();
-    private final EventSupport<ChangedEventObject> changedEvent = new EventSupport<>();
+    private final EventSupport<CellsChangedEventObject> cellChangedEvent = new EventSupport<CellsChangedEventObject>();
+    private final EventSupport<ChangedEventObject> changedEvent = new EventSupport<ChangedEventObject>();
     private Grid.Location highlightedCell;
     private Grid.Triple highlightedTriple;
     private Grid grid;

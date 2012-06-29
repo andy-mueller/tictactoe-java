@@ -15,7 +15,7 @@ import java.util.Objects;
 
 public class JTicTacToeGrid extends JComponent {
     private TicTacToeGridModel model;
-    private EventSupport<CellClickedEventObject> clickedEvent = new EventSupport<>();
+    private EventSupport<CellClickedEventObject> clickedEvent = new EventSupport<CellClickedEventObject>();
     private EventListener<TicTacToeGridModel.CellsChangedEventObject> modelCellChangedListener;
     private EventListener<TicTacToeGridModel.ChangedEventObject> modelChangedListener;
 
