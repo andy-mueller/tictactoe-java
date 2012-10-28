@@ -26,14 +26,14 @@ public class GameTree<TGameState> {
             @Override
             public <TGameState> Pair<Integer, Node<TGameState>> alphaBeta(Node<TGameState> node, int alpha, int beta, int depth, Player player) {
                 if (hasSufficientDepth(node, depth)) {
-                    return new Pair<Integer, Node<TGameState>>(node.getValue(), node);
+                    return new Pair<>(node.getValue(), node);
                 }
-                Pair<Integer, Node<TGameState>> alphaPair = new Pair<Integer, Node<TGameState>>(alpha, null);
+                Pair<Integer, Node<TGameState>> alphaPair = new Pair<>(alpha, null);
                 for (Node<TGameState> child : node.getChildren()) {
                     Pair<Integer, Node<TGameState>> value = otherPlayer().alphaBeta(child, alphaPair.getFirst(), beta, depth - 1, player);
 
                     if (value.getFirst() > alphaPair.getFirst()) {
-                        alphaPair = new Pair<Integer, Node<TGameState>>(value.getFirst(), child);
+                        alphaPair = new Pair<>(value.getFirst(), child);
                     }
                     if (beta <= alphaPair.getFirst()) {
                         break;
@@ -51,13 +51,13 @@ public class GameTree<TGameState> {
             @Override
             public <TGameState> Pair<Integer, Node<TGameState>> alphaBeta(Node<TGameState> node, int alpha, int beta, int depth, Player player) {
                 if (hasSufficientDepth(node, depth)) {
-                    return new Pair<Integer, Node<TGameState>>(node.getValue(), node);
+                    return new Pair<>(node.getValue(), node);
                 }
-                Pair<Integer, Node<TGameState>> betaPair = new Pair<Integer, Node<TGameState>>(beta, null);
+                Pair<Integer, Node<TGameState>> betaPair = new Pair<>(beta, null);
                 for (Node<TGameState> child : node.getChildren()) {
                     Pair<Integer, Node<TGameState>> value = otherPlayer().alphaBeta(child, alpha, betaPair.getFirst(), depth - 1, player);
                     if (value.getFirst() < betaPair.getFirst()) {
-                        betaPair = new Pair<Integer, Node<TGameState>>(value.getFirst(), child);
+                        betaPair = new Pair<>(value.getFirst(), child);
                     }
                     if (betaPair.getFirst() <= alpha) {
                         break;

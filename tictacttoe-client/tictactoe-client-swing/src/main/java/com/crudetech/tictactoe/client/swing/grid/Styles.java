@@ -110,11 +110,8 @@ public enum Styles implements Style {
 
     private BufferedImage loadImage(String resourceId) throws IOException {
         String resourcePath = getResourcePath(resourceId);
-        InputStream in = Objects.requireNonNull(getClass().getResourceAsStream(resourcePath));
-        try {
+        try (InputStream in = Objects.requireNonNull(getClass().getResourceAsStream(resourcePath))) {
             return ImageIO.read(in);
-        } finally {
-            in.close();
         }
     }
 

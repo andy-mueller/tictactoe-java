@@ -26,7 +26,7 @@ public class StylesTest {
 
     @Parameters
     public static Collection<Styles[]> createData() {
-        Collection<Styles[]> data = new ArrayList<Styles[]>();
+        Collection<Styles[]> data = new ArrayList<>();
         for (Styles s : Styles.values()) {
             data.add(new Styles[]{s});
         }
@@ -45,11 +45,8 @@ public class StylesTest {
     }
 
     private BufferedImage loadBackGroundImageFromResources() throws Exception {
-        InputStream in = getClass().getResourceAsStream("/com/crudetech/tictactoe/client/swing/grid/" + style.name().toLowerCase() + "style/tic-tac-toe-grid.jpg");
-        try {
+        try (InputStream in = getClass().getResourceAsStream("/com/crudetech/tictactoe/client/swing/grid/" + style.name().toLowerCase() + "style/tic-tac-toe-grid.jpg")) {
             return ImageIO.read(in);
-        } finally {
-            in.close();
         }
     }
 
@@ -74,24 +71,21 @@ public class StylesTest {
     public void crossImageLoads() {
         assertThat(style.getCrossImage(), is(notNullValue()));
     }
-
     @Test
     public void crossImageIsCached() {
         assertThat(style.getCrossImage(), is(sameInstance(style.getCrossImage())));
     }
-
     @Test
     public void noughtImageLoads() {
         assertThat(style.getNoughtImage(), is(notNullValue()));
     }
-
     @Test
     public void noughtImageIsCached() {
         assertThat(style.getNoughtImage(), is(sameInstance(style.getNoughtImage())));
     }
 
     @Test
-    public void markImagesHaveSameDimensions() {
+    public void markImagesHaveSameDimensions(){
         assertThat(style.getCrossImage().getWidth(), is(style.getNoughtImage().getWidth()));
         assertThat(style.getCrossImage().getHeight(), is(style.getNoughtImage().getHeight()));
 
@@ -102,9 +96,8 @@ public class StylesTest {
             }
         }
     }
-
     @Test
-    public void markBounds() {
+    public void markBounds(){
         assertThat(style.getGridMarkLocations().length, is(3));
         assertThat(style.getGridMarkLocations()[0].length, is(3));
         assertThat(style.getGridMarkLocations()[1].length, is(3));

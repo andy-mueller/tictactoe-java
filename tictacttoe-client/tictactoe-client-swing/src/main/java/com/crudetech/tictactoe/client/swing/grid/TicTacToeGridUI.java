@@ -72,13 +72,10 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     private void paintWidget(Widget widget, Graphics2D pipe) {
-        Graphics2dTransform xform = new Graphics2dTransform(pipe);
-        try {
+        try (Graphics2dTransform xform = new Graphics2dTransform(pipe)) {
             Point loc = widget.getLocation();
             xform.pushTranslation(loc.getX(), loc.getY());
             widget.paintEcs(pipe);
-        } finally {
-            xform.close();
         }
     }
 
@@ -101,7 +98,7 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     List<Widget> buildPaintList() {
-        List<Widget> paintList = new ArrayList<Widget>();
+        List<Widget> paintList = new ArrayList<>();
 
         paintList.add(backgroundWidget());
         paintList.add(backgroundImageWidget());
@@ -176,7 +173,7 @@ public class TicTacToeGridUI extends ComponentUI {
 
     List<Widget> gridMarkWidgetList() {
         Point gridOrigin = getUiOrigin();
-        List<Widget> gridMArks = new ArrayList<Widget>(9);
+        List<Widget> gridMArks = new ArrayList<>(9);
         for (Grid.Cell cell : component.getModel().getGrid().getCells()) {
             Rectangle bounds = getBoundaryForLocation(cell.getLocation());
             Widget widget = wrapTransparentIfIsNotInHighlightedWinningTriple(createMarkWidget(cell.getMark(), bounds), cell.getLocation());

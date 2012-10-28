@@ -11,7 +11,7 @@ import static com.crudetech.query.Query.from;
 class GridCellHit {
     private final Pair<Rectangle, Grid.Location> hitInfo;
     private static final Pair<Rectangle, Grid.Location> NoHit =
-            new Pair<Rectangle, Grid.Location>(new Rectangle(-1, -1, -1, -1), null);
+            new Pair<>(new Rectangle(-1, -1, -1, -1), null);
 
     GridCellHit(Iterable<Grid.Cell> cells, int x, int y, Rectangle[][] cellBoundaries) {
         hitInfo = from(cells).select(isContainedIn(x, y, cellBoundaries)).where(notNoHit()).firstOr(NoHit);
@@ -42,7 +42,7 @@ class GridCellHit {
                 Grid.Location location = cell.getLocation();
                 Rectangle hitRect = gridMarkLocations[location.getRow().ordinal()][location.getColumn().ordinal()];
                 if (hitRect.contains(x, y)) {
-                    return new Pair<Rectangle, Grid.Location>(hitRect, location);
+                    return new Pair<>(hitRect, location);
                 }
                 return NoHit;
             }

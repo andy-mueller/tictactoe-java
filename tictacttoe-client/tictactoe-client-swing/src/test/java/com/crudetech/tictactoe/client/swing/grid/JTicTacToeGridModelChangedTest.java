@@ -20,7 +20,7 @@ public class JTicTacToeGridModelChangedTest {
 
     static class PaintTrackingTicTacToeGrid extends JTicTacToeGrid {
         private boolean areaRepainted = false;
-        private List<Rectangle> repaintedRegions = new ArrayList<Rectangle>();
+        private List<Rectangle> repaintedRegions = new ArrayList<>();
         public boolean fullRepaint = false;
 
         PaintTrackingTicTacToeGrid(TicTacToeGridModel model) {
@@ -42,7 +42,7 @@ public class JTicTacToeGridModelChangedTest {
 
     @Before
     public void before() {
-        modelCellChanged = new EventSupport<TicTacToeGridModel.CellsChangedEventObject>();
+        modelCellChanged = new EventSupport<>();
         TicTacToeGridModel model = new TicTacToeGridModel() {
             @Override
             public EventSupport<CellsChangedEventObject> cellsChanged() {

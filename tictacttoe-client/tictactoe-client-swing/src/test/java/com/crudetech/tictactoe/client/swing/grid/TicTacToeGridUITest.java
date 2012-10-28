@@ -141,7 +141,7 @@ public class TicTacToeGridUITest {
     public void paintListIsPaintedInOrder() {
         List<Widget> widgets = ui.buildPaintList();
 
-        List<Widget> expectedList = new ArrayList<Widget>();
+        List<Widget> expectedList = new ArrayList<>();
         expectedList.add(getExpectedBackground());
         expectedList.add(getExpectedBackgroundImage());
         expectedList.addAll(expectedGridMarkWidgets());

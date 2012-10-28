@@ -73,7 +73,7 @@ public class TicTacToeGameTreeTest {
 
 
     private Iterable<Grid> allSingleMarkGridPermutationsOfEmptyGame(Grid.Mark mark) {
-        List<Grid> allSingleMarkGridPermutations = new ArrayList<Grid>();
+        List<Grid> allSingleMarkGridPermutations = new ArrayList<>();
 
         for (Grid.Row row : iterableOf(Grid.Row.class)) {
             for (Grid.Column col : iterableOf(Grid.Column.class)) {

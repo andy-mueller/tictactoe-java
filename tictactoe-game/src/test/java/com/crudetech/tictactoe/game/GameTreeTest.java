@@ -27,28 +27,13 @@ public class GameTreeTest {
         final Node<Void> c = createLeafNode(-4, "c");
 
         Node<Void> maxNode = createNode(a, b, c);
-        GameTree<Void> gameTree = new GameTree<Void>(maxNode);
+        GameTree<Void> gameTree = new GameTree<>(maxNode);
         Pair<Integer, Node<Void>> value = gameTree.alphaBeta(Player.Max);
 
         assertThat(value.getFirst(), is(42));
         assertThat(value.getSecond(), is(a));
     }
 
-
-
-    final Node<Void> createNode(final Node<Void> n1) {
-        return createNode("<UnNamed>", new Node[]{n1});
-    }
-    final Node<Void> createNode(Node<Void> n1, Node<Void> n2) {
-        return createNode("<UnNamed>", new Node[]{n1, n2});
-    }
-    final Node<Void> createNode(Node<Void> n1, Node<Void> n2, Node<Void> n3) {
-        return createNode("<UnNamed>", new Node[]{n1, n2, n3});
-    }
-
-    final Node<Void> createNode(String name, Node<Void> n1, Node<Void> n2, Node<Void> n3) {
-        return createNode(name, new Node[]{n1, n2, n3});
-    }
 
     @SafeVarargs
     final Node<Void> createNode(final Node<Void>... nodes) {
@@ -133,7 +118,7 @@ public class GameTreeTest {
         final Node<Void> c = createLeafNode(-4, "c");
 
         Node<Void> minNode = createNode(a, b, c);
-        GameTree<Void> gameTree = new GameTree<Void>(minNode);
+        GameTree<Void> gameTree = new GameTree<>(minNode);
 
         Pair<Integer, Node<Void>> recursiveValue = gameTree.alphaBeta(Player.Min);
         assertThat(recursiveValue.getFirst(), is(-4));
@@ -155,13 +140,13 @@ public class GameTreeTest {
         Node<Void> d = createNode(j, k);
 
         Node<Void> a = createNode(b, c, d);
-        GameTree<Void> gameTree = new GameTree<Void>(a);
+        GameTree<Void> gameTree = new GameTree<>(a);
 
 
         Pair<Integer, Node<Void>> value = gameTree.alphaBeta(Player.Max);
         assertThat(value.getFirst(), is(-2));
         assertThat(value.getSecond(), is(c));
-        assertThat(value, is(new Pair<Integer, Node<Void>>(-2, c)));
+        assertThat(value, is(new Pair<>(-2, c)));
     }
 
     @Test
@@ -179,11 +164,11 @@ public class GameTreeTest {
         Node<Void> d = createNode(j, k);
 
         Node<Void> a = createNode(b, c, d);
-        GameTree<Void> gameTree = new GameTree<Void>(a);
+        GameTree<Void> gameTree = new GameTree<>(a);
 
 
         Pair<Integer, Node<Void>> nodePair = gameTree.alphaBeta(Player.Min);
-        assertThat(nodePair, is(new Pair<Integer, Node<Void>>(-3, d)));
+        assertThat(nodePair, is(new Pair<>(-3, d)));
     }
 
     @Test
@@ -204,11 +189,11 @@ public class GameTreeTest {
         Node<Void> d = createNode(k, l, m);
 
         Node<Void> a = createNode(b, c, d);//max
-        GameTree<Void> gameTree = new GameTree<Void>(a);
+        GameTree<Void> gameTree = new GameTree<>(a);
 
 
         Pair<Integer, Node<Void>> nodePair = gameTree.alphaBeta(Player.Max);
-        assertThat(nodePair, is(new Pair<Integer, Node<Void>>(3, b)));
+        assertThat(nodePair, is(new Pair<>(3, b)));
         verifyZeroInteractions(i, j);
     }
 
@@ -234,11 +219,11 @@ public class GameTreeTest {
         Node<Void> d = createNode("d", k, l, m);
 
         Node<Void> a = createNode("a", b, c, d);//max
-        GameTree<Void> gameTree = new GameTree<Void>(a);
+        GameTree<Void> gameTree = new GameTree<>(a);
 
 
         Pair<Integer, Node<Void>> nodePair = gameTree.alphaBeta(Player.Max, 2);
-        assertThat(nodePair, is(new Pair<Integer, Node<Void>>(4, c)));
+        assertThat(nodePair, is(new Pair<>(4, c)));
         verifyZeroInteractions(n, o);
     }
 
@@ -284,12 +269,12 @@ public class GameTreeTest {
         Node<Void> d = createNode(i, j);
 
         Node<Void> a = createNode(b, c, d);
-        GameTree<Void> gameTree = new GameTree<Void>(a);
+        GameTree<Void> gameTree = new GameTree<>(a);
 
 
         Pair<Integer, Node<Void>> nodePair = gameTree.alphaBeta(Player.Max);
 
-        assertThat(nodePair, is(new Pair<Integer, Node<Void>>(6, c)));
+        assertThat(nodePair, is(new Pair<>(6, c)));
         verifyZeroInteractions(x, bb, ee, ff, gg, r, s, j);
     }
 }
