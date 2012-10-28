@@ -1,7 +1,7 @@
 tictactoe-java
 ==============
 
-A Tic Tac Toe game written in Java using TDD and following the [S.O.L.I.D.][solid] principles. The code can be compiled and executed using maven.
+A Tic Tac Toe game written in Java using TDD and following the [S.O.L.I.D.][solid] principles. The code can be compiled and executed using maven and JDK 7.
 
    [solid]: http://www.objectmentor.com/resources/articles/Principles_and_Patterns.pdf
 
