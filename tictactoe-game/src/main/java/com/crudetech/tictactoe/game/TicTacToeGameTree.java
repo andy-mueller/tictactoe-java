@@ -47,7 +47,7 @@ class TicTacToeGameTree {
         }
 
         @Override
-        public int getValue() {
+        public int getHeuristicValue() {
             if (grid.isWinForMark(startPlayerMark)) {
                 return 1;
             } else if (grid.isWinForMark(startPlayerMark.getOpposite())) {
