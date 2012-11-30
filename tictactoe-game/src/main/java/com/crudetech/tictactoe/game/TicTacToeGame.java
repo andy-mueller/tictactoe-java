@@ -1,12 +1,11 @@
 package com.crudetech.tictactoe.game;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
+
 import static com.crudetech.matcher.Verify.verifyThat;
-import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.hamcrest.Matchers.*;
 
 public class TicTacToeGame {
 
@@ -42,16 +41,9 @@ public class TicTacToeGame {
     }
 
     public void addMark(Player player, Grid.Row row, Grid.Column column) {
-        verifyThat(row, is(notNullValue()));
-        verifyThat(column, is(notNullValue()));
-
-        if (finished) {
-            throw new GameIsFinishedException();
-        }
+        verifyGameIsNotFinished();
         verifyThat(player, sameInstance(currentPlayer));
-        if (grid.hasMarkAt(row, column)) {
-            throw new IllegalArgumentException(String.format("The grid was already marked at the specified location[%s, %s]", row, column));
-        }
+        verifyThat(grid, isNotMarkedAt(row, column));
 
         grid.setAt(row, column, currentPlayersMark);
         Grid.Triple triple = grid.winningTriple();
@@ -70,6 +62,25 @@ public class TicTacToeGame {
         }
     }
 
+    private static Matcher<LinearRandomAccessGrid> isNotMarkedAt(final Grid.Row row, final Grid.Column column) {
+        return new TypeSafeMatcher<LinearRandomAccessGrid>() {
+            @Override
+            protected boolean matchesSafely(LinearRandomAccessGrid grid) {
+                return !grid.hasMarkAt(row, column);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText(String.format("The grid was already marked at the specified location[%s, %s]", row, column));
+            }
+        };
+    }
+
+    private void verifyGameIsNotFinished() {
+        if (finished) {
+            throw new GameIsFinishedException();
+        }
+    }
 
     private Player getOtherPlayer() {
         return currentPlayer == player1 ? player2 : player1;
