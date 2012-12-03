@@ -36,6 +36,19 @@ public class TicTacToeGame {
         }
     }
 
+    public void startWithPlayer(Player player, Grid.Mark playersMark) {
+        verifyThat(player, is(anyOf(equalTo(player1), equalTo(player2))));
+        verifyThat(playersMark, is(not(Grid.Mark.None)));
+
+        if (currentPlayer != null) {
+            throw new GameIsAlreadyStartedException();
+        }
+        currentPlayer = player;
+        startingPlayersMark = playersMark;
+        currentPlayersMark = playersMark;
+        currentPlayer.yourTurn(grid);
+    }
+
     public void addMark(Player player, Grid.Location location) {
         addMark(player, location.getRow(), location.getColumn());
     }
@@ -88,18 +101,5 @@ public class TicTacToeGame {
 
     private boolean didWin(Grid.Triple triple) {
         return !triple.equals(Grid.Triple.Empty);
-    }
-
-    public void startWithPlayer(Player player, Grid.Mark playersMark) {
-        verifyThat(player, is(anyOf(equalTo(player1), equalTo(player2))));
-        verifyThat(playersMark, is(not(Grid.Mark.None)));
-
-        if (currentPlayer != null) {
-            throw new GameIsAlreadyStartedException();
-        }
-        currentPlayer = player;
-        startingPlayersMark = playersMark;
-        currentPlayersMark = playersMark;
-        currentPlayer.yourTurn(grid);
     }
 }
