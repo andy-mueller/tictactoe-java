@@ -14,7 +14,7 @@ import com.crudetech.tictactoe.ui.UiView;
 
 import static java.util.Arrays.asList;
 
-abstract class HumanVsComputerPlayerInteractor {
+public abstract class HumanVsComputerPlayerInteractor {
     private final TicTacToeGame game;
     private final Player humanUiPlayer;
     private final EventHookingBean<JTicTacToeGrid.CellClickedEventObject> eventHooker;
