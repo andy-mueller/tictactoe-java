@@ -1,16 +1,12 @@
-package com.crudetech.tictactoe.client.swing;
+package com.crudetech.tictactoe.ui;
 
 import com.crudetech.event.Event;
 import com.crudetech.event.EventHookingBean;
 import com.crudetech.event.EventListener;
-import com.crudetech.tictactoe.ui.CellEventObject;
 import com.crudetech.tictactoe.game.ComputerPlayer;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.Player;
 import com.crudetech.tictactoe.game.TicTacToeGame;
-import com.crudetech.tictactoe.ui.UiFeedbackChannel;
-import com.crudetech.tictactoe.ui.UiPlayer;
-import com.crudetech.tictactoe.ui.UiView;
 
 import static java.util.Arrays.asList;
 
@@ -44,7 +40,7 @@ public abstract class HumanVsComputerPlayerInteractor {
         return (Event<CellEventObject<?>>) cellClickedEvent;
     }
 
-    void startWithHumanPlayer(Grid.Mark mark) {
+    public void startWithHumanPlayer(Grid.Mark mark) {
         game.startWithPlayer(humanUiPlayer, mark);
     }
 

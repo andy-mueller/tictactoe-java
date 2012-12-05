@@ -8,6 +8,7 @@ import com.crudetech.tictactoe.game.ComputerPlayer;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.NaiveTryAndErrorPlayer;
 import com.crudetech.tictactoe.ui.CellEventObject;
+import com.crudetech.tictactoe.ui.HumanVsComputerPlayerInteractor;
 import com.crudetech.tictactoe.ui.UiFeedbackChannel;
 import com.crudetech.tictactoe.ui.UiView;
 
