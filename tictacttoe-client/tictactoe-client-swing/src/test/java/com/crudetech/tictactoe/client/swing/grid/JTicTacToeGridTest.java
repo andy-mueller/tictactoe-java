@@ -2,32 +2,15 @@ package com.crudetech.tictactoe.client.swing.grid;
 
 import com.crudetech.event.Event;
 import com.crudetech.event.EventListener;
-import com.crudetech.junit.feature.Equivalent;
-import com.crudetech.junit.feature.Feature;
-import com.crudetech.junit.feature.Features;
-import com.crudetech.tictactoe.game.Grid;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import java.util.List;
-
-import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-@RunWith(Features.class)
 public class JTicTacToeGridTest {
     @Test
     public void componentUIIsCreatedOnDefaultCtor() {
@@ -117,29 +100,6 @@ public class JTicTacToeGridTest {
 
         verify(oldGridUI).uninstallUI(jgrid);
     }
-
-    @Feature(Equivalent.class)
-    public static Equivalent.Factory<JTicTacToeGrid.CellClickedEventObject> cellClickedEventObjectEquivalent() {
-        return new Equivalent.Factory<JTicTacToeGrid.CellClickedEventObject>() {
-            Grid.Location cellLocation = Grid.Location.of(Grid.Row.First, Grid.Column.First);
-
-            @Override
-            public JTicTacToeGrid.CellClickedEventObject createItem() {
-                return new JTicTacToeGrid.CellClickedEventObject(grid, cellLocation);
-            }
-
-            JTicTacToeGrid grid = new JTicTacToeGrid();
-
-            @Override
-            public List<JTicTacToeGrid.CellClickedEventObject> createOtherItems() {
-                return asList(
-                        new JTicTacToeGrid.CellClickedEventObject(grid, Grid.Location.of(Grid.Row.First, Grid.Column.Second)),
-                        new JTicTacToeGrid.CellClickedEventObject(new JTicTacToeGrid(), cellLocation)
-                );
-            }
-        };
-    }
-
 
     private static class TicTacToeGridModelEventRegistrationTrackingStub extends TicTacToeGridModel {
         Event<CellsChangedEventObject> cellsChangedEventSpy;

@@ -3,7 +3,11 @@ package com.crudetech.tictactoe.client.swing;
 import com.crudetech.event.Event;
 import com.crudetech.tictactoe.client.swing.grid.JTicTacToeGrid;
 import com.crudetech.tictactoe.client.swing.grid.TicTacToeGridModel;
-import com.crudetech.tictactoe.game.*;
+import com.crudetech.tictactoe.game.AlphaBetaPruningPlayer;
+import com.crudetech.tictactoe.game.ComputerPlayer;
+import com.crudetech.tictactoe.game.Grid;
+import com.crudetech.tictactoe.game.NaiveTryAndErrorPlayer;
+import com.crudetech.tictactoe.ui.CellEventObject;
 import com.crudetech.tictactoe.ui.UiFeedbackChannel;
 import com.crudetech.tictactoe.ui.UiView;
 
@@ -132,7 +136,7 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
     }
 
     class JTicTacToeGridHumanPlayerVsComputerPlayerGameInteractor extends HumanVsComputerPlayerInteractor {
-        public JTicTacToeGridHumanPlayerVsComputerPlayerGameInteractor(ComputerPlayer computerPlayer, Event<JTicTacToeGrid.CellClickedEventObject> cellClickedEvent) {
+        public JTicTacToeGridHumanPlayerVsComputerPlayerGameInteractor(ComputerPlayer computerPlayer, Event<CellEventObject<JTicTacToeGrid>> cellClickedEvent) {
             super(computerPlayer, cellClickedEvent);
         }
 

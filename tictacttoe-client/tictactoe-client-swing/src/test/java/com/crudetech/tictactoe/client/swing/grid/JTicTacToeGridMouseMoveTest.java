@@ -4,11 +4,13 @@ package com.crudetech.tictactoe.client.swing.grid;
 import com.crudetech.event.EventListener;
 import com.crudetech.event.EventObject;
 import com.crudetech.tictactoe.game.Grid;
+import com.crudetech.tictactoe.ui.CellEventObject;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -40,13 +42,13 @@ public class JTicTacToeGridMouseMoveTest {
 
     @Test
     public void mouseClickOutsideOfCellDoesNotRaiseCellClickedEvent() throws Exception {
-        EventListener<JTicTacToeGrid.CellClickedEventObject> cellClicked = newEventListenerMock();
+        EventListener<CellEventObject<JTicTacToeGrid>> cellClicked = newEventListenerMock();
         grid.cellClicked().addListener(cellClicked);
 
         MouseEvent click = buildLButtonClickedEvent(outsideAnyCell);
         grid.raiseMouseEvent(click);
 
-        verify(cellClicked, never()).onEvent(any(JTicTacToeGrid.CellClickedEventObject.class));
+        verify(cellClicked, never()).onEvent(any(CellEventObject.class));
     }
 
     @SuppressWarnings("unchecked")
@@ -56,19 +58,19 @@ public class JTicTacToeGridMouseMoveTest {
 
     private MouseEvent buildLButtonClickedEvent(Point pos) {
         return new MouseEvent(grid, MouseEvent.MOUSE_CLICKED,
-                System.currentTimeMillis(), 1, pos.x, pos.y, 1, false, MouseEvent.BUTTON1);
+                System.currentTimeMillis(), InputEvent.BUTTON1_DOWN_MASK, pos.x, pos.y, 1, false, MouseEvent.BUTTON1);
     }
 
     @Test
     public void mouseClickOnCellRaisesCellClickedEventWithCorrectCells() throws Exception {
-        EventListener<JTicTacToeGrid.CellClickedEventObject> cellClicked = newEventListenerMock();
+        EventListener<CellEventObject<JTicTacToeGrid>> cellClicked = newEventListenerMock();
         grid.cellClicked().addListener(cellClicked);
 
         MouseEvent click = buildLButtonClickedEvent(inLastCell);
         grid.raiseMouseEvent(click);
 
         Grid.Location expectedCell = Grid.Location.of(Grid.Row.Third, Grid.Column.Third);
-        verify(cellClicked).onEvent(new JTicTacToeGrid.CellClickedEventObject(grid, expectedCell));
+        verify(cellClicked).onEvent(new CellEventObject<JTicTacToeGrid>(grid, expectedCell));
     }
 
     @Test

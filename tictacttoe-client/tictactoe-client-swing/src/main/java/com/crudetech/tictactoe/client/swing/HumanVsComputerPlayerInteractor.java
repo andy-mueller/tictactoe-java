@@ -3,7 +3,7 @@ package com.crudetech.tictactoe.client.swing;
 import com.crudetech.event.Event;
 import com.crudetech.event.EventHookingBean;
 import com.crudetech.event.EventListener;
-import com.crudetech.tictactoe.client.swing.grid.JTicTacToeGrid;
+import com.crudetech.tictactoe.ui.CellEventObject;
 import com.crudetech.tictactoe.game.ComputerPlayer;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.Player;
@@ -17,34 +17,43 @@ import static java.util.Arrays.asList;
 public abstract class HumanVsComputerPlayerInteractor {
     private final TicTacToeGame game;
     private final Player humanUiPlayer;
-    private final EventHookingBean<JTicTacToeGrid.CellClickedEventObject> eventHooker;
+    private final EventHookingBean<? extends CellEventObject<?>> eventHooker;
 
-    public HumanVsComputerPlayerInteractor(ComputerPlayer computerPlayer, Event<JTicTacToeGrid.CellClickedEventObject> cellClickedEvent) {
+    public HumanVsComputerPlayerInteractor(ComputerPlayer computerPlayer, Event<? extends CellEventObject<?>> humanPlayerMadeMove) {
         humanUiPlayer = createHumanUiPlayer();
-        eventHooker = connectCellClicked(cellClickedEvent);
+        eventHooker = connectHumanPlayerMove(humanPlayerMadeMove);
 
         game = new TicTacToeGame(humanUiPlayer, computerPlayer);
         computerPlayer.setGame(game);
     }
 
-    private EventHookingBean<JTicTacToeGrid.CellClickedEventObject> connectCellClicked(Event<JTicTacToeGrid.CellClickedEventObject> cellClickedEvent) {
-        EventListener<JTicTacToeGrid.CellClickedEventObject> cellClickedListener
-                = new EventListener<JTicTacToeGrid.CellClickedEventObject>() {
+    private EventHookingBean<? extends CellEventObject<?>>
+            connectHumanPlayerMove(Event<? extends CellEventObject<?>> cellClickedEvent) {
+        EventListener<CellEventObject<?>> cellClickedListener = new EventListener<CellEventObject<?>>() {
             @Override
-            public void onEvent(JTicTacToeGrid.CellClickedEventObject e) {
-                addMark(humanUiPlayer, e.getClickedCellLocation());
+            public void onEvent(CellEventObject<?> e) {
+                makeHumanPlayerMove(e.getCellLocation());
             }
         };
 
-        return new EventHookingBean<JTicTacToeGrid.CellClickedEventObject>(cellClickedEvent, asList(cellClickedListener));
+        return new EventHookingBean<CellEventObject<?>>(covariant_cast(cellClickedEvent), asList(cellClickedListener));
+    }
+
+    @SuppressWarnings("unchecked")
+    private Event<CellEventObject<?>> covariant_cast(Event<? extends CellEventObject<?>> cellClickedEvent) {
+        return (Event<CellEventObject<?>>) cellClickedEvent;
     }
 
     void startWithHumanPlayer(Grid.Mark mark) {
         game.startWithPlayer(humanUiPlayer, mark);
     }
 
-    private void addMark(Player player, Grid.Location location) {
+    private void makeMove(Player player, Grid.Location location) {
         game.addMark(player, location);
+    }
+
+    private void makeHumanPlayerMove(Grid.Location location) {
+        makeMove(humanUiPlayer, location);
     }
 
 
