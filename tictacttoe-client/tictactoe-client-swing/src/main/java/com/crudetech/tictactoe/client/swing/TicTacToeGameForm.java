@@ -1,30 +1,28 @@
 package com.crudetech.tictactoe.client.swing;
 
 import com.crudetech.event.Event;
-import com.crudetech.event.EventHookingBean;
-import com.crudetech.event.EventListener;
 import com.crudetech.tictactoe.client.swing.grid.JTicTacToeGrid;
 import com.crudetech.tictactoe.client.swing.grid.TicTacToeGridModel;
 import com.crudetech.tictactoe.game.AlphaBetaPruningPlayer;
 import com.crudetech.tictactoe.game.ComputerPlayer;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.NaiveTryAndErrorPlayer;
-import com.crudetech.tictactoe.game.Player;
-import com.crudetech.tictactoe.game.TicTacToeGame;
+import com.crudetech.tictactoe.ui.CellEventObject;
+import com.crudetech.tictactoe.ui.HumanVsComputerPlayerInteractor;
 import com.crudetech.tictactoe.ui.UiFeedbackChannel;
-import com.crudetech.tictactoe.ui.UiPlayer;
 import com.crudetech.tictactoe.ui.UiView;
-
-import java.util.ArrayList;
-
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 
 /**
  *
  */
 public class TicTacToeGameForm extends javax.swing.JFrame {
-    private HumanPlayerVsComputerPlayerGameInteractor interactorPlayerVsComputer;
+    private HumanVsComputerPlayerInteractor interactorPlayerVsComputer;
+    private ComputerPlayer NullPlayer = new ComputerPlayer() {
+        @Override
+        public void yourTurn(Grid actualGrid) {
+
+        }
+    };
 
     /**
      * Creates new form TicTacToeGameForm
@@ -32,12 +30,7 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
     public TicTacToeGameForm() {
         initComponents();
         setSize(950, 1000);
-        interactorPlayerVsComputer = new HumanPlayerVsComputerPlayerGameInteractor(new ComputerPlayer() {
-            @Override
-            public void yourTurn(Grid actualGrid) {
-
-            }
-        }, ticTacToeGrid.cellClicked());
+        interactorPlayerVsComputer = createInteractor(NullPlayer);
     }
 
     /**
@@ -134,61 +127,36 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
 
     private void startNewGameWithComputerOpponent(ComputerPlayer computerPlayer) {
         interactorPlayerVsComputer.destroy();
-        interactorPlayerVsComputer = new HumanPlayerVsComputerPlayerGameInteractor(computerPlayer, ticTacToeGrid.cellClicked());
+        interactorPlayerVsComputer = createInteractor(computerPlayer);
 
         interactorPlayerVsComputer.startWithHumanPlayer(Grid.Mark.Cross);
     }
 
-    class HumanPlayerVsComputerPlayerGameInteractor {
-        private final TicTacToeGame game;
-        private final Player humanUiPlayer;
-        private final EventHookingBean<JTicTacToeGrid.CellClickedEventObject> eventHooker;
-
-        public HumanPlayerVsComputerPlayerGameInteractor(ComputerPlayer computerPlayer, Event<JTicTacToeGrid.CellClickedEventObject> cellClickedEvent) {
-            humanUiPlayer = createHumanUiPlayer();
-            eventHooker = connectCellClicked(cellClickedEvent);
-
-            game = new TicTacToeGame(humanUiPlayer, computerPlayer);
-            computerPlayer.setGame(game);
-        }
-
-        private EventHookingBean<JTicTacToeGrid.CellClickedEventObject> connectCellClicked(Event<JTicTacToeGrid.CellClickedEventObject> cellClickedEvent) {
-            EventListener<JTicTacToeGrid.CellClickedEventObject> cellClickedListener
-                    = new EventListener<JTicTacToeGrid.CellClickedEventObject>() {
-                @Override
-                public void onEvent(JTicTacToeGrid.CellClickedEventObject e) {
-                    addMark(humanUiPlayer, e.getClickedCellLocation());
-                }
-            };
-
-            return new EventHookingBean<JTicTacToeGrid.CellClickedEventObject>(cellClickedEvent, asList(cellClickedListener));
-        }
-
-        void startWithHumanPlayer(Grid.Mark mark) {
-            game.startWithPlayer(humanUiPlayer, mark);
-        }
-
-        private void addMark(Player player, Grid.Location location) {
-            game.addMark(player, location);
-        }
-
-
-        public void destroy() {
-            eventHooker.destroy();
-        }
-
-        private Player createHumanUiPlayer() {
-            UiFeedbackChannel uiFeedback = new JOptionsPaneUiFeedback(TicTacToeGameForm.this);
-            TicTacToeGridModel newModel = resetGridModel();
-            UiView view = new TicTacToeGridUiView(newModel);
-            return new UiPlayer(view, uiFeedback);
-        }
+    private JTicTacToeGridHumanPlayerVsComputerPlayerGameInteractor createInteractor(ComputerPlayer computerPlayer) {
+        return new JTicTacToeGridHumanPlayerVsComputerPlayerGameInteractor(computerPlayer, ticTacToeGrid.cellClicked());
     }
 
-    private TicTacToeGridModel resetGridModel() {
-        TicTacToeGridModel newModel = new TicTacToeGridModel();
-        ticTacToeGrid.setModel(newModel);
-        return newModel;
+    class JTicTacToeGridHumanPlayerVsComputerPlayerGameInteractor extends HumanVsComputerPlayerInteractor {
+        public JTicTacToeGridHumanPlayerVsComputerPlayerGameInteractor(ComputerPlayer computerPlayer, Event<CellEventObject<JTicTacToeGrid>> cellClickedEvent) {
+            super(computerPlayer, cellClickedEvent);
+        }
+
+        @Override
+        protected UiView createUiView() {
+            TicTacToeGridModel newModel = resetGridModel();
+            return new TicTacToeGridUiView(newModel);
+        }
+
+        @Override
+        protected UiFeedbackChannel createUiFeedback() {
+            return new JOptionsPaneUiFeedback(TicTacToeGameForm.this);
+        }
+
+        private TicTacToeGridModel resetGridModel() {
+            TicTacToeGridModel newModel = new TicTacToeGridModel();
+            ticTacToeGrid.setModel(newModel);
+            return newModel;
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

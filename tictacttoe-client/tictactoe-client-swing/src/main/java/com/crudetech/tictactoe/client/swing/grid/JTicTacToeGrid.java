@@ -2,20 +2,18 @@ package com.crudetech.tictactoe.client.swing.grid;
 
 import com.crudetech.event.Event;
 import com.crudetech.event.EventListener;
-import com.crudetech.event.EventObject;
 import com.crudetech.event.EventSupport;
-import com.crudetech.tictactoe.game.Grid;
+import com.crudetech.tictactoe.ui.CellEventObject;
 
 import javax.swing.JComponent;
 import javax.swing.UIManager;
 import javax.swing.plaf.ComponentUI;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Objects;
 
 public class JTicTacToeGrid extends JComponent {
     private TicTacToeGridModel model;
-    private EventSupport<CellClickedEventObject> clickedEvent = new EventSupport<>();
+    private EventSupport<CellEventObject<JTicTacToeGrid>> clickedEvent = new EventSupport<>();
     private EventListener<TicTacToeGridModel.CellsChangedEventObject> modelCellChangedListener;
     private EventListener<TicTacToeGridModel.ChangedEventObject> modelChangedListener;
 
@@ -84,7 +82,7 @@ public class JTicTacToeGrid extends JComponent {
     private void onMouseClicked(MouseEvent e) {
         GridCellHit hit = cellHitFromMouseEvent(e);
         if (hit.hasHit()) {
-            clickedEvent.fireEvent(new CellClickedEventObject(this, hit.getHit()));
+            clickedEvent.fireEvent(new CellEventObject<JTicTacToeGrid>(this, hit.getHit()));
         }
     }
 
@@ -135,46 +133,7 @@ public class JTicTacToeGrid extends JComponent {
         super.processMouseMotionEvent(e);
     }
 
-    public static class CellClickedEventObject extends EventObject<JTicTacToeGrid> {
-        private final Grid.Location clickedCellLocation;
-
-        CellClickedEventObject(JTicTacToeGrid jTicTacToeGrid, Grid.Location clickedCellLocation) {
-            super(jTicTacToeGrid);
-            this.clickedCellLocation = clickedCellLocation;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            if (!super.equals(o)) return false;
-
-            CellClickedEventObject that = (CellClickedEventObject) o;
-
-            return Objects.equals(clickedCellLocation, that.clickedCellLocation);
-        }
-
-        @Override
-        public int hashCode() {
-            int result = super.hashCode();
-            result = 31 * result + Objects.hashCode(clickedCellLocation);
-            return result;
-        }
-
-        @Override
-        public String toString() {
-            return "CellClickedEventObject{" +
-                    "source=" + getSource() +
-                    "clickedCellLocation=" + clickedCellLocation +
-                    '}';
-        }
-
-        public Grid.Location getClickedCellLocation() {
-            return clickedCellLocation;
-        }
-    }
-
-    public Event<CellClickedEventObject> cellClicked() {
+    public Event<CellEventObject<JTicTacToeGrid>> cellClicked() {
         return clickedEvent;
     }
 }

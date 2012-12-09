@@ -27,7 +27,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class TicTacToeGridUITest {
-
     private Graphics2D g2d;
     private JTicTacToeGrid grid;
     private TicTacToeGridUI ui;
