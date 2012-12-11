@@ -14,7 +14,7 @@ public class UiPlayer implements Player {
 
     @Override
     public void yourTurn(Grid actualGrid) {
-        view.setGrid(actualGrid);
+        view.setModel(actualGrid);
     }
 
     @Override

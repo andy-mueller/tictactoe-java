@@ -40,7 +40,7 @@ class GridWidget extends TextComponent implements UiView {
     }
 
     @Override
-    public void setGrid(Grid grid) {
+    public void setModel(Grid grid) {
         verifyThat(grid, is(notNullValue()));
 
         String gridAsText = buildTextRepresentation(grid);

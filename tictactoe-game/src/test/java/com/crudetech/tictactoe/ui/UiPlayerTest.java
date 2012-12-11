@@ -34,7 +34,7 @@ public class UiPlayerTest {
 
         player.yourTurn(currentGrid);
 
-        verify(widget).setGrid(currentGrid);
+        verify(widget).setModel(currentGrid);
     }
 
 

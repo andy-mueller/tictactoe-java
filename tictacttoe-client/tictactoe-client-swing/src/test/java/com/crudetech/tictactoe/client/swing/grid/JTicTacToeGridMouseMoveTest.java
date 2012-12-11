@@ -48,7 +48,12 @@ public class JTicTacToeGridMouseMoveTest {
         MouseEvent click = buildLButtonClickedEvent(outsideAnyCell);
         grid.raiseMouseEvent(click);
 
-        verify(cellClicked, never()).onEvent(any(CellEventObject.class));
+        verify(cellClicked, never()).onEvent(anyCellEventObject());
+    }
+
+    @SuppressWarnings("unchecked")
+    private CellEventObject<JTicTacToeGrid> anyCellEventObject() {
+        return any(CellEventObject.class);
     }
 
     @SuppressWarnings("unchecked")

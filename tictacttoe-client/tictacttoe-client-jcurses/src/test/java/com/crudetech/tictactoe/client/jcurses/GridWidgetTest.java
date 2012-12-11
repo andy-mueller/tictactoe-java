@@ -70,7 +70,7 @@ public class GridWidgetTest {
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross);
 
 
-        w.setGrid(aGid);
+        w.setModel(aGid);
 
         assertThat(w.getRepaints(), is(1));
     }
@@ -87,7 +87,7 @@ public class GridWidgetTest {
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross);
 
 
-        w.setGrid(currentGrid);
+        w.setModel(currentGrid);
 
         String expectedText =
                 "   | X |   " + "\n" +
@@ -114,7 +114,7 @@ public class GridWidgetTest {
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross);
 
 
-        w.setGrid(currentGrid);
+        w.setModel(currentGrid);
 
         assertThat(cursor, is(new GridWidget.Cursor(location)));
     }
@@ -164,7 +164,7 @@ public class GridWidgetTest {
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.Nought,
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None);
-        widget.setGrid(grid);
+        widget.setModel(grid);
 
         widget.moveCursorToFirstMarkedCell(grid);
 
@@ -180,7 +180,7 @@ public class GridWidgetTest {
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.Nought,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None);
-        widget.setGrid(grid);
+        widget.setModel(grid);
 
         widget.moveCursorToFirstMarkedCell(grid);
 
@@ -195,7 +195,7 @@ public class GridWidgetTest {
                 Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought,
                 Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.Nought,
                 Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought);
-        widget.setGrid(grid);
+        widget.setModel(grid);
 
         widget.moveCursorToFirstMarkedCell(grid);
 
@@ -212,7 +212,7 @@ public class GridWidgetTest {
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
                 Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross);
-        w.setGrid(currentGrid);
+        w.setModel(currentGrid);
 
         Grid.Triple diagonalTriple = Grid.Triple.of(Grid.Mark.Cross,
                 Grid.Location.of(Grid.Row.Third, Grid.Column.First),
@@ -241,7 +241,7 @@ public class GridWidgetTest {
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
                 Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross);
-        w.setGrid(currentGrid);
+        w.setModel(currentGrid);
 
         Grid.Triple diagonalTriple = Grid.Triple.of(Grid.Mark.Cross,
                 Grid.Location.of(Grid.Row.Third, Grid.Column.First),

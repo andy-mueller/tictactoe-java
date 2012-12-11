@@ -57,7 +57,7 @@ public class HumanVsComputerPlayerInteractorTest {
     public void givenInteractorIsStartedForHumanPlayer_gameStartsWithHumanPlayer() {
         interactor.startWithHumanPlayer(Grid.Mark.Cross);
 
-        verify(uiView).setGrid(LinearRandomAccessGrid.empty());
+        verify(uiView).setModel(LinearRandomAccessGrid.empty());
         verify(computerPlayer, never()).yourTurn(any(Grid.class));
     }
 
