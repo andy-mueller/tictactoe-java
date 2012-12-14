@@ -5,9 +5,6 @@ import com.crudetech.tictactoe.ui.UiView;
 
 import java.io.PrintWriter;
 
-/**
- *
- */
 public class TextGridWidgetUiView implements UiView{
     private final TextGridWidget widget;
     private final PrintWriter pipe;
@@ -21,10 +18,17 @@ public class TextGridWidgetUiView implements UiView{
     public void setModel(Grid grid) {
         widget.setModel(grid);
         widget.render(pipe);
+        lineBreak();
+    }
+
+    private void lineBreak() {
+        pipe.println();
     }
 
     @Override
     public void highlight(Grid.Triple triple) {
         widget.highlight(triple);
+        widget.render(pipe);
+        lineBreak();
     }
 }

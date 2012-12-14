@@ -27,17 +27,9 @@ public class HumanVsComputerPlayerInteractorTest {
         event = new EventSupport<CellEventObject<Object>>();
         uiView = mock(UiView.class);
         computerPlayer = mock(ComputerPlayer.class);
-        interactor = new HumanVsComputerPlayerInteractor(computerPlayer, event) {
-            @Override
-            protected UiView createUiView() {
-                return uiView;
-            }
-
-            @Override
-            protected UiFeedbackChannel createUiFeedback() {
-                return mock(UiFeedbackChannel.class);
-            }
-        };
+        interactor = new HumanVsComputerPlayerInteractor(
+                computerPlayer,
+                new HumanPlayer(uiView, mock(UiFeedbackChannel.class), event));
     }
 
     @Test

@@ -10,21 +10,25 @@ import com.crudetech.tictactoe.game.TicTacToeGame;
 
 import static java.util.Arrays.asList;
 
-public abstract class HumanVsComputerPlayerInteractor {
+public class HumanVsComputerPlayerInteractor {
     private final TicTacToeGame game;
     private final Player humanUiPlayer;
     private final EventHookingBean<? extends CellEventObject<?>> eventHooker;
 
-    public HumanVsComputerPlayerInteractor(ComputerPlayer computerPlayer, Event<? extends CellEventObject<?>> humanPlayerMadeMove) {
-        humanUiPlayer = createHumanUiPlayer();
+    private HumanVsComputerPlayerInteractor(ComputerPlayer computerPlayer, Event<? extends CellEventObject<?>> humanPlayerMadeMove, Player humanPlayer) {
+        this.humanUiPlayer = humanPlayer;
         eventHooker = connectHumanPlayerMove(humanPlayerMadeMove);
 
         game = new TicTacToeGame(humanUiPlayer, computerPlayer);
         computerPlayer.setGame(game);
     }
 
+    public HumanVsComputerPlayerInteractor(ComputerPlayer computerPlayer, HumanPlayer humanPlayer) {
+        this(computerPlayer, humanPlayer.makeMove(), humanPlayer);
+    }
+
     private EventHookingBean<? extends CellEventObject<?>>
-            connectHumanPlayerMove(Event<? extends CellEventObject<?>> cellClickedEvent) {
+    connectHumanPlayerMove(Event<? extends CellEventObject<?>> cellClickedEvent) {
         EventListener<CellEventObject<?>> cellClickedListener = new EventListener<CellEventObject<?>>() {
             @Override
             public void onEvent(CellEventObject<?> e) {
@@ -56,14 +60,4 @@ public abstract class HumanVsComputerPlayerInteractor {
     public void destroy() {
         eventHooker.destroy();
     }
-
-    private Player createHumanUiPlayer() {
-        UiFeedbackChannel uiFeedback = createUiFeedback();
-        UiView view = createUiView();
-        return new UiPlayer(view, uiFeedback);
-    }
-
-    protected abstract UiView createUiView();
-
-    protected abstract UiFeedbackChannel createUiFeedback();
 }

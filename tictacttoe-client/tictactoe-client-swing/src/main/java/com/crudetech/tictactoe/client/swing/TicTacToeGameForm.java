@@ -1,16 +1,12 @@
 package com.crudetech.tictactoe.client.swing;
 
-import com.crudetech.event.Event;
-import com.crudetech.tictactoe.client.swing.grid.JTicTacToeGrid;
 import com.crudetech.tictactoe.client.swing.grid.TicTacToeGridModel;
 import com.crudetech.tictactoe.game.AlphaBetaPruningPlayer;
 import com.crudetech.tictactoe.game.ComputerPlayer;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.NaiveTryAndErrorPlayer;
-import com.crudetech.tictactoe.ui.CellEventObject;
+import com.crudetech.tictactoe.ui.HumanPlayer;
 import com.crudetech.tictactoe.ui.HumanVsComputerPlayerInteractor;
-import com.crudetech.tictactoe.ui.UiFeedbackChannel;
-import com.crudetech.tictactoe.ui.UiView;
 
 /**
  *
@@ -132,31 +128,22 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
         interactorPlayerVsComputer.startWithHumanPlayer(Grid.Mark.Cross);
     }
 
-    private JTicTacToeGridHumanPlayerVsComputerPlayerGameInteractor createInteractor(ComputerPlayer computerPlayer) {
-        return new JTicTacToeGridHumanPlayerVsComputerPlayerGameInteractor(computerPlayer, ticTacToeGrid.cellClicked());
+    private HumanVsComputerPlayerInteractor createInteractor(ComputerPlayer computerPlayer) {
+        HumanPlayer humanPlayer =
+                new HumanPlayer(new TicTacToeGridUiView(resetGridModel()),
+                        new JOptionsPaneUiFeedback(this), ticTacToeGrid.cellClicked());
+
+        return new HumanVsComputerPlayerInteractor(
+                computerPlayer,
+                humanPlayer
+        );
     }
 
-    class JTicTacToeGridHumanPlayerVsComputerPlayerGameInteractor extends HumanVsComputerPlayerInteractor {
-        public JTicTacToeGridHumanPlayerVsComputerPlayerGameInteractor(ComputerPlayer computerPlayer, Event<CellEventObject<JTicTacToeGrid>> cellClickedEvent) {
-            super(computerPlayer, cellClickedEvent);
-        }
 
-        @Override
-        protected UiView createUiView() {
-            TicTacToeGridModel newModel = resetGridModel();
-            return new TicTacToeGridUiView(newModel);
-        }
-
-        @Override
-        protected UiFeedbackChannel createUiFeedback() {
-            return new JOptionsPaneUiFeedback(TicTacToeGameForm.this);
-        }
-
-        private TicTacToeGridModel resetGridModel() {
-            TicTacToeGridModel newModel = new TicTacToeGridModel();
-            ticTacToeGrid.setModel(newModel);
-            return newModel;
-        }
+    private TicTacToeGridModel resetGridModel() {
+        TicTacToeGridModel newModel = new TicTacToeGridModel();
+        ticTacToeGrid.setModel(newModel);
+        return newModel;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
