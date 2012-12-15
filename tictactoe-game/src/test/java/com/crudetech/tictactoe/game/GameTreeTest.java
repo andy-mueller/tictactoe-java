@@ -16,7 +16,7 @@ public class GameTreeTest {
     @Test
     public void leafNodeGivesScore() {
         GameTree.Node<Void> node = createLeafNode(42, "node");
-        assertThat(node.getValue(), is(42));
+        assertThat(node.getHeuristicValue(), is(42));
     }
 
 
@@ -54,7 +54,7 @@ public class GameTreeTest {
             }
 
             @Override
-            public int getValue() {
+            public int getHeuristicValue() {
                 return value;
             }
 
@@ -85,7 +85,7 @@ public class GameTreeTest {
             }
 
             @Override
-            public int getValue() {
+            public int getHeuristicValue() {
                 return value;
             }
 

@@ -9,7 +9,7 @@ public class GameTree<TGameState> {
     public interface Node<TGameState> {
         boolean hasFinished();
 
-        int getValue();
+        int getHeuristicValue();
 
         Iterable<? extends Node<TGameState>> getChildren();
 
@@ -26,7 +26,7 @@ public class GameTree<TGameState> {
             @Override
             public <TGameState> Pair<Integer, Node<TGameState>> alphaBeta(Node<TGameState> node, int alpha, int beta, int depth, Player player) {
                 if (hasSufficientDepth(node, depth)) {
-                    return new Pair<>(node.getValue(), node);
+                    return new Pair<>(node.getHeuristicValue(), node);
                 }
                 Pair<Integer, Node<TGameState>> alphaPair = new Pair<>(alpha, null);
                 for (Node<TGameState> child : node.getChildren()) {
@@ -51,7 +51,7 @@ public class GameTree<TGameState> {
             @Override
             public <TGameState> Pair<Integer, Node<TGameState>> alphaBeta(Node<TGameState> node, int alpha, int beta, int depth, Player player) {
                 if (hasSufficientDepth(node, depth)) {
-                    return new Pair<>(node.getValue(), node);
+                    return new Pair<>(node.getHeuristicValue(), node);
                 }
                 Pair<Integer, Node<TGameState>> betaPair = new Pair<>(beta, null);
                 for (Node<TGameState> child : node.getChildren()) {

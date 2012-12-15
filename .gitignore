@@ -1,5 +1,14 @@
 
+#################
+## IntelliJ idea
+#################
 *.iml
-*.idea
-target
-/backup
+/.idea
+/.idea/
+.idea/
+
+#################
+## Maven
+#################
+/target
+target/

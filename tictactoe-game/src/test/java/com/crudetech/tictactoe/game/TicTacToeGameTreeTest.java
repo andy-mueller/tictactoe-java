@@ -130,7 +130,7 @@ public class TicTacToeGameTreeTest {
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought);
         TicTacToeGameTree.Node node = new TicTacToeGameTree.Node(playerOneWins, Grid.Mark.Cross);
 
-        assertThat(node.getValue(), is(1));
+        assertThat(node.getHeuristicValue(), is(1));
     }
 
     @Test
@@ -141,7 +141,7 @@ public class TicTacToeGameTreeTest {
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought);
         TicTacToeGameTree.Node node = new TicTacToeGameTree.Node(playerOneWins, Grid.Mark.Nought);
 
-        assertThat(node.getValue(), is(-1));
+        assertThat(node.getHeuristicValue(), is(-1));
     }
 
     @Test
@@ -152,7 +152,7 @@ public class TicTacToeGameTreeTest {
                 Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.Nought);
         TicTacToeGameTree.Node node = new TicTacToeGameTree.Node(tie, Grid.Mark.Nought);
 
-        assertThat(node.getValue(), is(0));
+        assertThat(node.getHeuristicValue(), is(0));
     }
 
     @Test
@@ -166,7 +166,7 @@ public class TicTacToeGameTreeTest {
         Runnable getValueOnOpenGame = new Runnable() {
             @Override
             public void run() {
-                node.getValue();
+                node.getHeuristicValue();
             }
         };
 
