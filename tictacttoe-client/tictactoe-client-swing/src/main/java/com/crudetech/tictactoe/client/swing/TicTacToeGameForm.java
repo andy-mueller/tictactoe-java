@@ -5,8 +5,8 @@ import com.crudetech.tictactoe.game.AlphaBetaPruningPlayer;
 import com.crudetech.tictactoe.game.ComputerPlayer;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.NaiveTryAndErrorPlayer;
-import com.crudetech.tictactoe.ui.HumanPlayer;
 import com.crudetech.tictactoe.ui.HumanVsComputerPlayerInteractor;
+import com.crudetech.tictactoe.ui.UiPlayer;
 
 /**
  *
@@ -129,14 +129,15 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
     }
 
     private HumanVsComputerPlayerInteractor createInteractor(ComputerPlayer computerPlayer) {
-        HumanPlayer humanPlayer =
-                new HumanPlayer(new TicTacToeGridUiView(resetGridModel()),
-                        new JOptionsPaneUiFeedback(this), ticTacToeGrid.cellClicked());
+        UiPlayer humanPlayer =
+                new UiPlayer(new TicTacToeGridUiView(resetGridModel()),
+                        new JOptionsPaneUiFeedback(this));
 
-        return new HumanVsComputerPlayerInteractor(
-                computerPlayer,
-                humanPlayer
-        );
+        return HumanVsComputerPlayerInteractor.builder()
+                .setComputerPlayer(computerPlayer)
+                .setPartialHumanPlayer(humanPlayer)
+                .setMadeMove(ticTacToeGrid.cellClicked())
+                .build();
     }
 
 

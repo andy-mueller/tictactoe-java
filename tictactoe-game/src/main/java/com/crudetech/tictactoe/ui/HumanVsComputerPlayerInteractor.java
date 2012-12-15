@@ -15,16 +15,16 @@ public class HumanVsComputerPlayerInteractor {
     private final Player humanUiPlayer;
     private final EventHookingBean<? extends CellEventObject<?>> eventHooker;
 
-    private HumanVsComputerPlayerInteractor(ComputerPlayer computerPlayer, Event<? extends CellEventObject<?>> humanPlayerMadeMove, Player humanPlayer) {
+    HumanVsComputerPlayerInteractor(ComputerPlayer computerPlayer, HumanPlayer humanPlayer) {
+        this(computerPlayer, humanPlayer.makeMove(), humanPlayer);
+    }
+
+    HumanVsComputerPlayerInteractor(ComputerPlayer computerPlayer, Event<? extends CellEventObject<?>> humanPlayerMadeMove, Player humanPlayer) {
         this.humanUiPlayer = humanPlayer;
         eventHooker = connectHumanPlayerMove(humanPlayerMadeMove);
 
         game = new TicTacToeGame(humanUiPlayer, computerPlayer);
         computerPlayer.setGame(game);
-    }
-
-    public HumanVsComputerPlayerInteractor(ComputerPlayer computerPlayer, HumanPlayer humanPlayer) {
-        this(computerPlayer, humanPlayer.makeMove(), humanPlayer);
     }
 
     private EventHookingBean<? extends CellEventObject<?>>
@@ -56,8 +56,50 @@ public class HumanVsComputerPlayerInteractor {
         makeMove(humanUiPlayer, location);
     }
 
-
     public void destroy() {
         eventHooker.destroy();
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private ComputerPlayer computerPlayer;
+        private Event<? extends CellEventObject<?>> madeMove;
+        private Player partialHumanPlayer;
+        private HumanPlayer humanPlayer;
+
+
+        private Builder() {
+        }
+
+        public Builder setComputerPlayer(ComputerPlayer computerPlayer) {
+            this.computerPlayer = computerPlayer;
+            return this;
+        }
+
+        public Builder setMadeMove(Event<? extends CellEventObject<?>> humanPlayerMadeMove) {
+            this.madeMove = humanPlayerMadeMove;
+            return this;
+        }
+
+        public Builder setPartialHumanPlayer(Player humanPlayer) {
+            this.partialHumanPlayer = humanPlayer;
+            return this;
+        }
+
+        public Builder setHumanPlayer(HumanPlayer humanPlayer) {
+            this.humanPlayer = humanPlayer;
+            return this;
+        }
+
+        public HumanVsComputerPlayerInteractor build() {
+            if (madeMove != null) {
+                return new HumanVsComputerPlayerInteractor(computerPlayer, madeMove, partialHumanPlayer);
+            } else {
+                return new HumanVsComputerPlayerInteractor(computerPlayer, humanPlayer);
+            }
+        }
     }
 }
