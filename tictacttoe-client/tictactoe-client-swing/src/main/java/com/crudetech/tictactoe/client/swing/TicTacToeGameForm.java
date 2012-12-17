@@ -13,10 +13,10 @@ import com.crudetech.tictactoe.ui.UiPlayer;
  */
 public class TicTacToeGameForm extends javax.swing.JFrame {
     private HumanVsComputerPlayerInteractor interactorPlayerVsComputer;
-    private ComputerPlayer NullPlayer = new ComputerPlayer() {
+    private static ComputerPlayer NullPlayer = new ComputerPlayer() {
         @Override
-        public void yourTurn(Grid actualGrid) {
-
+        protected Grid.Location computeNextMove(Grid actualGrid) {
+            throw new IllegalStateException();
         }
     };
 

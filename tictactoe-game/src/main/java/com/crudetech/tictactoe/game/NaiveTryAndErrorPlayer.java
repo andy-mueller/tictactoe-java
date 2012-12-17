@@ -8,15 +8,18 @@ import static com.crudetech.tictactoe.game.GridCells.markIsEqualTo;
 import static java.util.Collections.shuffle;
 
 public class NaiveTryAndErrorPlayer extends ComputerPlayer{
-
     @Override
-    public void yourTurn(Grid actualGrid) {
+    protected Grid.Location computeNextMove(Grid actualGrid) {
         List<Grid.Location> cells =
                 from(actualGrid.getCells()).where(markIsEqualTo(Grid.Mark.None)).select(location()).toList();
+        verifyListNotEmpty(cells);
+        shuffle(cells);
+        return cells.get(0);
+    }
+
+    private void verifyListNotEmpty(List<Grid.Location> cells) {
         if (cells.isEmpty()) {
             throw new IllegalStateException();
         }
-        shuffle(cells);
-        addMark(cells.get(0));
     }
 }

@@ -53,14 +53,8 @@ public class AlphaBetaPruningPlayer extends ComputerPlayer {
             return new AlphaBetaPruningPlayer(playersMark, strategy, startPlayersMark);
         }
     }
-
     @Override
-    public void yourTurn(Grid actualGrid) {
-        Grid.Location nextBestMove = nextBestMove(actualGrid);
-        addMark(nextBestMove);
-    }
-
-    private Grid.Location nextBestMove(Grid actualGrid) {
+    protected Grid.Location computeNextMove(Grid actualGrid) {
         LinearRandomAccessGrid currentGrid = LinearRandomAccessGrid.of(actualGrid);
         Grid nextBestMove = nextBestMove(currentGrid);
         Iterable<Grid.Cell> difference = currentGrid.difference(nextBestMove);

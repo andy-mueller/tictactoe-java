@@ -22,4 +22,12 @@ public abstract class ComputerPlayer implements Player {
     protected void addMark(Grid.Location location) {
         game.addMark(this, location);
     }
+
+    @Override
+    public void yourTurn(Grid actualGrid) {
+        Grid.Location nextMove = computeNextMove(actualGrid);
+        addMark(nextMove);
+    }
+
+    protected abstract Grid.Location computeNextMove(Grid actualGrid);
 }
