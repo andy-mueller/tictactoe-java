@@ -12,7 +12,7 @@ import com.crudetech.tictactoe.ui.UiPlayer;
  *
  */
 public class TicTacToeGameForm extends javax.swing.JFrame {
-    private HumanVsComputerPlayerInteractor interactorPlayerVsComputer;
+    private HumanVsComputerPlayerInteractor humanPlayerVsComputerInteractor;
     private static ComputerPlayer NullPlayer = new ComputerPlayer() {
         @Override
         protected Grid.Location computeNextMove(Grid actualGrid) {
@@ -26,7 +26,7 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
     public TicTacToeGameForm() {
         initComponents();
         setSize(950, 1000);
-        interactorPlayerVsComputer = createInteractor(NullPlayer);
+        humanPlayerVsComputerInteractor = createInteractor(NullPlayer);
     }
 
     /**
@@ -122,10 +122,10 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
     }//GEN-LAST:event_newAdvancedGameMenuActionPerformed
 
     private void startNewGameWithComputerOpponent(ComputerPlayer computerPlayer) {
-        interactorPlayerVsComputer.destroy();
-        interactorPlayerVsComputer = createInteractor(computerPlayer);
+        humanPlayerVsComputerInteractor.destroy();
+        humanPlayerVsComputerInteractor = createInteractor(computerPlayer);
 
-        interactorPlayerVsComputer.startWithHumanPlayer(Grid.Mark.Cross);
+        humanPlayerVsComputerInteractor.startWithHumanPlayer(Grid.Mark.Cross);
     }
 
     private HumanVsComputerPlayerInteractor createInteractor(ComputerPlayer computerPlayer) {
