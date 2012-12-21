@@ -1,13 +1,10 @@
 package com.crudetech.tictactoe.delivery.text.jcurses;
 
-import com.crudetech.event.EventListener;
 import com.crudetech.tictactoe.game.AlphaBetaPruningPlayer;
 import com.crudetech.tictactoe.game.ComputerPlayer;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.NaiveTryAndErrorPlayer;
-import com.crudetech.tictactoe.game.TicTacToeGame;
 import com.crudetech.tictactoe.ui.HumanVsComputerPlayerInteractor;
-import com.crudetech.tictactoe.ui.UiFeedbackChannel;
 import com.crudetech.tictactoe.ui.UiPlayer;
 import jcurses.event.ItemEvent;
 import jcurses.event.ItemListener;
