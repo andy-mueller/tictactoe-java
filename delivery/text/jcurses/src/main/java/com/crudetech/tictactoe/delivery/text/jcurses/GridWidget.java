@@ -5,6 +5,7 @@ import com.crudetech.event.Event;
 import com.crudetech.event.EventObject;
 import com.crudetech.event.EventSupport;
 import com.crudetech.tictactoe.game.Grid;
+import com.crudetech.tictactoe.ui.CellEventObject;
 import com.crudetech.tictactoe.ui.UiView;
 import jcurses.system.InputChar;
 import jcurses.widgets.TextComponent;
@@ -57,27 +58,27 @@ class GridWidget extends TextComponent implements UiView {
         return textRepresentation.toString();
     }
 
-        private static StringBuilder replaceAtLocation(StringBuilder builder, Grid.Location location, char newValue) {
-            Cursor tmpCursor = new Cursor(location);
-            int positionInLinearText = tmpCursor.getTextPositionX() + tmpCursor.getTextPositionY() * 12;
-            return builder.replace(positionInLinearText, positionInLinearText + 1, String.valueOf(newValue));
-        }
+    private static StringBuilder replaceAtLocation(StringBuilder builder, Grid.Location location, char newValue) {
+        Cursor tmpCursor = new Cursor(location);
+        int positionInLinearText = tmpCursor.getTextPositionX() + tmpCursor.getTextPositionY() * 12;
+        return builder.replace(positionInLinearText, positionInLinearText + 1, String.valueOf(newValue));
+    }
 
-        private char characterSymbolOf(Grid.Mark mark) {
-            switch (mark) {
-                case Cross:
-                    return 'X';
-                case Nought:
-                    return 'O';
-                case None:
-                    return ' ';
-                default:
-                    throw new IllegalArgumentException(String.format("Wrong mark %s! Must be either %s, %s or %s", mark, Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None));
-            }
+    private char characterSymbolOf(Grid.Mark mark) {
+        switch (mark) {
+            case Cross:
+                return 'X';
+            case Nought:
+                return 'O';
+            case None:
+                return ' ';
+            default:
+                throw new IllegalArgumentException(String.format("Wrong mark %s! Must be either %s, %s or %s", mark, Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None));
         }
+    }
 
     void moveCursorToFirstMarkedCell(Grid grid) {
-        if(currentCursorPositionIsOnMarkedCell(grid))                 {
+        if (currentCursorPositionIsOnMarkedCell(grid)) {
             return;
         }
 
@@ -90,9 +91,9 @@ class GridWidget extends TextComponent implements UiView {
         cursor.setLocation(cursorLocation);
     }
 
-        private boolean currentCursorPositionIsOnMarkedCell(Grid grid) {
-            return grid.getAt(cursor.getLocation()).equals(Grid.Mark.None);
-        }
+    private boolean currentCursorPositionIsOnMarkedCell(Grid grid) {
+        return grid.getAt(cursor.getLocation()).equals(Grid.Mark.None);
+    }
 
     @Override
     public void highlight(Grid.Triple triple) {
@@ -106,16 +107,13 @@ class GridWidget extends TextComponent implements UiView {
         repaint();
     }
 
-    static class KeyDownEventObject extends EventObject<GridWidget> {
+    static class KeyDownEventObject extends CellEventObject<GridWidget> {
         private final char character;
-        private final Grid.Location location;
 
         public KeyDownEventObject(GridWidget gridWidget, char character, Grid.Location location) {
-            super(gridWidget);
-            verifyThat(location, is(notNullValue()));
+            super(gridWidget, location);
 
             this.character = character;
-            this.location = location;
         }
 
         @Override
@@ -127,13 +125,13 @@ class GridWidget extends TextComponent implements UiView {
             KeyDownEventObject that = (KeyDownEventObject) o;
 
             return character == that.character
-                    && location.equals(that.location);
+                && super.equals(that);
 
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(super.hashCode(), (int) character, location);
+            return Objects.hash(super.hashCode(), (int) character);
         }
 
         @Override
@@ -141,12 +139,8 @@ class GridWidget extends TextComponent implements UiView {
             return "KeyDownEventObject{" +
                     "source=" + getSource() +
                     "character=" + character +
-                    ", location=" + location +
+                    ", location=" + getCellLocation() +
                     '}';
-        }
-
-        Grid.Location getLocation() {
-            return location;
         }
     }
 
@@ -239,21 +233,21 @@ class GridWidget extends TextComponent implements UiView {
         return true;
     }
 
-        private void invalidate() {
-            doRepaint();
-        }
+    private void invalidate() {
+        doRepaint();
+    }
 
     private void dispatchSpecialKeyInput(int keyCode) {
-            if (keyCode == InputChar.KEY_DOWN) {
-                cursor.moveDown();
-            } else if (keyCode == InputChar.KEY_UP) {
-                cursor.moveUp();
-            } else if (keyCode == InputChar.KEY_LEFT) {
-                cursor.moveLeft();
-            } else if (keyCode == InputChar.KEY_RIGHT) {
-                cursor.moveRight();
-            }
+        if (keyCode == InputChar.KEY_DOWN) {
+            cursor.moveDown();
+        } else if (keyCode == InputChar.KEY_UP) {
+            cursor.moveUp();
+        } else if (keyCode == InputChar.KEY_LEFT) {
+            cursor.moveLeft();
+        } else if (keyCode == InputChar.KEY_RIGHT) {
+            cursor.moveRight();
         }
+    }
 
     @Override
     protected void doPaint() {

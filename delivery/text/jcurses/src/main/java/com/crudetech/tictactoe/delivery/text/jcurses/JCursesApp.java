@@ -6,6 +6,7 @@ import com.crudetech.tictactoe.game.ComputerPlayer;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.NaiveTryAndErrorPlayer;
 import com.crudetech.tictactoe.game.TicTacToeGame;
+import com.crudetech.tictactoe.ui.HumanVsComputerPlayerInteractor;
 import com.crudetech.tictactoe.ui.UiFeedbackChannel;
 import com.crudetech.tictactoe.ui.UiPlayer;
 import jcurses.event.ItemEvent;
@@ -19,25 +20,17 @@ import jcurses.widgets.Window;
 public class JCursesApp {
     static class MainWindow extends Window {
         private final DefaultLayoutManager layoutManager;
-        private TicTacToeGame game;
         private GridWidget gridWidget;
-        private UiPlayer gridWidgetPlayer;
-        EventListener<GridWidget.KeyDownEventObject> keyDownListener = new EventListener<GridWidget.KeyDownEventObject>() {
-            @Override
-            public void onEvent(GridWidget.KeyDownEventObject e) {}
-        };
+        private HumanVsComputerPlayerInteractor humanVsComputerPlayerInteractor;
 
         MainWindow(int x, int y) {
             super(x, y, true, "Tic Tac Toe");
             layoutManager = createLayoutManager();
             this.gridWidget = createGridWidget(layoutManager);
             installMenu(layoutManager);
-            hookGridWidgetsKeyDownEventToAddAMarkOfTheGame();
+            humanVsComputerPlayerInteractor = createInteractor(new NaiveTryAndErrorPlayer());
         }
 
-        private void hookGridWidgetsKeyDownEventToAddAMarkOfTheGame() {
-            gridWidget.keyDownEvent().addListener(keyDownListener);
-        }
 
         private void installMenu(DefaultLayoutManager layoutManager) {
             final String NewEasyGame = "New Easy Game";
@@ -90,20 +83,22 @@ public class JCursesApp {
 
         private void startNewGameWithComputerOpponent(ComputerPlayer computerPlayer) {
             gridWidget.getFocus();
-            gridWidget.keyDownEvent().removeListener(keyDownListener);
-            UiFeedbackChannel uiFeedback = new JCursesMessageBoxFeedbackChannel();
-            gridWidgetPlayer = new GridWidgetPlayer(gridWidget, uiFeedback);
+            humanVsComputerPlayerInteractor.destroy();
+            humanVsComputerPlayerInteractor = createInteractor(computerPlayer);
 
-            game = new TicTacToeGame(gridWidgetPlayer, computerPlayer);
-            computerPlayer.setGame(game);
-            keyDownListener = new EventListener<GridWidget.KeyDownEventObject>() {
-                @Override
-                public void onEvent(GridWidget.KeyDownEventObject e) {
-                    game.addMark(gridWidgetPlayer, e.getLocation());
-                }
-            };
-            gridWidget.keyDownEvent().addListener(keyDownListener);
-            game.startWithPlayer(gridWidgetPlayer, Grid.Mark.Cross);
+            humanVsComputerPlayerInteractor.startWithHumanPlayer(Grid.Mark.Cross);
+        }
+
+        private HumanVsComputerPlayerInteractor createInteractor(ComputerPlayer computerPlayer) {
+            UiPlayer humanPlayer =
+                    new UiPlayer(gridWidget,
+                            new JCursesMessageBoxFeedbackChannel());
+
+            return HumanVsComputerPlayerInteractor.builder()
+                    .setComputerPlayer(computerPlayer)
+                    .setPartialHumanPlayer(humanPlayer)
+                    .setMadeMove(gridWidget.keyDownEvent())
+                    .build();
         }
     }
 
