@@ -9,15 +9,15 @@
         <version>0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>tictactoe-client</artifactId>
+    <artifactId>tictactoe-delivery</artifactId>
 
     <name>${project.artifactId}</name>
 
     <packaging>pom</packaging>
 
     <modules>
-        <module>tictactoe-client-swing</module>
-        <module>tictacttoe-client-jcurses</module>
+        <module>swing</module>
+        <module>text</module>
     </modules>
 
 </project>
