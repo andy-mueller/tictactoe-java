@@ -39,8 +39,8 @@
     </repositories>
 
     <modules>
-        <module>tictactoe-game</module>
-        <module>tictacttoe-client</module>
+        <module>game</module>
+        <module>delivery</module>
     </modules>
 
     <developers>
