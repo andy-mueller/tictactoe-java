@@ -1,4 +1,4 @@
-package com.crudetech.tictactoe.client.cli;
+package com.crudetech.tictactoe.delivery.text.cli;
 
 import com.crudetech.event.Event;
 import com.crudetech.event.EventSupport;
