@@ -14,7 +14,7 @@ import java.io.PrintWriter;
 public class CliApp {
     public static void main(String[] args) throws Exception {
 
-        final ComputerPlayer aiPlayer = AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Nought).withStartPlayerMark(Grid.Mark.Cross).asMin();
+        final ComputerPlayer aiPlayer = AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Nought).asSecondPlayer();
 
         final PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), true);
         final TextGridWidget widget = new TextGridWidget();

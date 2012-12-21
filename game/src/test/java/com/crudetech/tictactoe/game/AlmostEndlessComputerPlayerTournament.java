@@ -25,8 +25,8 @@ public class AlmostEndlessComputerPlayerTournament {
             Runnable runner = new Runnable() {
                 @Override
                 public void run() {
-                    AlphaBetaPruningPlayer firstPlayer = tracingAlphaBetaPruningPlayerBuilder(trace).withMark(Grid.Mark.Cross).withStartPlayerMark(Grid.Mark.Cross).asMax();
-                    AlphaBetaPruningPlayer secondPlayer = AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Nought).withStartPlayerMark(Grid.Mark.Cross).asMin();
+                    AlphaBetaPruningPlayer firstPlayer = tracingAlphaBetaPruningPlayerBuilder(trace).withMark(Grid.Mark.Cross).asStartPlayer();
+                    AlphaBetaPruningPlayer secondPlayer = AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Nought).asSecondPlayer();
 
 
                     TicTacToeGame game = new TicTacToeGame(firstPlayer, secondPlayer);

@@ -27,7 +27,6 @@ public class AlphaBetaPruningPlayer extends ComputerPlayer {
 
     public static class Builder {
         private Grid.Mark playersMark;
-        private Grid.Mark startPlayersMark;
 
         public Builder withMark(Grid.Mark playersMark) {
             verifyThat(playersMark, is(notNullValue()));
@@ -35,22 +34,16 @@ public class AlphaBetaPruningPlayer extends ComputerPlayer {
             return this;
         }
 
-        public Builder withStartPlayerMark(Grid.Mark startPlayersMark) {
-            verifyThat(startPlayersMark, is(notNullValue()));
-            this.startPlayersMark = startPlayersMark;
-            return this;
-        }
-
-        public AlphaBetaPruningPlayer asMin() {
-            return newPlayerInstance(playersMark, GameTree.Player.Min, startPlayersMark);
-        }
-
-        public AlphaBetaPruningPlayer asMax() {
-            return newPlayerInstance(playersMark, GameTree.Player.Max, startPlayersMark);
-        }
-
         AlphaBetaPruningPlayer newPlayerInstance(Grid.Mark playersMark, GameTree.Player strategy, Grid.Mark startPlayersMark) {
             return new AlphaBetaPruningPlayer(playersMark, strategy, startPlayersMark);
+        }
+
+        public AlphaBetaPruningPlayer asStartPlayer() {
+            return newPlayerInstance(playersMark, GameTree.Player.Max, playersMark);
+        }
+
+        public AlphaBetaPruningPlayer asSecondPlayer() {
+            return newPlayerInstance(playersMark, GameTree.Player.Min, playersMark.getOpposite());
         }
     }
     @Override
