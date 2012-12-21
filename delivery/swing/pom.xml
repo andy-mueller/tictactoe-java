@@ -33,7 +33,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.crudetech.tictactoe.client.swing.SwingApp</mainClass>
+                    <mainClass>com.crudetech.tictactoe.delivery.swing.SwingApp</mainClass>
                     <classpathScope>runtime</classpathScope>
                 </configuration>
             </plugin>
