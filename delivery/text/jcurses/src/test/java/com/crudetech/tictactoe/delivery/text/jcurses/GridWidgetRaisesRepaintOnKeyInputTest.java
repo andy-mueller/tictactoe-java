@@ -1,5 +1,6 @@
 package com.crudetech.tictactoe.delivery.text.jcurses;
 
+import com.crudetech.tictactoe.delivery.text.cli.TextGridWidget;
 import jcurses.system.InputChar;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +34,7 @@ public class GridWidgetRaisesRepaintOnKeyInputTest {
 
     @Test
     public void anyCharInputRaisesRepaint() {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        TextGridWidget.Cursor cursor = new TextGridWidget.Cursor();
         StandAloneGridWidget w = new StandAloneGridWidget(cursor);
 
         w.handleInput(inputKey);

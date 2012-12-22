@@ -1,8 +1,6 @@
-package com.crudetech.tictactoe.delivery.text.jcurses;
+package com.crudetech.tictactoe.delivery.text.cli;
 
-import com.crudetech.tictactoe.delivery.text.jcurses.GridWidget;
 import com.crudetech.tictactoe.game.Grid;
-import jcurses.widgets.TextComponent;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -10,16 +8,16 @@ import org.junit.runners.Parameterized;
 import java.util.Collection;
 
 import static java.util.Arrays.asList;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class GridWidgetCursorMapsOnTextComponentCursorTest {
+public class TextGridWidgetCursorMapsOnMultiLineTextPositionTest {
     private final Grid.Location location;
     private final int expectedTextLocationX;
     private final int expectedTextLocationY;
 
-    public GridWidgetCursorMapsOnTextComponentCursorTest(Grid.Location location, int expectedTextLocationX, int expectedTextLocationY) {
+    public TextGridWidgetCursorMapsOnMultiLineTextPositionTest(Grid.Location location, int expectedTextLocationX, int expectedTextLocationY) {
         this.location = location;
         this.expectedTextLocationX = expectedTextLocationX;
         this.expectedTextLocationY = expectedTextLocationY;
@@ -50,20 +48,10 @@ public class GridWidgetCursorMapsOnTextComponentCursorTest {
         });
     }
 
-
     @Test
-    public void setLocationSetsCursorOnTextComponent() {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
-        cursor.setLocation(location);
-
-        TextComponent textWidget = spy(new TextComponent(10, 10, "XoX") {
-            @Override
-            public void setCursorLocation(int x, int y) {
-            }
-        });
-
-        cursor.setOn(textWidget);
-
-        verify(textWidget).setCursorLocation(expectedTextLocationX, expectedTextLocationY);
+    public void givenLocationCorrectXandYCoordinatesAreComputed() throws Exception {
+        TextGridWidget.Cursor cursor = new TextGridWidget.Cursor(location);
+        assertThat(cursor.getTextPositionX(), is(expectedTextLocationX));
+        assertThat(cursor.getTextPositionY(), is(expectedTextLocationY));
     }
 }

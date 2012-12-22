@@ -1,6 +1,7 @@
 package com.crudetech.tictactoe.delivery.text.jcurses;
 
 
+import com.crudetech.tictactoe.delivery.text.cli.TextGridWidget;
 import com.crudetech.tictactoe.game.Grid;
 import jcurses.system.InputChar;
 import org.junit.Test;
@@ -14,7 +15,7 @@ import static org.mockito.Mockito.verify;
 public class GridWidgetCursorMoveTest {
     @Test
     public void arrowDownMovesCursorOneDown() {
-        GridWidget.Cursor cursor = mock(GridWidget.Cursor.class);
+        TextGridWidget.Cursor cursor = mock(TextGridWidget.Cursor.class);
         GridWidget w = new StandAloneGridWidget(cursor);
 
         boolean handled = w.handleInput(new InputChar(KEY_DOWN));
@@ -25,7 +26,7 @@ public class GridWidgetCursorMoveTest {
 
     @Test
     public void arrowUpMovesCursorOneUp() {
-        GridWidget.Cursor cursor = mock(GridWidget.Cursor.class);
+        TextGridWidget.Cursor cursor = mock(TextGridWidget.Cursor.class);
         GridWidget w = new StandAloneGridWidget(cursor);
 
         boolean handled = w.handleInput(new InputChar(KEY_UP));
@@ -36,7 +37,7 @@ public class GridWidgetCursorMoveTest {
 
     @Test
     public void arrowLeftMovesCursorOneLeft() {
-        GridWidget.Cursor cursor = mock(GridWidget.Cursor.class);
+        TextGridWidget.Cursor cursor = mock(TextGridWidget.Cursor.class);
         GridWidget w = new StandAloneGridWidget(cursor);
 
         boolean handled = w.handleInput(new InputChar(KEY_LEFT));
@@ -47,7 +48,7 @@ public class GridWidgetCursorMoveTest {
 
     @Test
     public void arrowRightMovesCursorOneRight() {
-        GridWidget.Cursor cursor = mock(GridWidget.Cursor.class);
+        TextGridWidget.Cursor cursor = mock(TextGridWidget.Cursor.class);
         GridWidget w = new StandAloneGridWidget(cursor);
 
         boolean handled = w.handleInput(new InputChar(KEY_RIGHT));
@@ -58,7 +59,7 @@ public class GridWidgetCursorMoveTest {
 
     @Test
     public void cursorMoveRightSetsWidgetCursorPosition() {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        TextGridWidget.Cursor cursor = new TextGridWidget.Cursor();
         cursor.setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.Second));
 
         cursor.moveRight();
@@ -68,7 +69,7 @@ public class GridWidgetCursorMoveTest {
 
     @Test
     public void cursorMoveLeftSetsWidgetCursorPosition() {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        TextGridWidget.Cursor cursor = new TextGridWidget.Cursor();
         cursor.setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.Second));
 
         cursor.moveLeft();
@@ -78,7 +79,7 @@ public class GridWidgetCursorMoveTest {
 
     @Test
     public void cursorMoveLeftFlipsOverCursorPosition() {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        TextGridWidget.Cursor cursor = new TextGridWidget.Cursor();
         cursor.setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.First));
 
         cursor.moveLeft();
@@ -88,7 +89,7 @@ public class GridWidgetCursorMoveTest {
 
     @Test
     public void cursorMoveRightFlipsOverCursorPosition() {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        TextGridWidget.Cursor cursor = new TextGridWidget.Cursor();
         cursor.setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.Third));
 
         cursor.moveRight();
@@ -98,7 +99,7 @@ public class GridWidgetCursorMoveTest {
 
     @Test
     public void cursorMoveUpSetsWidgetCursorPosition() {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        TextGridWidget.Cursor cursor = new TextGridWidget.Cursor();
         cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
 
         cursor.moveUp();
@@ -108,7 +109,7 @@ public class GridWidgetCursorMoveTest {
 
     @Test
     public void cursorMoveDownSetsWidgetCursorPosition() {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        TextGridWidget.Cursor cursor = new TextGridWidget.Cursor();
         cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
 
         cursor.moveDown();
@@ -118,7 +119,7 @@ public class GridWidgetCursorMoveTest {
 
     @Test
     public void cursorMoveDownFlipsOverCursorPosition() {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        TextGridWidget.Cursor cursor = new TextGridWidget.Cursor();
         cursor.setLocation(Grid.Location.of(Grid.Row.Third, Grid.Column.Second));
 
         cursor.moveDown();
@@ -128,7 +129,7 @@ public class GridWidgetCursorMoveTest {
 
     @Test
     public void cursorMoveUpFlipsOverCursorPosition() {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        TextGridWidget.Cursor cursor = new TextGridWidget.Cursor();
         cursor.setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.Second));
 
         cursor.moveUp();

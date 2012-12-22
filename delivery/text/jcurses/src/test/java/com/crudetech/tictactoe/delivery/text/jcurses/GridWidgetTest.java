@@ -4,6 +4,7 @@ import com.crudetech.event.EventListener;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
 import com.crudetech.junit.feature.Features;
+import com.crudetech.tictactoe.delivery.text.cli.TextGridWidget;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import jcurses.system.InputChar;
@@ -20,6 +21,25 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(Features.class)
 public class GridWidgetTest {
+    //   | X |
+    //---+---+---
+    // O | O |
+    //---+---+---
+    //   |   | X
+    private final Grid nonSpecificGrid = LinearRandomAccessGrid.of(
+            Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
+            Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.None,
+            Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross);
+    //   |   | #
+    //---+---+---
+    //   | # |
+    //---+---+---
+    // # |   |
+    private final Grid.Triple diagonalTriple = Grid.Triple.of(Grid.Mark.Cross,
+            Grid.Location.of(Grid.Row.Third, Grid.Column.First),
+            Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
+            Grid.Location.of(Grid.Row.First, Grid.Column.Third));
+
 //   O |   | X    <0
 //  ---+---+---    1
 //   X | O | O    <2
@@ -30,7 +50,7 @@ public class GridWidgetTest {
 
     @Test
     public void ctorSetsCursorIntoMiddleCell() {
-        GridWidget.Cursor cursor = mock(GridWidget.Cursor.class);
+        TextGridWidget.Cursor cursor = mock(TextGridWidget.Cursor.class);
         new GridWidget(cursor);
 
         verify(cursor).setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
@@ -38,7 +58,7 @@ public class GridWidgetTest {
 
     @Test
     public void userKeyPressSendsEvent() {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        TextGridWidget.Cursor cursor = new TextGridWidget.Cursor();
         GridWidget w = new StandAloneGridWidget(cursor);
         final Grid.Location cursorLocation = Grid.Location.of(Grid.Row.First, Grid.Column.First);
         cursor.setLocation(cursorLocation);
@@ -58,7 +78,7 @@ public class GridWidgetTest {
 
     @Test
     public void setGridTriggersRepaint() {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        TextGridWidget.Cursor cursor = new TextGridWidget.Cursor();
         StandAloneGridWidget w = new StandAloneGridWidget(cursor);
         cursor.setLocation(Grid.Location.of(Grid.Row.First, Grid.Column.First));
 
@@ -75,9 +95,10 @@ public class GridWidgetTest {
         assertThat(w.getRepaints(), is(1));
     }
 
+
     @Test
     public void setGridChangesWidgetContent() {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        TextGridWidget.Cursor cursor = new TextGridWidget.Cursor();
         GridWidget w = new StandAloneGridWidget(cursor);
         cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
 
@@ -101,7 +122,7 @@ public class GridWidgetTest {
 
     @Test
     public void setGridLetsCursorInSameLocation() {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        TextGridWidget.Cursor cursor = new TextGridWidget.Cursor();
         StandAloneGridWidget w = new StandAloneGridWidget(cursor);
 
         final Grid.Location location = Grid.Location.of(Grid.Row.First, Grid.Column.First);
@@ -116,20 +137,20 @@ public class GridWidgetTest {
 
         w.setModel(currentGrid);
 
-        assertThat(cursor, is(new GridWidget.Cursor(location)));
+        assertThat(cursor, is(new TextGridWidget.Cursor(location)));
     }
 
     @Feature(Equivalent.class)
-    public static Equivalent.Factory<GridWidget.Cursor> cursorEquivalentFeature() {
-        return new Equivalent.Factory<GridWidget.Cursor>() {
+    public static Equivalent.Factory<TextGridWidget.Cursor> cursorEquivalentFeature() {
+        return new Equivalent.Factory<TextGridWidget.Cursor>() {
             @Override
-            public GridWidget.Cursor createItem() {
-                return new GridWidget.Cursor(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
+            public TextGridWidget.Cursor createItem() {
+                return new TextGridWidget.Cursor(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
             }
 
             @Override
-            public List<GridWidget.Cursor> createOtherItems() {
-                return asList(new GridWidget.Cursor(Grid.Location.of(Grid.Row.First, Grid.Column.Second)));
+            public List<TextGridWidget.Cursor> createOtherItems() {
+                return asList(new TextGridWidget.Cursor(Grid.Location.of(Grid.Row.First, Grid.Column.Second)));
             }
         };
     }
@@ -157,7 +178,7 @@ public class GridWidgetTest {
 
     @Test
     public void moveCursorToFirstEmptyCell() throws Exception {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        TextGridWidget.Cursor cursor = new TextGridWidget.Cursor();
         GridWidget widget = new StandAloneGridWidget(cursor);
         cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
         Grid grid = LinearRandomAccessGrid.of(
@@ -173,7 +194,7 @@ public class GridWidgetTest {
 
     @Test
     public void moveCursorToFirstEmptyCellDoesNothingWhenCurrentCellIsAlreadyEmpty() throws Exception {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        TextGridWidget.Cursor cursor = new TextGridWidget.Cursor();
         GridWidget widget = new StandAloneGridWidget(cursor);
         cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
         Grid grid = LinearRandomAccessGrid.of(
@@ -189,7 +210,7 @@ public class GridWidgetTest {
 
     @Test
     public void moveCursorToFirstEmptyCellTakesMiddleWhenEverythingIsFull() throws Exception {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        TextGridWidget.Cursor cursor = new TextGridWidget.Cursor();
         GridWidget widget = new StandAloneGridWidget(cursor);
         Grid grid = LinearRandomAccessGrid.of(
                 Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought,
@@ -204,53 +225,66 @@ public class GridWidgetTest {
 
     @Test
     public void highlightChangesWidgetContent() {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
-        GridWidget w = new StandAloneGridWidget(cursor);
-        cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
+        TextGridWidget.Cursor cursor = new TextGridWidget.Cursor();
+        TextGridWidget textWidget = mock(TextGridWidget.class);
+        GridWidget gridWidget = new StandAloneGridWidget(cursor, textWidget);
 
-        Grid currentGrid = LinearRandomAccessGrid.of(
-                Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
-                Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross);
-        w.setModel(currentGrid);
+        gridWidget.setModel(nonSpecificGrid);
+        gridWidget.highlight(diagonalTriple);
 
-        Grid.Triple diagonalTriple = Grid.Triple.of(Grid.Mark.Cross,
-                Grid.Location.of(Grid.Row.Third, Grid.Column.First),
-                Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
-                Grid.Location.of(Grid.Row.First, Grid.Column.Third));
-
-        w.highlight(diagonalTriple);
-
-
-        String expectedText =
-                "   | X | # " + "\n" +
-                        "---+---+---" + "\n" +
-                        " O | # |   " + "\n" +
-                        "---+---+---" + "\n" +
-                        " # |   | X ";
-
-        assertThat(w.getText(), is(expectedText));
+        verify(textWidget).setModel(nonSpecificGrid);
+        verify(textWidget).highlight(diagonalTriple);
     }
 
     @Test
     public void highlightTriggersRepaint() {
-        GridWidget.Cursor cursor = new GridWidget.Cursor();
+        TextGridWidget.Cursor cursor = new TextGridWidget.Cursor();
         StandAloneGridWidget w = new StandAloneGridWidget(cursor);
         cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
-        Grid currentGrid = LinearRandomAccessGrid.of(
-                Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
-                Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross);
-        w.setModel(currentGrid);
+        w.setModel(nonSpecificGrid);
 
-        Grid.Triple diagonalTriple = Grid.Triple.of(Grid.Mark.Cross,
-                Grid.Location.of(Grid.Row.Third, Grid.Column.First),
-                Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
-                Grid.Location.of(Grid.Row.First, Grid.Column.Third));
         final int currentPaintCount = w.getRepaints();
 
         w.highlight(diagonalTriple);
 
         assertThat(w.getRepaints(), is(currentPaintCount + 1));
+    }
+    @Test
+    public void setGridResetsHighlight() {
+        TextGridWidget.Cursor cursor = new TextGridWidget.Cursor();
+        TextGridWidget textWidget = mock(TextGridWidget.class);
+        StandAloneGridWidget w = new StandAloneGridWidget(cursor, textWidget);
+
+
+        w.setModel(nonSpecificGrid);
+        verify(textWidget).highlight(Grid.Triple.Empty);
+    }
+
+    @Test
+    public void paintMovesCursor() throws Exception {
+        TextGridWidget.Cursor cursor = new TextGridWidget.Cursor(Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
+
+        class GridWidgetStub extends StandAloneGridWidget {
+            private int cursorX;
+            private int cursorY;
+
+            public GridWidgetStub(TextGridWidget.Cursor cursor) {
+                super(cursor);
+            }
+
+            @Override
+            public void setCursorLocation(int x, int y) {
+                cursorX = x;
+                cursorY = y;
+            }
+        }
+
+        GridWidgetStub widget = new GridWidgetStub(cursor);
+
+        widget.doPaint();
+
+        assertThat(widget.cursorX, is(cursor.getTextPositionX()));
+        assertThat(widget.cursorY, is(cursor.getTextPositionY()));
+
     }
 }

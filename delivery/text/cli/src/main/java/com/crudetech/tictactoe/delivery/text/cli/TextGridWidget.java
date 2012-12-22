@@ -22,7 +22,7 @@ public class TextGridWidget {
     private Grid grid;
     private Grid.Triple triple = Grid.Triple.Empty;
 
-    static class Cursor {
+    public static class Cursor {
         private static final int[] textLocationsX = {1, 5, 9};
         //   O |   | X    <0
         //  ---+---+---    1
@@ -34,47 +34,47 @@ public class TextGridWidget {
         private Grid.Location location;
         private static final int[] textLocationsY = {0, 2, 4};
 
-        Cursor(Grid.Location location) {
+        public Cursor(Grid.Location location) {
             setLocation(location);
         }
 
-        Cursor() {
+        public Cursor() {
             this(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
         }
 
-        void setLocation(Grid.Location location) {
+        public void setLocation(Grid.Location location) {
             this.location = location;
         }
 
-        void moveUp() {
+        public void moveUp() {
             Grid.Row newRow = getLocation().getRow().previousOrFlip();
             setLocation(Grid.Location.of(newRow, getLocation().getColumn()));
         }
 
-        void moveDown() {
+        public void moveDown() {
             Grid.Row newRow = getLocation().getRow().nextOrFlip();
             setLocation(Grid.Location.of(newRow, getLocation().getColumn()));
         }
 
-        void moveLeft() {
+        public void moveLeft() {
             Grid.Column newCol = getLocation().getColumn().previousOrFlip();
             setLocation(Grid.Location.of(getLocation().getRow(), newCol));
         }
 
-        void moveRight() {
+        public void moveRight() {
             Grid.Column newCol = getLocation().getColumn().nextOrFlip();
             setLocation(Grid.Location.of(getLocation().getRow(), newCol));
         }
 
-        Grid.Location getLocation() {
+        public Grid.Location getLocation() {
             return location;
         }
 
-        int getTextPositionX() {
+        public int getTextPositionX() {
             return textLocationsX[location.getColumn().ordinal()];
         }
 
-        int getTextPositionY() {
+        public int getTextPositionY() {
             return textLocationsY[location.getRow().ordinal()];
         }
 
@@ -92,10 +92,6 @@ public class TextGridWidget {
         public int hashCode() {
             return Objects.hash(location);
         }
-    }
-
-    public TextGridWidget() {
-
     }
 
     public void setModel(Grid grid) {
@@ -136,9 +132,13 @@ public class TextGridWidget {
         return new BinaryFunction<StringBuilder, Grid.Location, StringBuilder>() {
             @Override
             public StringBuilder execute(StringBuilder textRepresentation, Grid.Location tripleLocation) {
-                return replaceMarkAtLocation(textRepresentation, tripleLocation, HighlightSymbol);
+                return replaceMarkAtLocation(textRepresentation, tripleLocation, getHighlightSymbol());
             }
         };
+    }
+
+    private char getHighlightSymbol() {
+        return HighlightSymbol;
     }
 
     private BinaryFunction<StringBuilder, Grid.Cell, StringBuilder> withSymbols() {

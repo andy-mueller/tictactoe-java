@@ -21,6 +21,11 @@
             <artifactId>tictactoe-game</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>tictactoe-delivery-text-cli</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
