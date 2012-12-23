@@ -16,14 +16,15 @@ public class CliApp {
 
         final ComputerPlayer aiPlayer = AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Nought).asSecondPlayer();
 
-        final PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), true);
-        final TextGridWidget widget = new TextGridWidget();
+        final PrintWriter out = createSystemOutWriter();
 
-        final TextUserInput input = new TextUserInput(System.in);
+        printWelcomeToUser(out);
 
+        TextGridWidget widget = new TextGridWidget();
         TextGridWidgetUiView textGridWidgetUiView = new TextGridWidgetUiView(widget, out);
         TextUiFeedbackChannel textUiFeedbackChannel = new TextUiFeedbackChannel(out);
-        final HumanPlayer humanPlayer = new TextHumanPlayer(textGridWidgetUiView, textUiFeedbackChannel, out, input, widget);
+        TextUserInput input = new TextUserInput(System.in);
+        HumanPlayer humanPlayer = new TextHumanPlayer(textGridWidgetUiView, textUiFeedbackChannel, out, input, widget);
         HumanVsComputerPlayerInteractor interactor =
                 HumanVsComputerPlayerInteractor.builder()
                         .setComputerPlayer(aiPlayer)
@@ -31,6 +32,17 @@ public class CliApp {
                         .build();
 
         interactor.startWithHumanPlayer(Grid.Mark.Cross);
+    }
+
+    private static void printWelcomeToUser(PrintWriter out) {
+        out.println("Play a game of tic tac toe. Make a move by specifying the grids cell " +
+                "by zero based, comma separated coordinates. I.e, you want to place your mark " +
+                "in the bottom left corner, you will enter 2,0. The first coordinate specifies the row, " +
+                "the second the column.");
+    }
+
+    private static PrintWriter createSystemOutWriter() {
+        return new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), true);
     }
 
 }

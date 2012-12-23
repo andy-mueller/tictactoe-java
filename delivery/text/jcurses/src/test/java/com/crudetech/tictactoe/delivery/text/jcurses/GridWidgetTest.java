@@ -99,25 +99,13 @@ public class GridWidgetTest {
     @Test
     public void setGridChangesWidgetContent() {
         TextGridWidget.Cursor cursor = new TextGridWidget.Cursor();
-        GridWidget w = new StandAloneGridWidget(cursor);
+        TextGridWidget textWidget = mock(TextGridWidget.class);
+        GridWidget w = new StandAloneGridWidget(cursor, textWidget);
         cursor.setLocation(Grid.Location.of(Grid.Row.Second, Grid.Column.Second));
 
-        Grid currentGrid = LinearRandomAccessGrid.of(
-                Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
-                Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross);
+        w.setModel(nonSpecificGrid);
 
-
-        w.setModel(currentGrid);
-
-        String expectedText =
-                "   | X |   " + "\n" +
-                        "---+---+---" + "\n" +
-                        " O | O |   " + "\n" +
-                        "---+---+---" + "\n" +
-                        "   |   | X ";
-
-        assertThat(w.getText(), is(expectedText));
+        verify(textWidget).setModel(nonSpecificGrid);
     }
 
     @Test
@@ -255,8 +243,8 @@ public class GridWidgetTest {
         TextGridWidget textWidget = mock(TextGridWidget.class);
         StandAloneGridWidget w = new StandAloneGridWidget(cursor, textWidget);
 
-
         w.setModel(nonSpecificGrid);
+
         verify(textWidget).highlight(Grid.Triple.Empty);
     }
 
