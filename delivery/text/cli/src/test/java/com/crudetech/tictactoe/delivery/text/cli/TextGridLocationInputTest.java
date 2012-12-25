@@ -10,11 +10,11 @@ import static com.crudetech.matcher.ThrowsException.doesThrow;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class TextUserInputTest {
+public class TextGridLocationInputTest {
     @Test
     public void givenUserSpecifiesValidCoordinates_gridLocationIsComputed() throws Exception {
         InputStream in = createTextStream("2,1\n");
-        TextUserInput input = new TextUserInput(in);
+        TextGridLocationInput input = new TextGridLocationInput(in);
 
         Grid.Location location = input.nextLocation();
 
@@ -24,7 +24,7 @@ public class TextUserInputTest {
     @Test
     public void givenUserSpecifiesInvalidCoordinateFormat_BadFormatIsThrown() throws Exception {
         InputStream in = createTextStream("2:1\n");
-        final TextUserInput input = new TextUserInput(in);
+        final TextGridLocationInput input = new TextGridLocationInput(in);
 
         Runnable inputWithBadFormat = new Runnable() {
             @Override
@@ -33,12 +33,12 @@ public class TextUserInputTest {
             }
         };
 
-        assertThat(inputWithBadFormat, doesThrow(TextUserInput.BadFormatException.class));
+        assertThat(inputWithBadFormat, doesThrow(TextGridLocationInput.BadFormatException.class));
     }
     @Test
     public void givenUserSpecifiesInvalidCoordinates_BadFormatIsThrown() throws Exception {
         InputStream in = createTextStream("2,NaN\n");
-        final TextUserInput input = new TextUserInput(in);
+        final TextGridLocationInput input = new TextGridLocationInput(in);
 
         Runnable inputWithBadFormat = new Runnable() {
             @Override
@@ -47,7 +47,7 @@ public class TextUserInputTest {
             }
         };
 
-        assertThat(inputWithBadFormat, doesThrow(TextUserInput.BadFormatException.class));
+        assertThat(inputWithBadFormat, doesThrow(TextGridLocationInput.BadFormatException.class));
     }
 
     private InputStream createTextStream(String s) {

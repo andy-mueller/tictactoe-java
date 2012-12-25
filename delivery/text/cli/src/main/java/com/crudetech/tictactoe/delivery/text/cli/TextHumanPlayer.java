@@ -11,10 +11,10 @@ import java.io.PrintWriter;
 class TextHumanPlayer extends HumanPlayer {
     final EventSupport<CellEventObject<TextGridWidget>> cellEnterEvent = new EventSupport<CellEventObject<TextGridWidget>>();
     private final PrintWriter out;
-    private final TextUserInput input;
+    private final TextGridLocationInput input;
     private final TextGridWidget widget;
 
-    public TextHumanPlayer(TextGridWidgetUiView textGridWidgetUiView, TextUiFeedbackChannel textUiFeedbackChannel, PrintWriter out, TextUserInput input, TextGridWidget widget) {
+    public TextHumanPlayer(TextGridWidgetUiView textGridWidgetUiView, TextUiFeedbackChannel textUiFeedbackChannel, PrintWriter out, TextGridLocationInput input, TextGridWidget widget) {
         super(textGridWidgetUiView, textUiFeedbackChannel);
         this.out = out;
         this.input = input;

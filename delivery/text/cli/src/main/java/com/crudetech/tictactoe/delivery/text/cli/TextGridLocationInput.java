@@ -8,10 +8,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class TextUserInput {
+public class TextGridLocationInput {
     private final BufferedReader in;
 
-    public TextUserInput(InputStream in) {
+    public TextGridLocationInput(InputStream in) {
         this.in = new BufferedReader(new InputStreamReader(in));
     }
 
