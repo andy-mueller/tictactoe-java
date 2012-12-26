@@ -95,7 +95,6 @@ public class LinearRandomAccessGrid implements Grid {
         LinearRandomAccessGrid that = (LinearRandomAccessGrid) o;
 
         return Arrays.equals(matrix, that.matrix);
-
     }
 
     @Override
