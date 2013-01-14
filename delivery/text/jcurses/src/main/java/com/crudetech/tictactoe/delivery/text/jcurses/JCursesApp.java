@@ -93,7 +93,7 @@ public class JCursesApp {
 
             return HumanVsComputerPlayerInteractor.builder()
                     .setComputerPlayer(computerPlayer)
-                    .setPartialHumanPlayer(humanPlayer)
+                    .setHumanPlayer(humanPlayer)
                     .setMadeMove(gridWidget.keyDownEvent())
                     .build();
         }

@@ -5,4 +5,6 @@ public interface Player {
     void youWin(Grid actualGrid, Grid.Triple triple);
     void youLoose(Grid actualGrid, Grid.Triple triple);
     void tie(Grid actualGrid);
+
+    void setGame(TicTacToeGame game);
 }

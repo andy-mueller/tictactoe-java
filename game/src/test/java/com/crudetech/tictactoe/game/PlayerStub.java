@@ -7,6 +7,7 @@ class PlayerStub implements Player {
     private int turnCount = 0;
     private LinearRandomAccessGrid.Triple winTriple;
     private Grid tieGrid;
+    public TicTacToeGame game;
 
     @Override
     public void yourTurn(Grid actualGrid) {
@@ -28,6 +29,11 @@ class PlayerStub implements Player {
     @Override
     public void tie(Grid actualGrid) {
         this.tieGrid = actualGrid;
+    }
+
+    @Override
+    public void setGame(TicTacToeGame game) {
+        this.game = game;
     }
 
     int getTurnCount() {

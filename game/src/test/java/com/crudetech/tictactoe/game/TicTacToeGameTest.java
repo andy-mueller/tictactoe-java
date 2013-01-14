@@ -46,8 +46,15 @@ public class TicTacToeGameTest {
         assertThat(startWithNull, doesThrow(IllegalArgumentException.class));
     }
 
+
     @Test
-    public void startWithNullThrows() {
+    public void gameSetsBackReferencesOnPlayers() {
+        assertThat(firstPlayer.game, is(game));
+        assertThat(secondPlayer.game, is(game));
+    }
+
+    @Test
+    public void startWithNullPlayerThrows() {
         Runnable startWithNull = new Runnable() {
             @Override
             public void run() {
@@ -290,11 +297,13 @@ public class TicTacToeGameTest {
                 Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.Cross);
 
 
+        assertPlayerWasInformedAboutTie(firstPlayer, expectedGrid);
+        assertPlayerWasInformedAboutTie(secondPlayer, expectedGrid);
+    }
+
+    private void assertPlayerWasInformedAboutTie(PlayerStub firstPlayer, Grid expectedGrid) {
         assertThat(firstPlayer.wasTie(), is(true));
         assertThat(firstPlayer.getTieGrid(), is(expectedGrid));
-
-        assertThat(secondPlayer.wasTie(), is(true));
-        assertThat(secondPlayer.getTieGrid(), is(expectedGrid));
     }
 
     @Test

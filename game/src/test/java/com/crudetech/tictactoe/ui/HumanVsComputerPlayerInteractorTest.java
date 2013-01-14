@@ -1,7 +1,6 @@
 package com.crudetech.tictactoe.ui;
 
 
-import com.crudetech.event.Event;
 import com.crudetech.event.EventSupport;
 import com.crudetech.tictactoe.game.ComputerPlayer;
 import com.crudetech.tictactoe.game.Grid;
@@ -29,7 +28,7 @@ public class HumanVsComputerPlayerInteractorTest {
         interactor =
                 HumanVsComputerPlayerInteractor.builder()
                         .setComputerPlayer(computerPlayer)
-                        .setPartialHumanPlayer(new UiPlayer(uiView, mock(UiFeedbackChannel.class)))
+                        .setHumanPlayer(new UiPlayer(uiView, mock(UiFeedbackChannel.class)))
                         .setMadeMove(event)
                         .build();
     }
@@ -56,12 +55,7 @@ public class HumanVsComputerPlayerInteractorTest {
     }
     @Test
     public void givenInteractorWithFullPlayerIsStartedForHumanPlayer_gameStartsWithHumanPlayer() {
-        HumanPlayer hp = new HumanPlayer(uiView, mock(UiFeedbackChannel.class)) {
-            @Override
-            public Event<? extends CellEventObject<?>> makeMove() {
-                return event;
-            }
-        };
+        UiPlayer hp = new UiPlayer(uiView, mock(UiFeedbackChannel.class));
         interactor = HumanVsComputerPlayerInteractor.builder()
                 .setComputerPlayer(computerPlayer)
                 .setHumanPlayer(hp)

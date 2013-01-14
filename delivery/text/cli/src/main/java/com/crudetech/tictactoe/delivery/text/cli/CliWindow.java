@@ -3,8 +3,8 @@ package com.crudetech.tictactoe.delivery.text.cli;
 import com.crudetech.tictactoe.game.AlphaBetaPruningPlayer;
 import com.crudetech.tictactoe.game.ComputerPlayer;
 import com.crudetech.tictactoe.game.Grid;
-import com.crudetech.tictactoe.ui.HumanPlayer;
 import com.crudetech.tictactoe.ui.HumanVsComputerPlayerInteractor;
+import com.crudetech.tictactoe.ui.UiPlayer;
 
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -28,7 +28,7 @@ class CliWindow {
         TextGridWidgetUiView textGridWidgetUiView = new TextGridWidgetUiView(widget, out);
         TextUiFeedbackChannel textUiFeedbackChannel = new TextUiFeedbackChannel(out);
         TextGridLocationInput input = new TextGridLocationInput(in);
-        HumanPlayer humanPlayer = new TextHumanPlayer(textGridWidgetUiView, textUiFeedbackChannel, out, input, widget);
+        UiPlayer humanPlayer = new TextUiPlayer(textGridWidgetUiView, textUiFeedbackChannel, out, input);
         HumanVsComputerPlayerInteractor interactor =
                 HumanVsComputerPlayerInteractor.builder()
                         .setComputerPlayer(aiPlayer)

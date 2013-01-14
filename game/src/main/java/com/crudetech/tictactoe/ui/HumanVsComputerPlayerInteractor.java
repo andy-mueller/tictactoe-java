@@ -13,51 +13,17 @@ import static java.util.Arrays.asList;
 public class HumanVsComputerPlayerInteractor {
     private final TicTacToeGame game;
     private final Player humanUiPlayer;
-    private final EventHookingBean<? extends CellEventObject<?>> eventHooker;
 
-    HumanVsComputerPlayerInteractor(ComputerPlayer computerPlayer, HumanPlayer humanPlayer) {
-        this(computerPlayer, humanPlayer.makeMove(), humanPlayer);
-    }
-
-    HumanVsComputerPlayerInteractor(ComputerPlayer computerPlayer, Event<? extends CellEventObject<?>> humanPlayerMadeMove, Player humanPlayer) {
+    HumanVsComputerPlayerInteractor(ComputerPlayer computerPlayer, UiPlayer humanPlayer) {
         this.humanUiPlayer = humanPlayer;
-        eventHooker = connectHumanPlayerMove(humanPlayerMadeMove);
-
         game = new TicTacToeGame(humanUiPlayer, computerPlayer);
-        computerPlayer.setGame(game);
-    }
-
-    private EventHookingBean<? extends CellEventObject<?>>
-    connectHumanPlayerMove(Event<? extends CellEventObject<?>> cellClickedEvent) {
-        EventListener<CellEventObject<?>> cellClickedListener = new EventListener<CellEventObject<?>>() {
-            @Override
-            public void onEvent(CellEventObject<?> e) {
-                makeHumanPlayerMove(e.getCellLocation());
-            }
-        };
-
-        return new EventHookingBean<CellEventObject<?>>(covariant_cast(cellClickedEvent), asList(cellClickedListener));
-    }
-
-    @SuppressWarnings("unchecked")
-    private Event<CellEventObject<?>> covariant_cast(Event<? extends CellEventObject<?>> cellClickedEvent) {
-        return (Event<CellEventObject<?>>) cellClickedEvent;
     }
 
     public void startWithHumanPlayer(Grid.Mark mark) {
         game.startWithPlayer(humanUiPlayer, mark);
     }
 
-    private void makeMove(Player player, Grid.Location location) {
-        game.addMark(player, location);
-    }
-
-    private void makeHumanPlayerMove(Grid.Location location) {
-        makeMove(humanUiPlayer, location);
-    }
-
     public void destroy() {
-        eventHooker.destroy();
     }
 
     public static Builder builder() {
@@ -67,8 +33,7 @@ public class HumanVsComputerPlayerInteractor {
     public static class Builder {
         private ComputerPlayer computerPlayer;
         private Event<? extends CellEventObject<?>> madeMove;
-        private Player partialHumanPlayer;
-        private HumanPlayer humanPlayer;
+        private UiPlayer humanPlayer;
 
 
         private Builder() {
@@ -84,22 +49,39 @@ public class HumanVsComputerPlayerInteractor {
             return this;
         }
 
-        public Builder setPartialHumanPlayer(Player humanPlayer) {
-            this.partialHumanPlayer = humanPlayer;
-            return this;
-        }
 
-        public Builder setHumanPlayer(HumanPlayer humanPlayer) {
+        public Builder setHumanPlayer(UiPlayer humanPlayer) {
             this.humanPlayer = humanPlayer;
             return this;
         }
 
         public HumanVsComputerPlayerInteractor build() {
             if (madeMove != null) {
-                return new HumanVsComputerPlayerInteractor(computerPlayer, madeMove, partialHumanPlayer);
-            } else {
-                return new HumanVsComputerPlayerInteractor(computerPlayer, humanPlayer);
+                final EventHookingBean<? extends CellEventObject<?>> hookingBean = connectHumanPlayerMove(madeMove, humanPlayer);
+                return new HumanVsComputerPlayerInteractor(computerPlayer, humanPlayer){
+                    @Override
+                    public void destroy() {
+                        hookingBean.destroy();
+                    }
+                };
             }
+            return new HumanVsComputerPlayerInteractor(computerPlayer, humanPlayer);
+        }
+        private EventHookingBean<? extends CellEventObject<?>>
+        connectHumanPlayerMove(Event<? extends CellEventObject<?>> cellClickedEvent, final UiPlayer player) {
+            EventListener<CellEventObject<?>> cellClickedListener = new EventListener<CellEventObject<?>>() {
+                @Override
+                public void onEvent(CellEventObject<?> e) {
+                    player.makeMove(e.getCellLocation());
+                }
+            };
+
+            return new EventHookingBean<CellEventObject<?>>(covariant_cast(cellClickedEvent), asList(cellClickedListener));
+        }
+
+        @SuppressWarnings("unchecked")
+        private Event<CellEventObject<?>> covariant_cast(Event<? extends CellEventObject<?>> cellClickedEvent) {
+            return (Event<CellEventObject<?>>) cellClickedEvent;
         }
     }
 }

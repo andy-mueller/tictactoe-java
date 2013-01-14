@@ -22,6 +22,12 @@ public class TicTacToeGame {
     public TicTacToeGame(Player player1, Player player2) {
         this.player1 = player1;
         this.player2 = player2;
+        setBackReferenceOnPlayer();
+    }
+
+    private void setBackReferenceOnPlayer() {
+        this.player1.setGame(this);
+        this.player2.setGame(this);
     }
 
     static class GameIsFinishedException extends IllegalStateException {

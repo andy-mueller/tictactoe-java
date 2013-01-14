@@ -2,10 +2,12 @@ package com.crudetech.tictactoe.ui;
 
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.Player;
+import com.crudetech.tictactoe.game.TicTacToeGame;
 
 public class UiPlayer implements Player {
     private final UiView view;
     private final UiFeedbackChannel uiFeedback;
+    private TicTacToeGame game;
 
     public UiPlayer(UiView view, UiFeedbackChannel uiFeedback) {
         this.view = view;
@@ -32,5 +34,14 @@ public class UiPlayer implements Player {
     @Override
     public void tie(Grid actualGrid) {
         uiFeedback.showMessage("Tie!");
+    }
+
+    @Override
+    public void setGame(TicTacToeGame game) {
+        this.game = game;
+    }
+
+    protected void makeMove(Grid.Location location) {
+        game.addMark(this, location);
     }
 }
