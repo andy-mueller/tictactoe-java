@@ -57,18 +57,21 @@ public class HumanVsComputerPlayerInteractor {
 
         public HumanVsComputerPlayerInteractor build() {
             if (madeMove != null) {
-                final EventHookingBean<? extends CellEventObject<?>> hookingBean = connectHumanPlayerMove(madeMove, humanPlayer);
-                return new HumanVsComputerPlayerInteractor(computerPlayer, humanPlayer){
-                    @Override
-                    public void destroy() {
-                        hookingBean.destroy();
-                    }
-                };
+                return new EventDrivenHumanVsComputerPlayerInteractor(computerPlayer, humanPlayer, madeMove);
             }
             return new HumanVsComputerPlayerInteractor(computerPlayer, humanPlayer);
         }
+    }
+
+    private static class EventDrivenHumanVsComputerPlayerInteractor extends HumanVsComputerPlayerInteractor{
+        final EventHookingBean<? extends CellEventObject<?>> hookingBean;
+        EventDrivenHumanVsComputerPlayerInteractor(ComputerPlayer computerPlayer, UiPlayer humanPlayer, Event<? extends CellEventObject<?>> madeMove) {
+            super(computerPlayer, humanPlayer);
+            hookingBean = connectHumanPlayerMove(madeMove, humanPlayer);
+        }
+
         private EventHookingBean<? extends CellEventObject<?>>
-        connectHumanPlayerMove(Event<? extends CellEventObject<?>> cellClickedEvent, final UiPlayer player) {
+        connectHumanPlayerMove(com.crudetech.event.Event<? extends CellEventObject<?>> cellClickedEvent, final UiPlayer player) {
             EventListener<CellEventObject<?>> cellClickedListener = new EventListener<CellEventObject<?>>() {
                 @Override
                 public void onEvent(CellEventObject<?> e) {
@@ -80,8 +83,13 @@ public class HumanVsComputerPlayerInteractor {
         }
 
         @SuppressWarnings("unchecked")
-        private Event<CellEventObject<?>> covariant_cast(Event<? extends CellEventObject<?>> cellClickedEvent) {
-            return (Event<CellEventObject<?>>) cellClickedEvent;
+        private com.crudetech.event.Event<CellEventObject<?>> covariant_cast(com.crudetech.event.Event<? extends CellEventObject<?>> cellClickedEvent) {
+            return (com.crudetech.event.Event<CellEventObject<?>>) cellClickedEvent;
+        }
+
+        @Override
+        public void destroy() {
+            hookingBean.destroy();
         }
     }
 }
