@@ -41,6 +41,11 @@ public class TicTacToeGame {
             super("The game was already started!");
         }
     }
+    static class NotThisPlayersTurn extends IllegalStateException {
+        private NotThisPlayersTurn() {
+            super("It is not the passed in players turn!");
+        }
+    }
 
     public void startWithPlayer(Player player, Grid.Mark playersMark) {
         verifyThat(player, is(anyOf(equalTo(player1), equalTo(player2))));
@@ -61,7 +66,7 @@ public class TicTacToeGame {
 
     public void addMark(Player player, Grid.Row row, Grid.Column column) {
         verifyGameIsNotFinished();
-        verifyThat(player, sameInstance(currentPlayer));
+        verifyThatItIsPlayersTurn(player);
         verifyThat(grid, isNotMarkedAt(row, column));
 
         grid.setAt(row, column, currentPlayersMark);
@@ -78,6 +83,12 @@ public class TicTacToeGame {
             currentPlayer = currentPlayer == player1 ? player2 : player1;
             currentPlayersMark = currentPlayersMark.getOpposite();
             currentPlayer.yourTurn(grid);
+        }
+    }
+
+    private void verifyThatItIsPlayersTurn(Player player) {
+        if(currentPlayer != player){
+            throw new NotThisPlayersTurn();
         }
     }
 

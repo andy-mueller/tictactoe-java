@@ -38,7 +38,7 @@ public class AlphaBetaPruningPlayer extends ComputerPlayer {
             return new AlphaBetaPruningPlayer(playersMark, strategy, startPlayersMark);
         }
 
-        public AlphaBetaPruningPlayer asStartPlayer() {
+        public AlphaBetaPruningPlayer asStartingPlayer() {
             return newPlayerInstance(playersMark, GameTree.Player.Max, playersMark);
         }
 

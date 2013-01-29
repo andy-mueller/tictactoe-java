@@ -102,7 +102,7 @@ public class TicTacToeGameTest {
             }
         };
 
-        assertThat(startWithDifferentPlayer, doesThrow(IllegalArgumentException.class));
+        assertThat(startWithDifferentPlayer, doesThrow(TicTacToeGame.NotThisPlayersTurn.class));
     }
 
     @Test

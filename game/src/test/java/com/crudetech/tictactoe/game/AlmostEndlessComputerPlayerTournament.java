@@ -25,7 +25,7 @@ public class AlmostEndlessComputerPlayerTournament {
             Runnable runner = new Runnable() {
                 @Override
                 public void run() {
-                    AlphaBetaPruningPlayer firstPlayer = tracingAlphaBetaPruningPlayerBuilder(trace).withMark(Grid.Mark.Cross).asStartPlayer();
+                    AlphaBetaPruningPlayer firstPlayer = tracingAlphaBetaPruningPlayerBuilder(trace).withMark(Grid.Mark.Cross).asStartingPlayer();
                     AlphaBetaPruningPlayer secondPlayer = AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Nought).asSecondPlayer();
 
 

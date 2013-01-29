@@ -9,7 +9,7 @@ public class AlphaBetaPruningPlayerTest {
     @Test
     public void playerMakesBestNextMove() {
         TicTacToeGame game = mock(TicTacToeGame.class);
-        AlphaBetaPruningPlayer player = AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Cross).asStartPlayer();
+        AlphaBetaPruningPlayer player = AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Cross).asStartingPlayer();
         player.setGame(game);
         Grid currentGrid = LinearRandomAccessGrid.of(
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.Nought,
@@ -24,7 +24,7 @@ public class AlphaBetaPruningPlayerTest {
 
     @Test
     public void builderAssemblesStartingPlayer() throws Exception {
-        AlphaBetaPruningPlayer player = AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Nought).asStartPlayer();
+        AlphaBetaPruningPlayer player = AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Nought).asStartingPlayer();
         TicTacToeGame game = mock(TicTacToeGame.class);
 
         player.setGame(game);

@@ -12,15 +12,21 @@ import static java.util.Arrays.asList;
 
 public class HumanVsComputerPlayerInteractor {
     private final TicTacToeGame game;
-    private final Player humanUiPlayer;
+    private final Player humanPlayer;
+    private final Player computerPlayer;
 
     HumanVsComputerPlayerInteractor(ComputerPlayer computerPlayer, UiPlayer humanPlayer) {
-        this.humanUiPlayer = humanPlayer;
-        game = new TicTacToeGame(humanUiPlayer, computerPlayer);
+        this.humanPlayer = humanPlayer;
+        this.computerPlayer = computerPlayer;
+        game = new TicTacToeGame(this.humanPlayer, this.computerPlayer);
     }
 
     public void startWithHumanPlayer(Grid.Mark mark) {
-        game.startWithPlayer(humanUiPlayer, mark);
+        game.startWithPlayer(humanPlayer, mark);
+    }
+
+    public void startWithComputerPlayer(Grid.Mark mark) {
+        game.startWithPlayer(computerPlayer, mark);
     }
 
     public void destroy() {
@@ -28,6 +34,14 @@ public class HumanVsComputerPlayerInteractor {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    public void makeHumanPlayerMove(Grid.Location move) {
+        game.addMark(humanPlayer, move);
+    }
+
+    public void makeComputerPlayerMove(Grid.Location move) {
+           game.addMark(computerPlayer, move);
     }
 
     public static class Builder {
@@ -63,8 +77,9 @@ public class HumanVsComputerPlayerInteractor {
         }
     }
 
-    private static class EventDrivenHumanVsComputerPlayerInteractor extends HumanVsComputerPlayerInteractor{
+    private static class EventDrivenHumanVsComputerPlayerInteractor extends HumanVsComputerPlayerInteractor {
         final EventHookingBean<? extends CellEventObject<?>> hookingBean;
+
         EventDrivenHumanVsComputerPlayerInteractor(ComputerPlayer computerPlayer, UiPlayer humanPlayer, Event<? extends CellEventObject<?>> madeMove) {
             super(computerPlayer, humanPlayer);
             hookingBean = connectHumanPlayerMove(madeMove, humanPlayer);
