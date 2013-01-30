@@ -43,7 +43,7 @@ class GridWidget extends TextComponent implements UiView {
         verifyThat(grid, is(notNullValue()));
 
         textGridWidget.setModel(grid);
-        textGridWidget.highlight(Grid.Triple.Empty);
+        textGridWidget.highlight(Grid.ThreeInARow.Empty);
         String gridAsText = buildTextRepresentation();
         setText(gridAsText);
         doRepaint();
@@ -75,7 +75,7 @@ class GridWidget extends TextComponent implements UiView {
     }
 
     @Override
-    public void highlight(Grid.Triple triple) {
+    public void highlight(Grid.ThreeInARow triple) {
         textGridWidget.highlight(triple);
         setText(buildTextRepresentation());
         repaint();

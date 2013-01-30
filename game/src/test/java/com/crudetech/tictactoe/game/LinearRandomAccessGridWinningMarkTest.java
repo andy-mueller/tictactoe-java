@@ -10,7 +10,7 @@ public class LinearRandomAccessGridWinningMarkTest {
     public void emptyGridHasNoWinningMark() {
         LinearRandomAccessGrid emptyGrid = new LinearRandomAccessGrid();
 
-        assertThat(emptyGrid.winningTriple(), is(Grid.Triple.Empty));
+        assertThat(emptyGrid.winningTriple(), is(Grid.ThreeInARow.Empty));
     }
 
     @Test
@@ -20,7 +20,7 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Mark.Nought, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.Cross);
 
-        assertThat(grid.winningTriple(), is(Grid.Triple.Empty));
+        assertThat(grid.winningTriple(), is(Grid.ThreeInARow.Empty));
     }
 
     @Test
@@ -31,14 +31,14 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.Cross);
 
 
-        Grid.Triple expected = Grid.Triple.of(
+        Grid.ThreeInARow expected = Grid.ThreeInARow.of(
                 Grid.Mark.Cross,
                 Grid.Location.of(Grid.Row.First, Grid.Column.First),
                 Grid.Location.of(Grid.Row.First, Grid.Column.Second),
                 Grid.Location.of(Grid.Row.First, Grid.Column.Third)
         );
 
-        LinearRandomAccessGrid.Triple triple = grid.winningTriple();
+        Grid.ThreeInARow triple = grid.winningTriple();
         assertThat(triple, is(expected));
     }
 
@@ -49,14 +49,14 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Cross,
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.Cross);
 
-        Grid.Triple expected = Grid.Triple.of(
+        Grid.ThreeInARow expected = Grid.ThreeInARow.of(
                 Grid.Mark.Cross,
                 Grid.Location.of(Grid.Row.Second, Grid.Column.First),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.Third)
         );
 
-        LinearRandomAccessGrid.Triple triple = grid.winningTriple();
+        Grid.ThreeInARow triple = grid.winningTriple();
         assertThat(triple, is(expected));
     }
 
@@ -67,14 +67,14 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.Cross,
                 Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Cross);
 
-        Grid.Triple expected = Grid.Triple.of(
+        Grid.ThreeInARow expected = Grid.ThreeInARow.of(
                 Grid.Mark.Cross,
                 Grid.Location.of(Grid.Row.Third, Grid.Column.First),
                 Grid.Location.of(Grid.Row.Third, Grid.Column.Second),
                 Grid.Location.of(Grid.Row.Third, Grid.Column.Third)
         );
 
-        LinearRandomAccessGrid.Triple triple = grid.winningTriple();
+        Grid.ThreeInARow triple = grid.winningTriple();
         assertThat(triple, is(expected));
     }
 
@@ -85,14 +85,14 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.Nought,
                 Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None);
 
-        Grid.Triple expected = Grid.Triple.of(
+        Grid.ThreeInARow expected = Grid.ThreeInARow.of(
                 Grid.Mark.Cross,
                 Grid.Location.of(Grid.Row.First, Grid.Column.First),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.First),
                 Grid.Location.of(Grid.Row.Third, Grid.Column.First)
         );
 
-        LinearRandomAccessGrid.Triple triple = grid.winningTriple();
+        Grid.ThreeInARow triple = grid.winningTriple();
         assertThat(triple, is(expected));
     }
 
@@ -103,14 +103,14 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.Nought,
                 Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.None);
 
-        Grid.Triple expected = Grid.Triple.of(
+        Grid.ThreeInARow expected = Grid.ThreeInARow.of(
                 Grid.Mark.Nought,
                 Grid.Location.of(Grid.Row.First, Grid.Column.Second),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
                 Grid.Location.of(Grid.Row.Third, Grid.Column.Second)
         );
 
-        LinearRandomAccessGrid.Triple triple = grid.winningTriple();
+        Grid.ThreeInARow triple = grid.winningTriple();
         assertThat(triple, is(expected));
     }
 
@@ -121,14 +121,14 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.Nought,
                 Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.Nought);
 
-        Grid.Triple expected = Grid.Triple.of(
+        Grid.ThreeInARow expected = Grid.ThreeInARow.of(
                 Grid.Mark.Nought,
                 Grid.Location.of(Grid.Row.First, Grid.Column.Third),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.Third),
                 Grid.Location.of(Grid.Row.Third, Grid.Column.Third)
         );
 
-        LinearRandomAccessGrid.Triple triple = grid.winningTriple();
+        Grid.ThreeInARow triple = grid.winningTriple();
         assertThat(triple, is(expected));
     }
 
@@ -139,14 +139,14 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.Nought,
                 Grid.Mark.None, Grid.Mark.Nought, Grid.Mark.Cross);
 
-        Grid.Triple expected = Grid.Triple.of(
+        Grid.ThreeInARow expected = Grid.ThreeInARow.of(
                 Grid.Mark.Cross,
                 Grid.Location.of(Grid.Row.First, Grid.Column.First),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
                 Grid.Location.of(Grid.Row.Third, Grid.Column.Third)
         );
 
-        LinearRandomAccessGrid.Triple triple = grid.winningTriple();
+        Grid.ThreeInARow triple = grid.winningTriple();
         assertThat(triple, is(expected));
     }
 
@@ -157,14 +157,14 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.Nought,
                 Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.Cross);
 
-        Grid.Triple expected = Grid.Triple.of(
+        Grid.ThreeInARow expected = Grid.ThreeInARow.of(
                 Grid.Mark.Cross,
                 Grid.Location.of(Grid.Row.Third, Grid.Column.First),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
                 Grid.Location.of(Grid.Row.First, Grid.Column.Third)
         );
 
-        LinearRandomAccessGrid.Triple triple = grid.winningTriple();
+        Grid.ThreeInARow triple = grid.winningTriple();
         assertThat(triple, is(expected));
     }
     @Test

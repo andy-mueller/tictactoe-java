@@ -16,7 +16,7 @@ public class TextGridWidgetUiViewTest {
     private TextGridWidget widget;
     private TextGridWidgetUiView uiView;
     private Grid gridModel;
-    private Grid.Triple triple;
+    private Grid.ThreeInARow triple;
 
     @Before
     public void setUp() throws Exception {
@@ -27,7 +27,7 @@ public class TextGridWidgetUiViewTest {
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.Nought,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None);
-        triple = Grid.Triple.of(
+        triple = Grid.ThreeInARow.of(
                 Grid.Mark.Cross,
                 Grid.Location.of(Grid.Row.First, Grid.Column.First),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.Second),

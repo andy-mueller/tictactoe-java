@@ -4,7 +4,6 @@ import com.crudetech.event.EventListener;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
 import com.crudetech.junit.feature.Features;
-import com.crudetech.tictactoe.delivery.swing.grid.TicTacToeGridModel;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import org.junit.Test;
@@ -18,9 +17,7 @@ import static com.crudetech.matcher.ThrowsException.doesThrow;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(Features.class)
 public class TicTacToeGridModelTest {
@@ -173,7 +170,7 @@ public class TicTacToeGridModelTest {
         assertThat(model.hasHighlightedCell(), is(false));
     }
 
-    private static Grid.Triple diagonal = Grid.Triple.of(Grid.Mark.Nought,
+    private static Grid.ThreeInARow diagonal = Grid.ThreeInARow.of(Grid.Mark.Nought,
             Grid.Location.of(Grid.Row.First, Grid.Column.First),
             Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
             Grid.Location.of(Grid.Row.Third, Grid.Column.Third));

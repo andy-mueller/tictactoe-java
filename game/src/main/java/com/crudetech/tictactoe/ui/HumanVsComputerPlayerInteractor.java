@@ -3,7 +3,6 @@ package com.crudetech.tictactoe.ui;
 import com.crudetech.event.Event;
 import com.crudetech.event.EventHookingBean;
 import com.crudetech.event.EventListener;
-import com.crudetech.tictactoe.game.ComputerPlayer;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.Player;
 import com.crudetech.tictactoe.game.TicTacToeGame;
@@ -15,7 +14,7 @@ public class HumanVsComputerPlayerInteractor {
     private final Player humanPlayer;
     private final Player computerPlayer;
 
-    HumanVsComputerPlayerInteractor(ComputerPlayer computerPlayer, UiPlayer humanPlayer) {
+    HumanVsComputerPlayerInteractor(Player computerPlayer, UiPlayer humanPlayer) {
         this.humanPlayer = humanPlayer;
         this.computerPlayer = computerPlayer;
         game = new TicTacToeGame(this.humanPlayer, this.computerPlayer);
@@ -45,7 +44,7 @@ public class HumanVsComputerPlayerInteractor {
     }
 
     public static class Builder {
-        private ComputerPlayer computerPlayer;
+        private Player computerPlayer;
         private Event<? extends CellEventObject<?>> madeMove;
         private UiPlayer humanPlayer;
 
@@ -53,7 +52,7 @@ public class HumanVsComputerPlayerInteractor {
         private Builder() {
         }
 
-        public Builder setComputerPlayer(ComputerPlayer computerPlayer) {
+        public Builder setComputerPlayer(Player computerPlayer) {
             this.computerPlayer = computerPlayer;
             return this;
         }
@@ -80,7 +79,7 @@ public class HumanVsComputerPlayerInteractor {
     private static class EventDrivenHumanVsComputerPlayerInteractor extends HumanVsComputerPlayerInteractor {
         final EventHookingBean<? extends CellEventObject<?>> hookingBean;
 
-        EventDrivenHumanVsComputerPlayerInteractor(ComputerPlayer computerPlayer, UiPlayer humanPlayer, Event<? extends CellEventObject<?>> madeMove) {
+        EventDrivenHumanVsComputerPlayerInteractor(Player computerPlayer, UiPlayer humanPlayer, Event<? extends CellEventObject<?>> madeMove) {
             super(computerPlayer, humanPlayer);
             hookingBean = connectHumanPlayerMove(madeMove, humanPlayer);
         }

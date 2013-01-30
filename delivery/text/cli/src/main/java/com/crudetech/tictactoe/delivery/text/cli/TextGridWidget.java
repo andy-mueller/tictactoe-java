@@ -20,7 +20,7 @@ public class TextGridWidget {
                     "   |   |   ";
     private static final char HighlightSymbol = '#';
     private Grid grid;
-    private Grid.Triple triple = Grid.Triple.Empty;
+    private Grid.ThreeInARow triple = Grid.ThreeInARow.Empty;
 
     public static class Cursor {
         private static final int[] textLocationsX = {1, 5, 9};
@@ -98,7 +98,7 @@ public class TextGridWidget {
         this.grid = grid;
     }
 
-    public void highlight(Grid.Triple triple) {
+    public void highlight(Grid.ThreeInARow triple) {
         this.triple = triple;
     }
 
@@ -122,7 +122,7 @@ public class TextGridWidget {
     }
 
     private StringBuilder applyHighlighting(StringBuilder textRepresentation) {
-        if (!triple.equals(Grid.Triple.Empty)) {
+        if (!triple.equals(Grid.ThreeInARow.Empty)) {
             textRepresentation = accumulate(textRepresentation, triple.getLocations(), highlightSymbol());
         }
         return textRepresentation;

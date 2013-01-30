@@ -25,7 +25,7 @@ public class TicTacToeGridModel {
     private final EventSupport<CellsChangedEventObject> cellChangedEvent = new EventSupport<>();
     private final EventSupport<ChangedEventObject> changedEvent = new EventSupport<>();
     private Grid.Location highlightedCell;
-    private Grid.Triple highlightedTriple;
+    private Grid.ThreeInARow highlightedTriple;
     private Grid grid;
 
     public TicTacToeGridModel(Grid grid) {
@@ -136,7 +136,7 @@ public class TicTacToeGridModel {
         onCellsChanged(asList(replaceHighlightedCell(null)));
     }
 
-    public void highlightTriple(Grid.Triple highlightedTriple) {
+    public void highlightTriple(Grid.ThreeInARow highlightedTriple) {
         verifyThat(highlightedTriple, is(notNullValue()));
 
         Iterable<Grid.Location> oldLocations = cellsOf(replaceHighlightedTriple(highlightedTriple));
@@ -144,7 +144,7 @@ public class TicTacToeGridModel {
         onChanged();
     }
 
-    private Iterable<Grid.Location> cellsOf(Grid.Triple triple) {
+    private Iterable<Grid.Location> cellsOf(Grid.ThreeInARow triple) {
         if (triple == null) {
             return emptyListOf(Grid.Location.class);
         } else {
@@ -152,13 +152,13 @@ public class TicTacToeGridModel {
         }
     }
 
-    private Grid.Triple replaceHighlightedTriple(Grid.Triple newTriple) {
-        Grid.Triple old = this.highlightedTriple;
+    private Grid.ThreeInARow replaceHighlightedTriple(Grid.ThreeInARow newTriple) {
+        Grid.ThreeInARow old = this.highlightedTriple;
         this.highlightedTriple = newTriple;
         return old;
     }
 
-    public Grid.Triple getHighlightedTriple() {
+    public Grid.ThreeInARow getHighlightedTriple() {
         return highlightedTriple;
     }
 

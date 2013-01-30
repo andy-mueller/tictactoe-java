@@ -35,7 +35,7 @@ public class GridWidgetTest {
     //   | # |
     //---+---+---
     // # |   |
-    private final Grid.Triple diagonalTriple = Grid.Triple.of(Grid.Mark.Cross,
+    private final Grid.ThreeInARow diagonalTriple = Grid.ThreeInARow.of(Grid.Mark.Cross,
             Grid.Location.of(Grid.Row.Third, Grid.Column.First),
             Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
             Grid.Location.of(Grid.Row.First, Grid.Column.Third));
@@ -245,7 +245,7 @@ public class GridWidgetTest {
 
         w.setModel(nonSpecificGrid);
 
-        verify(textWidget).highlight(Grid.Triple.Empty);
+        verify(textWidget).highlight(Grid.ThreeInARow.Empty);
     }
 
     @Test

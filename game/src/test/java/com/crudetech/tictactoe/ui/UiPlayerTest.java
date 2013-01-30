@@ -9,7 +9,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 public class UiPlayerTest {
-    private static final Grid.Triple DiagonalTriple = Grid.Triple.of(
+    private static final Grid.ThreeInARow DiagonalTriple = Grid.ThreeInARow.of(
             Grid.Mark.Nought,
             Grid.Location.of(Grid.Row.First, Grid.Column.First),
             Grid.Location.of(Grid.Row.Second, Grid.Column.Second),

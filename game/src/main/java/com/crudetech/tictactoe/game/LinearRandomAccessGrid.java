@@ -11,12 +11,7 @@ import java.util.Objects;
 
 import static com.crudetech.matcher.Verify.verifyThat;
 import static com.crudetech.query.Query.from;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.arrayWithSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 
 public class LinearRandomAccessGrid implements Grid {
     private static final int Dimension = 3;
@@ -176,14 +171,14 @@ public class LinearRandomAccessGrid implements Grid {
         }
     }
 
-    Triple winningTriple() {
+    ThreeInARow winningTriple() {
         for (Pair<Mark[], Location[]> triple : new WinningTriples(matrix)) {
             if (isWin(triple.getFirst())) {
                 Location[] locations = triple.getSecond();
-                return Triple.of(triple.getFirst()[0], locations[0], locations[1], locations[2]);
+                return ThreeInARow.of(triple.getFirst()[0], locations[0], locations[1], locations[2]);
             }
         }
-        return Triple.Empty;
+        return ThreeInARow.Empty;
     }
 
     private static boolean isWin(Mark... marks) {
@@ -224,11 +219,11 @@ public class LinearRandomAccessGrid implements Grid {
     }
 
     private boolean isWin() {
-        return !winningTriple().equals(Triple.Empty);
+        return !winningTriple().equals(ThreeInARow.Empty);
     }
 
     boolean isWinForMark(Mark startPlayerMark) {
-        Triple triple = winningTriple();
+        ThreeInARow triple = winningTriple();
         return triple.isWinForMark(startPlayerMark);
     }
 

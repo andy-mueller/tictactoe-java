@@ -171,15 +171,15 @@ public interface Grid {
         }
     }
 
-    public class Triple {
-        public static final Triple Empty = new Triple(Mark.None, null, null, null);
+    public class ThreeInARow {
+        public static final ThreeInARow Empty = new ThreeInARow(Mark.None, null, null, null);
 
         private final Mark mark;
         private final Location first;
         private final Location second;
         private final Location third;
 
-        Triple(Mark mark, Location first, Location second, Location third) {
+        ThreeInARow(Mark mark, Location first, Location second, Location third) {
             verifyThat(mark, is(notNullValue()));
 
             this.mark = mark;
@@ -188,8 +188,8 @@ public interface Grid {
             this.third = third;
         }
 
-        public static Triple of(Mark mark, Location first, Location second, Location third) {
-            return new Triple(mark, first, second, third);
+        public static ThreeInARow of(Mark mark, Location first, Location second, Location third) {
+            return new ThreeInARow(mark, first, second, third);
         }
 
         @Override
@@ -197,7 +197,7 @@ public interface Grid {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
-            Triple triple = (Triple) o;
+            ThreeInARow triple = (ThreeInARow) o;
 
             return Objects.equals(mark, triple.mark)
                     && Objects.equals(first, triple.first)
@@ -212,7 +212,7 @@ public interface Grid {
 
         @Override
         public String toString() {
-            return "Triple{" +
+            return "ThreeInARow{" +
                     "mark=" + mark +
                     ", first=" + first +
                     ", second=" + second +

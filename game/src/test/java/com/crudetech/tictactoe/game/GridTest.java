@@ -50,21 +50,21 @@ public class GridTest {
     }
 
     @Feature(Equivalent.class)
-    public static Equivalent.Factory<Grid.Triple> winingTripleIsEquivalent() {
-        return new Equivalent.Factory<Grid.Triple>() {
+    public static Equivalent.Factory<Grid.ThreeInARow> winingTripleIsEquivalent() {
+        return new Equivalent.Factory<Grid.ThreeInARow>() {
             @Override
-            public Grid.Triple createItem() {
-                return Grid.Triple.of(Grid.Mark.Nought, Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First));
+            public Grid.ThreeInARow createItem() {
+                return Grid.ThreeInARow.of(Grid.Mark.Nought, Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First));
             }
 
             @Override
-            public List<Grid.Triple> createOtherItems() {
+            public List<Grid.ThreeInARow> createOtherItems() {
                 return asList(
-                        Grid.Triple.of(Grid.Mark.Cross, Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First)),
-                        Grid.Triple.of(Grid.Mark.Nought, Grid.Location.of(Grid.Row.Second, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First)),
-                        Grid.Triple.of(Grid.Mark.Nought, Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.Second, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First)),
-                        Grid.Triple.of(Grid.Mark.Nought, Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.Second, Grid.Column.First)),
-                        Grid.Triple.Empty
+                        Grid.ThreeInARow.of(Grid.Mark.Cross, Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First)),
+                        Grid.ThreeInARow.of(Grid.Mark.Nought, Grid.Location.of(Grid.Row.Second, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First)),
+                        Grid.ThreeInARow.of(Grid.Mark.Nought, Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.Second, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First)),
+                        Grid.ThreeInARow.of(Grid.Mark.Nought, Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.First, Grid.Column.First), Grid.Location.of(Grid.Row.Second, Grid.Column.First)),
+                        Grid.ThreeInARow.Empty
                 );
             }
         };

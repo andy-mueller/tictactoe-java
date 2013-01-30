@@ -67,7 +67,7 @@ public class AlmostEndlessComputerPlayerTournament {
                         Grid.Row row = Grid.Row.of(random.nextInt(3));
                         Grid.Column col = Grid.Column.of(random.nextInt(3));
                         initialized = true;
-                        addMark(Grid.Location.of(row, col));
+                        makeMove(Grid.Location.of(row, col));
                     }
 
                     @Override
@@ -89,13 +89,13 @@ public class AlmostEndlessComputerPlayerTournament {
                     }
 
                     @Override
-                    public void youWin(Grid actualGrid, Grid.Triple triple) {
+                    public void youWin(Grid actualGrid, Grid.ThreeInARow triple) {
                         System.exit(100);
                         throw new UnsupportedOperationException("Win: Override not implemented!");
                     }
 
                     @Override
-                    public void youLoose(Grid actualGrid, Grid.Triple triple) {
+                    public void youLoose(Grid actualGrid, Grid.ThreeInARow triple) {
                         System.exit(100);
                         throw new UnsupportedOperationException("Override not implemented!");
                     }

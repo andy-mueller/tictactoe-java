@@ -6,10 +6,7 @@ import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -22,9 +19,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class TicTacToeGridUITest {
     private Graphics2D g2d;
@@ -171,7 +166,7 @@ public class TicTacToeGridUITest {
 
     @Test
     public void allNonWinningTripleAreTransparent() {
-        Grid.Triple diagonal = Grid.Triple.of(Grid.Mark.Nought,
+        Grid.ThreeInARow diagonal = Grid.ThreeInARow.of(Grid.Mark.Nought,
                 Grid.Location.of(Grid.Row.First, Grid.Column.First),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
                 Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
@@ -184,7 +179,7 @@ public class TicTacToeGridUITest {
     }
     @Test
     public void backgroundImageIsTransparentWhenWinningTripleIsSet() {
-        Grid.Triple diagonal = Grid.Triple.of(Grid.Mark.Nought,
+        Grid.ThreeInARow diagonal = Grid.ThreeInARow.of(Grid.Mark.Nought,
                 Grid.Location.of(Grid.Row.First, Grid.Column.First),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
                 Grid.Location.of(Grid.Row.Third, Grid.Column.Third));

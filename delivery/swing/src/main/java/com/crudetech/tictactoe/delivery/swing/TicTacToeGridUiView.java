@@ -17,7 +17,7 @@ class TicTacToeGridUiView implements UiView {
     }
 
     @Override
-    public void highlight(Grid.Triple triple) {
+    public void highlight(Grid.ThreeInARow triple) {
         gridModel.highlightTriple(triple);
     }
 }

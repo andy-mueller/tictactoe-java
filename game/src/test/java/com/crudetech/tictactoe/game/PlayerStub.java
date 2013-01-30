@@ -5,7 +5,7 @@ class PlayerStub implements Player {
     private Grid winGrid = null;
     private Grid loosingGrid;
     private int turnCount = 0;
-    private LinearRandomAccessGrid.Triple winTriple;
+    private Grid.ThreeInARow winTriple;
     private Grid tieGrid;
     public TicTacToeGame game;
 
@@ -16,13 +16,13 @@ class PlayerStub implements Player {
     }
 
     @Override
-    public void youWin(Grid actualGrid, LinearRandomAccessGrid.Triple triple) {
+    public void youWin(Grid actualGrid, Grid.ThreeInARow triple) {
         this.winGrid = actualGrid;
         this.winTriple = triple;
     }
 
     @Override
-    public void youLoose(Grid actualGrid, Grid.Triple triple) {
+    public void youLoose(Grid actualGrid, Grid.ThreeInARow triple) {
         loosingGrid = actualGrid;
     }
 
@@ -48,7 +48,7 @@ class PlayerStub implements Player {
         return winGrid;
     }
 
-    LinearRandomAccessGrid.Triple getWinTriple() {
+    Grid.ThreeInARow getWinTriple() {
         return winTriple;
     }
 

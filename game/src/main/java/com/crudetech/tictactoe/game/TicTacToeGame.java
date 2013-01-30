@@ -70,7 +70,7 @@ public class TicTacToeGame {
         verifyThat(grid, isNotMarkedAt(row, column));
 
         grid.setAt(row, column, currentPlayersMark);
-        Grid.Triple triple = grid.winningTriple();
+        Grid.ThreeInARow triple = grid.winningTriple();
         if (didWin(triple)) {
             currentPlayer.youWin(grid, triple);
             getOtherPlayer().youLoose(grid, triple);
@@ -116,7 +116,7 @@ public class TicTacToeGame {
         return currentPlayer == player1 ? player2 : player1;
     }
 
-    private boolean didWin(Grid.Triple triple) {
-        return !triple.equals(Grid.Triple.Empty);
+    private boolean didWin(Grid.ThreeInARow triple) {
+        return !triple.equals(Grid.ThreeInARow.Empty);
     }
 }

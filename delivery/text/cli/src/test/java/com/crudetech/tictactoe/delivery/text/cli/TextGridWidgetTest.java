@@ -47,7 +47,7 @@ public class TextGridWidgetTest {
 
     @Test
     public void givenAGridWasSetAndTripleHighlighted_WidgetDisplaysItToUser() {
-        Grid.Triple triple = Grid.Triple.of(
+        Grid.ThreeInARow triple = Grid.ThreeInARow.of(
                 Grid.Mark.Cross,
                 Grid.Location.of(Grid.Row.First, Grid.Column.First),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
