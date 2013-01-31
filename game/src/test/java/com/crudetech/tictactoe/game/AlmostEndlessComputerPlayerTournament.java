@@ -1,5 +1,7 @@
 package com.crudetech.tictactoe.game;
 
+import com.crudetech.tictactoe.ui.HumanVsComputerPlayerInteractor;
+
 import java.io.PrintStream;
 import java.util.Random;
 import java.util.concurrent.CompletionService;
@@ -28,13 +30,14 @@ public class AlmostEndlessComputerPlayerTournament {
                     AlphaBetaPruningPlayer firstPlayer = tracingAlphaBetaPruningPlayerBuilder(trace).withMark(Grid.Mark.Cross).asStartingPlayer();
                     AlphaBetaPruningPlayer secondPlayer = AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Nought).asSecondPlayer();
 
-
-                    TicTacToeGame game = new TicTacToeGame(firstPlayer, secondPlayer);
-                    firstPlayer.setGame(game);
-                    secondPlayer.setGame(game);
+                    HumanVsComputerPlayerInteractor interactor =
+                            HumanVsComputerPlayerInteractor.builder()
+                                    .setHumanPlayer(firstPlayer)
+                                    .setComputerPlayer(secondPlayer)
+                                    .build();
 
                     Stopwatch sw = new Stopwatch();
-                    game.startWithPlayer(firstPlayer, Grid.Mark.Cross);
+                    interactor.startWithHumanPlayer(Grid.Mark.Cross);
                     stat.add(sw.elapsedMilliseconds());
                     trace.println(stat);
                 }

@@ -14,7 +14,7 @@ public class HumanVsComputerPlayerInteractor {
     private final Player humanPlayer;
     private final Player computerPlayer;
 
-    HumanVsComputerPlayerInteractor(Player computerPlayer, UiPlayer humanPlayer) {
+    HumanVsComputerPlayerInteractor(Player computerPlayer, Player humanPlayer) {
         this.humanPlayer = humanPlayer;
         this.computerPlayer = computerPlayer;
         game = new TicTacToeGame(this.humanPlayer, this.computerPlayer);
@@ -46,7 +46,7 @@ public class HumanVsComputerPlayerInteractor {
     public static class Builder {
         private Player computerPlayer;
         private Event<? extends CellEventObject<?>> madeMove;
-        private UiPlayer humanPlayer;
+        private Player humanPlayer;
 
 
         private Builder() {
@@ -63,7 +63,7 @@ public class HumanVsComputerPlayerInteractor {
         }
 
 
-        public Builder setHumanPlayer(UiPlayer humanPlayer) {
+        public Builder setHumanPlayer(Player humanPlayer) {
             this.humanPlayer = humanPlayer;
             return this;
         }
@@ -79,17 +79,17 @@ public class HumanVsComputerPlayerInteractor {
     private static class EventDrivenHumanVsComputerPlayerInteractor extends HumanVsComputerPlayerInteractor {
         final EventHookingBean<? extends CellEventObject<?>> hookingBean;
 
-        EventDrivenHumanVsComputerPlayerInteractor(Player computerPlayer, UiPlayer humanPlayer, Event<? extends CellEventObject<?>> madeMove) {
+        EventDrivenHumanVsComputerPlayerInteractor(Player computerPlayer, Player humanPlayer, Event<? extends CellEventObject<?>> madeMove) {
             super(computerPlayer, humanPlayer);
-            hookingBean = connectHumanPlayerMove(madeMove, humanPlayer);
+            hookingBean = connectHumanPlayerMove(madeMove);
         }
 
         private EventHookingBean<? extends CellEventObject<?>>
-        connectHumanPlayerMove(com.crudetech.event.Event<? extends CellEventObject<?>> cellClickedEvent, final UiPlayer player) {
+        connectHumanPlayerMove(com.crudetech.event.Event<? extends CellEventObject<?>> cellClickedEvent) {
             EventListener<CellEventObject<?>> cellClickedListener = new EventListener<CellEventObject<?>>() {
                 @Override
                 public void onEvent(CellEventObject<?> e) {
-                    player.makeMove(e.getCellLocation());
+                    makeHumanPlayerMove(e.getCellLocation());
                 }
             };
 
