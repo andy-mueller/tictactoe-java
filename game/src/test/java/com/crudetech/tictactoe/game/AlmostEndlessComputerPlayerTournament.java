@@ -4,10 +4,7 @@ import com.crudetech.tictactoe.ui.HumanVsComputerPlayerInteractor;
 
 import java.io.PrintStream;
 import java.util.Random;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 public class AlmostEndlessComputerPlayerTournament {
     public static void main(String[] args) throws Exception {
@@ -38,7 +35,7 @@ public class AlmostEndlessComputerPlayerTournament {
 
                     Stopwatch sw = new Stopwatch();
                     interactor.startWithHumanPlayer(Grid.Mark.Cross);
-                    stat.add(sw.elapsedMilliseconds());
+                    stat.add(sw.elapsedMilliseconds(), TimeUnit.MILLISECONDS);
                     trace.println(stat);
                 }
             };
@@ -54,23 +51,31 @@ public class AlmostEndlessComputerPlayerTournament {
         executor.shutdown();
     }
 
-    private AlphaBetaPruningPlayer.Builder tracingAlphaBetaPruningPlayerBuilder(final PrintStream trace){
-        return new AlphaBetaPruningPlayer.Builder(){
+    private AlphaBetaPruningPlayer.Builder tracingAlphaBetaPruningPlayerBuilder(final PrintStream trace) {
+        return new AlphaBetaPruningPlayer.Builder() {
             @Override
             AlphaBetaPruningPlayer newPlayerInstance(Grid.Mark playersMark, GameTree.Player strategy, Grid.Mark startPlayersMark) {
                 return new AlphaBetaPruningPlayer(Grid.Mark.Cross, GameTree.Player.Max, Grid.Mark.Cross) {
-                    boolean initialized = false;
+                    boolean notFirstMove = false;
 
                     @Override
                     public void yourTurn(Grid actualGrid) {
-                        if (initialized) {
+                        if (notFirstMove) {
                             super.yourTurn(actualGrid);
-                            return;
+                        } else {
+                            makeRandomFirstMove();
                         }
+                    }
+
+                    private void makeRandomFirstMove() {
+                        notFirstMove = true;
+                        makeMove(newRandomLocation());
+                    }
+
+                    private Grid.Location newRandomLocation() {
                         Grid.Row row = Grid.Row.of(random.nextInt(3));
                         Grid.Column col = Grid.Column.of(random.nextInt(3));
-                        initialized = true;
-                        makeMove(Grid.Location.of(row, col));
+                        return Grid.Location.of(row, col);
                     }
 
                     @Override
@@ -106,6 +111,7 @@ public class AlmostEndlessComputerPlayerTournament {
             }
         };
     }
+
     static class Stopwatch {
 
         private long start;
@@ -125,11 +131,12 @@ public class AlmostEndlessComputerPlayerTournament {
         private long min = Long.MAX_VALUE;
         private long max = Long.MIN_VALUE;
 
-        synchronized void add(long val) {
-            sum += val;
+        synchronized void add(long time, TimeUnit unit) {
+            time = unit.toMillis(time);
+            sum += time;
             count++;
-            max = Math.max(max, val);
-            min = Math.min(min, val);
+            max = Math.max(max, time);
+            min = Math.min(min, time);
         }
 
         synchronized double average() {
