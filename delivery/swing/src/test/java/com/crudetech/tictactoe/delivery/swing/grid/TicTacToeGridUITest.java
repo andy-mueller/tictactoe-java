@@ -91,6 +91,7 @@ public class TicTacToeGridUITest {
 
     @Test
     public void gridMarksArePaintedFromModel() {
+        ui.buildPaintList();
         List<Widget> widgets = ui.gridMarkWidgetList();
 
         List<Widget> expected = expectedGridMarkWidgets();
@@ -172,6 +173,7 @@ public class TicTacToeGridUITest {
                 Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
         grid.getModel().highlightTriple(diagonal);
 
+        ui.buildPaintList();
         List<Widget> widgets = ui.gridMarkWidgetList();
 
         List<Widget> expected = expectedGridMarkWidgetsWithHighlight();
@@ -228,7 +230,7 @@ public class TicTacToeGridUITest {
     @Test
     public void debugIsNotPaintedIfDebugModeIsNotOn() {
         List<Widget> widgets = ui.buildPaintList();
-        boolean hasDebugWidget = from(widgets).select(classOf()).where(isKindOf(TicTacToeGridUI.DebugWidget.class)).any();
+        boolean hasDebugWidget = from(widgets).select(classOf()).where(isKindOf(TicTacToeGridWidget.DebugWidget.class)).any();
         assertThat(hasDebugWidget, is(false));
     }
 
@@ -255,7 +257,7 @@ public class TicTacToeGridUITest {
     public void debugIsOnlyPaintedIfDebugModeIsOn() {
         ui.turnOnDebug();
         List<Widget> widgets = ui.buildPaintList();
-        boolean hasDebugWidget = from(widgets).select(classOf()).where(isKindOf(TicTacToeGridUI.DebugWidget.class)).any();
+        boolean hasDebugWidget = from(widgets).select(classOf()).where(isKindOf(TicTacToeGridWidget.DebugWidget.class)).any();
         assertThat(hasDebugWidget, is(true));
     }
 }

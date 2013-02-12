@@ -3,20 +3,17 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 import com.crudetech.collections.Iterables;
 import com.crudetech.tictactoe.game.Grid;
 
-import java.awt.*;
-import java.awt.List;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
 
 import static java.lang.Math.max;
 
-/**
-* Created with IntelliJ IDEA.
-* User: Andy
-* Date: 12.02.13
-* Time: 09:07
-* To change this template use File | Settings | File Templates.
-*/
 class TicTacToeGridWidget extends EcsWidget {
     private final Rectangle bounds;
     private final Style style;
@@ -36,10 +33,40 @@ class TicTacToeGridWidget extends EcsWidget {
     }
 
     @Override
-    public void paintEcs(Graphics2D g2d) {
+    public void paintEcs(Graphics2D pipe) {
+        for (Widget w : buildPaintList()) {
+            paintWidget(w, pipe);
+        }
 
     }
 
+    private static class Graphics2dTransform implements AutoCloseable {
+        private final AffineTransform originalXForm;
+        private final Graphics2D pipe;
+
+        Graphics2dTransform(Graphics2D pipe) {
+            this.pipe = pipe;
+            originalXForm = pipe.getTransform();
+        }
+
+        @Override
+        public void close() {
+            pipe.setTransform(originalXForm);
+        }
+
+        void pushTranslation(double dx, double dy) {
+            AffineTransform translate = AffineTransform.getTranslateInstance(dx, dy);
+            pipe.transform(translate);
+        }
+    }
+
+    private void paintWidget(Widget widget, Graphics2D pipe) {
+        try (Graphics2dTransform xform = new Graphics2dTransform(pipe)) {
+            Point loc = widget.getLocation();
+            xform.pushTranslation(loc.getX(), loc.getY());
+            widget.paintEcs(pipe);
+        }
+    }
     public java.util.List<Widget> buildPaintList() {
         java.util.List<Widget> paintList = new ArrayList<>();
 
