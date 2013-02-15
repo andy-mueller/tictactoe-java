@@ -1,15 +1,14 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
+import com.crudetech.gui.widgets.EcsWidget;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
 import com.crudetech.junit.feature.Features;
-import com.crudetech.tictactoe.delivery.swing.grid.EcsWidget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.awt.Graphics2D;
-import java.awt.Point;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 

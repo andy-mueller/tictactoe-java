@@ -1,7 +1,6 @@
-package com.crudetech.tictactoe.delivery.swing.grid;
+package com.crudetech.gui.widgets;
 
-import java.awt.Graphics2D;
-import java.awt.Point;
+import java.awt.*;
 
 public interface Widget {
     void paintEcs(Graphics2D g2d);

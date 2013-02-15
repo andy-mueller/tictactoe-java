@@ -1,11 +1,12 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.event.EventSupport;
+import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.game.Grid;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 

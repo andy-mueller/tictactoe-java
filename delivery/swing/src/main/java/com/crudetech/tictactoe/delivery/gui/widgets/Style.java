@@ -1,4 +1,4 @@
-package com.crudetech.tictactoe.delivery.swing.grid;
+package com.crudetech.tictactoe.delivery.gui.widgets;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

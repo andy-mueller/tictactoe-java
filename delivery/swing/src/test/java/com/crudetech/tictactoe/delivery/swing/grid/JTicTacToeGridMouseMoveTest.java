@@ -3,22 +3,20 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.event.EventListener;
 import com.crudetech.event.EventObject;
+import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.ui.CellEventObject;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class JTicTacToeGridMouseMoveTest {
     private JTicTacToeGrid grid;

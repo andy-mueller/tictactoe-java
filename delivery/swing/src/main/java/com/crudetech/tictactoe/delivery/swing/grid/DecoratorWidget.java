@@ -1,7 +1,8 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
-import java.awt.Graphics2D;
-import java.awt.Point;
+import com.crudetech.gui.widgets.Widget;
+
+import java.awt.*;
 import java.util.Objects;
 
 

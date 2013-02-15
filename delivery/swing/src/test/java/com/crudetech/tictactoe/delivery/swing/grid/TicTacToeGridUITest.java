@@ -1,6 +1,8 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.functional.UnaryFunction;
+import com.crudetech.gui.widgets.Widget;
+import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import org.junit.Before;

@@ -1,6 +1,6 @@
-package com.crudetech.tictactoe.delivery.swing.grid;
+package com.crudetech.gui.widgets;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.Objects;
 
 public abstract class EcsWidget implements Widget {

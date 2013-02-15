@@ -1,7 +1,8 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
-import java.awt.Composite;
-import java.awt.Graphics2D;
+import com.crudetech.gui.widgets.Widget;
+
+import java.awt.*;
 import java.util.Objects;
 
 public class CompositeDecoratorWidget extends DecoratorWidget {

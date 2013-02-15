@@ -1,9 +1,11 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
 
-import java.awt.Graphics2D;
+import com.crudetech.gui.widgets.EcsWidget;
 
-public class EmptyWidget extends EcsWidget{
+import java.awt.*;
+
+public class EmptyWidget extends EcsWidget {
     @Override
     public void paintEcs(Graphics2D g2d) {}
 

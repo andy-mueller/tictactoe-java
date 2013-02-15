@@ -2,12 +2,13 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 
 import com.crudetech.functional.UnaryFunction;
+import com.crudetech.gui.widgets.Widget;
+import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.game.Grid;
 
-import javax.swing.JComponent;
+import javax.swing.*;
 import javax.swing.plaf.ComponentUI;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
