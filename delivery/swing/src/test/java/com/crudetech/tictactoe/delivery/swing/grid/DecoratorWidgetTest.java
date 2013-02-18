@@ -30,14 +30,6 @@ public class DecoratorWidgetTest {
     }
 
     @Test
-    public void getLocationIsTakenFromDecorated() {
-        Widget w = mock(Widget.class);
-        when(w.getLocation()).thenReturn(new Point(42, 42));
-        DecoratorWidget dec = new DecoratorWidget(w);
-
-        assertThat(dec.getLocation(), is(new Point(42, 42)));
-    }
-    @Test
     public void moveIsForwardedToDecorated() {
         Widget w = mock(Widget.class);
         DecoratorWidget dec = new DecoratorWidget(w);

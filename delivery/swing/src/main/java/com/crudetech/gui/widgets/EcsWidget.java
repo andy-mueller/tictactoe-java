@@ -4,14 +4,13 @@ import java.awt.*;
 import java.util.Objects;
 
 public abstract class EcsWidget implements Widget {
-    private final Point location;
+    private int locationX;
+    private int locationY;
 
-    public EcsWidget(Point location) {
-        this(location.x, location.y);
-    }
 
     public EcsWidget(int x, int y) {
-        location = new Point(x, y);
+        locationX = x;
+        locationY = y;
     }
 
     public EcsWidget() {
@@ -20,23 +19,27 @@ public abstract class EcsWidget implements Widget {
 
     @Override
     public void setLocation(int x, int y) {
-        this.location.setLocation(x, y);
-    }
-
-    @Override
-    public Point getLocation() {
-        return (Point) location.clone();
+        locationX = x;
+        locationY = y;
     }
 
     @Override
     public void moveBy(int dx, int dy) {
-        location.translate(dx, dy);
+        locationX += dx;
+        locationY += dy;
+    }
+
+    public int getLocationX() {
+        return locationX;
+    }
+
+    public int getLocationY() {
+        return locationY;
     }
 
     @Override
     public void paint(GraphicsStream pipe) {
-        Point loc = getLocation();
-        pipe.pushTranslation(loc.x, loc.y);
+        pipe.pushTranslation(locationX, locationY);
         try {
             paintEcs(pipe);
         } finally {
@@ -53,11 +56,16 @@ public abstract class EcsWidget implements Widget {
 
         EcsWidget ecsWidget = (EcsWidget) o;
 
-        return Objects.equals(location, ecsWidget.location);
+        return Objects.equals(locationX, ecsWidget.locationX)
+            && Objects.equals(locationY, ecsWidget.locationY);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(location);
+        return Objects.hash(locationX, locationY);
+    }
+
+    protected String getLocationAsString() {
+        return String.format("Location[%s,%s]", Integer.toString(locationX), Integer.toString(locationY));
     }
 }

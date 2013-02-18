@@ -5,6 +5,10 @@ import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
 import com.crudetech.junit.feature.Features;
+import org.hamcrest.CustomTypeSafeMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,12 +44,23 @@ public class EcsWidgetTest {
     @Test
     public void setLocationChangesLocation(){
         ecsWidget.setLocation(500, 2);
-        
-        assertThat(ecsWidget.getLocation(), is(new Point(500, 2)));
+
+        assertThat(ecsWidget, hasLocation(500, 2));
     }
+
+    private Matcher<EcsWidget> hasLocation(final int x, final int y) {
+        return new CustomTypeSafeMatcher<EcsWidget>("") {
+            @Override
+            protected boolean matchesSafely(EcsWidget ecsWidget) {
+                return ecsWidget.getLocationX() == x && ecsWidget.getLocationY() == y;
+            }
+
+        };
+    }
+
     @Test
     public void ctorSetsLocation(){
-        assertThat(ecsWidget.getLocation(), is(new Point(42, 42)));
+        assertThat(ecsWidget, hasLocation(42, 42));
     }
     @Feature(Equivalent.class)
     public static Equivalent.Factory<EcsWidget> isEquivalentByLocation(){

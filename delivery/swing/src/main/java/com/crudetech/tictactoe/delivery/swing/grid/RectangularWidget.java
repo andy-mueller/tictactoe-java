@@ -11,7 +11,7 @@ public abstract class RectangularWidget extends EcsWidget {
     private final Paint color;
 
     public RectangularWidget(Rectangle boundary, Paint color) {
-        super(new Point(boundary.x, boundary.y));
+        super(boundary.x, boundary.y);
         this.color = color;
         this.boundary = (Rectangle) boundary.clone();
         this.boundary.setLocation(0, 0);

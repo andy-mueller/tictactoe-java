@@ -11,7 +11,7 @@ class ImageWidget extends EcsWidget {
     private final BufferedImage image;
 
     ImageWidget(Point location, BufferedImage image) {
-        super(location);
+        super(location.x, location.y);
         this.image = image;
     }
 
@@ -41,8 +41,9 @@ class ImageWidget extends EcsWidget {
     @Override
     public String toString() {
         return "ImageWidget{" +
-                "location=" + getLocation() +
+                "location=" + getLocationAsString() +
                 ", image=" + image +
                 '}';
     }
+
 }

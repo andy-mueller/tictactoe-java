@@ -56,7 +56,8 @@ public class TicTacToeGridUITest {
         List<Widget> widgets = ui.buildPaintList();
 
         ImageWidget backGroundImage = (ImageWidget) widgets.get(1);
-        assertThat(backGroundImage.getLocation(), is(new Point(250, 500)));
+        assertThat(backGroundImage.getLocationX(), is(250));
+        assertThat(backGroundImage.getLocationY(), is(500));
     }
 
     @Test
