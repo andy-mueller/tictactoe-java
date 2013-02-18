@@ -1,5 +1,6 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
+import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
@@ -20,21 +21,21 @@ public class FilledRectangleWidgetTest {
     public void paintingIsInEcs() {
         Widget w = new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), Color.ORANGE);
         w.setLocation(42, 42);
-        Graphics2D g2d = mock(Graphics2D.class);
+        GraphicsStream g2d = mock(GraphicsStream.class);
 
-        w.paintEcs(g2d);
+        w.paint(g2d);
 
-        verify(g2d).fill(new Rectangle(0, 0, 84, 966));
+        verify(g2d).fillRectangle(new Rectangle(0, 0, 84, 966));
     }
 
     @Test
     public void colorIsSetForPainting() {
         FilledRectangleWidget w = new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), Color.ORANGE);
-        Graphics2D g2d = mock(Graphics2D.class);
+        GraphicsStream g2d = mock(GraphicsStream.class);
 
         w.paintEcs(g2d);
 
-        verify(g2d).setPaint(Color.ORANGE);
+        verify(g2d).pushColor(Color.ORANGE);
     }
 
     @Feature(Equivalent.class)

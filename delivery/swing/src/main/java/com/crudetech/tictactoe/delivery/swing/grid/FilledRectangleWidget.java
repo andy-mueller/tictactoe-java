@@ -1,6 +1,7 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
-import java.awt.Graphics2D;
+import com.crudetech.gui.widgets.GraphicsStream;
+
 import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -14,14 +15,8 @@ public class FilledRectangleWidget extends RectangularWidget {
 
 
     @Override
-    public void paintEcs(Graphics2D g2d) {
-        Point loc = getLocation();
-        AffineTransform xform = g2d.getTransform();
-        g2d.setTransform(AffineTransform.getTranslateInstance(loc.getX(), loc.getY()));
-
-        g2d.setPaint(getColor());
-        g2d.fill(getBoundary());
-
-        g2d.setTransform(xform);
+    public void paintEcs(GraphicsStream pipe) {
+        pipe.pushColor(getColor());
+        pipe.fillRectangle(getBoundary());
     }
 }

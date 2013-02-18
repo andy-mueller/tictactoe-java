@@ -2,6 +2,7 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 
 import com.crudetech.functional.UnaryFunction;
+import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.game.Grid;
@@ -9,7 +10,9 @@ import com.crudetech.tictactoe.game.Grid;
 import javax.swing.*;
 import javax.swing.plaf.ComponentUI;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.crudetech.query.Query.from;
@@ -44,9 +47,72 @@ public class TicTacToeGridUI extends ComponentUI {
         super.uninstallUI(c);
     }
 
-    void paint(Graphics2D pipe) {
+    void paint(Graphics2D g2d) {
         buildGridWidget();
-        gridWidget.paintEcs(pipe);
+        gridWidget.paint(streamInto(g2d));
+    }
+
+    private GraphicsStream streamInto(final Graphics2D g2d) {
+        return new GraphicsStream() {
+            private final List<AffineTransform> xforms = new ArrayList<>();
+            private final List<Paint> colors = new ArrayList<>();
+            private final List<Composite> composites = new ArrayList<>();
+            private final Graphics2D pipe = g2d;
+
+            @Override
+            public void pushTranslation(int dx, int dy) {
+                xforms.add(pipe.getTransform());
+                pipe.translate(dx, dy);
+            }
+
+            @Override
+            public void popTransformation() {
+                pipe.setTransform(xforms.remove(xforms.size() - 1));
+            }
+
+            @Override
+            public void pushColor(Paint color) {
+                colors.add(pipe.getPaint());
+                pipe.setPaint(color);
+            }
+
+
+            @Override
+            public void drawRectangle(Rectangle rectangle) {
+                pipe.draw(rectangle);
+            }
+
+
+            @Override
+            public void fillRectangle(Rectangle rectangle) {
+                pipe.fill(rectangle);
+            }
+
+
+            @Override
+            public void drawLine(int x, int y, int x1, int y1) {
+                pipe.drawLine(x, y, x1, y1);
+            }
+
+
+            @Override
+            public void drawImage(BufferedImage image) {
+                pipe.drawImage(image, null, 0, 0);
+            }
+
+
+            @Override
+            public void pushComposite(Composite composite) {
+                composites.add(pipe.getComposite());
+                pipe.setComposite(composite);
+            }
+
+
+            @Override
+            public void popComposite() {
+                pipe.setComposite(composites.remove(composites.size() - 1));
+            }
+        };
     }
 
 

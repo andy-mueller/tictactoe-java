@@ -1,5 +1,6 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
+import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
@@ -22,10 +23,10 @@ public class ImageWidgetTest {
         BufferedImage image = mock(BufferedImage.class);
         Widget w = new ImageWidget(new Point(1, 1), image);
 
-        Graphics2D g2d = mock(Graphics2D.class);
-        w.paintEcs(g2d);
+        GraphicsStream g2d = mock(GraphicsStream.class);
+        w.paint(g2d);
 
-        verify(g2d).drawImage(image, null, 0, 0);
+        verify(g2d).drawImage(image);
     }
 
 

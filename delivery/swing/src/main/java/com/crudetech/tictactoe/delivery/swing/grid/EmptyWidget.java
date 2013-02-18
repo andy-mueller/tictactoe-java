@@ -2,12 +2,13 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 
 import com.crudetech.gui.widgets.EcsWidget;
-
-import java.awt.*;
+import com.crudetech.gui.widgets.GraphicsStream;
 
 public class EmptyWidget extends EcsWidget {
     @Override
-    public void paintEcs(Graphics2D g2d) {}
+    public void paintEcs(GraphicsStream pipe) {}
+    @Override
+    public void paint(GraphicsStream pipe) {}
 
     @Override
     public boolean equals(Object o) {

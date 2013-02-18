@@ -1,5 +1,6 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
+import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Widget;
 
 import java.awt.*;
@@ -25,8 +26,8 @@ public class DecoratorWidget implements Widget {
         decorated.moveBy(dx, dy);
     }
 
-    public void paintEcs(Graphics2D g2d) {
-        decorated.paintEcs(g2d);
+    public void paint(GraphicsStream pipe) {
+        decorated.paint(pipe);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.gui.widgets.EcsWidget;
+import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
 import com.crudetech.junit.feature.Features;
@@ -26,7 +27,7 @@ public class EcsWidgetTest {
         }
 
         @Override
-        public void paintEcs(Graphics2D g2d) {
+        public void paintEcs(GraphicsStream pipe) {
 
         }
     }

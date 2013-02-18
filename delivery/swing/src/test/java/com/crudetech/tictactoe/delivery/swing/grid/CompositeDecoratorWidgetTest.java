@@ -1,6 +1,7 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
 
+import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
@@ -19,45 +20,42 @@ import static org.mockito.Mockito.*;
 public class CompositeDecoratorWidgetTest {
 
     private Composite alpha;
-    private Composite oldAlpha;
     private CompositeDecoratorWidget dec;
-    private Graphics2D g2d;
+    private GraphicsStream g2d;
     private Widget decorated;
 
     @Before
     public void setUp() throws Exception {
         alpha = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f);
-        oldAlpha = AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.4f);
         decorated = mock(Widget.class);
         dec = new CompositeDecoratorWidget(decorated, alpha);
-        g2d = mock(Graphics2D.class);
-        when(g2d.getComposite()).thenReturn(oldAlpha);
+        g2d = mock(GraphicsStream.class);
     }
 
     @Test
     public void decoratorSetsTransparencyLevel() {
-        dec.paintEcs(g2d);
+        dec.paint(g2d);
 
-        verify(g2d).setComposite(alpha);
+        verify(g2d).pushComposite(alpha);
     }
 
     @Test
     public void decoratorResetsTransparencyLevel() {
-        dec.paintEcs(g2d);
+        dec.paint(g2d);
 
-        verify(g2d).setComposite(oldAlpha);
+        verify(g2d).popComposite();
     }
 
     private static class BaBoomException extends RuntimeException {
     }
     @Test
     public void decoratorResetsTransparencyLevelOnException() {
-        doThrow(new BaBoomException()).when(decorated).paintEcs(g2d);
+        doThrow(new BaBoomException()).when(decorated).paint(g2d);
         try {
-            dec.paintEcs(g2d);
+            dec.paint(g2d);
         } catch (BaBoomException e) {
         }
-        verify(g2d).setComposite(oldAlpha);
+        verify(g2d).popComposite();
     }
     @Feature(Equivalent.class)
     public static Equivalent.Factory<CompositeDecoratorWidget> decoratorIsEquivalent(){

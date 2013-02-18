@@ -1,6 +1,6 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
-import com.crudetech.tictactoe.delivery.swing.grid.EmptyWidget;
+import com.crudetech.gui.widgets.GraphicsStream;
 import org.junit.Test;
 
 import java.awt.Graphics2D;
@@ -14,9 +14,9 @@ public class EmptyWidgetTest {
     @Test
     public void paintDoesNothing() {
         EmptyWidget empty = new EmptyWidget();
-        Graphics2D g2d = mock(Graphics2D.class);
+        GraphicsStream g2d = mock(GraphicsStream.class);
 
-        empty.paintEcs(g2d);
+        empty.paint(g2d);
 
         verifyZeroInteractions(g2d);
     }

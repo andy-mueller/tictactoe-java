@@ -1,5 +1,6 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
+import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Widget;
 
 import java.awt.*;
@@ -13,13 +14,12 @@ public class CompositeDecoratorWidget extends DecoratorWidget {
         this.composite = composite;
     }
 
-    public void paintEcs(Graphics2D g2d) {
-        Composite oldComposite = g2d.getComposite();
-        g2d.setComposite(composite);
+    public void paint(GraphicsStream pipe) {
+        pipe.pushComposite(composite);
         try {
-            super.paintEcs(g2d);
+            super.paint(pipe);
         } finally {
-            g2d.setComposite(oldComposite);
+            pipe.popComposite();
         }
     }
 

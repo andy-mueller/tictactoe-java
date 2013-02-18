@@ -2,15 +2,18 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.collections.Iterables;
 import com.crudetech.gui.widgets.EcsWidget;
+import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.game.Grid;
 
-import java.awt.*;
-import java.awt.geom.AffineTransform;
+import java.awt.Color;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static java.lang.Math.max;
 
@@ -33,41 +36,15 @@ class TicTacToeGridWidget extends EcsWidget {
     }
 
     @Override
-    public void paintEcs(Graphics2D pipe) {
-        for (Widget w : buildPaintList()) {
-            paintWidget(w, pipe);
+    public void paintEcs(GraphicsStream pipe) {
+        for (Widget widget : buildPaintList()) {
+            widget.paint(pipe);
         }
 
     }
 
-    private static class Graphics2dTransform implements AutoCloseable {
-        private final AffineTransform originalXForm;
-        private final Graphics2D pipe;
 
-        Graphics2dTransform(Graphics2D pipe) {
-            this.pipe = pipe;
-            originalXForm = pipe.getTransform();
-        }
-
-        @Override
-        public void close() {
-            pipe.setTransform(originalXForm);
-        }
-
-        void pushTranslation(double dx, double dy) {
-            AffineTransform translate = AffineTransform.getTranslateInstance(dx, dy);
-            pipe.transform(translate);
-        }
-    }
-
-    private void paintWidget(Widget widget, Graphics2D pipe) {
-        try (Graphics2dTransform xform = new Graphics2dTransform(pipe)) {
-            Point loc = widget.getLocation();
-            xform.pushTranslation(loc.getX(), loc.getY());
-            widget.paintEcs(pipe);
-        }
-    }
-    public java.util.List<Widget> buildPaintList() {
+    public List<Widget> buildPaintList() {
         java.util.List<Widget> paintList = new ArrayList<>();
 
         paintList.add(backgroundWidget());
@@ -171,9 +148,9 @@ class TicTacToeGridWidget extends EcsWidget {
 
     class DebugWidget extends EcsWidget {
         @Override
-        public void paintEcs(Graphics2D pipe) {
+        public void paintEcs(GraphicsStream pipe) {
             System.out.println("---->Painting @" + new Date());
-            pipe.setPaint(Color.ORANGE);
+            pipe.pushColor(Color.ORANGE);
             for (int row = 0; row < bounds.width; row += 50) {
                 pipe.drawLine(0, row, bounds.height, row);
             }

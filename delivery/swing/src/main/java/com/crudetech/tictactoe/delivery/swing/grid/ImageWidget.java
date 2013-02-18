@@ -1,6 +1,7 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.gui.widgets.EcsWidget;
+import com.crudetech.gui.widgets.GraphicsStream;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -15,8 +16,8 @@ class ImageWidget extends EcsWidget {
     }
 
     @Override
-    public void paintEcs(Graphics2D g2d) {
-        g2d.drawImage(image, null, 0, 0);
+    public void paintEcs(GraphicsStream pipe) {
+        pipe.drawImage(image);
     }
 
     @Override

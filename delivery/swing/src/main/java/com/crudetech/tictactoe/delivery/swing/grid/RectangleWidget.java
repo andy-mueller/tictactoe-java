@@ -1,7 +1,8 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
+import com.crudetech.gui.widgets.GraphicsStream;
+
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 public class RectangleWidget extends RectangularWidget{
@@ -10,8 +11,8 @@ public class RectangleWidget extends RectangularWidget{
     }
 
     @Override
-    public void paintEcs(Graphics2D g2d) {
-        g2d.setPaint(getColor());
-        g2d.draw(getBoundary());
+    public void paintEcs(GraphicsStream pipe) {
+        pipe.pushColor(getColor());
+        pipe.drawRectangle(getBoundary());
     }
 }

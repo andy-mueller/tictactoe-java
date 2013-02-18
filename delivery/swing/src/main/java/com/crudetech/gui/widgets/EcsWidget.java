@@ -9,9 +9,11 @@ public abstract class EcsWidget implements Widget {
     public EcsWidget(Point location) {
         this(location.x, location.y);
     }
+
     public EcsWidget(int x, int y) {
         location = new Point(x, y);
     }
+
     public EcsWidget() {
         this(0, 0);
     }
@@ -20,8 +22,9 @@ public abstract class EcsWidget implements Widget {
     public void setLocation(int x, int y) {
         this.location.setLocation(x, y);
     }
+
     @Override
-    public Point getLocation(){
+    public Point getLocation() {
         return (Point) location.clone();
     }
 
@@ -29,6 +32,19 @@ public abstract class EcsWidget implements Widget {
     public void moveBy(int dx, int dy) {
         location.translate(dx, dy);
     }
+
+    @Override
+    public void paint(GraphicsStream pipe) {
+        Point loc = getLocation();
+        pipe.pushTranslation(loc.x, loc.y);
+        try {
+            paintEcs(pipe);
+        } finally {
+            pipe.popTransformation();
+        }
+    }
+
+    protected abstract void paintEcs(GraphicsStream pipe);
 
     @Override
     public boolean equals(Object o) {

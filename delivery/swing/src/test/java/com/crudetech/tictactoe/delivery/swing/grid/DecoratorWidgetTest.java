@@ -1,5 +1,6 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
+import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
@@ -49,11 +50,11 @@ public class DecoratorWidgetTest {
     public void paintIsForwardedToDecorated() {
         Widget w = mock(Widget.class);
         DecoratorWidget dec = new DecoratorWidget(w);
-        Graphics2D g2d = mock(Graphics2D.class);
+        GraphicsStream g2d = mock(GraphicsStream.class);
 
-        dec.paintEcs(g2d);
+        dec.paint(g2d);
 
-        verify(w).paintEcs(g2d);
+        verify(w).paint(g2d);
     }
 
     @Feature(Equivalent.class)
