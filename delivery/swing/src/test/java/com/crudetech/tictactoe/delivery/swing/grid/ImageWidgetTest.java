@@ -21,7 +21,7 @@ public class ImageWidgetTest {
     @Test
     public void widgetPaintsImageInEcs() throws Exception {
         BufferedImage image = mock(BufferedImage.class);
-        Widget w = new ImageWidget(new Point(1, 1), image);
+        Widget w = new ImageWidget(1, 1, image);
 
         GraphicsStream g2d = mock(GraphicsStream.class);
         w.paint(g2d);
@@ -33,18 +33,17 @@ public class ImageWidgetTest {
     @Feature(Equivalent.class)
     public static Equivalent.Factory<ImageWidget> imageWidgetEqualityFeature() {
         final BufferedImage image = mock(BufferedImage.class);
-        final Point loc = new Point(42, 42);
         return new Equivalent.Factory<ImageWidget>() {
             @Override
             public ImageWidget createItem() {
-                return new ImageWidget(loc, image);
+                return new ImageWidget(42, 42, image);
             }
 
             @Override
             public List<ImageWidget> createOtherItems() {
                 return asList(
-                        new ImageWidget(new Point(), image),
-                        new ImageWidget(loc, mock(BufferedImage.class))
+                        new ImageWidget(0,0, image),
+                        new ImageWidget(42, 42, mock(BufferedImage.class))
                 );
             }
         };

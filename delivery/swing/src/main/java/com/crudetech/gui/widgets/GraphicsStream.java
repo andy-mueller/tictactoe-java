@@ -1,7 +1,6 @@
 package com.crudetech.gui.widgets;
 
 import java.awt.Composite;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 public interface GraphicsStream {

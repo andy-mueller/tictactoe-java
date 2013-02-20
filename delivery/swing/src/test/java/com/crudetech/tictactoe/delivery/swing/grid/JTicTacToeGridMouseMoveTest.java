@@ -3,13 +3,14 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.event.EventListener;
 import com.crudetech.event.EventObject;
+import com.crudetech.gui.widgets.Point;
+import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.ui.CellEventObject;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 

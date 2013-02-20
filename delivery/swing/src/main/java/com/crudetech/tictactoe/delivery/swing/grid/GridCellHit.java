@@ -2,9 +2,9 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.collections.Pair;
 import com.crudetech.functional.UnaryFunction;
+import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.tictactoe.game.Grid;
 
-import java.awt.*;
 
 import static com.crudetech.query.Query.from;
 

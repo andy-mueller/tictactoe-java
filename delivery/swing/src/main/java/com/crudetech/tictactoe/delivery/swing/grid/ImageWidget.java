@@ -2,8 +2,8 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.gui.widgets.EcsWidget;
 import com.crudetech.gui.widgets.GraphicsStream;
+import com.crudetech.gui.widgets.Point;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 
@@ -11,7 +11,11 @@ class ImageWidget extends EcsWidget {
     private final BufferedImage image;
 
     ImageWidget(Point location, BufferedImage image) {
-        super(location.x, location.y);
+        this(location.x, location.y, image);
+    }
+
+    ImageWidget(int x, int y, BufferedImage image) {
+        super(x, y);
         this.image = image;
     }
 

@@ -4,6 +4,7 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 import com.crudetech.functional.UnaryFunction;
 import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.GraphicsStream;
+import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.game.Grid;
@@ -17,7 +18,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -81,19 +82,18 @@ public class TicTacToeGridUI extends ComponentUI {
             @Override
             public void pushColor(Color color) {
                 colors.add(pipe.getPaint());
-                pipe.setPaint(((AwtColor)color).color);
+                pipe.setPaint(((AwtColor) color).color);
             }
 
 
             @Override
             public void drawRectangle(Rectangle rectangle) {
-                pipe.draw(rectangle);
+                pipe.draw(convert(rectangle));
             }
 
-
-            @Override
+             @Override
             public void fillRectangle(Rectangle rectangle) {
-                pipe.fill(rectangle);
+                pipe.fill(convert(rectangle));
             }
 
 
@@ -148,12 +148,16 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     private void buildGridWidget() {
-        gridWidget = new TicTacToeGridWidget(component.getBounds(),
+        gridWidget = new TicTacToeGridWidget(convert(component.getBounds()),
                 style, getModel().getHighlightedTriple(),
                 getModel().getGrid().getCells(),
                 getModel().getHighlightedCell(),
                 isDebugMode,
                 new AwtColor(java.awt.Color.ORANGE));
+    }
+
+    private Rectangle convert(java.awt.Rectangle r) {
+        return new Rectangle(r.x, r.y, r.width, r.height);
     }
 
 
@@ -202,20 +206,18 @@ public class TicTacToeGridUI extends ComponentUI {
                 from(changedCells).select(toBoundary()).select(toComponentCoos());
 
         for (Rectangle rect : repaintedInComponentCoordinates) {
-            component.repaint(rect);
+            component.repaint(convert(rect));
         }
     }
-
+    private java.awt.Rectangle convert(Rectangle r) {
+        return new java.awt.Rectangle(r.x, r.y, r.width, r.height);
+    }
     private UnaryFunction<Rectangle, Rectangle> toComponentCoos() {
         return new UnaryFunction<Rectangle, Rectangle>() {
             @Override
-            public Rectangle execute(Rectangle rectangle) {
-                rectangle = new Rectangle(rectangle);
+            public Rectangle execute(Rectangle r) {
                 Point origin = getUiOrigin();
-                rectangle.translate(origin.x, origin.y);
-                rectangle.width += 1;
-                rectangle.height += 1;
-                return rectangle;
+                return new Rectangle(r.x + origin.x, r.y + origin.y, r.width + 1, r.height + 1);
             }
         };
     }

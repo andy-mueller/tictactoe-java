@@ -1,6 +1,8 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.functional.UnaryFunction;
+import com.crudetech.gui.widgets.Point;
+import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.game.Grid;
@@ -8,7 +10,8 @@ import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -163,8 +166,8 @@ public class TicTacToeGridUITest {
         List<Widget> widgets = ui.buildPaintList();
 
 
-        Rectangle rect = (Rectangle) style.getGridMarkLocations()[0][2].clone();
-        rect.translate(StyleStub.Width / 2, StyleStub.Height / 2);
+        Rectangle rect =  style.getGridMarkLocations()[0][2];
+        rect = rect.translate(StyleStub.Width / 2, StyleStub.Height / 2);
         assertThat(widgets.get(widgets.size() - 2), is((Widget) new RectangleWidget(rect, style.getHighlightColor())));
     }
 

@@ -4,12 +4,12 @@ import com.crudetech.collections.Iterables;
 import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.EcsWidget;
 import com.crudetech.gui.widgets.GraphicsStream;
+import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.game.Grid;
 
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,15 +65,15 @@ class TicTacToeGridWidget extends EcsWidget {
     }
 
     private Widget backgroundWidget() {
-        Rectangle bounds = new Rectangle(this.bounds);
-        bounds.height += 500;
-        return new FilledRectangleWidget(bounds, style.getBackgroundColor());
+        Rectangle boundary = new Rectangle(bounds.x, bounds.y, bounds.width, bounds.height + 500);
+        return new FilledRectangleWidget(boundary, style.getBackgroundColor());
     }
 
     private Widget backgroundImageWidget() {
         BufferedImage backgroundImage = style.getBackgroundImage();
 
-        ImageWidget imageWidget = new ImageWidget(getUiOrigin(), backgroundImage);
+        Point p = getUiOrigin();
+        ImageWidget imageWidget = new ImageWidget(p.x, p.y, backgroundImage);
 
         return hasHighlightedTriple() ? new CompositeDecoratorWidget(imageWidget, TicTacToeGridUI.WinningTripleAlpha) : imageWidget;
     }
@@ -123,9 +123,9 @@ class TicTacToeGridWidget extends EcsWidget {
     private Widget createMarkWidget(Grid.Mark mark, Rectangle bounds) {
         switch (mark) {
             case Cross:
-                return new ImageWidget(bounds.getLocation(), style.getCrossImage());
+                return new ImageWidget(bounds.x, bounds.y, style.getCrossImage());
             case Nought:
-                return new ImageWidget(bounds.getLocation(), style.getNoughtImage());
+                return new ImageWidget(bounds.x, bounds.y, style.getNoughtImage());
             case None:
                 return new EmptyWidget();
             default:
@@ -136,8 +136,8 @@ class TicTacToeGridWidget extends EcsWidget {
     private Widget highlightWidget() {
         Point origin = getUiOrigin();
         if (hasHighlightedCell()) {
-            Rectangle boundaryForLocation = (Rectangle) getBoundaryForLocation(highlightedCell).clone();
-            boundaryForLocation.translate(origin.x, origin.y);
+            Rectangle boundaryForLocation = getBoundaryForLocation(highlightedCell);
+            boundaryForLocation = boundaryForLocation.translate(origin.x, origin.y);
             return new RectangleWidget(boundaryForLocation, style.getHighlightColor());
         } else {
             return new EmptyWidget();
