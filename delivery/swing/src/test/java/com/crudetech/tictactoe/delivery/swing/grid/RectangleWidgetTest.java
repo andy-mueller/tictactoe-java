@@ -19,7 +19,7 @@ import static org.mockito.Mockito.verify;
 public class RectangleWidgetTest {
     @Test
     public void paintingIsInEcs() {
-        Widget w = new RectangleWidget(new Rectangle(0, 0, 84, 966), Color.ORANGE);
+        Widget w = new RectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
         w.setLocation(42, 42);
         GraphicsStream g2d = mock(GraphicsStream.class);
 
@@ -30,12 +30,12 @@ public class RectangleWidgetTest {
 
     @Test
     public void colorIsSetForPainting() {
-        RectangleWidget w = new RectangleWidget(new Rectangle(0, 0, 84, 966), Color.ORANGE);
+        RectangleWidget w = new RectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
         GraphicsStream g2d = mock(GraphicsStream.class);
 
         w.paintEcs(g2d);
 
-        verify(g2d).pushColor(Color.ORANGE);
+        verify(g2d).pushColor(AwtColor.ORANGE);
     }
 
     @Feature(Equivalent.class)
@@ -43,15 +43,15 @@ public class RectangleWidgetTest {
         return new Equivalent.Factory<RectangleWidget>() {
             @Override
             public RectangleWidget createItem() {
-                return new RectangleWidget(new Rectangle(0, 0, 84, 966), Color.ORANGE);
+                return new RectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
             }
 
             @Override
             public List<RectangleWidget> createOtherItems() {
                 return asList(
-                        new RectangleWidget(new Rectangle(0, 0, 42, 966), Color.ORANGE),
-                        new RectangleWidget(new Rectangle(0, 0, 84, 42), Color.ORANGE),
-                        new RectangleWidget(new Rectangle(0, 0, 84, 966), Color.CYAN)
+                        new RectangleWidget(new Rectangle(0, 0, 42, 966), AwtColor.ORANGE),
+                        new RectangleWidget(new Rectangle(0, 0, 84, 42), AwtColor.ORANGE),
+                        new RectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.CYAN)
                 );
             }
         };

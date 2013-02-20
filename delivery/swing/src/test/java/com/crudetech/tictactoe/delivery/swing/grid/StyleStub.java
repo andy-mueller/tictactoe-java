@@ -1,8 +1,10 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
+import com.crudetech.gui.widgets.Color;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import static org.mockito.Mockito.mock;
@@ -43,12 +45,12 @@ class StyleStub implements Style {
 
     @Override
     public Color getBackgroundColor() {
-        return Color.MAGENTA;
+        return new AwtColor(java.awt.Color.MAGENTA);
     }
 
     @Override
     public Color getHighlightColor() {
-        return Color.PINK;
+        return new AwtColor(java.awt.Color.PINK);
     }
 
     @Override

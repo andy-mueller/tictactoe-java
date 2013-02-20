@@ -1,13 +1,14 @@
 package com.crudetech.gui.widgets;
 
-import java.awt.*;
+import java.awt.Composite;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 public interface GraphicsStream {
     void pushTranslation(int dx, int dy);
     void popTransformation();
 
-    void pushColor(Paint color);
+    void pushColor(Color color);
 
     void drawRectangle(Rectangle rectangle);
     void fillRectangle(Rectangle boundary);
@@ -18,5 +19,4 @@ public interface GraphicsStream {
 
     void pushComposite(Composite composite);
     void popComposite();
-
 }

@@ -2,14 +2,22 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 
 import com.crudetech.functional.UnaryFunction;
+import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.game.Grid;
 
-import javax.swing.*;
+import javax.swing.JComponent;
 import javax.swing.plaf.ComponentUI;
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.Composite;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -71,9 +79,9 @@ public class TicTacToeGridUI extends ComponentUI {
             }
 
             @Override
-            public void pushColor(Paint color) {
+            public void pushColor(Color color) {
                 colors.add(pipe.getPaint());
-                pipe.setPaint(color);
+                pipe.setPaint(((AwtColor)color).color);
             }
 
 
@@ -140,7 +148,12 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     private void buildGridWidget() {
-        gridWidget = new TicTacToeGridWidget(component.getBounds(), style, getModel().getHighlightedTriple(), getModel().getGrid().getCells(), getModel().getHighlightedCell(), isDebugMode);
+        gridWidget = new TicTacToeGridWidget(component.getBounds(),
+                style, getModel().getHighlightedTriple(),
+                getModel().getGrid().getCells(),
+                getModel().getHighlightedCell(),
+                isDebugMode,
+                new AwtColor(java.awt.Color.ORANGE));
     }
 
 

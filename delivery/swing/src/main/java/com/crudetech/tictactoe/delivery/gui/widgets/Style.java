@@ -1,6 +1,9 @@
 package com.crudetech.tictactoe.delivery.gui.widgets;
 
-import java.awt.*;
+import com.crudetech.gui.widgets.Color;
+
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 public interface Style {

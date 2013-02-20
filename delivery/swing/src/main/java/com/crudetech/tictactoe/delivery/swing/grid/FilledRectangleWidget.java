@@ -1,15 +1,13 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
+import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.GraphicsStream;
 
-import java.awt.Paint;
-import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
 
 public class FilledRectangleWidget extends RectangularWidget {
 
-    public FilledRectangleWidget(Rectangle boundary, Paint color) {
+    public FilledRectangleWidget(Rectangle boundary, Color color) {
         super(boundary, color);
     }
 

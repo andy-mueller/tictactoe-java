@@ -1,8 +1,8 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
+import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.GraphicsStream;
 
-import java.awt.Color;
 import java.awt.Rectangle;
 
 public class RectangleWidget extends RectangularWidget{

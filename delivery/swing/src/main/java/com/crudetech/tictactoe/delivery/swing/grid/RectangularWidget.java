@@ -1,16 +1,17 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
+import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.EcsWidget;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.util.Objects;
 
 
 public abstract class RectangularWidget extends EcsWidget {
     private final Rectangle boundary;
-    private final Paint color;
+    private final Color color;
 
-    public RectangularWidget(Rectangle boundary, Paint color) {
+    public RectangularWidget(Rectangle boundary, Color color) {
         super(boundary.x, boundary.y);
         this.color = color;
         this.boundary = (Rectangle) boundary.clone();
@@ -35,7 +36,7 @@ public abstract class RectangularWidget extends EcsWidget {
         return Objects.hash(super.hashCode(), boundary, color);
     }
 
-    Paint getColor() {
+    Color getColor() {
         return color;
     }
 

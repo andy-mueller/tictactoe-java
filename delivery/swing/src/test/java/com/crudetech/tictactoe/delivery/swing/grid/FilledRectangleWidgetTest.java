@@ -19,7 +19,7 @@ import static org.mockito.Mockito.verify;
 public class FilledRectangleWidgetTest {
     @Test
     public void paintingIsInEcs() {
-        Widget w = new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), Color.ORANGE);
+        Widget w = new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
         w.setLocation(42, 42);
         GraphicsStream g2d = mock(GraphicsStream.class);
 
@@ -30,12 +30,12 @@ public class FilledRectangleWidgetTest {
 
     @Test
     public void colorIsSetForPainting() {
-        FilledRectangleWidget w = new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), Color.ORANGE);
+        FilledRectangleWidget w = new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
         GraphicsStream g2d = mock(GraphicsStream.class);
 
         w.paintEcs(g2d);
 
-        verify(g2d).pushColor(Color.ORANGE);
+        verify(g2d).pushColor(AwtColor.ORANGE);
     }
 
     @Feature(Equivalent.class)
@@ -43,15 +43,15 @@ public class FilledRectangleWidgetTest {
         return new Equivalent.Factory<FilledRectangleWidget>() {
             @Override
             public FilledRectangleWidget createItem() {
-                return new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), Color.ORANGE);
+                return new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
             }
 
             @Override
             public List<FilledRectangleWidget> createOtherItems() {
                 return asList(
-                        new FilledRectangleWidget(new Rectangle(0, 0, 42, 966), Color.ORANGE),
-                        new FilledRectangleWidget(new Rectangle(0, 0, 84, 42), Color.ORANGE),
-                        new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), Color.CYAN)
+                        new FilledRectangleWidget(new Rectangle(0, 0, 42, 966), AwtColor.ORANGE),
+                        new FilledRectangleWidget(new Rectangle(0, 0, 84, 42), AwtColor.ORANGE),
+                        new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.CYAN)
                 );
             }
         };

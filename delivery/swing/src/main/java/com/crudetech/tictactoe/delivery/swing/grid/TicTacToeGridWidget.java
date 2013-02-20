@@ -1,13 +1,13 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.collections.Iterables;
+import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.EcsWidget;
 import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.game.Grid;
 
-import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -24,15 +24,22 @@ class TicTacToeGridWidget extends EcsWidget {
     private final Iterable<Grid.Cell> cells;
     private final Grid.Location highlightedCell;
     private final boolean isDebugMode;
+    private final Color debugColor;
 
 
-    TicTacToeGridWidget(Rectangle bounds, Style style, Grid.ThreeInARow threeInARow, Iterable<Grid.Cell> cells, Grid.Location hasHighlightedCell, boolean debugMode) {
+    TicTacToeGridWidget(Rectangle bounds,
+                        Style style,
+                        Grid.ThreeInARow threeInARow,
+                        Iterable<Grid.Cell> cells,
+                        Grid.Location highlightedCell,
+                        boolean debugMode, Color debugColor) {
         this.bounds = bounds;
         this.style = style;
         this.threeInARow = threeInARow;
         this.cells = cells;
-        this.highlightedCell = hasHighlightedCell;
+        this.highlightedCell = highlightedCell;
         this.isDebugMode = debugMode;
+        this.debugColor = debugColor;
     }
 
     @Override
@@ -150,7 +157,7 @@ class TicTacToeGridWidget extends EcsWidget {
         @Override
         public void paintEcs(GraphicsStream pipe) {
             System.out.println("---->Painting @" + new Date());
-            pipe.pushColor(Color.ORANGE);
+            pipe.pushColor(debugColor);
             for (int row = 0; row < bounds.width; row += 50) {
                 pipe.drawLine(0, row, bounds.height, row);
             }
