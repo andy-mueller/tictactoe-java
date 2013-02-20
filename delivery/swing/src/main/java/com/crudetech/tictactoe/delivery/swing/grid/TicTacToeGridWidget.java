@@ -4,12 +4,12 @@ import com.crudetech.collections.Iterables;
 import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.EcsWidget;
 import com.crudetech.gui.widgets.GraphicsStream;
+import com.crudetech.gui.widgets.Point;
 import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.game.Grid;
 
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Date;
