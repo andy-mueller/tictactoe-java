@@ -15,10 +15,8 @@ public class Point {
 
         Point point = (Point) o;
 
-        if (x != point.x) return false;
-        if (y != point.y) return false;
+        return x == point.x && y == point.y;
 
-        return true;
     }
 
     @Override
@@ -34,5 +32,9 @@ public class Point {
                 "x=" + x +
                 ", y=" + y +
                 '}';
+    }
+
+    public static Point of(int x, int y) {
+        return new Point(x, y);
     }
 }

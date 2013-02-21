@@ -2,23 +2,20 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.gui.widgets.EcsWidget;
 import com.crudetech.gui.widgets.GraphicsStream;
+import com.crudetech.gui.widgets.Point;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
 import com.crudetech.junit.feature.Features;
 import org.hamcrest.CustomTypeSafeMatcher;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 @RunWith(Features.class)
 public class EcsWidgetTest {
@@ -52,7 +49,7 @@ public class EcsWidgetTest {
         return new CustomTypeSafeMatcher<EcsWidget>("") {
             @Override
             protected boolean matchesSafely(EcsWidget ecsWidget) {
-                return ecsWidget.getLocationX() == x && ecsWidget.getLocationY() == y;
+                return ecsWidget.getLocation().equals(Point.of(x, y));
             }
 
         };

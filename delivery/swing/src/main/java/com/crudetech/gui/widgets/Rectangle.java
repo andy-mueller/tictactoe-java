@@ -50,6 +50,16 @@ public class Rectangle {
                 && this.y <= y && y <= (this.y + height);
     }
 
+    @Override
+    public String toString() {
+        return "Rectangle{" +
+                "x=" + x +
+                ", y=" + y +
+                ", width=" + width +
+                ", height=" + height +
+                '}';
+    }
+
     public Rectangle setLocation(int x, int y) {
         return new Rectangle(x, y, width, height);
     }

@@ -1,6 +1,7 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.gui.widgets.GraphicsStream;
+import com.crudetech.gui.widgets.Point;
 import com.crudetech.gui.widgets.Widget;
 
 import java.util.Objects;
@@ -19,6 +20,11 @@ public class DecoratorWidget implements Widget {
 
     public void moveBy(int dx, int dy) {
         decorated.moveBy(dx, dy);
+    }
+
+    @Override
+    public Point getLocation() {
+        return decorated.getLocation();
     }
 
     public void paint(GraphicsStream pipe) {

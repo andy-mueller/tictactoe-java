@@ -18,13 +18,19 @@ class AwtColor implements Color {
 
         AwtColor awtColor = (AwtColor) o;
 
-        if (!color.equals(awtColor.color)) return false;
+        return color.equals(awtColor.color);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
         return color.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "AwtColor{" +
+                "color=" + color +
+                '}';
     }
 }

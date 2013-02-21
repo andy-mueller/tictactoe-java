@@ -28,14 +28,6 @@ public abstract class EcsWidget implements Widget {
         locationY += dy;
     }
 
-    public int getLocationX() {
-        return locationX;
-    }
-
-    public int getLocationY() {
-        return locationY;
-    }
-
     @Override
     public void paint(GraphicsStream pipe) {
         pipe.pushTranslation(locationX, locationY);
@@ -47,6 +39,11 @@ public abstract class EcsWidget implements Widget {
     }
 
     protected abstract void paintEcs(GraphicsStream pipe);
+
+    @Override
+    public Point getLocation() {
+        return new Point(locationX, locationY);
+    }
 
     @Override
     public boolean equals(Object o) {

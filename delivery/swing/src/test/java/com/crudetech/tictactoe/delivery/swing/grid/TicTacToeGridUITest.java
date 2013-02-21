@@ -9,7 +9,6 @@ import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.awt.Dimension;
@@ -25,7 +24,6 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -62,31 +60,10 @@ public class TicTacToeGridUITest {
         List<Widget> widgets = ui.buildPaintList();
 
         ImageWidget backGroundImage = (ImageWidget) widgets.get(1);
-        assertThat(backGroundImage.getLocationX(), is(250));
-        assertThat(backGroundImage.getLocationY(), is(500));
+        assertThat(backGroundImage.getLocation(), is(Point.of(250, 500)));
     }
 
-    @Ignore("needs to be moved to a widget level test")
-    @Test
-    public void backgroundIsPositionedAtOriginIfComponentIsSmaller() {
-        grid.setSize(10, 10);
-        ui.paint(g2d);
 
-        fail("Move to grid widget test");
-//        verify(g2d).drawImage(style.getBackgroundImage(), null, 0, 0);
-    }
-
-    @Ignore("needs to be moved to a widget level test")
-    @Test
-    public void backGroundIsInvalidated() {
-        ui.paint(g2d);
-
-        List<Widget> widgets = ui.buildPaintList();
-        Widget background = widgets.get(0);
-
-        Widget expectedBackground = getExpectedBackground();
-        assertThat(background, is(expectedBackground));
-    }
 
     @Test
     public void defaultStyleIsBrush() {
