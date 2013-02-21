@@ -1,13 +1,13 @@
 package com.crudetech.tictactoe.delivery.gui.widgets;
 
 import com.crudetech.gui.widgets.Color;
+import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Rectangle;
 
 import java.awt.Dimension;
-import java.awt.image.BufferedImage;
 
 public interface Style {
-    BufferedImage getBackgroundImage();
+    Image getBackgroundImage();
 
     Color getBackgroundColor();
     Color getHighlightColor();
@@ -16,8 +16,8 @@ public interface Style {
 
     Rectangle[][] getGridMarkLocations();
 
-    BufferedImage getCrossImage();
+    Image getCrossImage();
 
-    BufferedImage getNoughtImage();
+    Image getNoughtImage();
 
 }

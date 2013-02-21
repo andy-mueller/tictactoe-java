@@ -1,6 +1,7 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.gui.widgets.GraphicsStream;
+import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
@@ -8,8 +9,6 @@ import com.crudetech.junit.feature.Features;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -20,7 +19,7 @@ import static org.mockito.Mockito.verify;
 public class ImageWidgetTest {
     @Test
     public void widgetPaintsImageInEcs() throws Exception {
-        BufferedImage image = mock(BufferedImage.class);
+        Image image = mock(Image.class);
         Widget w = new ImageWidget(1, 1, image);
 
         GraphicsStream g2d = mock(GraphicsStream.class);
@@ -32,7 +31,7 @@ public class ImageWidgetTest {
 
     @Feature(Equivalent.class)
     public static Equivalent.Factory<ImageWidget> imageWidgetEqualityFeature() {
-        final BufferedImage image = mock(BufferedImage.class);
+        final Image image = mock(Image.class);
         return new Equivalent.Factory<ImageWidget>() {
             @Override
             public ImageWidget createItem() {
@@ -43,7 +42,7 @@ public class ImageWidgetTest {
             public List<ImageWidget> createOtherItems() {
                 return asList(
                         new ImageWidget(0,0, image),
-                        new ImageWidget(42, 42, mock(BufferedImage.class))
+                        new ImageWidget(42, 42, mock(Image.class))
                 );
             }
         };

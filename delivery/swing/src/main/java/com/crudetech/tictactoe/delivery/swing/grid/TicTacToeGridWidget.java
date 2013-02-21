@@ -4,13 +4,13 @@ import com.crudetech.collections.Iterables;
 import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.EcsWidget;
 import com.crudetech.gui.widgets.GraphicsStream;
+import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Point;
 import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.game.Grid;
 
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -70,7 +70,7 @@ class TicTacToeGridWidget extends EcsWidget {
     }
 
     private Widget backgroundImageWidget() {
-        BufferedImage backgroundImage = style.getBackgroundImage();
+        Image backgroundImage = style.getBackgroundImage();
 
         Point p = getUiOrigin();
         ImageWidget imageWidget = new ImageWidget(p.x, p.y, backgroundImage);
@@ -83,7 +83,7 @@ class TicTacToeGridWidget extends EcsWidget {
     }
 
     Point getUiOrigin() {
-        BufferedImage backgroundImage = style.getBackgroundImage();
+        Image backgroundImage = style.getBackgroundImage();
         int x = max((bounds.width - backgroundImage.getWidth()) / 2, 0);
         int y = max((bounds.height - backgroundImage.getHeight()) / 2, 0);
         return new Point(x, y);

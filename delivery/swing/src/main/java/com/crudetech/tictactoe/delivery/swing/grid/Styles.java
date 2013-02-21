@@ -1,12 +1,12 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.gui.widgets.Color;
+import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 
 import javax.imageio.ImageIO;
 import java.awt.Dimension;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
@@ -57,9 +57,9 @@ public enum Styles implements Style {
         }
     };
 
-    private BufferedImage background;
-    private BufferedImage cross;
-    private BufferedImage nought;
+    private Image background;
+    private Image cross;
+    private Image nought;
 
     private Styles() {
     }
@@ -69,7 +69,7 @@ public enum Styles implements Style {
         return new Dimension(getBackgroundImage().getWidth(), getBackgroundImage().getHeight());
     }
 
-    public BufferedImage getCrossImage() {
+    public Image getCrossImage() {
         if (cross == null) {
             try {
                 cross = loadImage(getCrossImageName());
@@ -82,7 +82,7 @@ public enum Styles implements Style {
 
     abstract String getCrossImageName();
 
-    public BufferedImage getNoughtImage() {
+    public Image getNoughtImage() {
         if (nought == null) {
             try {
                 nought = loadImage(getNoughtImageName());
@@ -96,7 +96,7 @@ public enum Styles implements Style {
     abstract String getNoughtImageName();
 
     @Override
-    public BufferedImage getBackgroundImage() {
+    public Image getBackgroundImage() {
         if (background == null) {
             try {
                 background = loadImage(getBackgroundImageName());
@@ -110,10 +110,10 @@ public enum Styles implements Style {
     abstract String getBackgroundImageName();
 
 
-    private BufferedImage loadImage(String resourceId) throws IOException {
+    private Image loadImage(String resourceId) throws IOException {
         String resourcePath = getResourcePath(resourceId);
         try (InputStream in = Objects.requireNonNull(getClass().getResourceAsStream(resourcePath))) {
-            return ImageIO.read(in);
+            return new AwtImage(ImageIO.read(in));
         }
     }
 

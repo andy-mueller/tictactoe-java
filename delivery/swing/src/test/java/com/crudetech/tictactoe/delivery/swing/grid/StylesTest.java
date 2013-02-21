@@ -1,5 +1,6 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
+import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Rectangle;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,14 +8,14 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBuffer;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.sameInstance;
 
 @RunWith(Parameterized.class)
 public class StylesTest {
@@ -40,25 +41,13 @@ public class StylesTest {
 
     @Test
     public void backGroundImageIsCorrect() throws Exception {
-        BufferedImage expected = loadBackGroundImageFromResources();
-        assertImagesAreEqual(style.getBackgroundImage(), expected);
+        Image expected = loadBackGroundImageFromResources();
+        assertThat(style.getBackgroundImage(), is(expected));
     }
 
-    private BufferedImage loadBackGroundImageFromResources() throws Exception {
+    private AwtImage loadBackGroundImageFromResources() throws Exception {
         try (InputStream in = getClass().getResourceAsStream("/com/crudetech/tictactoe/delivery/swing/grid/" + style.name().toLowerCase() + "style/tic-tac-toe-grid.jpg")) {
-            return ImageIO.read(in);
-        }
-    }
-
-    private static void assertImagesAreEqual(BufferedImage actual, BufferedImage expected) {
-        DataBuffer expectedDataBuffer = expected.getData().getDataBuffer();
-        DataBuffer actualDataBuffer = actual.getData().getDataBuffer();
-
-        assertThat(actualDataBuffer.getSize(), is(expectedDataBuffer.getSize()));
-        int size = expectedDataBuffer.getSize();
-
-        for (int i = 0; i < size; i++) {
-            assertThat(actualDataBuffer.getElem(i), is(expectedDataBuffer.getElem(i)));
+            return  new AwtImage(ImageIO.read(in));
         }
     }
 

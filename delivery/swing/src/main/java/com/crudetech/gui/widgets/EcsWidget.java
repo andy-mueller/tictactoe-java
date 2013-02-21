@@ -1,6 +1,5 @@
 package com.crudetech.gui.widgets;
 
-import java.awt.*;
 import java.util.Objects;
 
 public abstract class EcsWidget implements Widget {

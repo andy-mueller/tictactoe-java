@@ -1,7 +1,6 @@
 package com.crudetech.gui.widgets;
 
 import java.awt.Composite;
-import java.awt.image.BufferedImage;
 
 public interface GraphicsStream {
     void pushTranslation(int dx, int dy);
@@ -14,7 +13,7 @@ public interface GraphicsStream {
 
     void drawLine(int x, int y, int x1, int y1);
 
-    void drawImage(BufferedImage image);
+    void drawImage(Image image);
 
     void pushComposite(Composite composite);
     void popComposite();

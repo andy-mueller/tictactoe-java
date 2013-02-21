@@ -1,11 +1,11 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.gui.widgets.Color;
+import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 
 import java.awt.Dimension;
-import java.awt.image.BufferedImage;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -18,14 +18,14 @@ class StyleStub implements Style {
     static final int GridCellDistance = 10;
     public static int GridCellHeight = 10   ;
 
-    private final BufferedImage nought = mock(BufferedImage.class);
-    private final BufferedImage cross = mock(BufferedImage.class);
-    private final BufferedImage back;
+    private final Image nought = mock(Image.class);
+    private final Image cross = mock(Image.class);
+    private final Image back;
     private final Rectangle[][] locations = new Rectangle[3][3];
 
     StyleStub() {
         fillLocations();
-        back = mock(BufferedImage.class);
+        back = mock(Image.class);
         when(back.getWidth()).thenReturn(Width);
         when(back.getHeight()).thenReturn(Height);
     }
@@ -39,7 +39,7 @@ class StyleStub implements Style {
     }
 
     @Override
-    public BufferedImage getBackgroundImage() {
+    public Image getBackgroundImage() {
         return back;
     }
 
@@ -64,12 +64,12 @@ class StyleStub implements Style {
     }
 
     @Override
-    public BufferedImage getCrossImage() {
+    public Image getCrossImage() {
         return cross;
     }
 
     @Override
-    public BufferedImage getNoughtImage() {
+    public Image getNoughtImage() {
         return nought;
     }
 }

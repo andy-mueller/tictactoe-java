@@ -4,6 +4,7 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 import com.crudetech.functional.UnaryFunction;
 import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.GraphicsStream;
+import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
@@ -18,9 +19,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Point;
-import java.awt.Shape;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,7 +90,7 @@ public class TicTacToeGridUI extends ComponentUI {
                 pipe.draw(convert(rectangle));
             }
 
-             @Override
+            @Override
             public void fillRectangle(Rectangle rectangle) {
                 pipe.fill(convert(rectangle));
             }
@@ -104,8 +103,8 @@ public class TicTacToeGridUI extends ComponentUI {
 
 
             @Override
-            public void drawImage(BufferedImage image) {
-                pipe.drawImage(image, null, 0, 0);
+            public void drawImage(Image image) {
+                pipe.drawImage(((AwtImage)image).image, null, 0, 0);
             }
 
 
@@ -122,7 +121,6 @@ public class TicTacToeGridUI extends ComponentUI {
             }
         };
     }
-
 
     @Override
     public Dimension getMinimumSize(JComponent c) {
@@ -169,7 +167,7 @@ public class TicTacToeGridUI extends ComponentUI {
 
 
     Point getUiOrigin() {
-        BufferedImage backgroundImage = style.getBackgroundImage();
+        Image backgroundImage = style.getBackgroundImage();
         int x = max((component.getWidth() - backgroundImage.getWidth()) / 2, 0);
         int y = max((component.getHeight() - backgroundImage.getHeight()) / 2, 0);
         return new Point(x, y);
@@ -209,9 +207,11 @@ public class TicTacToeGridUI extends ComponentUI {
             component.repaint(convert(rect));
         }
     }
+
     private java.awt.Rectangle convert(Rectangle r) {
         return new java.awt.Rectangle(r.x, r.y, r.width, r.height);
     }
+
     private UnaryFunction<Rectangle, Rectangle> toComponentCoos() {
         return new UnaryFunction<Rectangle, Rectangle>() {
             @Override
