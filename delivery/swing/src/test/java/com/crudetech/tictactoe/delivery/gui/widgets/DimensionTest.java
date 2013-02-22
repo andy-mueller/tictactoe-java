@@ -23,7 +23,7 @@ public class DimensionTest {
     }
 
     @Feature(Equivalent.class)
-    public static Equivalent.Factory<Dimension> equivalent(){
+    public static Equivalent.Factory<Dimension> equivalent() {
         return new Equivalent.Factory<Dimension>() {
             @Override
             public Dimension createItem() {

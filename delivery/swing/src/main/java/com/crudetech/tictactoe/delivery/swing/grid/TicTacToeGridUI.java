@@ -25,7 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.crudetech.query.Query.from;
-import static java.lang.Math.max;
+
+
 
 public class TicTacToeGridUI extends ComponentUI {
     private Style style = Styles.Brush;
@@ -57,7 +58,7 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     void paint(Graphics2D g2d) {
-        buildGridWidget();
+        buildGraphic();
         gridWidget.paint(streamInto(g2d));
     }
 
@@ -88,12 +89,12 @@ public class TicTacToeGridUI extends ComponentUI {
 
             @Override
             public void drawRectangle(Rectangle rectangle) {
-                pipe.draw(convert(rectangle));
+                pipe.draw(WidgetAwtConverter.rectangle(rectangle));
             }
 
             @Override
             public void fillRectangle(Rectangle rectangle) {
-                pipe.fill(convert(rectangle));
+                pipe.fill(WidgetAwtConverter.rectangle(rectangle));
             }
 
 
@@ -143,21 +144,17 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     List<Widget> buildPaintList() {
-        buildGridWidget();
+        buildGraphic();
         return gridWidget.buildPaintList();
     }
 
-    private void buildGridWidget() {
-        gridWidget = new TicTacToeGridWidget(convert(component.getBounds()),
+    void buildGraphic() {
+        gridWidget = new TicTacToeGridWidget(WidgetAwtConverter.rectangle(component.getBounds()),
                 style, getModel().getHighlightedTriple(),
                 getModel().getGrid().getCells(),
                 getModel().getHighlightedCell(),
                 isDebugMode,
                 new AwtColor(java.awt.Color.ORANGE));
-    }
-
-    private Rectangle convert(java.awt.Rectangle r) {
-        return new Rectangle(r.x, r.y, r.width, r.height);
     }
 
 
@@ -169,10 +166,7 @@ public class TicTacToeGridUI extends ComponentUI {
 
 
     Point getUiOrigin() {
-        Image backgroundImage = style.getBackgroundImage();
-        int x = max((component.getWidth() - backgroundImage.getWidth()) / 2, 0);
-        int y = max((component.getHeight() - backgroundImage.getHeight()) / 2, 0);
-        return new Point(x, y);
+         return WidgetAwtConverter.point(gridWidget.getUiOrigin());
     }
 
 
@@ -206,12 +200,8 @@ public class TicTacToeGridUI extends ComponentUI {
                 from(changedCells).select(toBoundary()).select(toComponentCoos());
 
         for (Rectangle rect : repaintedInComponentCoordinates) {
-            component.repaint(convert(rect));
+            component.repaint(WidgetAwtConverter.rectangle(rect));
         }
-    }
-
-    private java.awt.Rectangle convert(Rectangle r) {
-        return new java.awt.Rectangle(r.x, r.y, r.width, r.height);
     }
 
     private UnaryFunction<Rectangle, Rectangle> toComponentCoos() {

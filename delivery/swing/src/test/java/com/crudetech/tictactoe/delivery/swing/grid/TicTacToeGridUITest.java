@@ -12,8 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,11 +22,8 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class TicTacToeGridUITest {
-    private Graphics2D g2d;
     private JTicTacToeGrid grid;
     private TicTacToeGridUI ui;
     private Style style;
@@ -37,8 +32,6 @@ public class TicTacToeGridUITest {
 
     @Before
     public void setUp() throws Exception {
-        g2d = mock(Graphics2D.class);
-        when(g2d.getTransform()).thenReturn(new AffineTransform());
         TicTacToeGridModel model = new TicTacToeGridModel(
                 LinearRandomAccessGrid.of(
                         Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None,
@@ -53,6 +46,7 @@ public class TicTacToeGridUITest {
 
         style = new StyleStub();
         ui.setStyle(style);
+        ui.buildGraphic();
     }
 
     @Test
@@ -73,14 +67,12 @@ public class TicTacToeGridUITest {
 
     @Test
     public void preferredSizeIsStyleSize() throws Exception {
-        Dimension expected = convert(style.getPreferredSize());
+        Dimension expected = WidgetAwtConverter.dimension(style.getPreferredSize());
 
         assertThat(grid.getUI().getPreferredSize(grid), is(expected));
     }
 
-    private Dimension convert(com.crudetech.tictactoe.delivery.gui.widgets.Dimension d) {
-        return new Dimension(d.width, d.height);
-    }
+
 
     @Test
     public void gridMarksArePaintedFromModel() {

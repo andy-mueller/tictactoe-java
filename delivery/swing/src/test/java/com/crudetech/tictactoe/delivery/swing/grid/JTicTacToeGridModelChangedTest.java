@@ -6,7 +6,7 @@ import com.crudetech.tictactoe.game.Grid;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +54,8 @@ public class JTicTacToeGridModelChangedTest {
         aGrid.setSize(StyleStub.Width * 2, StyleStub.Height * 2);
         Style style = new StyleStub();
         aGrid.getUI().setStyle(style);
+
+        aGrid.getUI().buildGraphic();
     }
 
     @Test

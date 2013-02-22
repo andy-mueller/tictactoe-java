@@ -17,7 +17,9 @@ import java.awt.event.MouseEvent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 public class JTicTacToeGridMouseMoveTest {
     private JTicTacToeGrid grid;
@@ -33,6 +35,8 @@ public class JTicTacToeGridMouseMoveTest {
 
         outsideAnyCell = new Point(10, 10);
         inLastCell = getPointInsideOfRectangle(style.getGridMarkLocations()[2][2]);
+
+        grid.getUI().buildGraphic();
     }
 
     private Point getPointInsideOfRectangle(Rectangle rectangle) {
