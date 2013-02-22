@@ -3,9 +3,8 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Rectangle;
+import com.crudetech.tictactoe.delivery.gui.widgets.Dimension;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
-
-import java.awt.Dimension;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

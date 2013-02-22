@@ -3,10 +3,10 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Rectangle;
+import com.crudetech.tictactoe.delivery.gui.widgets.Dimension;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 
 import javax.imageio.ImageIO;
-import java.awt.Dimension;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;

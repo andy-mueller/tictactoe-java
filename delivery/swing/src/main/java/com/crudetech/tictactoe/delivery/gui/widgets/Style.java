@@ -4,7 +4,6 @@ import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Rectangle;
 
-import java.awt.Dimension;
 
 public interface Style {
     Image getBackgroundImage();

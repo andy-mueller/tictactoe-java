@@ -73,9 +73,13 @@ public class TicTacToeGridUITest {
 
     @Test
     public void preferredSizeIsStyleSize() throws Exception {
-        Dimension expected = style.getPreferredSize();
+        Dimension expected = convert(style.getPreferredSize());
 
         assertThat(grid.getUI().getPreferredSize(grid), is(expected));
+    }
+
+    private Dimension convert(com.crudetech.tictactoe.delivery.gui.widgets.Dimension d) {
+        return new Dimension(d.width, d.height);
     }
 
     @Test
