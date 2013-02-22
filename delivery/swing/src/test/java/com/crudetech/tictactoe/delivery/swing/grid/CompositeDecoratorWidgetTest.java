@@ -1,6 +1,7 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
 
+import com.crudetech.gui.widgets.AlphaValue;
 import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.junit.feature.Equivalent;
@@ -19,14 +20,14 @@ import static org.mockito.Mockito.*;
 @RunWith(Features.class)
 public class CompositeDecoratorWidgetTest {
 
-    private Composite alpha;
+    private AlphaValue alpha;
     private CompositeDecoratorWidget dec;
     private GraphicsStream g2d;
     private Widget decorated;
 
     @Before
     public void setUp() throws Exception {
-        alpha = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f);
+        alpha = new AlphaValue(0.4f);
         decorated = mock(Widget.class);
         dec = new CompositeDecoratorWidget(decorated, alpha);
         g2d = mock(GraphicsStream.class);
@@ -36,14 +37,14 @@ public class CompositeDecoratorWidgetTest {
     public void decoratorSetsTransparencyLevel() {
         dec.paint(g2d);
 
-        verify(g2d).pushComposite(alpha);
+        verify(g2d).pushAlpha(alpha);
     }
 
     @Test
     public void decoratorResetsTransparencyLevel() {
         dec.paint(g2d);
 
-        verify(g2d).popComposite();
+        verify(g2d).popAlpha();
     }
 
     private static class BaBoomException extends RuntimeException {
@@ -55,12 +56,12 @@ public class CompositeDecoratorWidgetTest {
             dec.paint(g2d);
         } catch (BaBoomException e) {
         }
-        verify(g2d).popComposite();
+        verify(g2d).popAlpha();
     }
     @Feature(Equivalent.class)
     public static Equivalent.Factory<CompositeDecoratorWidget> decoratorIsEquivalent(){
         return new Equivalent.Factory<CompositeDecoratorWidget>(){
-            Composite alpha = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f);
+            AlphaValue alpha = new AlphaValue(0.4f);
             Widget decorated = mock(Widget.class);
 
             @Override
@@ -72,7 +73,7 @@ public class CompositeDecoratorWidgetTest {
             public List<CompositeDecoratorWidget> createOtherItems() {
                 return asList(
                         new CompositeDecoratorWidget(mock(Widget.class), alpha),
-                        new CompositeDecoratorWidget(decorated, AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.1f))
+                        new CompositeDecoratorWidget(decorated, new AlphaValue(0.1f))
                 );
             }
         };

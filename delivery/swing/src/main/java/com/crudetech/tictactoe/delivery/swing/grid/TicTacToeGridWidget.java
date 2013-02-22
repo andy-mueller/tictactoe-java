@@ -159,10 +159,10 @@ class TicTacToeGridWidget extends EcsWidget {
             System.out.println("---->Painting @" + new Date());
             pipe.pushColor(debugColor);
             for (int row = 0; row < bounds.width; row += 50) {
-                pipe.drawLine(0, row, bounds.height, row);
+                pipe.drawLine(Point.of(0, row), Point.of(bounds.height, row));
             }
             for (int col = 0; col < bounds.width; col += 50) {
-                pipe.drawLine(col, 0, col, bounds.height);
+                pipe.drawLine(Point.of(col, 0), Point.of(col, bounds.height));
             }
         }
     }

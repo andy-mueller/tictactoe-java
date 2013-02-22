@@ -1,25 +1,25 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
+import com.crudetech.gui.widgets.AlphaValue;
 import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Widget;
 
-import java.awt.*;
 import java.util.Objects;
 
 public class CompositeDecoratorWidget extends DecoratorWidget {
-    private final Composite composite;
+    private final AlphaValue alpha;
 
-    public CompositeDecoratorWidget(Widget decorated, Composite composite) {
+    public CompositeDecoratorWidget(Widget decorated, AlphaValue alpha) {
         super(decorated);
-        this.composite = composite;
+        this.alpha = alpha;
     }
 
     public void paint(GraphicsStream pipe) {
-        pipe.pushComposite(composite);
+        pipe.pushAlpha(alpha);
         try {
             super.paint(pipe);
         } finally {
-            pipe.popComposite();
+            pipe.popAlpha();
         }
     }
 
@@ -31,11 +31,11 @@ public class CompositeDecoratorWidget extends DecoratorWidget {
 
         CompositeDecoratorWidget that = (CompositeDecoratorWidget) o;
 
-        return Objects.equals(composite, that.composite);
+        return Objects.equals(alpha, that.alpha);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), composite);
+        return Objects.hash(super.hashCode(), alpha);
     }
 }

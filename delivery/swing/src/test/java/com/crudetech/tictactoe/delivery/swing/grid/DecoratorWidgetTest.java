@@ -1,6 +1,7 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.gui.widgets.GraphicsStream;
+import com.crudetech.gui.widgets.Point;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
@@ -8,7 +9,6 @@ import com.crudetech.junit.feature.Features;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.awt.*;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -48,7 +48,14 @@ public class DecoratorWidgetTest {
 
         verify(w).paint(g2d);
     }
+    @Test
+    public void getLocationIsTakenFromDecorated() {
+        Widget w = mock(Widget.class);
+        when(w.getLocation()).thenReturn(Point.of(42, 42));
+        DecoratorWidget dec = new DecoratorWidget(w);
 
+        assertThat(dec.getLocation(), is(Point.of(42, 42)));
+    }
     @Feature(Equivalent.class)
     public static Equivalent.Factory<DecoratorWidget> decoratorIsEquivalent(){
         return new Equivalent.Factory<DecoratorWidget>(){

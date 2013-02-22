@@ -1,6 +1,5 @@
 package com.crudetech.gui.widgets;
 
-import java.awt.Composite;
 
 public interface GraphicsStream {
     void pushTranslation(int dx, int dy);
@@ -11,10 +10,10 @@ public interface GraphicsStream {
     void drawRectangle(Rectangle rectangle);
     void fillRectangle(Rectangle boundary);
 
-    void drawLine(int x, int y, int x1, int y1);
+    void drawLine(Point start, Point end);
 
     void drawImage(Image image);
 
-    void pushComposite(Composite composite);
-    void popComposite();
+    void pushAlpha(AlphaValue alpha);
+    void popAlpha();
 }

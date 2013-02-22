@@ -2,6 +2,7 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 
 import com.crudetech.functional.UnaryFunction;
+import com.crudetech.gui.widgets.AlphaValue;
 import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Image;
@@ -29,7 +30,7 @@ import static java.lang.Math.max;
 public class TicTacToeGridUI extends ComponentUI {
     private Style style = Styles.Brush;
     private JTicTacToeGrid component;
-    static final Composite WinningTripleAlpha = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f);
+    static final AlphaValue WinningTripleAlpha = new AlphaValue(0.4f);
     private TicTacToeGridWidget gridWidget;
 
     @SuppressWarnings("unused")
@@ -97,8 +98,8 @@ public class TicTacToeGridUI extends ComponentUI {
 
 
             @Override
-            public void drawLine(int x, int y, int x1, int y1) {
-                pipe.drawLine(x, y, x1, y1);
+            public void drawLine(com.crudetech.gui.widgets.Point start, com.crudetech.gui.widgets.Point end) {
+                pipe.drawLine(start.x, start.y, end.x, end.y);
             }
 
 
@@ -109,14 +110,14 @@ public class TicTacToeGridUI extends ComponentUI {
 
 
             @Override
-            public void pushComposite(Composite composite) {
+            public void pushAlpha(AlphaValue alpha) {
                 composites.add(pipe.getComposite());
-                pipe.setComposite(composite);
+                pipe.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha.alpha));
             }
 
 
             @Override
-            public void popComposite() {
+            public void popAlpha() {
                 pipe.setComposite(composites.remove(composites.size() - 1));
             }
         };
