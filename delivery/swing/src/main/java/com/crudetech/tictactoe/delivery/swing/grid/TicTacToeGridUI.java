@@ -3,9 +3,7 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.functional.UnaryFunction;
 import com.crudetech.gui.widgets.AlphaValue;
-import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.GraphicsStream;
-import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
@@ -13,19 +11,13 @@ import com.crudetech.tictactoe.game.Grid;
 
 import javax.swing.JComponent;
 import javax.swing.plaf.ComponentUI;
-import java.awt.AlphaComposite;
-import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Paint;
 import java.awt.Point;
-import java.awt.geom.AffineTransform;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.crudetech.query.Query.from;
-
 
 
 public class TicTacToeGridUI extends ComponentUI {
@@ -63,65 +55,7 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     private GraphicsStream streamInto(final Graphics2D g2d) {
-        return new GraphicsStream() {
-            private final List<AffineTransform> xforms = new ArrayList<>();
-            private final List<Paint> colors = new ArrayList<>();
-            private final List<Composite> composites = new ArrayList<>();
-            private final Graphics2D pipe = g2d;
-
-            @Override
-            public void pushTranslation(int dx, int dy) {
-                xforms.add(pipe.getTransform());
-                pipe.translate(dx, dy);
-            }
-
-            @Override
-            public void popTransformation() {
-                pipe.setTransform(xforms.remove(xforms.size() - 1));
-            }
-
-            @Override
-            public void pushColor(Color color) {
-                colors.add(pipe.getPaint());
-                pipe.setPaint(((AwtColor) color).color);
-            }
-
-
-            @Override
-            public void drawRectangle(Rectangle rectangle) {
-                pipe.draw(WidgetAwtConverter.rectangle(rectangle));
-            }
-
-            @Override
-            public void fillRectangle(Rectangle rectangle) {
-                pipe.fill(WidgetAwtConverter.rectangle(rectangle));
-            }
-
-
-            @Override
-            public void drawLine(com.crudetech.gui.widgets.Point start, com.crudetech.gui.widgets.Point end) {
-                pipe.drawLine(start.x, start.y, end.x, end.y);
-            }
-
-
-            @Override
-            public void drawImage(Image image) {
-                pipe.drawImage(((AwtImage)image).image, null, 0, 0);
-            }
-
-
-            @Override
-            public void pushAlpha(AlphaValue alpha) {
-                composites.add(pipe.getComposite());
-                pipe.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha.alpha));
-            }
-
-
-            @Override
-            public void popAlpha() {
-                pipe.setComposite(composites.remove(composites.size() - 1));
-            }
-        };
+        return new AwtGraphicsStream(g2d);
     }
 
     @Override
@@ -166,7 +100,7 @@ public class TicTacToeGridUI extends ComponentUI {
 
 
     Point getUiOrigin() {
-         return WidgetAwtConverter.point(gridWidget.getUiOrigin());
+        return WidgetAwtConverter.point(gridWidget.getUiOrigin());
     }
 
 
@@ -207,9 +141,9 @@ public class TicTacToeGridUI extends ComponentUI {
     private UnaryFunction<Rectangle, Rectangle> toComponentCoos() {
         return new UnaryFunction<Rectangle, Rectangle>() {
             @Override
-            public Rectangle execute(Rectangle r) {
+            public Rectangle execute(Rectangle rectangle) {
                 Point origin = getUiOrigin();
-                return new Rectangle(r.x + origin.x, r.y + origin.y, r.width + 1, r.height + 1);
+                return new Rectangle(rectangle.x + origin.x, rectangle.y + origin.y, rectangle.width + 1, rectangle.height + 1);
             }
         };
     }
@@ -222,4 +156,5 @@ public class TicTacToeGridUI extends ComponentUI {
             }
         };
     }
+
 }
