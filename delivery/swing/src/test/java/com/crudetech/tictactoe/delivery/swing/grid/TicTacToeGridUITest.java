@@ -1,34 +1,21 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
-import com.crudetech.functional.UnaryFunction;
-import com.crudetech.gui.widgets.Image;
-import com.crudetech.gui.widgets.Point;
-import com.crudetech.gui.widgets.Rectangle;
-import com.crudetech.gui.widgets.Widget;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
+import com.crudetech.tictactoe.delivery.gui.widgets.StyleStub;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-import static com.crudetech.matcher.RangeIsEquivalent.equivalentTo;
-import static com.crudetech.query.Query.from;
-import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 public class TicTacToeGridUITest {
     private JTicTacToeGrid grid;
     private TicTacToeGridUI ui;
     private Style style;
-    private final int paintOffsetX = 250;
-    private final int paintOffsetY = 500;
 
     @Before
     public void setUp() throws Exception {
@@ -50,16 +37,6 @@ public class TicTacToeGridUITest {
     }
 
     @Test
-    public void backGroundIsPaintedInMiddleOfComponent() {
-        List<Widget> widgets = ui.buildPaintList();
-
-        ImageWidget backGroundImage = (ImageWidget) widgets.get(1);
-        assertThat(backGroundImage.getLocation(), is(Point.of(250, 500)));
-    }
-
-
-
-    @Test
     public void defaultStyleIsBrush() {
         grid = new JTicTacToeGrid();
         assertThat(Styles.Brush, is(grid.getUI().getStyle()));
@@ -70,181 +47,5 @@ public class TicTacToeGridUITest {
         Dimension expected = WidgetAwtConverter.dimension(style.getPreferredSize());
 
         assertThat(grid.getUI().getPreferredSize(grid), is(expected));
-    }
-
-
-
-    @Test
-    public void gridMarksArePaintedFromModel() {
-        ui.buildPaintList();
-        List<Widget> widgets = ui.gridMarkWidgetList();
-
-        List<Widget> expected = expectedGridMarkWidgets();
-
-        assertThat(widgets, is(equivalentTo(expected)));
-        assertThat(grid.getModel().hasHighlightedTriple(), is(false));
-    }
-
-    private List<Widget> expectedGridMarkWidgets() {
-        final Image cross = style.getCrossImage();
-        final Image nought = style.getNoughtImage();
-        Rectangle[][] locations = style.getGridMarkLocations();
-
-        return Arrays.<Widget>asList(
-                new ImageWidget(loc(locations[0][0].getLocation()), cross),
-                new ImageWidget(loc(locations[0][1].getLocation()), nought),
-                new EmptyWidget(),
-
-                new ImageWidget(loc(locations[1][0].getLocation()), cross),
-                new EmptyWidget(),
-                new EmptyWidget(),
-
-                new ImageWidget(loc(locations[2][0].getLocation()), nought),
-                new ImageWidget(loc(locations[2][1].getLocation()), nought),
-                new ImageWidget(loc(locations[2][2].getLocation()), cross)
-        );
-    }
-
-    private Point loc(Point location) {
-        return new Point(location.x + paintOffsetX, location.y + paintOffsetY);
-    }
-
-    @Test
-    public void backgroundIsInMiddle() {
-        List<Widget> widgets = ui.buildPaintList();
-        Widget backgroundImage = widgets.get(1);
-
-        assertThat(backgroundImage, is((Widget) getExpectedBackgroundImage()));
-    }
-
-    @Test
-    public void paintListIsPaintedInOrder() {
-        List<Widget> widgets = ui.buildPaintList();
-
-        List<Widget> expectedList = new ArrayList<>();
-        expectedList.add(getExpectedBackground());
-        expectedList.add(getExpectedBackgroundImage());
-        expectedList.addAll(expectedGridMarkWidgets());
-        expectedList.add(new EmptyWidget());
-        expectedList.add(new EmptyWidget());
-
-        assertThat(widgets, is(expectedList));
-    }
-
-    private ImageWidget getExpectedBackgroundImage() {
-        return new ImageWidget(new Point(paintOffsetX, paintOffsetY), style.getBackgroundImage());
-    }
-
-    private Widget getExpectedBackground() {
-        return new FilledRectangleWidget(new Rectangle(0, 0, grid.getWidth(), grid.getHeight() + 500), style.getBackgroundColor());
-    }
-
-    @Test
-    public void highlightedRectangleIsAddedWhenModelIsHighlighted() {
-        grid.getModel().highlightCell(Grid.Location.of(Grid.Row.First, Grid.Column.Third));
-        List<Widget> widgets = ui.buildPaintList();
-
-
-        Rectangle rect = style.getGridMarkLocations()[0][2];
-        rect = rect.translate(StyleStub.Width / 2, StyleStub.Height / 2);
-        assertThat(widgets.get(widgets.size() - 2), is((Widget) new RectangleWidget(rect, style.getHighlightColor())));
-    }
-
-    @Test
-    public void allNonWinningTripleAreTransparent() {
-        Grid.ThreeInARow diagonal = Grid.ThreeInARow.of(Grid.Mark.Nought,
-                Grid.Location.of(Grid.Row.First, Grid.Column.First),
-                Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
-                Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
-        grid.getModel().highlightTriple(diagonal);
-
-        ui.buildPaintList();
-        List<Widget> widgets = ui.gridMarkWidgetList();
-
-        List<Widget> expected = expectedGridMarkWidgetsWithHighlight();
-        assertThat(widgets, is(equivalentTo(expected)));
-    }
-
-    @Test
-    public void backgroundImageIsTransparentWhenWinningTripleIsSet() {
-        Grid.ThreeInARow diagonal = Grid.ThreeInARow.of(Grid.Mark.Nought,
-                Grid.Location.of(Grid.Row.First, Grid.Column.First),
-                Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
-                Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
-        grid.getModel().highlightTriple(diagonal);
-
-        List<Widget> widgets = ui.buildPaintList();
-
-        assertThat(widgets.get(1), is(instanceOf(CompositeDecoratorWidget.class)));
-    }
-
-    @Test
-    public void backgroundImageIsNotTransparentWhenNoWinningTripleIsSet() {
-        grid.getModel().unHighlightTriple();
-
-        List<Widget> widgets = ui.buildPaintList();
-
-        assertThat(widgets.get(1), is(instanceOf(ImageWidget.class)));
-    }
-
-    private List<Widget> expectedGridMarkWidgetsWithHighlight() {
-        final Image cross = style.getCrossImage();
-        final Image nought = style.getNoughtImage();
-        Rectangle[][] locations = style.getGridMarkLocations();
-
-        return asList(
-                new ImageWidget(loc(locations[0][0].getLocation()), cross),
-                new CompositeDecoratorWidget(
-                        new ImageWidget(loc(locations[0][1].getLocation()), nought), TicTacToeGridUI.WinningTripleAlpha),
-                new CompositeDecoratorWidget(
-                        new EmptyWidget(), TicTacToeGridUI.WinningTripleAlpha),
-
-                new CompositeDecoratorWidget(
-                        new ImageWidget(loc(locations[1][0].getLocation()), cross), TicTacToeGridUI.WinningTripleAlpha),
-                new EmptyWidget(),
-                new CompositeDecoratorWidget(
-                        new EmptyWidget(), TicTacToeGridUI.WinningTripleAlpha),
-
-                new CompositeDecoratorWidget(
-                        new ImageWidget(loc(locations[2][0].getLocation()), nought), TicTacToeGridUI.WinningTripleAlpha),
-                new CompositeDecoratorWidget(
-                        new ImageWidget(loc(locations[2][1].getLocation()), nought), TicTacToeGridUI.WinningTripleAlpha),
-                new ImageWidget(loc(locations[2][2].getLocation()), cross)
-        );
-    }
-
-
-    @Test
-    public void debugIsNotPaintedIfDebugModeIsNotOn() {
-        List<Widget> widgets = ui.buildPaintList();
-        boolean hasDebugWidget = from(widgets).select(classOf()).where(isKindOf(TicTacToeGridWidget.DebugWidget.class)).any();
-        assertThat(hasDebugWidget, is(false));
-    }
-
-    private <T> UnaryFunction<T, Class<T>> classOf() {
-        return new UnaryFunction<T, Class<T>>() {
-            @SuppressWarnings("unchecked")
-            @Override
-            public Class<T> execute(T t) {
-                return (Class<T>) t.getClass();
-            }
-        };
-    }
-
-    private UnaryFunction<Class<?>, Boolean> isKindOf(final Class<?> rhs) {
-        return new UnaryFunction<Class<?>, Boolean>() {
-            @Override
-            public Boolean execute(Class<?> clazz) {
-                return rhs.isAssignableFrom(clazz);
-            }
-        };
-    }
-
-    @Test
-    public void debugIsOnlyPaintedIfDebugModeIsOn() {
-        ui.turnOnDebug();
-        List<Widget> widgets = ui.buildPaintList();
-        boolean hasDebugWidget = from(widgets).select(classOf()).where(isKindOf(TicTacToeGridWidget.DebugWidget.class)).any();
-        assertThat(hasDebugWidget, is(true));
     }
 }

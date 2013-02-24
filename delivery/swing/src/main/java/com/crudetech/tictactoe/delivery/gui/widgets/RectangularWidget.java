@@ -1,4 +1,4 @@
-package com.crudetech.tictactoe.delivery.swing.grid;
+package com.crudetech.tictactoe.delivery.gui.widgets;
 
 import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.EcsWidget;
@@ -46,6 +46,7 @@ public abstract class RectangularWidget extends EcsWidget {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "{" +
+                "location=" + getLocation() +
                 "boundary=" + getBoundary() +
                 ", color=" + getColor() +
                 '}';

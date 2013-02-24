@@ -6,6 +6,7 @@ import com.crudetech.event.EventObject;
 import com.crudetech.gui.widgets.Point;
 import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
+import com.crudetech.tictactoe.delivery.gui.widgets.StyleStub;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.ui.CellEventObject;
 import org.junit.Before;

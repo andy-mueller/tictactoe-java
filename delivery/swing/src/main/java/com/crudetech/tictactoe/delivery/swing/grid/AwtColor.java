@@ -2,12 +2,12 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.gui.widgets.Color;
 
-class AwtColor implements Color {
+public class AwtColor implements Color {
     final java.awt.Color color;
     public static final Color ORANGE = new AwtColor(java.awt.Color.ORANGE);
     public static final Color CYAN = new AwtColor(java.awt.Color.CYAN);
 
-    AwtColor(java.awt.Color color) {
+    public AwtColor(java.awt.Color color) {
         this.color = color;
     }
 

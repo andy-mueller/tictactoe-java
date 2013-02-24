@@ -1,4 +1,4 @@
-package com.crudetech.tictactoe.delivery.swing.grid;
+package com.crudetech.tictactoe.delivery.gui.widgets;
 
 
 import com.crudetech.gui.widgets.AlphaValue;
@@ -11,11 +11,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.awt.*;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(Features.class)
 public class CompositeDecoratorWidgetTest {

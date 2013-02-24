@@ -1,20 +1,19 @@
-package com.crudetech.tictactoe.delivery.swing.grid;
+package com.crudetech.tictactoe.delivery.gui.widgets;
 
 import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Rectangle;
-import com.crudetech.tictactoe.delivery.gui.widgets.Dimension;
-import com.crudetech.tictactoe.delivery.gui.widgets.Style;
+import com.crudetech.tictactoe.delivery.swing.grid.AwtColor;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class StyleStub implements Style {
-    static final int Width = 500;
-    static final int Height = 1000;
+public class StyleStub implements Style {
+    public static final int Width = 500;
+    public static final int Height = 1000;
 
-    static final int GridCellWidth = 10;
-    static final int GridCellDistance = 10;
+    public static final int GridCellWidth = 10;
+    public static final int GridCellDistance = 10;
     public static int GridCellHeight = 10   ;
 
     private final Image nought = mock(Image.class);
@@ -22,7 +21,7 @@ class StyleStub implements Style {
     private final Image back;
     private final Rectangle[][] locations = new Rectangle[3][3];
 
-    StyleStub() {
+    public StyleStub() {
         fillLocations();
         back = mock(Image.class);
         when(back.getWidth()).thenReturn(Width);

@@ -33,7 +33,7 @@ class AwtGraphicsStream implements GraphicsStream {
 
     @Override
     public void popTransformation() {
-        pipe.setTransform(removeLast(xforms));
+        pipe.setTransform(removeLastOf(xforms));
     }
 
     @Override
@@ -70,10 +70,10 @@ class AwtGraphicsStream implements GraphicsStream {
 
     @Override
     public void popAlpha() {
-        pipe.setComposite(removeLast(composites));
+        pipe.setComposite(removeLastOf(composites));
     }
 
-    private <T> T removeLast(List<T> list) {
+    private <T> T removeLastOf(List<T> list) {
         return list.remove(list.size() - 1);
     }
 }

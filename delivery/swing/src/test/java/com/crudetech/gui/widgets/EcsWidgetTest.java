@@ -1,8 +1,5 @@
-package com.crudetech.tictactoe.delivery.swing.grid;
+package com.crudetech.gui.widgets;
 
-import com.crudetech.gui.widgets.EcsWidget;
-import com.crudetech.gui.widgets.GraphicsStream;
-import com.crudetech.gui.widgets.Point;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
 import com.crudetech.junit.feature.Features;

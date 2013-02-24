@@ -2,20 +2,20 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 
 import com.crudetech.functional.UnaryFunction;
-import com.crudetech.gui.widgets.AlphaValue;
 import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Rectangle;
-import com.crudetech.gui.widgets.Widget;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
+import com.crudetech.tictactoe.delivery.gui.widgets.TicTacToeGridWidget;
+import com.crudetech.tictactoe.delivery.gui.widgets.TicTacToeGridWidgetBuilder;
 import com.crudetech.tictactoe.game.Grid;
 
 import javax.swing.JComponent;
 import javax.swing.plaf.ComponentUI;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.util.List;
 
 import static com.crudetech.query.Query.from;
 
@@ -23,7 +23,6 @@ import static com.crudetech.query.Query.from;
 public class TicTacToeGridUI extends ComponentUI {
     private Style style = Styles.Brush;
     private JTicTacToeGrid component;
-    static final AlphaValue WinningTripleAlpha = new AlphaValue(0.4f);
     private TicTacToeGridWidget gridWidget;
 
     @SuppressWarnings("unused")
@@ -77,36 +76,27 @@ public class TicTacToeGridUI extends ComponentUI {
         return style;
     }
 
-    List<Widget> buildPaintList() {
-        buildGraphic();
-        return gridWidget.buildPaintList();
-    }
 
     void buildGraphic() {
-        gridWidget = new TicTacToeGridWidget(WidgetAwtConverter.rectangle(component.getBounds()),
-                style, getModel().getHighlightedTriple(),
-                getModel().getGrid().getCells(),
-                getModel().getHighlightedCell(),
-                isDebugMode,
-                new AwtColor(java.awt.Color.ORANGE));
+        gridWidget = new TicTacToeGridWidgetBuilder()
+                .withBounds(WidgetAwtConverter.rectangle(component.getBounds()))
+                .withStyle(style)
+                .hasThreeInARow(getModel().getHighlightedTriple())
+                .withCells(getModel().getGrid().getCells())
+                .hasHighlightedCellAt(getModel().getHighlightedCell())
+                .setDebugMode(isDebugMode, new AwtColor(Color.ORANGE))
+                .createTicTacToeGridWidget();
     }
 
 
     private boolean isDebugMode = false;
 
-    void turnOnDebug() {
-        isDebugMode = true;
-    }
 
 
     Point getUiOrigin() {
         return WidgetAwtConverter.point(gridWidget.getUiOrigin());
     }
 
-
-    List<Widget> gridMarkWidgetList() {
-        return gridWidget.gridMarkWidgetList();
-    }
 
 
     public GridCellHit checkGridCellHit(int x, int y) {

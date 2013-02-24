@@ -1,4 +1,4 @@
-package com.crudetech.tictactoe.delivery.swing.grid;
+package com.crudetech.tictactoe.delivery.gui.widgets;
 
 import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Rectangle;
@@ -6,6 +6,7 @@ import com.crudetech.gui.widgets.Widget;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
 import com.crudetech.junit.feature.Features;
+import com.crudetech.tictactoe.delivery.swing.grid.AwtColor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

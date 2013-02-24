@@ -1,9 +1,7 @@
-package com.crudetech.tictactoe.delivery.swing.grid;
+package com.crudetech.tictactoe.delivery.gui.widgets;
 
 import com.crudetech.gui.widgets.GraphicsStream;
 import org.junit.Test;
-
-import java.awt.Graphics2D;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

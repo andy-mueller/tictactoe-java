@@ -1,6 +1,7 @@
-package com.crudetech.tictactoe.delivery.swing.grid;
+package com.crudetech.tictactoe.delivery.gui.widgets;
 
 import com.crudetech.collections.Iterables;
+import com.crudetech.gui.widgets.AlphaValue;
 import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.EcsWidget;
 import com.crudetech.gui.widgets.GraphicsStream;
@@ -8,7 +9,6 @@ import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Point;
 import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.gui.widgets.Widget;
-import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.game.Grid;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import java.util.List;
 
 import static java.lang.Math.max;
 
-class TicTacToeGridWidget extends EcsWidget {
+public class TicTacToeGridWidget extends EcsWidget {
     private final Rectangle bounds;
     private final Style style;
     private final Grid.ThreeInARow threeInARow;
@@ -26,13 +26,15 @@ class TicTacToeGridWidget extends EcsWidget {
     private final boolean isDebugMode;
     private final Color debugColor;
 
+    static final AlphaValue WinningTripleAlpha = new AlphaValue(0.4f);
 
-    TicTacToeGridWidget(Rectangle bounds,
-                        Style style,
-                        Grid.ThreeInARow threeInARow,
-                        Iterable<Grid.Cell> cells,
-                        Grid.Location highlightedCell,
-                        boolean debugMode, Color debugColor) {
+
+    public TicTacToeGridWidget(Rectangle bounds,
+                               Style style,
+                               Grid.ThreeInARow threeInARow,
+                               Iterable<Grid.Cell> cells,
+                               Grid.Location highlightedCell,
+                               boolean debugMode, Color debugColor) {
         this.bounds = bounds;
         this.style = style;
         this.threeInARow = threeInARow;
@@ -75,21 +77,21 @@ class TicTacToeGridWidget extends EcsWidget {
         Point p = getUiOrigin();
         ImageWidget imageWidget = new ImageWidget(p.x, p.y, backgroundImage);
 
-        return hasHighlightedTriple() ? new CompositeDecoratorWidget(imageWidget, TicTacToeGridUI.WinningTripleAlpha) : imageWidget;
+        return hasHighlightedTriple() ? new CompositeDecoratorWidget(imageWidget, WinningTripleAlpha) : imageWidget;
     }
 
     private boolean hasHighlightedTriple() {
-        return threeInARow != null;
+        return !threeInARow.equals(Grid.ThreeInARow.Empty);
     }
 
-    Point getUiOrigin() {
+    public Point getUiOrigin() {
         Image backgroundImage = style.getBackgroundImage();
         int x = max((bounds.width - backgroundImage.getWidth()) / 2, 0);
         int y = max((bounds.height - backgroundImage.getHeight()) / 2, 0);
         return new Point(x, y);
     }
 
-    java.util.List<Widget> gridMarkWidgetList() {
+    public java.util.List<Widget> gridMarkWidgetList() {
         Point gridOrigin = getUiOrigin();
         java.util.List<Widget> gridMArks = new ArrayList<>(9);
         for (Grid.Cell cell : cells) {
@@ -109,7 +111,7 @@ class TicTacToeGridWidget extends EcsWidget {
         if (noWinningTripleHighlighted() || isInWinningTriple(location)) {
             return widget;
         }
-        return new CompositeDecoratorWidget(widget, TicTacToeGridUI.WinningTripleAlpha);
+        return new CompositeDecoratorWidget(widget, WinningTripleAlpha);
     }
 
     private boolean noWinningTripleHighlighted() {
