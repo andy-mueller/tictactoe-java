@@ -82,9 +82,9 @@ public class TicTacToeGridUI extends ComponentUI {
                 .withBounds(WidgetAwtConverter.rectangle(component.getBounds()))
                 .withStyle(style)
                 .hasThreeInARow(getModel().getHighlightedTriple())
-                .withCells(getModel().getGrid().getCells())
+                .withModel(getModel().getGrid().getCells())
                 .hasHighlightedCellAt(getModel().getHighlightedCell())
-                .setDebugMode(isDebugMode, new AwtColor(Color.ORANGE))
+                .setDebugModeOn(new AwtColor(Color.ORANGE))
                 .createTicTacToeGridWidget();
     }
 

@@ -28,7 +28,7 @@ public class TicTacToeGridWidgetBuilder {
         return this;
     }
 
-    public TicTacToeGridWidgetBuilder withCells(Iterable<Grid.Cell> cells) {
+    public TicTacToeGridWidgetBuilder withModel(Iterable<Grid.Cell> cells) {
         this.cells = cells;
         return this;
     }
@@ -38,8 +38,8 @@ public class TicTacToeGridWidgetBuilder {
         return this;
     }
 
-    public TicTacToeGridWidgetBuilder setDebugMode(boolean debugMode, Color debugColor) {
-        this.debugMode = debugMode;
+    public TicTacToeGridWidgetBuilder setDebugModeOn(Color debugColor) {
+        this.debugMode = true;
         this.debugColor = debugColor;
         return this;
     }
