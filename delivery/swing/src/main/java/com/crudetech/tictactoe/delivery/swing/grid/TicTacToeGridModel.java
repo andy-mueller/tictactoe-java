@@ -54,10 +54,10 @@ public class TicTacToeGridModel {
         }
     }
 
-    private UnaryFunction<? super Grid.Location, Boolean> notNull() {
-        return new UnaryFunction<Grid.Location, Boolean>() {
+    private UnaryFunction<Object, Boolean> notNull() {
+        return new UnaryFunction<Object, Boolean>() {
             @Override
-            public Boolean execute(Grid.Location location) {
+            public Boolean execute(Object location) {
                 return location != null;
             }
         };
@@ -136,11 +136,11 @@ public class TicTacToeGridModel {
         onCellsChanged(asList(replaceHighlightedCell(null)));
     }
 
-    public void highlightTriple(Grid.ThreeInARow highlightedTriple) {
-        verifyThat(highlightedTriple, is(notNullValue()));
+    public void highlightThreeInARow(Grid.ThreeInARow threeInARow) {
+        verifyThat(threeInARow, is(notNullValue()));
 
-        Iterable<Grid.Location> oldLocations = cellsOf(replaceHighlightedTriple(highlightedTriple));
-        onCellsChanged(concat(oldLocations, highlightedTriple.getLocations()));
+        Iterable<Grid.Location> oldLocations = cellsOf(replaceHighlightedTriple(threeInARow));
+        onCellsChanged(concat(oldLocations, threeInARow.getLocations()));
         onChanged();
     }
 
@@ -158,15 +158,15 @@ public class TicTacToeGridModel {
         return old;
     }
 
-    public Grid.ThreeInARow getHighlightedTriple() {
+    public Grid.ThreeInARow getHighlightedThreeInARow() {
         return highlightedTriple;
     }
 
-    public boolean hasHighlightedTriple() {
+    public boolean hasHighlightedThreeInARow() {
         return !highlightedTriple.equals(Grid.ThreeInARow.Empty);
     }
 
-    public void unHighlightTriple() {
+    public void unHighlightThreeInARow() {
         onCellsChanged(cellsOf(replaceHighlightedTriple(Grid.ThreeInARow.Empty)));
         onChanged();
     }

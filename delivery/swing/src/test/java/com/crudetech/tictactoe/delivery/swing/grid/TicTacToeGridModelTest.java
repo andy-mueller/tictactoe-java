@@ -17,7 +17,9 @@ import static com.crudetech.matcher.ThrowsException.doesThrow;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @RunWith(Features.class)
 public class TicTacToeGridModelTest {
@@ -179,20 +181,20 @@ public class TicTacToeGridModelTest {
     public void highlightWinningTriple() {
         TicTacToeGridModel model = new TicTacToeGridModel();
 
-        model.highlightTriple(diagonal);
+        model.highlightThreeInARow(diagonal);
 
-        assertThat(model.getHighlightedTriple(), is(diagonal));
+        assertThat(model.getHighlightedThreeInARow(), is(diagonal));
     }
 
     @Test
     public void hasHighlightedTripleShowsTrueWhenTripleIsSet() {
         TicTacToeGridModel model = new TicTacToeGridModel();
 
-        assertThat(model.hasHighlightedTriple(), is(false));
+        assertThat(model.hasHighlightedThreeInARow(), is(false));
 
-        model.highlightTriple(diagonal);
+        model.highlightThreeInARow(diagonal);
 
-        assertThat(model.hasHighlightedTriple(), is(true));
+        assertThat(model.hasHighlightedThreeInARow(), is(true));
     }
 
     @Test
@@ -202,7 +204,7 @@ public class TicTacToeGridModelTest {
         Runnable highlightTripleWithNull = new Runnable() {
             @Override
             public void run() {
-                model.highlightTriple(null);
+                model.highlightThreeInARow(null);
             }
         };
 
@@ -215,7 +217,7 @@ public class TicTacToeGridModelTest {
         EventListener<TicTacToeGridModel.ChangedEventObject> changedListener = createChangedListenerStub();
         model.changed().addListener(changedListener);
 
-        model.highlightTriple(diagonal);
+        model.highlightThreeInARow(diagonal);
 
         verify(changedListener).onEvent(new TicTacToeGridModel.ChangedEventObject(model));
     }
@@ -224,10 +226,10 @@ public class TicTacToeGridModelTest {
     public void unhighlightTripleRaisesChangedEvent() {
         TicTacToeGridModel model = new TicTacToeGridModel();
         EventListener<TicTacToeGridModel.ChangedEventObject> changedListener = createChangedListenerStub();
-        model.highlightTriple(diagonal);
+        model.highlightThreeInARow(diagonal);
         model.changed().addListener(changedListener);
 
-        model.unHighlightTriple();
+        model.unHighlightThreeInARow();
 
         verify(changedListener).onEvent(new TicTacToeGridModel.ChangedEventObject(model));
     }
@@ -238,7 +240,7 @@ public class TicTacToeGridModelTest {
         EventListener<TicTacToeGridModel.CellsChangedEventObject> changedListener = createCellChangedListenerStub();
         model.cellsChanged().addListener(changedListener);
 
-        model.highlightTriple(diagonal);
+        model.highlightThreeInARow(diagonal);
 
         verify(changedListener).onEvent(new TicTacToeGridModel.CellsChangedEventObject(model, diagonal.getLocations()));
     }
@@ -247,10 +249,10 @@ public class TicTacToeGridModelTest {
     public void unhighlightTripleRaisesCellChangedEvent() {
         TicTacToeGridModel model = new TicTacToeGridModel();
         EventListener<TicTacToeGridModel.CellsChangedEventObject> changedListener = createCellChangedListenerStub();
-        model.highlightTriple(diagonal);
+        model.highlightThreeInARow(diagonal);
         model.cellsChanged().addListener(changedListener);
 
-        model.unHighlightTriple();
+        model.unHighlightThreeInARow();
 
         verify(changedListener).onEvent(new TicTacToeGridModel.CellsChangedEventObject(model, diagonal.getLocations()));
     }
