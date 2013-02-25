@@ -20,9 +20,11 @@ import static java.lang.Math.max;
 public class TicTacToeGridWidget extends EcsWidget {
     private final Rectangle bounds;
     private final Style style;
+
     private final Grid.ThreeInARow threeInARow;
     private final Iterable<Grid.Cell> cells;
     private final Grid.Location highlightedCell;
+
     private final boolean isDebugMode;
     private final Color debugColor;
 

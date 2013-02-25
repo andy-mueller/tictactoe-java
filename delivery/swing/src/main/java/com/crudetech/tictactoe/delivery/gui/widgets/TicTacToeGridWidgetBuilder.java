@@ -2,6 +2,7 @@ package com.crudetech.tictactoe.delivery.gui.widgets;
 
 import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.Rectangle;
+import com.crudetech.tictactoe.delivery.swing.grid.TicTacToeGridModel;
 import com.crudetech.tictactoe.game.Grid;
 
 public class TicTacToeGridWidgetBuilder {
@@ -23,18 +24,10 @@ public class TicTacToeGridWidgetBuilder {
         return this;
     }
 
-    public TicTacToeGridWidgetBuilder hasThreeInARow(Grid.ThreeInARow threeInARow) {
-        this.threeInARow = threeInARow;
-        return this;
-    }
-
-    public TicTacToeGridWidgetBuilder withModel(Iterable<Grid.Cell> cells) {
-        this.cells = cells;
-        return this;
-    }
-
-    public TicTacToeGridWidgetBuilder hasHighlightedCellAt(Grid.Location highlightedCell) {
-        this.highlightedCell = highlightedCell;
+    public TicTacToeGridWidgetBuilder withModel(TicTacToeGridModel model) {
+        this.cells = model.getGrid().getCells();
+        this.threeInARow = model.getHighlightedThreeInARow();
+        this.highlightedCell = model.getHighlightedCell();
         return this;
     }
 
@@ -49,7 +42,6 @@ public class TicTacToeGridWidgetBuilder {
         this.debugColor = null;
         return this;
     }
-
 
 
     public TicTacToeGridWidget createTicTacToeGridWidget() {

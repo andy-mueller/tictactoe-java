@@ -7,6 +7,7 @@ import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Point;
 import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.gui.widgets.Widget;
+import com.crudetech.tictactoe.delivery.swing.grid.TicTacToeGridModel;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import org.junit.Before;
@@ -24,8 +25,12 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 public class TicTacToeGridWidgetTest {
+    private final int paintOffsetX = 250;
+    private final int paintOffsetY = 500;
+
     private Style style;
-    private Grid model;
+    private TicTacToeGridModel model;
+
     private static final Color Orange = new Color() {
     };
 
@@ -33,11 +38,11 @@ public class TicTacToeGridWidgetTest {
     public void setUp() throws Exception {
         style = new StyleStub();
 
-        model = LinearRandomAccessGrid.of(
+        model = new TicTacToeGridModel(LinearRandomAccessGrid.of(
                 Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None,
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.Cross
-        );
+        ));
     }
 
     @Test
@@ -45,8 +50,7 @@ public class TicTacToeGridWidgetTest {
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
                 .withBounds(new Rectangle(1, 1, 10, 10))
                 .withStyle(style)
-                .hasThreeInARow(Grid.ThreeInARow.Empty)
-                .withModel(model.getCells())
+                .withModel(model)
                 .setDebugModeOn(Orange)
                 .createTicTacToeGridWidget();
 
@@ -59,8 +63,7 @@ public class TicTacToeGridWidgetTest {
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
                 .withBounds(new Rectangle(0, 0, 500, 600))
                 .withStyle(style)
-                .hasThreeInARow(Grid.ThreeInARow.Empty)
-                .withModel(model.getCells())
+                .withModel(model)
                 .setDebugModeOn(Orange)
                 .createTicTacToeGridWidget();
 
@@ -80,7 +83,7 @@ public class TicTacToeGridWidgetTest {
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
                 .withBounds(new Rectangle(0, 0, 1000, 2000))
                 .withStyle(style)
-                .withModel(model.getCells())
+                .withModel(model)
                 .setDebugModeOn(Orange)
                 .createTicTacToeGridWidget();
         List<Widget> widgets = widget.buildPaintList();
@@ -94,8 +97,7 @@ public class TicTacToeGridWidgetTest {
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
                 .withBounds(new Rectangle(0, 0, 1000, 2000))
                 .withStyle(style)
-                .withModel(model.getCells())
-                .hasHighlightedCellAt(null)
+                .withModel(model)
                 .setDebugModeOn(Orange)
                 .createTicTacToeGridWidget();
         List<Widget> widgets = widget.gridMarkWidgetList();
@@ -125,9 +127,6 @@ public class TicTacToeGridWidgetTest {
         );
     }
 
-    private final int paintOffsetX = 250;
-    private final int paintOffsetY = 500;
-
     private Point loc(Point location) {
         return new Point(location.x + paintOffsetX, location.y + paintOffsetY);
     }
@@ -137,7 +136,7 @@ public class TicTacToeGridWidgetTest {
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
                 .withBounds(new Rectangle(0, 0, 1000, 2000))
                 .withStyle(style)
-                .withModel(model.getCells())
+                .withModel(model)
                 .setDebugModeOn(Orange)
                 .createTicTacToeGridWidget();
         List<Widget> widgets = widget.buildPaintList();
@@ -151,7 +150,7 @@ public class TicTacToeGridWidgetTest {
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
                 .withBounds(new Rectangle(0, 0, 1000, 2000))
                 .withStyle(style)
-                .withModel(model.getCells())
+                .withModel(model)
                 .noDebug()
                 .createTicTacToeGridWidget();
         List<Widget> widgets = widget.buildPaintList();
@@ -177,13 +176,14 @@ public class TicTacToeGridWidgetTest {
     @Test
     public void highlightedRectangleIsAddedWhenModelIsHighlighted() {
         Grid.Location highlightedLocation = Grid.Location.of(Grid.Row.First, Grid.Column.Third);
+        model.highlightCell(highlightedLocation);
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
                 .withBounds(new Rectangle(0, 0, 1000, 2000))
                 .withStyle(style)
-                .withModel(model.getCells())
-                .hasHighlightedCellAt(highlightedLocation)
+                .withModel(model)
                 .setDebugModeOn(Orange)
                 .createTicTacToeGridWidget();
+
 
         List<Widget> widgets = widget.buildPaintList();
 
@@ -200,12 +200,12 @@ public class TicTacToeGridWidgetTest {
                 Grid.Location.of(Grid.Row.First, Grid.Column.First),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
                 Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
+        model.highlightThreeInARow(diagonal);
 
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
                 .withBounds(new Rectangle(0, 0, 1000, 2000))
                 .withStyle(style)
-                .withModel(model.getCells())
-                .hasThreeInARow(diagonal)
+                .withModel(model)
                 .setDebugModeOn(Orange)
                 .createTicTacToeGridWidget();
 
@@ -248,12 +248,12 @@ public class TicTacToeGridWidgetTest {
                 Grid.Location.of(Grid.Row.First, Grid.Column.First),
                 Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
                 Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
+        model.highlightThreeInARow(diagonal);
 
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
                 .withBounds(new Rectangle(0, 0, 500, 600))
                 .withStyle(style)
-                .withModel(model.getCells())
-                .hasThreeInARow(diagonal)
+                .withModel(model)
                 .setDebugModeOn(Orange)
                 .createTicTacToeGridWidget();
 
@@ -268,7 +268,7 @@ public class TicTacToeGridWidgetTest {
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
                 .withBounds(new Rectangle(0, 0, 500, 600))
                 .withStyle(style)
-                .withModel(model.getCells())
+                .withModel(model)
                 .setDebugModeOn(Orange)
                 .createTicTacToeGridWidget();
 
@@ -284,7 +284,7 @@ public class TicTacToeGridWidgetTest {
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
                 .withBounds(new Rectangle(0, 0, 500, 600))
                 .withStyle(style)
-                .withModel(model.getCells())
+                .withModel(model)
                 .noDebug()
                 .createTicTacToeGridWidget();
 
@@ -317,7 +317,7 @@ public class TicTacToeGridWidgetTest {
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
                 .withBounds(new Rectangle(0, 0, 500, 600))
                 .withStyle(style)
-                .withModel(model.getCells())
+                .withModel(model)
                 .setDebugModeOn(Orange)
                 .createTicTacToeGridWidget();
 

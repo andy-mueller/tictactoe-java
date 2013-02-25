@@ -11,7 +11,6 @@ import com.crudetech.tictactoe.game.Grid;
 
 import javax.swing.JComponent;
 import javax.swing.plaf.ComponentUI;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -76,28 +75,18 @@ public class TicTacToeGridUI extends ComponentUI {
         return style;
     }
 
-
     void buildGraphic() {
         gridWidget = new TicTacToeGridWidgetBuilder()
                 .withBounds(WidgetAwtConverter.rectangle(component.getBounds()))
                 .withStyle(style)
-                .hasThreeInARow(getModel().getHighlightedThreeInARow())
-                .withModel(getModel().getGrid().getCells())
-                .hasHighlightedCellAt(getModel().getHighlightedCell())
-                .setDebugModeOn(new AwtColor(Color.ORANGE))
+                .withModel(getModel())
+                .noDebug()
                 .createTicTacToeGridWidget();
     }
-
-
-    private boolean isDebugMode = false;
-
-
 
     Point getUiOrigin() {
         return WidgetAwtConverter.point(gridWidget.getUiOrigin());
     }
-
-
 
     public GridCellHit checkGridCellHit(int x, int y) {
         Point ptInUiCoordinates = inUiCoordinates(x, y);
