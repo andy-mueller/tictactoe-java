@@ -1,7 +1,7 @@
 package com.crudetech.tictactoe.delivery.swing;
 
+import com.crudetech.tictactoe.delivery.gui.widgets.TicTacToeGridModel;
 import com.crudetech.tictactoe.delivery.swing.grid.JTicTacToeGrid;
-import com.crudetech.tictactoe.delivery.swing.grid.TicTacToeGridModel;
 import com.crudetech.tictactoe.game.AlphaBetaPruningPlayer;
 import com.crudetech.tictactoe.game.ComputerPlayer;
 import com.crudetech.tictactoe.game.Grid;

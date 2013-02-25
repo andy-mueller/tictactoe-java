@@ -2,7 +2,6 @@ package com.crudetech.tictactoe.delivery.gui.widgets;
 
 import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.Rectangle;
-import com.crudetech.tictactoe.delivery.swing.grid.TicTacToeGridModel;
 
 public class TicTacToeGridWidgetBuilder {
     private Rectangle bounds;

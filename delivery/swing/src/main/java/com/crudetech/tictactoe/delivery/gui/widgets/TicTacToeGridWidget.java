@@ -9,7 +9,6 @@ import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Point;
 import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.gui.widgets.Widget;
-import com.crudetech.tictactoe.delivery.swing.grid.TicTacToeGridModel;
 import com.crudetech.tictactoe.game.Grid;
 
 import java.util.ArrayList;

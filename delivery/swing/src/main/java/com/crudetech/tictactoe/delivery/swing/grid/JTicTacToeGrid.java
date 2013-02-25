@@ -3,6 +3,7 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 import com.crudetech.event.Event;
 import com.crudetech.event.EventListener;
 import com.crudetech.event.EventSupport;
+import com.crudetech.tictactoe.delivery.gui.widgets.TicTacToeGridModel;
 import com.crudetech.tictactoe.ui.CellEventObject;
 
 import javax.swing.JComponent;

@@ -1,4 +1,4 @@
-package com.crudetech.tictactoe.delivery.swing.grid;
+package com.crudetech.tictactoe.delivery.gui.widgets;
 
 
 import com.crudetech.collections.Iterables;
@@ -172,7 +172,7 @@ public class TicTacToeGridModel {
     }
 
     public static class ChangedEventObject extends EventObject<TicTacToeGridModel> {
-        ChangedEventObject(TicTacToeGridModel ticTacToeGridModel) {
+        public ChangedEventObject(TicTacToeGridModel ticTacToeGridModel) {
             super(ticTacToeGridModel);
         }
     }

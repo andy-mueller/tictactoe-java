@@ -5,6 +5,7 @@ import com.crudetech.functional.UnaryFunction;
 import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
+import com.crudetech.tictactoe.delivery.gui.widgets.TicTacToeGridModel;
 import com.crudetech.tictactoe.delivery.gui.widgets.TicTacToeGridWidget;
 import com.crudetech.tictactoe.delivery.gui.widgets.TicTacToeGridWidgetBuilder;
 import com.crudetech.tictactoe.game.Grid;

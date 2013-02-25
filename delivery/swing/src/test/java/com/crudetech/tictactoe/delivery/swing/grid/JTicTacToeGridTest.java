@@ -2,9 +2,7 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.event.Event;
 import com.crudetech.event.EventListener;
-import com.crudetech.tictactoe.delivery.swing.grid.JTicTacToeGrid;
-import com.crudetech.tictactoe.delivery.swing.grid.TicTacToeGridModel;
-import com.crudetech.tictactoe.delivery.swing.grid.TicTacToeGridUI;
+import com.crudetech.tictactoe.delivery.gui.widgets.TicTacToeGridModel;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
