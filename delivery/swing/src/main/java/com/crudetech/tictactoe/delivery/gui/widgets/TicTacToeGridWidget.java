@@ -54,7 +54,7 @@ public class TicTacToeGridWidget extends EcsWidget {
 
 
     public List<Widget> buildPaintList() {
-        java.util.List<Widget> paintList = new ArrayList<>();
+        List<Widget> paintList = new ArrayList<>();
 
         paintList.add(backgroundWidget());
         paintList.add(backgroundImageWidget());
@@ -74,14 +74,14 @@ public class TicTacToeGridWidget extends EcsWidget {
     private Widget backgroundImageWidget() {
         Image backgroundImage = style.getBackgroundImage();
 
-        Point p = getUiOrigin();
-        ImageWidget imageWidget = new ImageWidget(p.x, p.y, backgroundImage);
+        Point imageLocation = getUiOrigin();
+        ImageWidget imageWidget = new ImageWidget(imageLocation, backgroundImage);
 
         return hasHighlightedTriple() ? new CompositeDecoratorWidget(imageWidget, WinningTripleAlpha) : imageWidget;
     }
 
     private boolean hasHighlightedTriple() {
-        return !threeInARow.equals(Grid.ThreeInARow.Empty);
+        return !Grid.ThreeInARow.Empty.equals(threeInARow);
     }
 
     public Point getUiOrigin() {
@@ -91,9 +91,9 @@ public class TicTacToeGridWidget extends EcsWidget {
         return new Point(x, y);
     }
 
-    public java.util.List<Widget> gridMarkWidgetList() {
+    public List<Widget> gridMarkWidgetList() {
         Point gridOrigin = getUiOrigin();
-        java.util.List<Widget> gridMArks = new ArrayList<>(9);
+        List<Widget> gridMArks = new ArrayList<>(9);
         for (Grid.Cell cell : cells) {
             Rectangle bounds = getBoundaryForLocation(cell.getLocation());
             Widget widget = wrapTransparentIfIsNotInHighlightedWinningTriple(createMarkWidget(cell.getMark(), bounds), cell.getLocation());
@@ -161,6 +161,7 @@ public class TicTacToeGridWidget extends EcsWidget {
             System.out.println("---->Painting @" + new Date());
             pipe.pushColor(debugColor);
             for (int row = 0; row < bounds.width; row += 50) {
+                //noinspection SuspiciousNameCombination
                 pipe.drawLine(Point.of(0, row), Point.of(bounds.height, row));
             }
             for (int col = 0; col < bounds.width; col += 50) {
