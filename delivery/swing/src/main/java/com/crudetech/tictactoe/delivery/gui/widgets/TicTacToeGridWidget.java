@@ -9,6 +9,7 @@ import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Point;
 import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.gui.widgets.Widget;
+import com.crudetech.tictactoe.delivery.swing.grid.TicTacToeGridModel;
 import com.crudetech.tictactoe.game.Grid;
 
 import java.util.ArrayList;
@@ -21,10 +22,7 @@ public class TicTacToeGridWidget extends EcsWidget {
     private final Rectangle bounds;
     private final Style style;
 
-    private final Grid.ThreeInARow threeInARow;
-    private final Iterable<Grid.Cell> cells;
-    private final Grid.Location highlightedCell;
-
+    private final TicTacToeGridModel model;
     private final boolean isDebugMode;
     private final Color debugColor;
 
@@ -32,16 +30,11 @@ public class TicTacToeGridWidget extends EcsWidget {
 
 
     public TicTacToeGridWidget(Rectangle bounds,
-                               Style style,
-                               Grid.ThreeInARow threeInARow,
-                               Iterable<Grid.Cell> cells,
-                               Grid.Location highlightedCell,
+                               Style style, TicTacToeGridModel model,
                                boolean debugMode, Color debugColor) {
         this.bounds = bounds;
         this.style = style;
-        this.threeInARow = threeInARow;
-        this.cells = cells;
-        this.highlightedCell = highlightedCell;
+        this.model = model;
         this.isDebugMode = debugMode;
         this.debugColor = debugColor;
     }
@@ -79,12 +72,11 @@ public class TicTacToeGridWidget extends EcsWidget {
         Point imageLocation = getUiOrigin();
         ImageWidget imageWidget = new ImageWidget(imageLocation, backgroundImage);
 
-        return hasHighlightedTriple() ? new CompositeDecoratorWidget(imageWidget, WinningTripleAlpha) : imageWidget;
+        return model.hasHighlightedThreeInARow()
+             ? new CompositeDecoratorWidget(imageWidget, WinningTripleAlpha)
+             : imageWidget;
     }
 
-    private boolean hasHighlightedTriple() {
-        return !Grid.ThreeInARow.Empty.equals(threeInARow);
-    }
 
     public Point getUiOrigin() {
         Image backgroundImage = style.getBackgroundImage();
@@ -96,7 +88,7 @@ public class TicTacToeGridWidget extends EcsWidget {
     public List<Widget> gridMarkWidgetList() {
         Point gridOrigin = getUiOrigin();
         List<Widget> gridMArks = new ArrayList<>(9);
-        for (Grid.Cell cell : cells) {
+        for (Grid.Cell cell : model.getGrid().getCells()) {
             Rectangle bounds = getBoundaryForLocation(cell.getLocation());
             Widget widget = wrapTransparentIfIsNotInHighlightedWinningTriple(createMarkWidget(cell.getMark(), bounds), cell.getLocation());
             widget.moveBy(gridOrigin.x, gridOrigin.y);
@@ -117,11 +109,11 @@ public class TicTacToeGridWidget extends EcsWidget {
     }
 
     private boolean noWinningTripleHighlighted() {
-        return !hasHighlightedTriple();
+        return !model.hasHighlightedThreeInARow();
     }
 
     private boolean isInWinningTriple(Grid.Location location) {
-        return Iterables.contains(threeInARow.getLocations(), location);
+        return Iterables.contains(model.getHighlightedThreeInARow().getLocations(), location);
     }
 
     private Widget createMarkWidget(Grid.Mark mark, Rectangle bounds) {
@@ -140,7 +132,7 @@ public class TicTacToeGridWidget extends EcsWidget {
     private Widget highlightWidget() {
         Point origin = getUiOrigin();
         if (hasHighlightedCell()) {
-            Rectangle boundaryForLocation = getBoundaryForLocation(highlightedCell);
+            Rectangle boundaryForLocation = getBoundaryForLocation(model.getHighlightedCell());
             boundaryForLocation = boundaryForLocation.translate(origin.x, origin.y);
             return new RectangleWidget(boundaryForLocation, style.getHighlightColor());
         } else {
@@ -149,7 +141,7 @@ public class TicTacToeGridWidget extends EcsWidget {
     }
 
     private boolean hasHighlightedCell() {
-        return highlightedCell != null;
+        return model.hasHighlightedCell();
     }
 
     private Widget debugInfoWidget() {
