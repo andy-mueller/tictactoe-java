@@ -5,7 +5,10 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
 import static com.crudetech.matcher.Verify.verifyThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 public class TicTacToeGame {
 
@@ -70,7 +73,7 @@ public class TicTacToeGame {
         verifyThat(grid, isNotMarkedAt(row, column));
 
         grid.setAt(row, column, currentPlayersMark);
-        Grid.ThreeInARow triple = grid.winningTriple();
+        Grid.ThreeInARow triple = grid.getThreeInARow();
         if (didWin(triple)) {
             currentPlayer.youWin(grid, triple);
             getOtherPlayer().youLoose(grid, triple);

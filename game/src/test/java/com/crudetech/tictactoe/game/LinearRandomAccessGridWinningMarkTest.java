@@ -10,7 +10,7 @@ public class LinearRandomAccessGridWinningMarkTest {
     public void emptyGridHasNoWinningMark() {
         LinearRandomAccessGrid emptyGrid = new LinearRandomAccessGrid();
 
-        assertThat(emptyGrid.winningTriple(), is(Grid.ThreeInARow.Empty));
+        assertThat(emptyGrid.getThreeInARow(), is(Grid.ThreeInARow.Empty));
     }
 
     @Test
@@ -20,7 +20,7 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Mark.Nought, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.Cross);
 
-        assertThat(grid.winningTriple(), is(Grid.ThreeInARow.Empty));
+        assertThat(grid.getThreeInARow(), is(Grid.ThreeInARow.Empty));
     }
 
     @Test
@@ -38,7 +38,7 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Location.of(Grid.Row.First, Grid.Column.Third)
         );
 
-        Grid.ThreeInARow triple = grid.winningTriple();
+        Grid.ThreeInARow triple = grid.getThreeInARow();
         assertThat(triple, is(expected));
     }
 
@@ -56,7 +56,7 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Location.of(Grid.Row.Second, Grid.Column.Third)
         );
 
-        Grid.ThreeInARow triple = grid.winningTriple();
+        Grid.ThreeInARow triple = grid.getThreeInARow();
         assertThat(triple, is(expected));
     }
 
@@ -74,7 +74,7 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Location.of(Grid.Row.Third, Grid.Column.Third)
         );
 
-        Grid.ThreeInARow triple = grid.winningTriple();
+        Grid.ThreeInARow triple = grid.getThreeInARow();
         assertThat(triple, is(expected));
     }
 
@@ -92,7 +92,7 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Location.of(Grid.Row.Third, Grid.Column.First)
         );
 
-        Grid.ThreeInARow triple = grid.winningTriple();
+        Grid.ThreeInARow triple = grid.getThreeInARow();
         assertThat(triple, is(expected));
     }
 
@@ -110,7 +110,7 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Location.of(Grid.Row.Third, Grid.Column.Second)
         );
 
-        Grid.ThreeInARow triple = grid.winningTriple();
+        Grid.ThreeInARow triple = grid.getThreeInARow();
         assertThat(triple, is(expected));
     }
 
@@ -128,7 +128,7 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Location.of(Grid.Row.Third, Grid.Column.Third)
         );
 
-        Grid.ThreeInARow triple = grid.winningTriple();
+        Grid.ThreeInARow triple = grid.getThreeInARow();
         assertThat(triple, is(expected));
     }
 
@@ -146,7 +146,7 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Location.of(Grid.Row.Third, Grid.Column.Third)
         );
 
-        Grid.ThreeInARow triple = grid.winningTriple();
+        Grid.ThreeInARow triple = grid.getThreeInARow();
         assertThat(triple, is(expected));
     }
 
@@ -164,7 +164,7 @@ public class LinearRandomAccessGridWinningMarkTest {
                 Grid.Location.of(Grid.Row.First, Grid.Column.Third)
         );
 
-        Grid.ThreeInARow triple = grid.winningTriple();
+        Grid.ThreeInARow triple = grid.getThreeInARow();
         assertThat(triple, is(expected));
     }
     @Test

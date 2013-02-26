@@ -136,15 +136,18 @@ public class LinearRandomAccessGrid implements Grid {
         return new Cell(location, getAt(location));
     }
 
-    private static class WinningTriples extends AbstractList<Pair<Mark[], Location[]>> {
+    private static class AllPossibleThreeInARow extends AbstractList<Pair<Mark[], Location[]>> {
         private static final int[][] triples = {
                 {0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6},
                 {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {6, 4, 2}
         };
         private final Mark[] matrix;
 
-        WinningTriples(Mark[] matrix) {
+        AllPossibleThreeInARow(Mark[] matrix) {
             this.matrix = matrix;
+        }
+        static AllPossibleThreeInARow of(Mark[] matrix){
+            return new AllPossibleThreeInARow(matrix);
         }
 
         @Override
@@ -171,8 +174,8 @@ public class LinearRandomAccessGrid implements Grid {
         }
     }
 
-    ThreeInARow winningTriple() {
-        for (Pair<Mark[], Location[]> triple : new WinningTriples(matrix)) {
+    ThreeInARow getThreeInARow() {
+        for (Pair<Mark[], Location[]> triple : AllPossibleThreeInARow.of(matrix)) {
             if (isWin(triple.getFirst())) {
                 Location[] locations = triple.getSecond();
                 return ThreeInARow.of(triple.getFirst()[0], locations[0], locations[1], locations[2]);
@@ -219,11 +222,11 @@ public class LinearRandomAccessGrid implements Grid {
     }
 
     private boolean isWin() {
-        return !winningTriple().equals(ThreeInARow.Empty);
+        return !getThreeInARow().equals(ThreeInARow.Empty);
     }
 
     boolean isWinForMark(Mark startPlayerMark) {
-        ThreeInARow triple = winningTriple();
+        ThreeInARow triple = getThreeInARow();
         return triple.isWinForMark(startPlayerMark);
     }
 
