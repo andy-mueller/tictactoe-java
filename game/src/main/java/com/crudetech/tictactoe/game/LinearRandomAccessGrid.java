@@ -1,10 +1,9 @@
 package com.crudetech.tictactoe.game;
 
-import com.crudetech.collections.Pair;
 import com.crudetech.functional.BinaryFunction;
 import com.crudetech.functional.UnaryFunction;
+import com.crudetech.query.Queryable;
 
-import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -136,65 +135,76 @@ public class LinearRandomAccessGrid implements Grid {
         return new Cell(location, getAt(location));
     }
 
-    private static class AllPossibleThreeInARow extends AbstractList<Pair<Mark[], Location[]>> {
-        private static final int[][] triples = {
-                {0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6},
-                {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {6, 4, 2}
-        };
-        private final Mark[] matrix;
-
-        AllPossibleThreeInARow(Mark[] matrix) {
-            this.matrix = matrix;
-        }
-        static AllPossibleThreeInARow of(Mark[] matrix){
-            return new AllPossibleThreeInARow(matrix);
-        }
-
-        @Override
-        public Pair<Mark[], Location[]> get(int index) {
-            int[] indices = triples[index];
-            Mark[] marks = new Mark[indices.length];
-            Location[] locations = new Location[indices.length];
-            for (int i = 0; i < indices.length; ++i) {
-                final int idx = indices[i];
-                marks[i] = getMarkAt(idx);
-                locations[i] = locationOfIndex(idx);
-            }
-
-            return new Pair<>(marks, locations);
-        }
-
-        private Mark getMarkAt(int index) {
-            return matrix[index];
-        }
-
-        @Override
-        public int size() {
-            return triples.length;
-        }
-    }
+    Integer[][] allPossibleThreeInARows = {
+            {0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6},
+            {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {6, 4, 2}
+    };
 
     ThreeInARow getThreeInARow() {
-        for (Pair<Mark[], Location[]> triple : AllPossibleThreeInARow.of(matrix)) {
-            if (isWin(triple.getFirst())) {
-                Location[] locations = triple.getSecond();
-                return ThreeInARow.of(triple.getFirst()[0], locations[0], locations[1], locations[2]);
+        return from(allPossibleThreeInARows)
+                .select(toLocation())
+                .where(markIsSet())
+                .where(isWinningThreeInARow())
+                .select(toThreeInARow())
+                .firstOr(ThreeInARow.Empty);
+
+    }
+
+    private UnaryFunction<Iterable<Location>, ThreeInARow> toThreeInARow() {
+        return new UnaryFunction<Iterable<Location>, ThreeInARow>() {
+            @Override
+            public ThreeInARow execute(Iterable<Location> locations) {
+                Location[] locations1 = from(locations).toArray(Location.class);
+                return new ThreeInARow(getAt(locations1[0]), locations1[0], locations1[1], locations1[2]);
             }
-        }
-        return ThreeInARow.Empty;
+        };
     }
 
-    private static boolean isWin(Mark... marks) {
-        return containsNoNoneMarks(marks)
-                && allItemsAreEqual(marks);
+    private UnaryFunction<Iterable<Location>, Boolean> isWinningThreeInARow() {
+        return new UnaryFunction<Iterable<Location>, Boolean>() {
+            @Override
+            public Boolean execute(Iterable<Location> locations) {
+                Queryable<Mark> marks = from(locations).select(toMark());
+                return !marks.where(notEqualTo(marks.first())).any();
+            }
+        };
     }
 
-    private static boolean allItemsAreEqual(Mark[] marks) {
-        return !from(marks).where(notEqualTo(marks[0])).any();
+    private UnaryFunction<Iterable<Location>, Boolean> markIsSet() {
+        return new UnaryFunction<Iterable<Location>, Boolean>() {
+            @Override
+            public Boolean execute(Iterable<Location> locations) {
+                return from(locations).select(toMark()).where(notEqualTo(Mark.None)).any();
+            }
+        };
     }
 
-    private static boolean containsNoNoneMarks(Mark[] marks) {
-        return !from(marks).where(isEqualTo(Mark.None)).any();
+    private UnaryFunction<Location, Mark> toMark() {
+        return new UnaryFunction<Location, Mark>() {
+            @Override
+            public Mark execute(Location location) {
+                return getAt(location);
+            }
+        };
+    }
+
+
+    private UnaryFunction<Integer[], Iterable<Location>> toLocation() {
+        return new UnaryFunction<Integer[], Iterable<Location>>() {
+            @Override
+            public Iterable<Location> execute(Integer[] indices) {
+                return from(indices).select(indexToLocation());
+            }
+        };
+    }
+
+    private UnaryFunction<Integer, Location> indexToLocation() {
+        return new UnaryFunction<Integer, Location>() {
+            @Override
+            public Location execute(Integer idx) {
+                return locationOfIndex(idx);
+            }
+        };
     }
 
     private static <T> UnaryFunction<T, Boolean> notEqualTo(final T item) {
@@ -202,15 +212,6 @@ public class LinearRandomAccessGrid implements Grid {
             @Override
             public Boolean execute(T t) {
                 return !Objects.equals(item, t);
-            }
-        };
-    }
-
-    private static <T> UnaryFunction<T, Boolean> isEqualTo(final T item) {
-        return new UnaryFunction<T, Boolean>() {
-            @Override
-            public Boolean execute(T t) {
-                return Objects.equals(t, item);
             }
         };
     }
