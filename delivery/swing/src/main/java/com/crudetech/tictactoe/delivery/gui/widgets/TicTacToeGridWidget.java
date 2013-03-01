@@ -60,6 +60,14 @@ public class TicTacToeGridWidget extends EcsWidget {
         return paintList;
     }
 
+    public GridCellHit checkGridCellHit(Point hitInWorld) {
+        Point backgroundImageOrigin = getBackgroundImageOrigin();
+        Point ptInUiCoordinates = hitInWorld.translate(-backgroundImageOrigin.x, -backgroundImageOrigin.y);
+        Iterable<Grid.Cell> allCells = model.getGrid().getCells();
+        Rectangle[][] hitBoundaries = style.getGridMarkLocations();
+        return new GridCellHit(allCells, ptInUiCoordinates, hitBoundaries);
+    }
+
     private Widget backgroundWidget() {
         Rectangle boundary = new Rectangle(bounds.x, bounds.y, bounds.width, bounds.height + 500);
         return new FilledRectangleWidget(boundary, style.getBackgroundColor());
@@ -68,7 +76,7 @@ public class TicTacToeGridWidget extends EcsWidget {
     private Widget backgroundImageWidget() {
         Image backgroundImage = style.getBackgroundImage();
 
-        Point imageLocation = getUiOrigin();
+        Point imageLocation = getBackgroundImageOrigin();
         ImageWidget imageWidget = new ImageWidget(imageLocation, backgroundImage);
 
         return model.hasHighlightedThreeInARow()
@@ -77,7 +85,7 @@ public class TicTacToeGridWidget extends EcsWidget {
     }
 
 
-    public Point getUiOrigin() {
+    public Point getBackgroundImageOrigin() {
         Image backgroundImage = style.getBackgroundImage();
         int x = max((bounds.width - backgroundImage.getWidth()) / 2, 0);
         int y = max((bounds.height - backgroundImage.getHeight()) / 2, 0);
@@ -85,7 +93,7 @@ public class TicTacToeGridWidget extends EcsWidget {
     }
 
     public List<Widget> gridMarkWidgetList() {
-        Point gridOrigin = getUiOrigin();
+        Point gridOrigin = getBackgroundImageOrigin();
         List<Widget> gridMArks = new ArrayList<>(9);
         for (Grid.Cell cell : model.getGrid().getCells()) {
             Rectangle bounds = getBoundaryForLocation(cell.getLocation());
@@ -129,7 +137,7 @@ public class TicTacToeGridWidget extends EcsWidget {
     }
 
     private Widget highlightWidget() {
-        Point origin = getUiOrigin();
+        Point origin = getBackgroundImageOrigin();
         if (hasHighlightedCell()) {
             Rectangle boundaryForLocation = getBoundaryForLocation(model.getHighlightedCell());
             boundaryForLocation = boundaryForLocation.translate(origin.x, origin.y);
