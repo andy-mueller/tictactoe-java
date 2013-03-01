@@ -1,14 +1,14 @@
-package com.crudetech.tictactoe.delivery.swing.grid;
+package com.crudetech.tictactoe.delivery.gui.widgets;
 
 import com.crudetech.collections.Pair;
 import com.crudetech.functional.UnaryFunction;
+import com.crudetech.gui.widgets.Point;
 import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.tictactoe.game.Grid;
 
-
 import static com.crudetech.query.Query.from;
 
-class GridCellHit {
+public class GridCellHit {
     private final Pair<Rectangle, Grid.Location> hitInfo;
     private static final Pair<Rectangle, Grid.Location> NoHit =
             new Pair<>(new Rectangle(-1, -1, -1, -1), null);
@@ -16,12 +16,15 @@ class GridCellHit {
     GridCellHit(Iterable<Grid.Cell> cells, int x, int y, Rectangle[][] cellBoundaries) {
         hitInfo = from(cells).select(isContainedIn(x, y, cellBoundaries)).where(notNoHit()).firstOr(NoHit);
     }
+    GridCellHit(Iterable<Grid.Cell> cells, Point hit, Rectangle[][] cellBoundaries) {
+        this(cells, hit.x, hit.y, cellBoundaries);
+    }
 
-    Grid.Location getHit() {
+    public Grid.Location getHit() {
         return hitInfo.getSecond();
     }
 
-    boolean hasHit() {
+    public boolean hasHit() {
         return !NoHit.equals(hitInfo);
     }
 

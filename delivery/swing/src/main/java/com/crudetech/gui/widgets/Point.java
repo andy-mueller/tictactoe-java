@@ -37,4 +37,8 @@ public class Point {
     public static Point of(int x, int y) {
         return new Point(x, y);
     }
+
+    public Point translate(int dx, int dy) {
+        return of(x + dx, y + dy);
+    }
 }

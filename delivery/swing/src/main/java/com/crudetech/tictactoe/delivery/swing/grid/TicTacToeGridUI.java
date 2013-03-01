@@ -4,6 +4,7 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 import com.crudetech.functional.UnaryFunction;
 import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Rectangle;
+import com.crudetech.tictactoe.delivery.gui.widgets.GridCellHit;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.delivery.gui.widgets.TicTacToeGridModel;
 import com.crudetech.tictactoe.delivery.gui.widgets.TicTacToeGridWidget;
@@ -86,19 +87,11 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     Point getUiOrigin() {
-        return WidgetAwtConverter.point(gridWidget.getUiOrigin());
+        return WidgetAwtConverter.point(gridWidget.getBackgroundImageOrigin());
     }
 
     public GridCellHit checkGridCellHit(int x, int y) {
-        Point ptInUiCoordinates = inUiCoordinates(x, y);
-        Iterable<Grid.Cell> allCells = component.getModel().getGrid().getCells();
-        Rectangle[][] hitBoundaries = getStyle().getGridMarkLocations();
-        return new GridCellHit(allCells, ptInUiCoordinates.x, ptInUiCoordinates.y, hitBoundaries);
-    }
-
-    private Point inUiCoordinates(int x, int y) {
-        Point o = getUiOrigin();
-        return new Point(x - o.x, y - o.y);
+        return gridWidget.checkGridCellHit(com.crudetech.gui.widgets.Point.of(x, y));
     }
 
     private TicTacToeGridModel getModel() {
