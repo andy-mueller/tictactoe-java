@@ -61,8 +61,9 @@ public class TicTacToeGridWidget extends EcsWidget {
     }
 
     public GridCellHit checkGridCellHit(Point hitInWorld) {
+        Point hitInEcs = hitInWorld.translate(-widgetCoordinates().getLocation().x, -widgetCoordinates().getLocation().y);
         Point backgroundImageOrigin = getBackgroundImageOrigin();
-        Point ptInUiCoordinates = hitInWorld.translate(-backgroundImageOrigin.x, -backgroundImageOrigin.y);
+        Point ptInUiCoordinates = hitInEcs.translate(-backgroundImageOrigin.x, -backgroundImageOrigin.y);
         Iterable<Grid.Cell> allCells = model.getGrid().getCells();
         Rectangle[][] hitBoundaries = style.getGridMarkLocations();
         return new GridCellHit(allCells, ptInUiCoordinates, hitBoundaries);
@@ -98,7 +99,7 @@ public class TicTacToeGridWidget extends EcsWidget {
         for (Grid.Cell cell : model.getGrid().getCells()) {
             Rectangle bounds = getBoundaryForLocation(cell.getLocation());
             Widget widget = wrapTransparentIfIsNotInHighlightedWinningTriple(createMarkWidget(cell.getMark(), bounds), cell.getLocation());
-            widget.moveBy(gridOrigin.x, gridOrigin.y);
+            widget.widgetCoordinates().translate(gridOrigin.x, gridOrigin.y);
             gridMArks.add(widget);
         }
         return gridMArks;

@@ -3,8 +3,6 @@ package com.crudetech.gui.widgets;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
 import com.crudetech.junit.feature.Features;
-import org.hamcrest.CustomTypeSafeMatcher;
-import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 @RunWith(Features.class)
 public class EcsWidgetTest {
@@ -35,26 +34,10 @@ public class EcsWidgetTest {
         ecsWidget = new NoPaintEcsWidget(42, 42);
     }
 
-    @Test
-    public void setLocationChangesLocation(){
-        ecsWidget.setLocation(500, 2);
-
-        assertThat(ecsWidget, hasLocation(500, 2));
-    }
-
-    private Matcher<EcsWidget> hasLocation(final int x, final int y) {
-        return new CustomTypeSafeMatcher<EcsWidget>("") {
-            @Override
-            protected boolean matchesSafely(EcsWidget ecsWidget) {
-                return ecsWidget.getLocation().equals(Point.of(x, y));
-            }
-
-        };
-    }
 
     @Test
-    public void ctorSetsLocation(){
-        assertThat(ecsWidget, hasLocation(42, 42));
+    public void ctorSetsCordinateSystem(){
+        assertThat(ecsWidget.widgetCoordinates(), is(new CoordinateSystem(Point.of(42, 42))));
     }
     @Feature(Equivalent.class)
     public static Equivalent.Factory<EcsWidget> isEquivalentByLocation(){

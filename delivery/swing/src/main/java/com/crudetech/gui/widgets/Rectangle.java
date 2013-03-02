@@ -20,6 +20,7 @@ public class Rectangle {
         this(rhs.x, rhs.y, rhs.width, rhs.height);
     }
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override
     public boolean equals(Object o) {
         EqualsBuilder<Rectangle> b = new EqualsBuilder<>(this, o);

@@ -2,6 +2,7 @@ package com.crudetech.gui.widgets;
 
 public class Point {
     public final int x, y;
+    public static final Point Origin = new Point(0, 0);
 
     public Point(int x, int y) {
         this.x = x;

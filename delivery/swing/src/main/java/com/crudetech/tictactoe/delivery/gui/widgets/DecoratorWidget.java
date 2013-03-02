@@ -1,7 +1,7 @@
 package com.crudetech.tictactoe.delivery.gui.widgets;
 
+import com.crudetech.gui.widgets.CoordinateSystem;
 import com.crudetech.gui.widgets.GraphicsStream;
-import com.crudetech.gui.widgets.Point;
 import com.crudetech.gui.widgets.Widget;
 
 import java.util.Objects;
@@ -14,21 +14,13 @@ public class DecoratorWidget implements Widget {
         this.decorated = decorated;
     }
 
-    public void setLocation(int x, int y) {
-        decorated.setLocation(x, y);
-    }
-
-    public void moveBy(int dx, int dy) {
-        decorated.moveBy(dx, dy);
+    public void paint(GraphicsStream pipe) {
+        decorated.paint(pipe);
     }
 
     @Override
-    public Point getLocation() {
-        return decorated.getLocation();
-    }
-
-    public void paint(GraphicsStream pipe) {
-        decorated.paint(pipe);
+    public CoordinateSystem widgetCoordinates() {
+        return decorated.widgetCoordinates();
     }
 
     @Override

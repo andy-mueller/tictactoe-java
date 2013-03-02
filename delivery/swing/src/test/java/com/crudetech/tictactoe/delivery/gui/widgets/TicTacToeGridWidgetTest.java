@@ -3,6 +3,7 @@ package com.crudetech.tictactoe.delivery.gui.widgets;
 
 import com.crudetech.functional.UnaryFunction;
 import com.crudetech.gui.widgets.Color;
+import com.crudetech.gui.widgets.CoordinateSystem;
 import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Point;
 import com.crudetech.gui.widgets.Rectangle;
@@ -54,7 +55,7 @@ public class TicTacToeGridWidgetTest {
                 .createTicTacToeGridWidget();
 
         Widget backgroundImage = widget.buildPaintList().get(1);
-        assertThat(backgroundImage.getLocation(), is(new Point(0, 0)));
+        assertThat(backgroundImage.widgetCoordinates(), is(CoordinateSystem.world()));
     }
 
     @Test
@@ -88,7 +89,7 @@ public class TicTacToeGridWidgetTest {
         List<Widget> widgets = widget.buildPaintList();
 
         ImageWidget backGroundImage = (ImageWidget) widgets.get(1);
-        assertThat(backGroundImage.getLocation(), is(Point.of(250, 500)));
+        assertThat(backGroundImage.widgetCoordinates(), is(new CoordinateSystem(Point.of(250, 500))));
     }
 
     @Test

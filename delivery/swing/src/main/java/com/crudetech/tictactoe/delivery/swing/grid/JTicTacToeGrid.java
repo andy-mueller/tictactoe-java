@@ -84,8 +84,12 @@ public class JTicTacToeGrid extends JComponent {
     private void onMouseClicked(MouseEvent e) {
         GridCellHit hit = cellHitFromMouseEvent(e);
         if (hit.hasHit()) {
-            clickedEvent.fireEvent(new CellEventObject<JTicTacToeGrid>(this, hit.getHit()));
+            onCellEvent(hit);
         }
+    }
+
+    private void onCellEvent(GridCellHit hit) {
+        clickedEvent.fireEvent(new CellEventObject<>(this, hit.getHit()));
     }
 
     private GridCellHit cellHitFromMouseEvent(MouseEvent e) {
@@ -93,14 +97,22 @@ public class JTicTacToeGrid extends JComponent {
     }
 
     public void setModel(TicTacToeGridModel model) {
+        unhookModelEvents();
+        hookModelEvents(model);
+        this.model = model;
+        repaint();
+    }
+
+    private void hookModelEvents(TicTacToeGridModel model) {
+        model.cellsChanged().addListener(modelCellChangedListener);
+        model.changed().addListener(modelChangedListener);
+    }
+
+    private void unhookModelEvents() {
         if (hasModel()) {
             getModel().cellsChanged().removeListener(modelCellChangedListener);
             getModel().changed().removeListener(modelChangedListener);
         }
-        model.cellsChanged().addListener(modelCellChangedListener);
-        model.changed().addListener(modelChangedListener);
-        this.model = model;
-        repaint();
     }
 
     private boolean hasModel() {

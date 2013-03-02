@@ -1,6 +1,7 @@
 package com.crudetech.tictactoe.delivery.gui.widgets;
 
 import com.crudetech.gui.widgets.GraphicsStream;
+import com.crudetech.gui.widgets.Point;
 import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.junit.feature.Equivalent;
@@ -21,7 +22,7 @@ public class FilledRectangleWidgetTest {
     @Test
     public void paintingIsInEcs() {
         Widget w = new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
-        w.setLocation(42, 42);
+        w.widgetCoordinates().setLocation(Point.of(42, 42));
         GraphicsStream g2d = mock(GraphicsStream.class);
 
         w.paint(g2d);

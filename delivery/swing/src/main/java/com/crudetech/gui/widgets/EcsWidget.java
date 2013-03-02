@@ -3,34 +3,19 @@ package com.crudetech.gui.widgets;
 import java.util.Objects;
 
 public abstract class EcsWidget implements Widget {
-    private int locationX;
-    private int locationY;
+    private final CoordinateSystem ecs = CoordinateSystem.world();
 
 
     public EcsWidget(int x, int y) {
-        locationX = x;
-        locationY = y;
+        ecs.translate(x, y);
     }
 
     public EcsWidget() {
-        this(0, 0);
-    }
-
-    @Override
-    public void setLocation(int x, int y) {
-        locationX = x;
-        locationY = y;
-    }
-
-    @Override
-    public void moveBy(int dx, int dy) {
-        locationX += dx;
-        locationY += dy;
     }
 
     @Override
     public void paint(GraphicsStream pipe) {
-        pipe.pushTranslation(locationX, locationY);
+        pipe.pushTranslation(ecs.getLocation().x, ecs.getLocation().y);
         try {
             paintEcs(pipe);
         } finally {
@@ -38,12 +23,12 @@ public abstract class EcsWidget implements Widget {
         }
     }
 
-    protected abstract void paintEcs(GraphicsStream pipe);
-
     @Override
-    public Point getLocation() {
-        return new Point(locationX, locationY);
+    public CoordinateSystem widgetCoordinates() {
+        return ecs;
     }
+
+    protected abstract void paintEcs(GraphicsStream pipe);
 
     @Override
     public boolean equals(Object o) {
@@ -52,16 +37,15 @@ public abstract class EcsWidget implements Widget {
 
         EcsWidget ecsWidget = (EcsWidget) o;
 
-        return Objects.equals(locationX, ecsWidget.locationX)
-            && Objects.equals(locationY, ecsWidget.locationY);
+        return Objects.equals(ecs, ecsWidget.ecs);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(locationX, locationY);
+        return Objects.hash(ecs);
     }
 
     protected String getLocationAsString() {
-        return String.format("Location[%s,%s]", Integer.toString(locationX), Integer.toString(locationY));
+        return ecs.toString();
     }
 }
