@@ -99,7 +99,9 @@ public class TicTacToeGridUI extends ComponentUI {
 
     void repaintCells(Iterable<Grid.Location> changedCells) {
         Iterable<Rectangle> repaintedInComponentCoordinates =
-                from(gridWidget.getCellBoundaries(changedCells)).select(toAwtRectangle()).select(toInflatedRectangle());
+                from(gridWidget.getCellBoundaries(changedCells))
+                        .select(toAwtRectangle())
+                        .select(toInflatedRectangle());
 
         for (Rectangle rect : repaintedInComponentCoordinates) {
             component.repaint(rect);
