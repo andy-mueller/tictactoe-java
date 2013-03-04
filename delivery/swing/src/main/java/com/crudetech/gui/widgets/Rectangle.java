@@ -20,6 +20,10 @@ public class Rectangle {
         this(rhs.x, rhs.y, rhs.width, rhs.height);
     }
 
+    public Rectangle(Point location, int width, int height) {
+        this(location.x, location.y, width, height);
+    }
+
     @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override
     public boolean equals(Object o) {
@@ -70,7 +74,11 @@ public class Rectangle {
     }
 
     public Point getLocation() {
-        return new Point(x, y);
+        return Point.of(x, y);
+    }
+
+    public Rectangle inflate(int dx, int dy) {
+        return new Rectangle(x, y, width + dx, height + dy);
     }
 
     private static class HashCodeBuilder {

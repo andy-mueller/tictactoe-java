@@ -1,8 +1,10 @@
 package com.crudetech.tictactoe.delivery.gui.widgets;
 
 import com.crudetech.collections.Iterables;
+import com.crudetech.functional.UnaryFunction;
 import com.crudetech.gui.widgets.AlphaValue;
 import com.crudetech.gui.widgets.Color;
+import com.crudetech.gui.widgets.CoordinateSystem;
 import com.crudetech.gui.widgets.EcsWidget;
 import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Image;
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.crudetech.query.Query.from;
 import static java.lang.Math.max;
 
 public class TicTacToeGridWidget extends EcsWidget {
@@ -81,8 +84,8 @@ public class TicTacToeGridWidget extends EcsWidget {
         ImageWidget imageWidget = new ImageWidget(imageLocation, backgroundImage);
 
         return model.hasHighlightedThreeInARow()
-             ? new CompositeDecoratorWidget(imageWidget, WinningTripleAlpha)
-             : imageWidget;
+                ? new CompositeDecoratorWidget(imageWidget, WinningTripleAlpha)
+                : imageWidget;
     }
 
 
@@ -98,7 +101,10 @@ public class TicTacToeGridWidget extends EcsWidget {
         List<Widget> gridMArks = new ArrayList<>(9);
         for (Grid.Cell cell : model.getGrid().getCells()) {
             Rectangle bounds = getBoundaryForLocation(cell.getLocation());
-            Widget widget = wrapTransparentIfIsNotInHighlightedWinningTriple(createMarkWidget(cell.getMark(), bounds), cell.getLocation());
+            Widget widget = wrapTransparentIfIsNotInHighlightedWinningTriple(
+                    createMarkWidget(cell.getMark(), bounds),
+                    cell.getLocation()
+            );
             widget.widgetCoordinates().translate(gridOrigin.x, gridOrigin.y);
             gridMArks.add(widget);
         }
@@ -156,6 +162,29 @@ public class TicTacToeGridWidget extends EcsWidget {
         return isDebugMode ? new DebugWidget() : new EmptyWidget();
     }
 
+    public Iterable<Rectangle> getCellBoundaries(Iterable<Grid.Location> changedCells) {
+        return from(changedCells).select(toBoundaryRectangle()).select(toComponentCoos());
+
+    }
+
+    private UnaryFunction<Rectangle, Rectangle> toComponentCoos() {
+        return new UnaryFunction<Rectangle, Rectangle>() {
+            @Override
+            public Rectangle execute(Rectangle rectangle) {
+                CoordinateSystem backgroundImageCoos = backgroundImageWidget().widgetCoordinates();
+                return backgroundImageCoos.toWorldCoordinates(rectangle);
+            }
+        };
+    }
+
+    private UnaryFunction<Grid.Location, Rectangle> toBoundaryRectangle() {
+        return new UnaryFunction<Grid.Location, Rectangle>() {
+            @Override
+            public Rectangle execute(Grid.Location location) {
+                return style.getGridMarkLocations()[location.getRow().ordinal()][location.getColumn().ordinal()];
+            }
+        };
+    }
 
     class DebugWidget extends EcsWidget {
         @Override

@@ -3,7 +3,6 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.functional.UnaryFunction;
 import com.crudetech.gui.widgets.GraphicsStream;
-import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.tictactoe.delivery.gui.widgets.GridCellHit;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.delivery.gui.widgets.TicTacToeGridModel;
@@ -16,7 +15,7 @@ import javax.swing.plaf.ComponentUI;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
+import java.awt.Rectangle;
 
 import static com.crudetech.query.Query.from;
 
@@ -86,10 +85,6 @@ public class TicTacToeGridUI extends ComponentUI {
                 .createTicTacToeGridWidget();
     }
 
-    Point getUiOrigin() {
-        return WidgetAwtConverter.point(gridWidget.getBackgroundImageOrigin());
-    }
-
     public GridCellHit checkGridCellHit(int x, int y) {
         return gridWidget.checkGridCellHit(com.crudetech.gui.widgets.Point.of(x, y));
     }
@@ -104,30 +99,32 @@ public class TicTacToeGridUI extends ComponentUI {
 
     void repaintCells(Iterable<Grid.Location> changedCells) {
         Iterable<Rectangle> repaintedInComponentCoordinates =
-                from(changedCells).select(toBoundary()).select(toComponentCoos());
+                from(gridWidget.getCellBoundaries(changedCells)).select(toAwtRectangle()).select(toInflatedRectangle());
 
         for (Rectangle rect : repaintedInComponentCoordinates) {
-            component.repaint(WidgetAwtConverter.rectangle(rect));
+            component.repaint(rect);
         }
     }
 
-    private UnaryFunction<Rectangle, Rectangle> toComponentCoos() {
+    private UnaryFunction<Rectangle, Rectangle> toInflatedRectangle() {
         return new UnaryFunction<Rectangle, Rectangle>() {
             @Override
             public Rectangle execute(Rectangle rectangle) {
-                Point origin = getUiOrigin();
-                return new Rectangle(rectangle.x + origin.x, rectangle.y + origin.y, rectangle.width + 1, rectangle.height + 1);
+                rectangle.width += 1;
+                rectangle.height += 1;
+                return rectangle;
             }
         };
     }
 
-    private UnaryFunction<Grid.Location, Rectangle> toBoundary() {
-        return new UnaryFunction<Grid.Location, Rectangle>() {
+    private UnaryFunction<com.crudetech.gui.widgets.Rectangle, Rectangle> toAwtRectangle() {
+        return new UnaryFunction<com.crudetech.gui.widgets.Rectangle, Rectangle>() {
             @Override
-            public Rectangle execute(Grid.Location location) {
-                return getStyle().getGridMarkLocations()[location.getRow().ordinal()][location.getColumn().ordinal()];
+            public Rectangle execute(com.crudetech.gui.widgets.Rectangle rectangle) {
+                return WidgetAwtConverter.rectangle(rectangle);
             }
         };
     }
+
 
 }

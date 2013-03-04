@@ -31,7 +31,7 @@ public class StyleStub implements Style {
     private void fillLocations() {
         for(int row = 0; row < 3; ++row){
             for(int col = 0; col < 3; ++col){
-                locations[row][col] = new Rectangle(row*(GridCellDistance+GridCellHeight), col*(GridCellDistance+GridCellWidth), GridCellWidth, GridCellHeight);
+                locations[row][col] = new Rectangle(row*(GridCellDistance+GridCellWidth), col*(GridCellDistance+GridCellHeight), GridCellWidth, GridCellHeight);
             }
         }
     }

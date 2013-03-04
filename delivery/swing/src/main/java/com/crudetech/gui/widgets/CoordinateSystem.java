@@ -74,4 +74,19 @@ public class CoordinateSystem {
                 ", scale=" + scale +
                 '}';
     }
+
+    public Rectangle toWorldCoordinates(Rectangle rectangle) {
+        return new Rectangle(
+                toWorldCoordinates(rectangle.getLocation()),
+                lengthToWorld(rectangle.width),
+                lengthToWorld(rectangle.height));
+    }
+
+    private int lengthToWorld(int length) {
+       return (int) (length *scale);
+    }
+
+    public Point toWorldCoordinates(Point point) {
+        return Point.of(point.x + location.x, point.y + location.y);
+    }
 }

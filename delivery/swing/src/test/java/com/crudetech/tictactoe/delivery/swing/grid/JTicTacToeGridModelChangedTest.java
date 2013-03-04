@@ -62,6 +62,9 @@ public class JTicTacToeGridModelChangedTest {
 
     @Test
     public void modelCellChangedEvenTriggersRepaint() {
+        // -XX
+        // --X
+        // ---
         Iterable<Grid.Location> changedCells = asList(
                 Grid.Location.of(Grid.Row.First, Grid.Column.Third),
                 Grid.Location.of(Grid.Row.First, Grid.Column.Second),
@@ -74,12 +77,20 @@ public class JTicTacToeGridModelChangedTest {
         assertThat(aGrid.repaintedRegions, is(equivalentTo(expectedRepaintedRegions())));
     }
 
-    private static List<Rectangle> expectedRepaintedRegions() {
+    private List<Rectangle> expectedRepaintedRegions() {
         return asList(
-                new Rectangle(StyleStub.Width / 2, StyleStub.Height / 2 + 2 * StyleStub.GridCellWidth + 2 * StyleStub.GridCellDistance, StyleStub.GridCellWidth + 1, StyleStub.GridCellHeight + 1),
-                new Rectangle(StyleStub.Width / 2, StyleStub.Height / 2 + StyleStub.GridCellWidth + StyleStub.GridCellDistance, StyleStub.GridCellWidth + 1, StyleStub.GridCellHeight + 1),
-                new Rectangle(StyleStub.Width / 2 + StyleStub.GridCellWidth + StyleStub.GridCellDistance, StyleStub.Height / 2 + 2 * StyleStub.GridCellWidth + 2 * StyleStub.GridCellDistance, StyleStub.GridCellWidth + 1, StyleStub.GridCellHeight + 1)
+                expectedRectangleOf(Grid.Location.of(Grid.Row.First, Grid.Column.Third)),
+                expectedRectangleOf(Grid.Location.of(Grid.Row.First, Grid.Column.Second)),
+                expectedRectangleOf(Grid.Location.of(Grid.Row.Second, Grid.Column.Third))
         );
+    }
+
+    Rectangle expectedRectangleOf(Grid.Location location) {
+        com.crudetech.gui.widgets.Rectangle r1 = aGrid.getUI().getStyle().getGridMarkLocations()[location.getRow().ordinal()][location.getColumn().ordinal()];
+        int imageLocationX = StyleStub.Width / 2;
+        int imageLocationY = StyleStub.Height / 2;
+        r1 = r1.translate(imageLocationX, imageLocationY).inflate(1, 1);
+        return WidgetAwtConverter.rectangle(r1);
     }
 
     @Test
