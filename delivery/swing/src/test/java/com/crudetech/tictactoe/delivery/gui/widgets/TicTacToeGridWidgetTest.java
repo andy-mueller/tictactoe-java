@@ -187,7 +187,7 @@ public class TicTacToeGridWidgetTest {
 
         List<Widget> widgets = widget.buildPaintList();
 
-        Rectangle rect = style.getGridMarkLocations()[highlightedLocation.getRow().ordinal()][highlightedLocation.getColumn().ordinal()];
+        Rectangle rect = style.getGridMarkLocations()[highlightedLocation.getRow().position()][highlightedLocation.getColumn().position()];
         rect = rect.translate(StyleStub.Width / 2, StyleStub.Height / 2);
         Widget expectHighlightRectangle = new RectangleWidget(rect, style.getHighlightColor());
 

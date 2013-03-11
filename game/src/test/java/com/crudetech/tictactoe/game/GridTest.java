@@ -16,19 +16,6 @@ import static org.hamcrest.Matchers.is;
 
 @RunWith(Features.class)
 public class GridTest {
-    @Test
-    public void rowValuesHaveCorrectOrdinals() {
-        assertThat(Grid.Row.First.ordinal(), is(0));
-        assertThat(Grid.Row.Second.ordinal(), is(1));
-        assertThat(Grid.Row.Third.ordinal(), is(2));
-    }
-
-    @Test
-    public void columnValuesHaveCorrectOrdinals() {
-        assertThat(Grid.Column.First.ordinal(), is(0));
-        assertThat(Grid.Column.Second.ordinal(), is(1));
-        assertThat(Grid.Column.Third.ordinal(), is(2));
-    }
 
     @Feature(Equivalent.class)
     public static Equivalent.Factory<Grid.Location> locationsAreEquivalent() {
@@ -97,13 +84,15 @@ public class GridTest {
             }
         };
     }
+
     @Test
-    public void markCanReturnItsOppositeMark(){
+    public void markCanReturnItsOppositeMark() {
         assertThat(Grid.Mark.Cross.getOpposite(), is(Grid.Mark.Nought));
         assertThat(Grid.Mark.Nought.getOpposite(), is(Grid.Mark.Cross));
     }
+
     @Test
-    public void markNoneThrowsOnOppositeMark(){
+    public void markNoneThrowsOnOppositeMark() {
         Runnable askMarkNoneForOpposite = new Runnable() {
             @Override
             public void run() {
@@ -112,5 +101,19 @@ public class GridTest {
         };
 
         assertThat(askMarkNoneForOpposite, doesThrow(IllegalStateException.class));
+    }
+
+    @Test
+    public void rowPositionHasCorrectOrder() {
+        assertThat(Grid.Row.First.position(), is(0));
+        assertThat(Grid.Row.Second.position(), is(1));
+        assertThat(Grid.Row.Third.position(), is(2));
+    }
+
+    @Test
+    public void columnPositionHasCorrectOrder() {
+        assertThat(Grid.Column.First.position(), is(0));
+        assertThat(Grid.Column.Second.position(), is(1));
+        assertThat(Grid.Column.Third.position(), is(2));
     }
 }

@@ -54,6 +54,10 @@ public interface Grid {
         public Row previousOrFlip() {
             return compareTo(First) > 0 ? Enums.ofOrdinal(Row.class, ordinal() - 1) : Third;
         }
+
+        public int position() {
+            return ordinal();
+        }
     }
 
     public static enum Column {
@@ -74,6 +78,10 @@ public interface Grid {
                     ? Enums.ofOrdinal(Column.class, ordinal() - 1)
                     : Third;
 
+        }
+
+        public int position() {
+            return ordinal();
         }
     }
 

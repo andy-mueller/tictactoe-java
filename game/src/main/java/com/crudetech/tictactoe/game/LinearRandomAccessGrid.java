@@ -70,7 +70,7 @@ public class LinearRandomAccessGrid implements Grid {
     }
 
     private static int computeIndexFrom(Row row, Column column) {
-        return row.ordinal() * Dimension + column.ordinal();
+        return row.position() * Dimension + column.position();
     }
 
     void setAt(Row row, Column column, Mark mark) {

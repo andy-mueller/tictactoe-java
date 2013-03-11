@@ -82,11 +82,11 @@ public class JTicTacToeGridModelChangedTest {
                 expectedRectangleOf(Grid.Location.of(Grid.Row.First, Grid.Column.Third)),
                 expectedRectangleOf(Grid.Location.of(Grid.Row.First, Grid.Column.Second)),
                 expectedRectangleOf(Grid.Location.of(Grid.Row.Second, Grid.Column.Third))
-        );
+        );                                                  
     }
 
     Rectangle expectedRectangleOf(Grid.Location location) {
-        com.crudetech.gui.widgets.Rectangle r1 = aGrid.getUI().getStyle().getGridMarkLocations()[location.getRow().ordinal()][location.getColumn().ordinal()];
+        com.crudetech.gui.widgets.Rectangle r1 = aGrid.getUI().getStyle().getGridMarkLocations()[location.getRow().position()][location.getColumn().position()];
         int imageLocationX = StyleStub.Width / 2;
         int imageLocationY = StyleStub.Height / 2;
         r1 = r1.translate(imageLocationX, imageLocationY).inflate(1, 1);

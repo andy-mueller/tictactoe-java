@@ -43,7 +43,7 @@ public class GridCellHit {
             @Override
             public Pair<Rectangle, Grid.Location> execute(Grid.Cell cell) {
                 Grid.Location location = cell.getLocation();
-                Rectangle hitRect = gridMarkLocations[location.getRow().ordinal()][location.getColumn().ordinal()];
+                Rectangle hitRect = gridMarkLocations[location.getRow().position()][location.getColumn().position()];
                 if (hitRect.contains(x, y)) {
                     return new Pair<>(hitRect, location);
                 }

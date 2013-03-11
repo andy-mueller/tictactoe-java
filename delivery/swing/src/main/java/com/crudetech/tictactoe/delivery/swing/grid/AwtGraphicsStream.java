@@ -27,9 +27,17 @@ class AwtGraphicsStream implements GraphicsStream {
 
     @Override
     public void pushTranslation(int dx, int dy) {
-        xforms.add(pipe.getTransform());
-        pipe.translate(dx, dy);
+        pushCurrentTransformationOnStack();
+        applyNewTranslation(dx, dy);
     }
+
+        private void pushCurrentTransformationOnStack() {
+            xforms.add(pipe.getTransform());
+        }
+
+        private void applyNewTranslation(int dx, int dy) {
+            pipe.translate(dx, dy);
+        }
 
     @Override
     public void popTransformation() {

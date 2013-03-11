@@ -112,7 +112,7 @@ public class TicTacToeGridWidget extends EcsWidget {
     }
 
     private Rectangle getBoundaryForLocation(Grid.Location location) {
-        return style.getGridMarkLocations()[location.getRow().ordinal()][location.getColumn().ordinal()];
+        return style.getGridMarkLocations()[location.getRow().position()][location.getColumn().position()];
     }
 
     private Widget wrapTransparentIfIsNotInHighlightedWinningTriple(Widget widget, Grid.Location location) {
@@ -144,8 +144,8 @@ public class TicTacToeGridWidget extends EcsWidget {
     }
 
     private Widget highlightWidget() {
-        Point origin = getBackgroundImageOrigin();
         if (hasHighlightedCell()) {
+            Point origin = getBackgroundImageOrigin();
             Rectangle boundaryForLocation = getBoundaryForLocation(model.getHighlightedCell());
             boundaryForLocation = boundaryForLocation.translate(origin.x, origin.y);
             return new RectangleWidget(boundaryForLocation, style.getHighlightColor());
@@ -181,7 +181,7 @@ public class TicTacToeGridWidget extends EcsWidget {
         return new UnaryFunction<Grid.Location, Rectangle>() {
             @Override
             public Rectangle execute(Grid.Location location) {
-                return style.getGridMarkLocations()[location.getRow().ordinal()][location.getColumn().ordinal()];
+                return style.getGridMarkLocations()[location.getRow().position()][location.getColumn().position()];
             }
         };
     }

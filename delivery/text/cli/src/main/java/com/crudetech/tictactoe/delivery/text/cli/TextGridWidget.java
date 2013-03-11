@@ -71,11 +71,11 @@ public class TextGridWidget {
         }
 
         public int getTextPositionX() {
-            return textLocationsX[location.getColumn().ordinal()];
+            return textLocationsX[location.getColumn().position()];
         }
 
         public int getTextPositionY() {
-            return textLocationsY[location.getRow().ordinal()];
+            return textLocationsY[location.getRow().position()];
         }
 
         @Override
