@@ -7,6 +7,7 @@ import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.tictactoe.game.Grid;
 
 import static com.crudetech.query.Query.from;
+import static com.crudetech.tictactoe.game.GridCells.getAtLocation;
 
 public class GridCellHit {
     private final Pair<Rectangle, Grid.Location> hitInfo;
@@ -43,7 +44,7 @@ public class GridCellHit {
             @Override
             public Pair<Rectangle, Grid.Location> execute(Grid.Cell cell) {
                 Grid.Location location = cell.getLocation();
-                Rectangle hitRect = gridMarkLocations[location.getRow().position()][location.getColumn().position()];
+                Rectangle hitRect = getAtLocation(gridMarkLocations, location);
                 if (hitRect.contains(x, y)) {
                     return new Pair<>(hitRect, location);
                 }

@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.crudetech.query.Query.from;
+import static com.crudetech.tictactoe.game.GridCells.getAtLocation;
 import static java.lang.Math.max;
 
 public class TicTacToeGridWidget extends EcsWidget {
@@ -64,7 +65,7 @@ public class TicTacToeGridWidget extends EcsWidget {
     }
 
     public GridCellHit checkGridCellHit(Point hitInWorld) {
-        Point hitInEcs = hitInWorld.translate(-widgetCoordinates().getLocation().x, -widgetCoordinates().getLocation().y);
+        Point hitInEcs = widgetCoordinates().toWidgetCoordinates(hitInWorld);
         Point backgroundImageOrigin = getBackgroundImageOrigin();
         Point ptInUiCoordinates = hitInEcs.translate(-backgroundImageOrigin.x, -backgroundImageOrigin.y);
         Iterable<Grid.Cell> allCells = model.getGrid().getCells();
@@ -112,7 +113,7 @@ public class TicTacToeGridWidget extends EcsWidget {
     }
 
     private Rectangle getBoundaryForLocation(Grid.Location location) {
-        return style.getGridMarkLocations()[location.getRow().position()][location.getColumn().position()];
+        return getAtLocation(style.getGridMarkLocations(), location);
     }
 
     private Widget wrapTransparentIfIsNotInHighlightedWinningTriple(Widget widget, Grid.Location location) {
@@ -181,7 +182,7 @@ public class TicTacToeGridWidget extends EcsWidget {
         return new UnaryFunction<Grid.Location, Rectangle>() {
             @Override
             public Rectangle execute(Grid.Location location) {
-                return style.getGridMarkLocations()[location.getRow().position()][location.getColumn().position()];
+                return getAtLocation(style.getGridMarkLocations(),location);
             }
         };
     }

@@ -26,4 +26,7 @@ public class GridCells {
         };
     }
 
+    public static <T> T getAtLocation(T[][] array, Grid.Location location){
+        return array[location.getRow().position()][location.getColumn().position()];
+    }
 }
