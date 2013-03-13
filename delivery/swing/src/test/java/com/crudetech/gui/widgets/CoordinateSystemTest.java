@@ -67,7 +67,7 @@ public class CoordinateSystemTest {
     }
 
     @Test
-    public void toWorldAddsLocationToPoint() throws Exception {
+    public void givenNoScale_toWorldAddsLocationToPoint() throws Exception {
         CoordinateSystem coos = new CoordinateSystem(Point.of(2, 3));
 
         Point actual = coos.toWorldCoordinates(Point.of(3, 2));
@@ -77,7 +77,7 @@ public class CoordinateSystemTest {
 
 
     @Test
-    public void givenRectangleIsLocatedAtCoordinateOrigin_toWorldMovesAndScalesLocationToPoint() throws Exception {
+    public void givenScaleAndRectangleIsLocatedAtCoordinateOrigin_toWorldMovesAndScalesLocationToPoint() throws Exception {
         CoordinateSystem coos = new CoordinateSystem(Point.of(2, 1), 0.5);
 
         Rectangle r = new Rectangle(0, 0, 4, 2);
@@ -87,7 +87,7 @@ public class CoordinateSystemTest {
     }
 
     @Test
-    public void givenRectangleNotOnEcsOrigin_toWorldMovesAndScalesLocationToPoint() throws Exception {
+    public void givenScaleAndRectangleNotOnEcsOrigin_toWorldMovesAndScalesLocationToPoint() throws Exception {
         CoordinateSystem coos = new CoordinateSystem(Point.of(2, 1), 0.5);
 
         Rectangle r = new Rectangle(2, 4, 4, 2);
@@ -95,14 +95,15 @@ public class CoordinateSystemTest {
 
         assertThat(inWorldCoordinates, is(new Rectangle(3, 3, 2, 1)));
     }
+
     @Test
-    public void worldToEcs() throws Exception {
+    public void givenRectangleNotOnEcsOrigin_worldToEcsApliesTranslationAndScale() throws Exception {
         CoordinateSystem coos = new CoordinateSystem(Point.of(2, 1), 0.5);
 
         Rectangle r = new Rectangle(3, 3, 2, 1);
         Rectangle inWorldCoordinates = coos.toWidgetCoordinates(r);
 
-        assertThat(inWorldCoordinates, is(new Rectangle(2, 4,4,2)));
+        assertThat(inWorldCoordinates, is(new Rectangle(2, 4, 4, 2)));
     }
 
     @Test
