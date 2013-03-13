@@ -35,6 +35,7 @@ public interface Grid {
                 throw new IllegalStateException("Can't be done for None!");
             }
         };
+
         public abstract Mark getOpposite();
     }
 
@@ -47,12 +48,14 @@ public interface Grid {
 
         public Row nextOrFlip() {
             return compareTo(Third) < 0
-                    ? Enums.ofOrdinal(Row.class, ordinal() + 1)
-                    : First;
+                 ? Enums.ofOrdinal(Row.class, ordinal() + 1)
+                 : First;
         }
 
         public Row previousOrFlip() {
-            return compareTo(First) > 0 ? Enums.ofOrdinal(Row.class, ordinal() - 1) : Third;
+            return compareTo(First) > 0
+                 ? Enums.ofOrdinal(Row.class, ordinal() - 1)
+                 : Third;
         }
 
         public int position() {
