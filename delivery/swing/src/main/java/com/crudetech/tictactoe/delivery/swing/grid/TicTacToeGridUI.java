@@ -64,8 +64,7 @@ public class TicTacToeGridUI extends ComponentUI {
 
     @Override
     public Dimension getPreferredSize(JComponent c) {
-        com.crudetech.tictactoe.delivery.gui.widgets.Dimension preferredSize = style.getPreferredSize();
-        return new Dimension(preferredSize.width, preferredSize.height);
+        return WidgetAwtConverter.dimension(style.getPreferredSize());
     }
 
     public void setStyle(Style style) {
