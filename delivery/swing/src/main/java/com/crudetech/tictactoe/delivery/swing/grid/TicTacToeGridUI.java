@@ -49,8 +49,7 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     void paint(Graphics2D g2d) {
-        buildGraphic();
-        gridWidget.paint(streamInto(g2d));
+        getGridWidget().paint(streamInto(g2d));
     }
 
     private GraphicsStream streamInto(final Graphics2D g2d) {
@@ -85,7 +84,7 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     public GridCellHit checkGridCellHit(int x, int y) {
-        return gridWidget.checkGridCellHit(com.crudetech.gui.widgets.Point.of(x, y));
+        return getGridWidget().checkGridCellHit(com.crudetech.gui.widgets.Point.of(x, y));
     }
 
     private TicTacToeGridModel getModel() {
@@ -93,17 +92,23 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     void repaintAll() {
+        invalidateGraphic();
         component.repaint();
     }
 
+    private void invalidateGraphic() {
+        gridWidget = null;
+    }
+
     void repaintCells(Iterable<Grid.Location> changedCells) {
+        invalidateGraphic();
         for (Rectangle rect : getRectanglesForCells(changedCells)) {
             component.repaint(rect);
         }
     }
 
     private Iterable<Rectangle> getRectanglesForCells(Iterable<Grid.Location> cells) {
-        return from(gridWidget.getCellBoundaries(cells))
+        return from(getGridWidget().getCellBoundaries(cells))
                 .select(toAwtRectangle())
                 .select(toInflatedRectangle());
     }
@@ -129,4 +134,10 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
 
+    private TicTacToeGridWidget getGridWidget() {
+        if(gridWidget == null){
+            buildGraphic();
+        }
+        return gridWidget;
+    }
 }
