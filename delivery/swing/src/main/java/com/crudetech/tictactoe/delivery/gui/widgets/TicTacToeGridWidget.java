@@ -2,15 +2,7 @@ package com.crudetech.tictactoe.delivery.gui.widgets;
 
 import com.crudetech.collections.Iterables;
 import com.crudetech.functional.UnaryFunction;
-import com.crudetech.gui.widgets.AlphaValue;
-import com.crudetech.gui.widgets.Color;
-import com.crudetech.gui.widgets.CoordinateSystem;
-import com.crudetech.gui.widgets.EcsWidget;
-import com.crudetech.gui.widgets.GraphicsStream;
-import com.crudetech.gui.widgets.Image;
-import com.crudetech.gui.widgets.Point;
-import com.crudetech.gui.widgets.Rectangle;
-import com.crudetech.gui.widgets.Widget;
+import com.crudetech.gui.widgets.*;
 import com.crudetech.tictactoe.game.Grid;
 
 import java.util.ArrayList;
@@ -51,7 +43,7 @@ public class TicTacToeGridWidget extends EcsWidget {
     }
 
 
-    public List<Widget> buildPaintList() {
+    List<Widget> buildPaintList() {
         List<Widget> paintList = new ArrayList<>();
 
         paintList.add(backgroundWidget());
@@ -90,14 +82,14 @@ public class TicTacToeGridWidget extends EcsWidget {
     }
 
 
-    public Point getBackgroundImageOrigin() {
+    Point getBackgroundImageOrigin() {
         Image backgroundImage = style.getBackgroundImage();
         int x = max((bounds.width - backgroundImage.getWidth()) / 2, 0);
         int y = max((bounds.height - backgroundImage.getHeight()) / 2, 0);
         return new Point(x, y);
     }
 
-    public List<Widget> gridMarkWidgetList() {
+    List<Widget> gridMarkWidgetList() {
         Point gridOrigin = getBackgroundImageOrigin();
         List<Widget> gridMArks = new ArrayList<>(9);
         for (Grid.Cell cell : model.getGrid().getCells()) {
