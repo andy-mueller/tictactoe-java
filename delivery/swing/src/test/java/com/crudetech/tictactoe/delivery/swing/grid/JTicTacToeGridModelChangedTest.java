@@ -1,14 +1,13 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.event.EventSupport;
-import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.delivery.gui.widgets.StyleStub;
 import com.crudetech.tictactoe.delivery.gui.widgets.TicTacToeGridModel;
 import com.crudetech.tictactoe.game.Grid;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,8 +52,8 @@ public class JTicTacToeGridModelChangedTest {
             }
         };
         aGrid = new PaintTrackingTicTacToeGrid(model);
-        aGrid.setSize(StyleStub.Width * 2, StyleStub.Height * 2);
-        Style style = new StyleStub();
+        StyleStub style = new StyleStub();
+        aGrid.setSize(style.getBackgroundImageWidth()* 2, style.getBackgroundImageHeight() * 2);
         aGrid.getUI().setStyle(style);
 
         aGrid.getUI().buildGraphic();
@@ -87,8 +86,9 @@ public class JTicTacToeGridModelChangedTest {
 
     Rectangle expectedRectangleOf(Grid.Location location) {
         com.crudetech.gui.widgets.Rectangle r1 = aGrid.getUI().getStyle().getGridMarkLocations()[location.getRow().position()][location.getColumn().position()];
-        int imageLocationX = StyleStub.Width / 2;
-        int imageLocationY = StyleStub.Height / 2;
+        StyleStub style = (StyleStub) aGrid.getUI().getStyle();
+        int imageLocationX =style.getBackgroundImage().getWidth()/ 2;
+        int imageLocationY = style.getBackgroundImage().getHeight() / 2;
         r1 = r1.translate(imageLocationX, imageLocationY).inflate(1, 1);
         return WidgetAwtConverter.rectangle(r1);
     }

@@ -31,18 +31,18 @@ public class JTicTacToeGridMouseMoveTest {
     @Before
     public void setUp() throws Exception {
         grid = new JTicTacToeGrid();
-        grid.setSize(StyleStub.Width * 2, StyleStub.Height * 2);
         Style style = new StyleStub();
+        grid.setSize(style.getBackgroundImage().getWidth() * 2, style.getBackgroundImage().getHeight() * 2);
         grid.getUI().setStyle(style);
 
         outsideAnyCell = new Point(10, 10);
-        inLastCell = getPointInsideOfRectangle(style.getGridMarkLocations()[2][2]);
+        inLastCell = getPointInsideOfRectangle(style.getGridMarkLocations()[2][2], style);
 
         grid.getUI().buildGraphic();
     }
 
-    private Point getPointInsideOfRectangle(Rectangle rectangle) {
-        return new Point(rectangle.x + 1 + StyleStub.Width / 2, rectangle.y + 1 + StyleStub.Height / 2);
+    private Point getPointInsideOfRectangle(Rectangle rectangle, Style style) {
+        return new Point(rectangle.x + 1 + style.getBackgroundImage().getWidth() / 2, rectangle.y + 1 + style.getBackgroundImage().getHeight() / 2);
     }
 
     @Test
