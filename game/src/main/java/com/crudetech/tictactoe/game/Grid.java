@@ -1,5 +1,6 @@
 package com.crudetech.tictactoe.game;
 
+import com.crudetech.collections.Iterables;
 import com.crudetech.lang.Enums;
 
 import java.util.Objects;
@@ -48,14 +49,14 @@ public interface Grid {
 
         public Row nextOrFlip() {
             return compareTo(Third) < 0
-                 ? Enums.ofOrdinal(Row.class, ordinal() + 1)
-                 : First;
+                    ? Enums.ofOrdinal(Row.class, ordinal() + 1)
+                    : First;
         }
 
         public Row previousOrFlip() {
             return compareTo(First) > 0
-                 ? Enums.ofOrdinal(Row.class, ordinal() - 1)
-                 : Third;
+                    ? Enums.ofOrdinal(Row.class, ordinal() - 1)
+                    : Third;
         }
 
         public int position() {
@@ -238,6 +239,10 @@ public interface Grid {
         public boolean isWinForMark(Mark mark) {
             return !equals(Empty)
                     && this.mark == mark;
+        }
+
+        public boolean containsLocation(Location location) {
+            return Iterables.contains(getLocations(), location);
         }
     }
 }

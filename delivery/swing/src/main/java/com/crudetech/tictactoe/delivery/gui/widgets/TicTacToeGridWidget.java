@@ -1,6 +1,5 @@
 package com.crudetech.tictactoe.delivery.gui.widgets;
 
-import com.crudetech.collections.Iterables;
 import com.crudetech.functional.UnaryFunction;
 import com.crudetech.gui.widgets.*;
 import com.crudetech.tictactoe.game.Grid;
@@ -120,7 +119,7 @@ public class TicTacToeGridWidget extends EcsWidget {
     }
 
     private boolean isInWinningTriple(Grid.Location location) {
-        return Iterables.contains(model.getHighlightedThreeInARow().getLocations(), location);
+        return model.getHighlightedThreeInARow().containsLocation(location);
     }
 
     private Widget createMarkWidget(Grid.Mark mark, Rectangle bounds) {

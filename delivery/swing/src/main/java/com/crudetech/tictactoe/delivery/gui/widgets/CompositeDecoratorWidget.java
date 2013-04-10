@@ -38,4 +38,12 @@ public class CompositeDecoratorWidget extends DecoratorWidget {
     public int hashCode() {
         return Objects.hash(super.hashCode(), alpha);
     }
+
+    @Override
+    public String toString() {
+        return "CompositeDecoratorWidget{" +
+                "decorated=" + getDecorated() +
+                ",alpha=" + alpha +
+                '}';
+    }
 }

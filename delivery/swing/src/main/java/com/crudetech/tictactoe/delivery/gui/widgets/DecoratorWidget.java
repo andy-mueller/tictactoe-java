@@ -37,4 +37,8 @@ public class DecoratorWidget implements Widget {
     public int hashCode() {
         return Objects.hashCode(decorated);
     }
+
+    Widget getDecorated() {
+        return decorated;
+    }
 }
