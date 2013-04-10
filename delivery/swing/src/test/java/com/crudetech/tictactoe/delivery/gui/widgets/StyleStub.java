@@ -12,20 +12,26 @@ public class StyleStub implements Style {
     public static final int Width = 500;
     public static final int Height = 1000;
 
-    public static final int GridCellWidth = 10;
-    public static final int GridCellDistance = 10;
-    public static int GridCellHeight = 10   ;
+    private static final int GridCellWidth = 10;
+    private static final int GridCellDistance = 10;
+    private static int GridCellHeight = 10   ;
 
     private final Image nought = mock(Image.class);
     private final Image cross = mock(Image.class);
     private final Image back;
     private final Rectangle[][] locations = new Rectangle[3][3];
 
+    public static final StyleStub Default = new StyleStub();
+
     public StyleStub() {
         fillLocations();
         back = mock(Image.class);
         when(back.getWidth()).thenReturn(Width);
         when(back.getHeight()).thenReturn(Height);
+    }
+
+    public  int getBackgroundImageHeight() {
+        return Height;
     }
 
     private void fillLocations() {
@@ -69,5 +75,9 @@ public class StyleStub implements Style {
     @Override
     public Image getNoughtImage() {
         return nought;
+    }
+
+    public int getBackgroundImageWidth() {
+        return Width;
     }
 }
