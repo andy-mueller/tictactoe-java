@@ -3,41 +3,50 @@ package com.crudetech.tictactoe.delivery.gui.widgets;
 import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Rectangle;
-import com.crudetech.tictactoe.delivery.swing.grid.AwtColor;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class StyleStub implements Style {
-    public static final int Width = 500;
-    public static final int Height = 1000;
-
-    private static final int GridCellWidth = 10;
-    private static final int GridCellDistance = 10;
-    private static int GridCellHeight = 10   ;
-
-    private final Image nought = mock(Image.class);
-    private final Image cross = mock(Image.class);
+    private final Image nought;
+    private final Image cross;
     private final Image back;
     private final Rectangle[][] locations = new Rectangle[3][3];
-
-    public static final StyleStub Default = new StyleStub();
+    private final Color backColor = newColor();
+    private final Color highlightColor = newColor();
 
     public StyleStub() {
-        fillLocations();
-        back = mock(Image.class);
-        when(back.getWidth()).thenReturn(Width);
-        when(back.getHeight()).thenReturn(Height);
+        this(500, 1000, 10, 10);
     }
 
-    public  int getBackgroundImageHeight() {
-        return Height;
+    public StyleStub(int width, int height, int cellWidth, int cellHeight) {
+        fillLocations(cellWidth, cellHeight, width, height);
+        back = newImageStub(width, height);
+        cross = newImageStub(cellWidth, cellHeight);
+        nought = newImageStub(cellWidth, cellHeight);
     }
 
-    private void fillLocations() {
-        for(int row = 0; row < 3; ++row){
-            for(int col = 0; col < 3; ++col){
-                locations[row][col] = new Rectangle(row*(GridCellDistance+GridCellWidth), col*(GridCellDistance+GridCellHeight), GridCellWidth, GridCellHeight);
+    private Image newImageStub(final int width, final int height) {
+        return new Image() {
+            @Override
+            public int getWidth() {
+                return width;
+            }
+
+            @Override
+            public int getHeight() {
+                return height;
+            }
+        };
+    }
+    private Color newColor() {
+        return new Color() {
+        };
+    }
+
+    private void fillLocations(int cellWidth, int cellHeight, int width, int height) {
+        int widthDistance = (width - 3 * cellWidth) / 4;
+        int heightDistance = (height - 3 * cellHeight) / 4;
+        for (int row = 0; row < 3; ++row) {
+            for (int col = 0; col < 3; ++col) {
+                locations[row][col] = new Rectangle(row * (widthDistance + cellWidth), col * (heightDistance + cellHeight), cellWidth, cellHeight);
             }
         }
     }
@@ -49,12 +58,12 @@ public class StyleStub implements Style {
 
     @Override
     public Color getBackgroundColor() {
-        return new AwtColor(java.awt.Color.MAGENTA);
+        return backColor;
     }
 
     @Override
     public Color getHighlightColor() {
-        return new AwtColor(java.awt.Color.PINK);
+        return highlightColor;
     }
 
     @Override
@@ -75,9 +84,5 @@ public class StyleStub implements Style {
     @Override
     public Image getNoughtImage() {
         return nought;
-    }
-
-    public int getBackgroundImageWidth() {
-        return Width;
     }
 }

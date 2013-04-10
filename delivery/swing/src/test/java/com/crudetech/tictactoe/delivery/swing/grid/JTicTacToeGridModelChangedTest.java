@@ -53,7 +53,7 @@ public class JTicTacToeGridModelChangedTest {
         };
         aGrid = new PaintTrackingTicTacToeGrid(model);
         StyleStub style = new StyleStub();
-        aGrid.setSize(style.getBackgroundImageWidth()* 2, style.getBackgroundImageHeight() * 2);
+        aGrid.setSize(style.getBackgroundImage().getWidth()* 2, style.getBackgroundImage().getHeight() * 2);
         aGrid.getUI().setStyle(style);
 
         aGrid.getUI().buildGraphic();
