@@ -1,10 +1,10 @@
 package com.crudetech.tictactoe.game;
 
-import com.crudetech.collections.Iterables;
 import com.crudetech.lang.Enums;
 
 import java.util.Objects;
 
+import static com.crudetech.collections.Iterables.contains;
 import static com.crudetech.matcher.Verify.verifyThat;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
@@ -242,7 +242,7 @@ public interface Grid {
         }
 
         public boolean containsLocation(Location location) {
-            return Iterables.contains(getLocations(), location);
+            return contains(getLocations(), location);
         }
     }
 }
