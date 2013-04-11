@@ -2,12 +2,7 @@ package com.crudetech.tictactoe.delivery.gui.widgets;
 
 
 import com.crudetech.functional.UnaryFunction;
-import com.crudetech.gui.widgets.Color;
-import com.crudetech.gui.widgets.CoordinateSystem;
-import com.crudetech.gui.widgets.Image;
-import com.crudetech.gui.widgets.Point;
-import com.crudetech.gui.widgets.Rectangle;
-import com.crudetech.gui.widgets.Widget;
+import com.crudetech.gui.widgets.*;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import org.junit.Before;
@@ -21,22 +16,20 @@ import static com.crudetech.matcher.RangeIsEquivalent.equivalentTo;
 import static com.crudetech.query.Query.from;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 public class TicTacToeGridWidgetTest {
-    private final int paintOffsetX = 250;
-    private final int paintOffsetY = 500;
 
     private Style style;
     private TicTacToeGridModel model;
 
     private static final Color Orange = new Color() {
     };
+    private static final Rectangle widgetBoundary = new Rectangle(1, 1, 750, 500);
 
     @Before
     public void setUp() throws Exception {
-        style = new StyleStub();
+        style = new StyleStub(500, 400, 100, 100);
 
         model = new TicTacToeGridModel(LinearRandomAccessGrid.of(
                 Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None,
@@ -46,7 +39,7 @@ public class TicTacToeGridWidgetTest {
     }
 
     @Test
-    public void backgroundIsPositionedAtOriginIfComponentIsSmaller() {
+    public void givenWidgetIsSmaller_ImageIsPositionedAtOrigin() {
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
                 .withBounds(new Rectangle(1, 1, 10, 10))
                 .withStyle(style)
@@ -61,7 +54,7 @@ public class TicTacToeGridWidgetTest {
     @Test
     public void backGroundIsInvalidated() {
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
-                .withBounds(new Rectangle(0, 0, 500, 600))
+                .withBounds(widgetBoundary)
                 .withStyle(style)
                 .withModel(model)
                 .setDebugModeOn(Orange)
@@ -70,7 +63,7 @@ public class TicTacToeGridWidgetTest {
         List<Widget> widgets = widget.buildPaintList();
         Widget background = widgets.get(0);
 
-        Widget expectedBackground = getExpectedBackground(500, 600);
+        Widget expectedBackground = getExpectedBackground(750, 500);
         assertThat(background, is(expectedBackground));
     }
 
@@ -79,9 +72,9 @@ public class TicTacToeGridWidgetTest {
     }
 
     @Test
-    public void backGroundIsPaintedInMiddleOfComponent() {
+    public void backGroundImageIsPaintedInMiddleOfComponent() {
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
-                .withBounds(new Rectangle(0, 0, 1000, 2000))
+                .withBounds(widgetBoundary)
                 .withStyle(style)
                 .withModel(model)
                 .setDebugModeOn(Orange)
@@ -89,13 +82,13 @@ public class TicTacToeGridWidgetTest {
         List<Widget> widgets = widget.buildPaintList();
 
         ImageWidget backGroundImage = (ImageWidget) widgets.get(1);
-        assertThat(backGroundImage.widgetCoordinates(), is(new CoordinateSystem(Point.of(250, 500))));
+        assertThat(backGroundImage.widgetCoordinates(), is(new CoordinateSystem(Point.of(125, 50))));
     }
 
     @Test
     public void gridMarksArePaintedFromModel() {
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
-                .withBounds(new Rectangle(0, 0, 1000, 2000))
+                .withBounds(widgetBoundary)
                 .withStyle(style)
                 .withModel(model)
                 .setDebugModeOn(Orange)
@@ -128,13 +121,13 @@ public class TicTacToeGridWidgetTest {
     }
 
     private Point loc(Point location) {
-        return new Point(location.x + paintOffsetX, location.y + paintOffsetY);
+        return new Point(location.x + 125, location.y + 50);
     }
 
     @Test
-    public void backgroundImageIsInMiddle() {
+    public void givenImageIsSmallerThatBoundary_ImageIsCentered() {
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
-                .withBounds(new Rectangle(0, 0, 1000, 2000))
+                .withBounds(widgetBoundary)
                 .withStyle(style)
                 .withModel(model)
                 .setDebugModeOn(Orange)
@@ -145,10 +138,14 @@ public class TicTacToeGridWidgetTest {
         assertThat(backgroundImage, is((Widget) getExpectedBackgroundImage()));
     }
 
+    private ImageWidget getExpectedBackgroundImage() {
+        return new ImageWidget(new Point(125, 50), style.getBackgroundImage());
+    }
+
     @Test
     public void paintListIsPaintedInOrder() {
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
-                .withBounds(new Rectangle(0, 0, 1000, 2000))
+                .withBounds(widgetBoundary)
                 .withStyle(style)
                 .withModel(model)
                 .noDebug()
@@ -156,21 +153,14 @@ public class TicTacToeGridWidgetTest {
         List<Widget> widgets = widget.buildPaintList();
 
         List<Widget> expectedList = new ArrayList<>();
-        expectedList.add(getExpectedBackground());
+        expectedList.add(getExpectedBackground(750, 500));
         expectedList.add(getExpectedBackgroundImage());
         expectedList.addAll(expectedGridMarkWidgets());
         expectedList.add(new EmptyWidget());
         expectedList.add(new EmptyWidget());
 
+        assertThat(widgets, is(equalTo(expectedList)));
         assertThat(widgets, is(expectedList));
-    }
-
-    private ImageWidget getExpectedBackgroundImage() {
-        return new ImageWidget(new Point(paintOffsetX, paintOffsetY), style.getBackgroundImage());
-    }
-
-    private Widget getExpectedBackground() {
-        return new FilledRectangleWidget(new Rectangle(0, 0, 1000, 2000 + 500), style.getBackgroundColor());
     }
 
     @Test
@@ -178,7 +168,7 @@ public class TicTacToeGridWidgetTest {
         Grid.Location highlightedLocation = Grid.Location.of(Grid.Row.First, Grid.Column.Third);
         model.highlightCell(highlightedLocation);
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
-                .withBounds(new Rectangle(0, 0, 1000, 2000))
+                .withBounds(widgetBoundary)
                 .withStyle(style)
                 .withModel(model)
                 .setDebugModeOn(Orange)
@@ -187,9 +177,9 @@ public class TicTacToeGridWidgetTest {
 
         List<Widget> widgets = widget.buildPaintList();
 
-        Rectangle rect = style.getGridMarkLocations()[highlightedLocation.getRow().position()][highlightedLocation.getColumn().position()];
-        rect = rect.translate(style.getBackgroundImage().getWidth() / 2, style.getBackgroundImage().getHeight() / 2);
+        Rectangle rect = new Rectangle(0, 0, 100, 100);
         Widget expectHighlightRectangle = new RectangleWidget(rect, style.getHighlightColor());
+        expectHighlightRectangle.widgetCoordinates().setLocation(Point.of(475, 75));
 
         assertThat(widgets.get(widgets.size() - 2), is(expectHighlightRectangle));
     }
@@ -203,7 +193,7 @@ public class TicTacToeGridWidgetTest {
         model.highlightThreeInARow(diagonal);
 
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
-                .withBounds(new Rectangle(0, 0, 1000, 2000))
+                .withBounds(widgetBoundary)
                 .withStyle(style)
                 .withModel(model)
                 .setDebugModeOn(Orange)

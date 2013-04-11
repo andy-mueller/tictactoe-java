@@ -26,7 +26,8 @@ public class TicTacToeGridWidget extends EcsWidget {
     public TicTacToeGridWidget(Rectangle bounds,
                                Style style, TicTacToeGridModel model,
                                boolean debugMode, Color debugColor) {
-        this.bounds = bounds;
+        super(bounds.x, bounds.y);
+        this.bounds = bounds.setLocation(0,0);
         this.style = style;
         this.model = model;
         this.isDebugMode = debugMode;

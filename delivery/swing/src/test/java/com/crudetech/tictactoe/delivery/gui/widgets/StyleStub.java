@@ -36,6 +36,7 @@ public class StyleStub implements Style {
             }
         };
     }
+
     private Color newColor() {
         return new Color() {
         };
@@ -46,7 +47,7 @@ public class StyleStub implements Style {
         int heightDistance = (height - 3 * cellHeight) / 4;
         for (int row = 0; row < 3; ++row) {
             for (int col = 0; col < 3; ++col) {
-                locations[row][col] = new Rectangle(row * (widthDistance + cellWidth), col * (heightDistance + cellHeight), cellWidth, cellHeight);
+                locations[row][col] = new Rectangle(widthDistance + col * (widthDistance + cellWidth), heightDistance + row * (heightDistance + cellHeight), cellWidth, cellHeight);
             }
         }
     }
