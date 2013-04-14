@@ -2,8 +2,8 @@ package com.crudetech.gui.widgets;
 
 
 public interface GraphicsStream {
-    void pushTranslation(int dx, int dy);
-    void popTransformation();
+    void pushCoordinateSystem(CoordinateSystem coos);
+    void popCoordinateSystem();
 
     void pushColor(Color color);
 

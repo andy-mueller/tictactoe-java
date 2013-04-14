@@ -19,9 +19,7 @@ import java.awt.event.MouseEvent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class JTicTacToeGridMouseMoveTest {
     private JTicTacToeGrid grid;
@@ -31,7 +29,7 @@ public class JTicTacToeGridMouseMoveTest {
     @Before
     public void setUp() throws Exception {
         grid = new JTicTacToeGrid();
-        Style style = new StyleStub();
+        Style style = new StyleStub.Builder().build();
         grid.setSize(style.getBackgroundImage().getWidth() * 2, style.getBackgroundImage().getHeight() * 2);
         grid.getUI().setStyle(style);
 

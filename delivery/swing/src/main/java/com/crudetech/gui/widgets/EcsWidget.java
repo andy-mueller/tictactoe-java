@@ -15,11 +15,11 @@ public abstract class EcsWidget implements Widget {
 
     @Override
     public void paint(GraphicsStream pipe) {
-        pipe.pushTranslation(ecs.getLocation().x, ecs.getLocation().y);
+        pipe.pushCoordinateSystem(ecs);
         try {
             paintEcs(pipe);
         } finally {
-            pipe.popTransformation();
+            pipe.popCoordinateSystem();
         }
     }
 
@@ -43,9 +43,5 @@ public abstract class EcsWidget implements Widget {
     @Override
     public int hashCode() {
         return Objects.hash(ecs);
-    }
-
-    protected String getLocationAsString() {
-        return ecs.toString();
     }
 }

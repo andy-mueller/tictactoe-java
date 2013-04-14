@@ -29,7 +29,10 @@ public class TicTacToeGridWidgetTest {
 
     @Before
     public void setUp() throws Exception {
-        style = new StyleStub(500, 400, 100, 100);
+        style = StyleStub.builder()
+                .withBackgroundImageSize(500, 400)
+                .withCellSize(100, 100)
+                .build();
 
         model = new TicTacToeGridModel(LinearRandomAccessGrid.of(
                 Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None,
@@ -39,16 +42,35 @@ public class TicTacToeGridWidgetTest {
     }
 
     @Test
-    public void givenWidgetIsSmaller_ImageIsPositionedAtOrigin() {
+    public void givenWidgetIsLargerThanBackgroundImage_ImageIsCentered() {
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
-                .withBounds(new Rectangle(1, 1, 10, 10))
+                .withBounds(widgetBoundary)
                 .withStyle(style)
+                .withModel(model)
+                .setDebugModeOn(Orange)
+                .createTicTacToeGridWidget();
+        List<Widget> widgets = widget.buildPaintList();
+
+        ImageWidget backGroundImage = (ImageWidget) widgets.get(1);
+        assertThat(backGroundImage.widgetCoordinates(), is(new CoordinateSystem(Point.of(125, 50))));
+    }
+
+    @Test
+    public void givenWidgetIsSmallerThanBackgroundImage_ImageIsAtOrigin() {
+        Style styleWithBiggerBackground =
+                StyleStub.builder()
+                        .withBackgroundImageSize(500, 1000)
+                        .withCellSize(100, 200)
+                        .build();
+        TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
+                .withBounds(widgetBoundary)
+                .withStyle(styleWithBiggerBackground)
                 .withModel(model)
                 .setDebugModeOn(Orange)
                 .createTicTacToeGridWidget();
 
         Widget backgroundImage = widget.buildPaintList().get(1);
-        assertThat(backgroundImage.widgetCoordinates(), is(CoordinateSystem.world()));
+        assertThat(backgroundImage.widgetCoordinates(), is(new CoordinateSystem(Point.of(125, 0), CoordinateSystem.NoScale)));
     }
 
     @Test
@@ -69,20 +91,6 @@ public class TicTacToeGridWidgetTest {
 
     private Widget getExpectedBackground(int width, int height) {
         return new FilledRectangleWidget(new Rectangle(0, 0, width, height + 500), style.getBackgroundColor());
-    }
-
-    @Test
-    public void backGroundImageIsPaintedInMiddleOfComponent() {
-        TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
-                .withBounds(widgetBoundary)
-                .withStyle(style)
-                .withModel(model)
-                .setDebugModeOn(Orange)
-                .createTicTacToeGridWidget();
-        List<Widget> widgets = widget.buildPaintList();
-
-        ImageWidget backGroundImage = (ImageWidget) widgets.get(1);
-        assertThat(backGroundImage.widgetCoordinates(), is(new CoordinateSystem(Point.of(125, 50))));
     }
 
     @Test

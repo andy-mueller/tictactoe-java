@@ -8,7 +8,7 @@ import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.Dimension;
+import java.awt.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -32,7 +32,7 @@ public class TicTacToeGridUITest {
 
         ui = grid.getUI();
 
-        style = new StyleStub();
+        style = new StyleStub.Builder().build();
         ui.setStyle(style);
         ui.buildGraphic();
     }

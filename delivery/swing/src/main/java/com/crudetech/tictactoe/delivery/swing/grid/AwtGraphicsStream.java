@@ -1,15 +1,11 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
-import com.crudetech.gui.widgets.AlphaValue;
+import com.crudetech.gui.widgets.*;
 import com.crudetech.gui.widgets.Color;
-import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Rectangle;
 
-import java.awt.AlphaComposite;
-import java.awt.Composite;
-import java.awt.Graphics2D;
-import java.awt.Paint;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +21,17 @@ class AwtGraphicsStream implements GraphicsStream {
         this.pipe = g2d;
     }
 
-    @Override
-    public void pushTranslation(int dx, int dy) {
+    private  void pushTranslation(int dx, int dy) {
         pushCurrentTransformationOnStack();
         applyNewTranslation(dx, dy);
     }
 
-        private void pushCurrentTransformationOnStack() {
+    @Override
+    public void pushCoordinateSystem(CoordinateSystem coos) {
+        pushTranslation(coos.getLocation().x, coos.getLocation().y);
+    }
+
+    private void pushCurrentTransformationOnStack() {
             xforms.add(pipe.getTransform());
         }
 
@@ -40,7 +40,7 @@ class AwtGraphicsStream implements GraphicsStream {
         }
 
     @Override
-    public void popTransformation() {
+    public void popCoordinateSystem() {
         pipe.setTransform(removeLastOf(xforms));
     }
 

@@ -86,4 +86,31 @@ public class StyleStub implements Style {
     public Image getNoughtImage() {
         return nought;
     }
+    public static Builder builder(){
+        return new Builder();
+    }
+    public static class Builder {
+        private int width = 500;
+        private int height = 1000;
+        private int cellWidth = 10;
+        private int cellHeight = 10;
+
+        public Builder withBackgroundImageSize(int width, int height) {
+            this.width = width;
+            this.height = height;
+            return this;
+        }
+
+
+        public Builder withCellSize(int cellWidth, int cellHeight) {
+            this.cellWidth = cellWidth;
+            this.cellHeight = cellHeight;
+            return this;
+        }
+
+
+        public StyleStub build() {
+            return new StyleStub(width, height, cellWidth, cellHeight);
+        }
+    }
 }

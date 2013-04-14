@@ -45,7 +45,7 @@ class ImageWidget extends EcsWidget {
     @Override
     public String toString() {
         return "ImageWidget{" +
-                "location=" + getLocationAsString() +
+                "location=" + widgetCoordinates() +
                 ", image=" + image +
                 '}';
     }
