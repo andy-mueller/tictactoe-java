@@ -19,6 +19,10 @@ class ImageWidget extends EcsWidget {
         this.image = image;
     }
 
+    ImageWidget(Image image) {
+        this(Point.Origin, image);
+    }
+
     @Override
     public void paintEcs(GraphicsStream pipe) {
         pipe.drawImage(image);

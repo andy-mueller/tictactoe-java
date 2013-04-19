@@ -11,6 +11,10 @@ public class CoordinateSystem {
         return new CoordinateSystem();
     }
 
+    public static CoordinateSystem idenitity() {
+        return world();
+    }
+
     public CoordinateSystem(Point location, double scale) {
         this.location = location;
         this.scale = scale;
