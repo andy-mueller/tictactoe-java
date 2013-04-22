@@ -12,10 +12,6 @@ public class StyleStub implements Style {
     private final Color backColor = newColor();
     private final Color highlightColor = newColor();
 
-    public StyleStub() {
-        this(500, 1000, 10, 10);
-    }
-
     public StyleStub(int width, int height, int cellWidth, int cellHeight) {
         fillLocations(cellWidth, cellHeight, width, height);
         back = newImageStub(width, height);

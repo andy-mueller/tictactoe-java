@@ -4,7 +4,6 @@ import com.crudetech.gui.widgets.AlphaValue;
 import com.crudetech.gui.widgets.CoordinateSystem;
 import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Widget;
-import com.crudetech.tictactoe.game.Grid;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,22 +16,34 @@ import static org.mockito.Mockito.mock;
 
 public class BackgroundImageWidgetTest {
 
-    private TicTacToeGridModel model;
-    private BackgroundImageWidget widget;
+    private TransparencyStub transparency;
+    private StatefulTransparencyImageWidget widget;
     private Image image;
     private AlphaValue alphaValue;
+
+    static class TransparencyStub implements StatefulTransparencyImageWidget.TransparencyState {
+        private boolean transparency = false;
+
+        void makeTransparent(){
+            transparency = true;
+        }
+        @Override
+        public boolean isTransparent() {
+            return transparency;
+        }
+    }
 
     @Before
     public void setUp() throws Exception {
         image = mock(Image.class);
         alphaValue = new AlphaValue(0.42f);
-        model = new TicTacToeGridModel();
-        widget = new BackgroundImageWidget(model, image, alphaValue);
+        transparency = new TransparencyStub();
+
+        widget = new StatefulTransparencyImageWidget(transparency, image, alphaValue);
     }
 
     @Test
-    public void givenNothingIsHighlighted_ImageIsNotTransparent() throws Exception {
-        model.unHighlightThreeInARow();
+    public void givenNoTransparency_ImageIsNotTransparent() throws Exception {
 
         Iterable<Widget> actualWidget = widget.subWidgets();
 
@@ -41,8 +52,8 @@ public class BackgroundImageWidgetTest {
     }
 
     @Test
-    public void given3InARowIsHighlighted_ImageIsTransparent() throws Exception {
-        model.highlightThreeInARow(diagonal());
+    public void givenTransparency_ImageIsTransparent() throws Exception {
+        transparency.makeTransparent();
 
         Iterable<Widget> actualWidget = widget.subWidgets();
 
@@ -50,44 +61,31 @@ public class BackgroundImageWidgetTest {
         assertThat(firstOf(actualWidget), is(instanceOf(CompositeDecoratorWidget.class)));
         assertThat(((CompositeDecoratorWidget) firstOf(actualWidget)).getDecorated(), is(instanceOf(ImageWidget.class)));
     }
-
-    private Grid.ThreeInARow diagonal() {
-        return Grid.ThreeInARow.of(
-                Grid.Mark.Cross,
-                Grid.Location.of(Grid.Row.First, Grid.Column.First),
-                Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
-                Grid.Location.of(Grid.Row.Third, Grid.Column.Third)
-        );
-    }
-
     @Test
-    public void givenNothingIsHighlighted_imageLocationWillBeAtOrigin() {
+    public void givenNoTransparency_imageLocationWillBeAtOrigin() {
         Widget actualWidget = firstOf(widget.subWidgets());
 
         assertThat(actualWidget.widgetCoordinates(), is(CoordinateSystem.idenitity()));
     }
 
     @Test
-    public void givenNothingIsHighlighted_locationImageWillBeUsedInImageWidget() {
+    public void givenNoTransparency_locationImageWillBeUsedInImageWidget() {
         Widget actualWidget = firstOf(widget.subWidgets());
 
-        Widget expectedImageWidget = expectedImageWidget();
-
-        assertThat(actualWidget, is(expectedImageWidget));
+        assertThat(actualWidget, is(expectedImageWidget()));
     }
 
-    private ImageWidget expectedImageWidget() {
+    private Widget expectedImageWidget() {
         return new ImageWidget(image);
     }
 
     @Test
-    public void givenHighlight_alphaValueIsApplied() {
-        model.highlightThreeInARow(diagonal());
+    public void givenTransparency_alphaValueIsApplied() {
+        transparency.makeTransparent();
 
         CompositeDecoratorWidget actualWidget = (CompositeDecoratorWidget) firstOf(widget.subWidgets());
 
         Widget expectedWidget = new CompositeDecoratorWidget(expectedImageWidget(), alphaValue);
         assertThat(actualWidget, is(expectedWidget));
     }
-    //custom interface for highlight query
 }
