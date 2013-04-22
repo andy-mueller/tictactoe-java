@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 
-public class BackgroundImageWidgetTest {
+public class StatefulTransparencyImageWidgetTest {
 
     private TransparencyStub transparency;
     private StatefulTransparencyImageWidget widget;
