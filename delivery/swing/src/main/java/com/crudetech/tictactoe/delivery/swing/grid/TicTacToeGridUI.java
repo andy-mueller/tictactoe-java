@@ -7,15 +7,11 @@ import com.crudetech.tictactoe.delivery.gui.widgets.GridCellHit;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.delivery.gui.widgets.TicTacToeGridModel;
 import com.crudetech.tictactoe.delivery.gui.widgets.TicTacToeGridWidget;
-import com.crudetech.tictactoe.delivery.gui.widgets.TicTacToeGridWidgetBuilder;
 import com.crudetech.tictactoe.game.Grid;
 
-import javax.swing.JComponent;
+import javax.swing.*;
 import javax.swing.plaf.ComponentUI;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import java.awt.*;
 
 import static com.crudetech.query.Query.from;
 
@@ -75,7 +71,7 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     void buildGraphic() {
-        gridWidget = new TicTacToeGridWidgetBuilder()
+        gridWidget = TicTacToeGridWidget.builder()
                 .withBounds(WidgetAwtConverter.rectangle(component.getBounds()))
                 .withStyle(style)
                 .withModel(getModel())

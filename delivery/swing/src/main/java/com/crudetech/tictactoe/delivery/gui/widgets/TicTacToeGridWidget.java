@@ -34,7 +34,7 @@ public class TicTacToeGridWidget extends EcsWidget {
         this.debugColor = debugColor;
     }
 
-    static TicTacToeGridWidgetBuilder builder() {
+    public static TicTacToeGridWidgetBuilder builder() {
         return new TicTacToeGridWidgetBuilder();
     }
 
