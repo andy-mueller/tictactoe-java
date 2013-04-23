@@ -78,11 +78,17 @@ public class TicTacToeGridWidget extends EcsWidget {
         Image backgroundImage = style.getBackgroundImage();
 
         Point imageLocation = getBackgroundImageOrigin();
-        ImageWidget imageWidget = new ImageWidget(imageLocation, backgroundImage);
 
-        return model.hasHighlightedThreeInARow()
-                ? new CompositeDecoratorWidget(imageWidget, WinningTripleAlpha)
-                : imageWidget;
+        StatefulTransparencyImageWidget.TransparencyState state =
+                new StatefulTransparencyImageWidget.TransparencyState() {
+            @Override
+            public boolean isTransparent() {
+                return model.hasHighlightedThreeInARow();
+            }
+        };
+        Widget backgroundImageWidget = new StatefulTransparencyImageWidget(state, backgroundImage, WinningTripleAlpha);
+        backgroundImageWidget.widgetCoordinates().setLocation(imageLocation);
+        return backgroundImageWidget;
     }
 
 

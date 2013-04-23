@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static com.crudetech.matcher.RangeIsEquivalent.equivalentTo;
@@ -130,7 +131,7 @@ public class TicTacToeGridWidgetTest {
     }
 
     private Point loc(Point location) {
-        return new Point(location.x + 125, location.y + 50);
+        return location.translate(125, 50);
     }
 
 
@@ -144,20 +145,37 @@ public class TicTacToeGridWidgetTest {
                 .createTicTacToeGridWidget();
         List<Widget> widgets = widget.buildPaintList();
 
-        List<Widget> expectedList = new ArrayList<>();
-        expectedList.add(getExpectedBackground(750, 500));
-        expectedList.add(getExpectedBackgroundImage());
-        expectedList.addAll(expectedGridMarkWidgets());
-        expectedList.add(new EmptyWidget());
-        expectedList.add(new EmptyWidget());
+        List<Class<? extends Widget>> widgetClasses = from(widgets).select(toClass()).toList();
 
-        assertThat(widgets, is(equalTo(expectedList)));
-        assertThat(widgets, is(expectedList));
+        List<Class<? extends Widget>> expectedList = new ArrayList<>();
+        expectedList.add(FilledRectangleWidget.class);
+        expectedList.add(StatefulTransparencyImageWidget.class);
+        expectedList.addAll(expectedCellClasses());
+        expectedList.add(EmptyWidget.class);
+        expectedList.add(EmptyWidget.class);
+
+        assertThat(widgetClasses, is(equalTo(expectedList)));
+        assertThat(widgetClasses, is(expectedList));
     }
 
-    private ImageWidget getExpectedBackgroundImage() {
-        return new ImageWidget(new Point(125, 50), style.getBackgroundImage());
+    private Collection<Class<? extends Widget>> expectedCellClasses() {
+        return Arrays.<Class<? extends Widget>>asList(
+                ImageWidget.class, ImageWidget.class, EmptyWidget.class,
+                ImageWidget.class, EmptyWidget.class, EmptyWidget.class,
+                ImageWidget.class, ImageWidget.class, ImageWidget.class
+        );
     }
+
+    private UnaryFunction<Widget, Class<? extends Widget>> toClass() {
+        return new UnaryFunction<Widget, Class<? extends Widget>>() {
+            @Override
+            public Class<? extends Widget> execute(Widget widget) {
+                return widget.getClass();
+            }
+        };
+    }
+
+
     @Test
     public void highlightedRectangleIsAddedWhenModelIsHighlighted() {
         Grid.Location highlightedLocation = Grid.Location.of(Grid.Row.First, Grid.Column.Third);
@@ -246,23 +264,6 @@ public class TicTacToeGridWidgetTest {
 
         assertThat(widgets.get(1), is(instanceOf(CompositeDecoratorWidget.class)));
     }
-
-
-    @Test
-    public void backgroundImageIsNotTransparentWhenNoWinningTripleIsSet() {
-        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
-                .withBounds(new Rectangle(0, 0, 500, 600))
-                .withStyle(style)
-                .withModel(model)
-                .setDebugModeOn(Orange)
-                .createTicTacToeGridWidget();
-
-
-        List<Widget> widgets = widget.buildPaintList();
-
-        assertThat(widgets.get(1), is(instanceOf(ImageWidget.class)));
-    }
-
 
     @Test
     public void debugIsNotPaintedIfDebugModeIsOf() {
