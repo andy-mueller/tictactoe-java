@@ -41,6 +41,7 @@ public class TicTacToeGridWidgetTest {
         ));
     }
 
+
     @Test
     public void givenWidgetIsLargerThanBackgroundImage_ImageIsCentered() {
         TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
@@ -51,7 +52,7 @@ public class TicTacToeGridWidgetTest {
                 .createTicTacToeGridWidget();
         List<Widget> widgets = widget.buildPaintList();
 
-        ImageWidget backGroundImage = (ImageWidget) widgets.get(1);
+        Widget backGroundImage = widgets.get(1);
         assertThat(backGroundImage.widgetCoordinates(), is(new CoordinateSystem(Point.of(125, 50))));
     }
 
@@ -132,23 +133,6 @@ public class TicTacToeGridWidgetTest {
         return new Point(location.x + 125, location.y + 50);
     }
 
-    @Test
-    public void givenImageIsSmallerThatBoundary_ImageIsCentered() {
-        TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
-                .withBounds(widgetBoundary)
-                .withStyle(style)
-                .withModel(model)
-                .setDebugModeOn(Orange)
-                .createTicTacToeGridWidget();
-        List<Widget> widgets = widget.buildPaintList();
-        Widget backgroundImage = widgets.get(1);
-
-        assertThat(backgroundImage, is((Widget) getExpectedBackgroundImage()));
-    }
-
-    private ImageWidget getExpectedBackgroundImage() {
-        return new ImageWidget(new Point(125, 50), style.getBackgroundImage());
-    }
 
     @Test
     public void paintListIsPaintedInOrder() {
@@ -171,6 +155,9 @@ public class TicTacToeGridWidgetTest {
         assertThat(widgets, is(expectedList));
     }
 
+    private ImageWidget getExpectedBackgroundImage() {
+        return new ImageWidget(new Point(125, 50), style.getBackgroundImage());
+    }
     @Test
     public void highlightedRectangleIsAddedWhenModelIsHighlighted() {
         Grid.Location highlightedLocation = Grid.Location.of(Grid.Row.First, Grid.Column.Third);
