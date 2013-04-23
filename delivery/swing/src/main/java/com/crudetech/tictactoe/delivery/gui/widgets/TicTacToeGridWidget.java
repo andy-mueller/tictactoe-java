@@ -34,6 +34,10 @@ public class TicTacToeGridWidget extends EcsWidget {
         this.debugColor = debugColor;
     }
 
+    static TicTacToeGridWidgetBuilder builder() {
+        return new TicTacToeGridWidgetBuilder();
+    }
+
     @Override
     public void paintEcs(GraphicsStream pipe) {
         for (Widget widget : buildPaintList()) {

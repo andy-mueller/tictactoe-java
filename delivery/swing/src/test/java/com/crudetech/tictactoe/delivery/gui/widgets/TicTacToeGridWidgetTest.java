@@ -44,7 +44,7 @@ public class TicTacToeGridWidgetTest {
 
     @Test
     public void givenWidgetIsLargerThanBackgroundImage_ImageIsCentered() {
-        TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
+        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
                 .withBounds(widgetBoundary)
                 .withStyle(style)
                 .withModel(model)
@@ -63,7 +63,7 @@ public class TicTacToeGridWidgetTest {
                         .withBackgroundImageSize(500, 1000)
                         .withCellSize(100, 200)
                         .build();
-        TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
+        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
                 .withBounds(widgetBoundary)
                 .withStyle(styleWithBiggerBackground)
                 .withModel(model)
@@ -76,7 +76,7 @@ public class TicTacToeGridWidgetTest {
 
     @Test
     public void backGroundIsInvalidated() {
-        TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
+        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
                 .withBounds(widgetBoundary)
                 .withStyle(style)
                 .withModel(model)
@@ -96,7 +96,7 @@ public class TicTacToeGridWidgetTest {
 
     @Test
     public void gridMarksArePaintedFromModel() {
-        TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
+        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
                 .withBounds(widgetBoundary)
                 .withStyle(style)
                 .withModel(model)
@@ -136,7 +136,7 @@ public class TicTacToeGridWidgetTest {
 
     @Test
     public void paintListIsPaintedInOrder() {
-        TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
+        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
                 .withBounds(widgetBoundary)
                 .withStyle(style)
                 .withModel(model)
@@ -162,7 +162,7 @@ public class TicTacToeGridWidgetTest {
     public void highlightedRectangleIsAddedWhenModelIsHighlighted() {
         Grid.Location highlightedLocation = Grid.Location.of(Grid.Row.First, Grid.Column.Third);
         model.highlightCell(highlightedLocation);
-        TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
+        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
                 .withBounds(widgetBoundary)
                 .withStyle(style)
                 .withModel(model)
@@ -187,7 +187,7 @@ public class TicTacToeGridWidgetTest {
                 Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
         model.highlightThreeInARow(diagonal);
 
-        TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
+        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
                 .withBounds(widgetBoundary)
                 .withStyle(style)
                 .withModel(model)
@@ -235,7 +235,7 @@ public class TicTacToeGridWidgetTest {
                 Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
         model.highlightThreeInARow(diagonal);
 
-        TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
+        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
                 .withBounds(new Rectangle(0, 0, 500, 600))
                 .withStyle(style)
                 .withModel(model)
@@ -250,7 +250,7 @@ public class TicTacToeGridWidgetTest {
 
     @Test
     public void backgroundImageIsNotTransparentWhenNoWinningTripleIsSet() {
-        TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
+        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
                 .withBounds(new Rectangle(0, 0, 500, 600))
                 .withStyle(style)
                 .withModel(model)
@@ -266,7 +266,7 @@ public class TicTacToeGridWidgetTest {
 
     @Test
     public void debugIsNotPaintedIfDebugModeIsOf() {
-        TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
+        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
                 .withBounds(new Rectangle(0, 0, 500, 600))
                 .withStyle(style)
                 .withModel(model)
@@ -299,7 +299,7 @@ public class TicTacToeGridWidgetTest {
 
     @Test
     public void debugIsOnlyPaintedIfDebugModeIsOn() {
-        TicTacToeGridWidget widget = new TicTacToeGridWidgetBuilder()
+        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
                 .withBounds(new Rectangle(0, 0, 500, 600))
                 .withStyle(style)
                 .withModel(model)
