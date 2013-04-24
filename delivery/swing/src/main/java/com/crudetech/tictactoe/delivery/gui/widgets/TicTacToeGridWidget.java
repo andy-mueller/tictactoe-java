@@ -27,7 +27,7 @@ public class TicTacToeGridWidget extends EcsWidget {
                                Style style, TicTacToeGridModel model,
                                boolean debugMode, Color debugColor) {
         super(bounds.x, bounds.y);
-        this.bounds = bounds.setLocation(0,0);
+        this.bounds = bounds.setLocation(0, 0);
         this.style = style;
         this.model = model;
         this.isDebugMode = debugMode;
@@ -81,12 +81,17 @@ public class TicTacToeGridWidget extends EcsWidget {
 
         StatefulTransparencyImageWidget.TransparencyState state =
                 new StatefulTransparencyImageWidget.TransparencyState() {
-            @Override
-            public boolean isTransparent() {
-                return model.hasHighlightedThreeInARow();
-            }
-        };
-        Widget backgroundImageWidget = new StatefulTransparencyImageWidget(state, backgroundImage, WinningTripleAlpha);
+                    @Override
+                    public boolean isTransparent() {
+                        return model.hasHighlightedThreeInARow();
+                    }
+
+                    @Override
+                    public AlphaValue transparency() {
+                        return WinningTripleAlpha;
+                    }
+                };
+        Widget backgroundImageWidget = new StatefulTransparencyImageWidget(state, backgroundImage);
         backgroundImageWidget.widgetCoordinates().setLocation(imageLocation);
         return backgroundImageWidget;
     }
@@ -184,7 +189,7 @@ public class TicTacToeGridWidget extends EcsWidget {
         return new UnaryFunction<Grid.Location, Rectangle>() {
             @Override
             public Rectangle execute(Grid.Location location) {
-                return getAtLocation(style.getGridMarkLocations(),location);
+                return getAtLocation(style.getGridMarkLocations(), location);
             }
         };
     }

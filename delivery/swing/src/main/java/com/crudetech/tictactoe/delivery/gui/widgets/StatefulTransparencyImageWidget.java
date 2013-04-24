@@ -8,17 +8,15 @@ import static java.util.Arrays.asList;
 class StatefulTransparencyImageWidget extends CompoundWidget {
     private final TransparencyState transparencyState;
     private final Image image;
-    private final AlphaValue alphaValue;
 
     interface TransparencyState {
         boolean isTransparent();
+        AlphaValue transparency();
     }
     public StatefulTransparencyImageWidget(TransparencyState transparencyState,
-                                           Image image,
-                                           AlphaValue alphaValue) {
+                                           Image image) {
         this.transparencyState = transparencyState;
         this.image = image;
-        this.alphaValue = alphaValue;
     }
 
     @Override
@@ -35,6 +33,6 @@ class StatefulTransparencyImageWidget extends CompoundWidget {
     }
 
     private CompositeDecoratorWidget addTransparency(Widget imageWidget) {
-        return new CompositeDecoratorWidget(imageWidget, alphaValue);
+        return new CompositeDecoratorWidget(imageWidget, transparencyState.transparency());
     }
 }

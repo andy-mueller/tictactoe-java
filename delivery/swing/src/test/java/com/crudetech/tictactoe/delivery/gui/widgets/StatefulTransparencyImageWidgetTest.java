@@ -21,7 +21,7 @@ public class StatefulTransparencyImageWidgetTest {
     private Image image;
     private AlphaValue alphaValue;
 
-    static class TransparencyStub implements StatefulTransparencyImageWidget.TransparencyState {
+    class TransparencyStub implements StatefulTransparencyImageWidget.TransparencyState {
         private boolean transparency = false;
 
         void makeTransparent(){
@@ -31,6 +31,11 @@ public class StatefulTransparencyImageWidgetTest {
         public boolean isTransparent() {
             return transparency;
         }
+
+        @Override
+        public AlphaValue transparency() {
+            return alphaValue;
+        }
     }
 
     @Before
@@ -39,7 +44,7 @@ public class StatefulTransparencyImageWidgetTest {
         alphaValue = new AlphaValue(0.42f);
         transparency = new TransparencyStub();
 
-        widget = new StatefulTransparencyImageWidget(transparency, image, alphaValue);
+        widget = new StatefulTransparencyImageWidget(transparency, image);
     }
 
     @Test
