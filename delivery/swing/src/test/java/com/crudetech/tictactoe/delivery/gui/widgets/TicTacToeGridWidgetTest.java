@@ -49,7 +49,7 @@ public class TicTacToeGridWidgetTest {
                 .withBounds(widgetBoundary)
                 .withStyle(style)
                 .withModel(model)
-                .setDebugModeOn(Orange)
+                .noDebug()
                 .createTicTacToeGridWidget();
         List<Widget> widgets = widget.buildPaintList();
 
@@ -68,7 +68,7 @@ public class TicTacToeGridWidgetTest {
                 .withBounds(widgetBoundary)
                 .withStyle(styleWithBiggerBackground)
                 .withModel(model)
-                .setDebugModeOn(Orange)
+                .noDebug()
                 .createTicTacToeGridWidget();
 
         Widget backgroundImage = widget.buildPaintList().get(1);
@@ -81,7 +81,7 @@ public class TicTacToeGridWidgetTest {
                 .withBounds(widgetBoundary)
                 .withStyle(style)
                 .withModel(model)
-                .setDebugModeOn(Orange)
+                .noDebug()
                 .createTicTacToeGridWidget();
 
         List<Widget> widgets = widget.buildPaintList();
@@ -101,7 +101,7 @@ public class TicTacToeGridWidgetTest {
                 .withBounds(widgetBoundary)
                 .withStyle(style)
                 .withModel(model)
-                .setDebugModeOn(Orange)
+                .noDebug()
                 .createTicTacToeGridWidget();
         List<Widget> widgets = widget.gridMarkWidgetList();
 
@@ -184,7 +184,7 @@ public class TicTacToeGridWidgetTest {
                 .withBounds(widgetBoundary)
                 .withStyle(style)
                 .withModel(model)
-                .setDebugModeOn(Orange)
+                .noDebug()
                 .createTicTacToeGridWidget();
 
 
@@ -209,7 +209,6 @@ public class TicTacToeGridWidgetTest {
                 .withBounds(widgetBoundary)
                 .withStyle(style)
                 .withModel(model)
-                .setDebugModeOn(Orange)
                 .createTicTacToeGridWidget();
 
         List<Widget> widgets = widget.gridMarkWidgetList();
@@ -257,7 +256,7 @@ public class TicTacToeGridWidgetTest {
                 .withBounds(new Rectangle(0, 0, 500, 600))
                 .withStyle(style)
                 .withModel(model)
-                .setDebugModeOn(Orange)
+                .noDebug()
                 .createTicTacToeGridWidget();
 
         List<Widget> widgets = widget.gridMarkWidgetList();
