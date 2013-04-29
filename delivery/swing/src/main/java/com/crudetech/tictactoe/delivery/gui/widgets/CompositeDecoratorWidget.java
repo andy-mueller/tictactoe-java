@@ -6,10 +6,10 @@ import com.crudetech.gui.widgets.Widget;
 
 import java.util.Objects;
 
-public class CompositeDecoratorWidget extends DecoratorWidget {
+public class CompositeDecoratorWidget<TWidget extends Widget> extends DecoratorWidget<TWidget> {
     private final AlphaValue alpha;
 
-    public CompositeDecoratorWidget(Widget decorated, AlphaValue alpha) {
+    public CompositeDecoratorWidget(TWidget decorated, AlphaValue alpha) {
         super(decorated);
         this.alpha = alpha;
     }

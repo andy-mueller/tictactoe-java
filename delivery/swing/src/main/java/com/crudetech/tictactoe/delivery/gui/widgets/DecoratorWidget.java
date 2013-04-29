@@ -7,10 +7,10 @@ import com.crudetech.gui.widgets.Widget;
 import java.util.Objects;
 
 
-public class DecoratorWidget implements Widget {
-    private final Widget decorated;
+public class DecoratorWidget<TDecorated extends Widget> implements Widget {
+    private final TDecorated decorated;
 
-    public DecoratorWidget(Widget decorated) {
+    public DecoratorWidget(TDecorated decorated) {
         this.decorated = decorated;
     }
 
@@ -38,7 +38,7 @@ public class DecoratorWidget implements Widget {
         return Objects.hashCode(decorated);
     }
 
-    Widget getDecorated() {
+    TDecorated getDecorated() {
         return decorated;
     }
 }

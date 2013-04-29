@@ -20,7 +20,7 @@ public class DecoratorWidgetTest {
     @Test
     public void ecsIsTakenFromDecoratedWidget() {
         Widget w = mock(Widget.class);
-        DecoratorWidget dec = new DecoratorWidget(w);
+        DecoratorWidget<Widget> dec = new DecoratorWidget<Widget>(w);
 
         dec.widgetCoordinates();
 
@@ -31,7 +31,7 @@ public class DecoratorWidgetTest {
     @Test
     public void paintIsForwardedToDecorated() {
         Widget w = mock(Widget.class);
-        DecoratorWidget dec = new DecoratorWidget(w);
+        DecoratorWidget<Widget> dec = new DecoratorWidget<Widget>(w);
         GraphicsStream g2d = mock(GraphicsStream.class);
 
         dec.paint(g2d);
@@ -40,18 +40,18 @@ public class DecoratorWidgetTest {
     }
 
     @Feature(Equivalent.class)
-    public static Equivalent.Factory<DecoratorWidget> decoratorIsEquivalent(){
-        return new Equivalent.Factory<DecoratorWidget>(){
+    public static Equivalent.Factory<DecoratorWidget<Widget>> decoratorIsEquivalent(){
+        return new Equivalent.Factory<DecoratorWidget<Widget>>(){
             private Widget widget = mock(Widget.class);
 
             @Override
-            public DecoratorWidget createItem() {
-                return new DecoratorWidget(widget);
+            public DecoratorWidget<Widget> createItem() {
+                return new DecoratorWidget<Widget>(widget);
             }
 
             @Override
-            public List<DecoratorWidget> createOtherItems() {
-                return asList(new DecoratorWidget(mock(Widget.class)));
+            public List<DecoratorWidget<Widget>> createOtherItems() {
+                return asList(new DecoratorWidget<Widget>(mock(Widget.class)));
             }
         };
     }

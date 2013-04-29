@@ -3,9 +3,9 @@ package com.crudetech.tictactoe.delivery.gui.widgets;
 import com.crudetech.functional.UnaryFunction;
 import com.crudetech.gui.widgets.AlphaValue;
 import com.crudetech.gui.widgets.CompoundWidget;
+import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.tictactoe.game.Grid;
-import sun.plugin.dom.exception.InvalidStateException;
 
 import static com.crudetech.collections.Iterables.emptyListOf;
 import static com.crudetech.query.Query.from;
@@ -15,19 +15,57 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
     private final Style style;
     private final AlphaValue alphaValue = new AlphaValue(0.4f);
 
-    public static class Cross extends StatefulTransparencyImageWidget {
-        public Cross(Style style, TransparencyState state) {
-            super(state, style.getCrossImage());
+    public static abstract class CellWidget<TWidget extends Widget> extends DecoratorWidget<TWidget> {
+        private CellWidget(TWidget decorated) {
+            super(decorated);
         }
 
+        public abstract boolean isTransparent();
+
+        public abstract boolean hasImage(Image image);
     }
 
-    public static class None extends EmptyWidget {
+    public static class CellImageWidget extends CellWidget<StatefulTransparencyImageWidget> {
+        public CellImageWidget(Image image, StatefulTransparencyImageWidget.TransparencyState state) {
+            super(new StatefulTransparencyImageWidget(state, image));
+        }
+
+        @Override
+        public boolean isTransparent() {
+            return getDecorated().isTransparent();
+        }
+
+        @Override
+        public boolean hasImage(Image image) {
+            return getDecorated().hasImage(image);
+        }
     }
 
-    public static class Nought extends StatefulTransparencyImageWidget {
-        public Nought(Style style, TransparencyState state) {
-            super(state, style.getNoughtImage());
+    public static class Cross extends CellImageWidget {
+        public Cross(Style style, StatefulTransparencyImageWidget.TransparencyState state) {
+            super(style.getCrossImage(), state);
+        }
+    }
+
+    public static class None extends CellWidget<Widget> {
+        None() {
+            super(new EmptyWidget());
+        }
+
+        @Override
+        public boolean isTransparent() {
+            return true;
+        }
+
+        @Override
+        public boolean hasImage(Image image) {
+            return false;
+        }
+    }
+
+    public static class Nought extends CellImageWidget {
+        public Nought(Style style, StatefulTransparencyImageWidget.TransparencyState state) {
+            super(style.getNoughtImage(), state);
         }
     }
 
@@ -64,20 +102,20 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
         return emptyListOf(Widget.class);
     }
 
-    Iterable<Widget> getCells() {
+    Iterable<CellWidget<?>> getCells() {
         return from(model.getGrid().getCells()).select(toWidget());
     }
 
-    private UnaryFunction<Grid.Cell, Widget> toWidget() {
-        return new UnaryFunction<Grid.Cell, Widget>() {
+    private UnaryFunction<Grid.Cell, CellWidget<?>> toWidget() {
+        return new UnaryFunction<Grid.Cell, CellWidget<?>>() {
             @Override
-            public Widget execute(Grid.Cell cell) {
+            public CellWidget<?> execute(Grid.Cell cell) {
                 return createCellWidgetForMark(cell);
             }
         };
     }
 
-    private Widget createCellWidgetForMark(Grid.Cell cell) {
+    private CellWidget<?> createCellWidgetForMark(Grid.Cell cell) {
         switch (cell.getMark()) {
             case Cross:
                 return new Cross(style, createTransparencyState(cell));
@@ -86,13 +124,11 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
             case None:
                 return new None();
             default:
-                throw new InvalidStateException("Unexpected cell mark");
+                throw new IllegalStateException("Unexpected cell mark");
         }
     }
 
     private ThreeInARowHighlightTransparencyState createTransparencyState(Grid.Cell cell) {
         return new ThreeInARowHighlightTransparencyState(model, cell.getLocation(), alphaValue);
     }
-
-
 }

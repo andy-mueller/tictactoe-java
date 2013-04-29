@@ -90,7 +90,7 @@ public class StatefulTransparencyImageWidgetTest {
 
         CompositeDecoratorWidget actualWidget = (CompositeDecoratorWidget) firstOf(widget.subWidgets());
 
-        Widget expectedWidget = new CompositeDecoratorWidget(expectedImageWidget(), alphaValue);
+        Widget expectedWidget = new CompositeDecoratorWidget<>(expectedImageWidget(), alphaValue);
         assertThat(actualWidget, is(expectedWidget));
     }
 }

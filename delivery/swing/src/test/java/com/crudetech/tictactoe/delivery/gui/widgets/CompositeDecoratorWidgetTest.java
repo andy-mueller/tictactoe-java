@@ -14,15 +14,13 @@ import org.junit.runner.RunWith;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(Features.class)
 public class CompositeDecoratorWidgetTest {
 
     private AlphaValue alpha;
-    private CompositeDecoratorWidget dec;
+    private CompositeDecoratorWidget<Widget> dec;
     private GraphicsStream g2d;
     private Widget decorated;
 
@@ -30,7 +28,7 @@ public class CompositeDecoratorWidgetTest {
     public void setUp() throws Exception {
         alpha = new AlphaValue(0.4f);
         decorated = mock(Widget.class);
-        dec = new CompositeDecoratorWidget(decorated, alpha);
+        dec = new CompositeDecoratorWidget<>(decorated, alpha);
         g2d = mock(GraphicsStream.class);
     }
 
@@ -60,21 +58,21 @@ public class CompositeDecoratorWidgetTest {
         verify(g2d).popAlpha();
     }
     @Feature(Equivalent.class)
-    public static Equivalent.Factory<CompositeDecoratorWidget> decoratorIsEquivalent(){
-        return new Equivalent.Factory<CompositeDecoratorWidget>(){
+    public static Equivalent.Factory<CompositeDecoratorWidget<Widget>> decoratorIsEquivalent(){
+        return new Equivalent.Factory<CompositeDecoratorWidget<Widget>>(){
             AlphaValue alpha = new AlphaValue(0.4f);
             Widget decorated = mock(Widget.class);
 
             @Override
-            public CompositeDecoratorWidget createItem() {
-                return new CompositeDecoratorWidget(decorated, alpha);
+            public CompositeDecoratorWidget<Widget> createItem() {
+                return new CompositeDecoratorWidget<>(decorated, alpha);
             }
 
             @Override
-            public List<CompositeDecoratorWidget> createOtherItems() {
+            public List<CompositeDecoratorWidget<Widget>> createOtherItems() {
                 return asList(
-                        new CompositeDecoratorWidget(mock(Widget.class), alpha),
-                        new CompositeDecoratorWidget(decorated, new AlphaValue(0.1f))
+                        new CompositeDecoratorWidget<Widget>(mock(Widget.class), alpha),
+                        new CompositeDecoratorWidget<Widget>(decorated, new AlphaValue(0.1f))
                 );
             }
         };

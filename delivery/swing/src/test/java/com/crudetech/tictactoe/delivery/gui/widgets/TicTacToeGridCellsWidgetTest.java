@@ -3,7 +3,6 @@ package com.crudetech.tictactoe.delivery.gui.widgets;
 
 import com.crudetech.functional.UnaryFunction;
 import com.crudetech.gui.widgets.AlphaValue;
-import com.crudetech.gui.widgets.Widget;
 import com.crudetech.matcher.RangeIsEqual;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
@@ -82,7 +81,7 @@ public class TicTacToeGridCellsWidgetTest {
     public void givenNoneWidget_NoImageIsUsed() throws Exception {
         TicTacToeGridCellsWidget.None noneWidget = new TicTacToeGridCellsWidget.None();
 
-        assertThat(noneWidget, is(instanceOf(EmptyWidget.class)));
+        assertThat(noneWidget.getDecorated(), is(instanceOf(EmptyWidget.class)));
     }
 
     @Test
@@ -145,20 +144,18 @@ public class TicTacToeGridCellsWidgetTest {
         assertThat(cellTransparencies, is(RangeIsEqual.equalTo(expectedTransparency)));
     }
 
-    private UnaryFunction<? super Widget, Boolean> transparency() {
-        return new UnaryFunction<Widget, Boolean>() {
+    private UnaryFunction<? super TicTacToeGridCellsWidget.CellWidget<?>, Boolean> transparency() {
+        return new UnaryFunction<TicTacToeGridCellsWidget.CellWidget<?>, Boolean>() {
             @Override
-            public Boolean execute(Widget widget) {
-                return widgetIsTransparent(widget);
+            public Boolean execute(TicTacToeGridCellsWidget.CellWidget<?> widget) {
+                return widget.isTransparent();
             }
         };
     }
 
-    private boolean widgetIsTransparent(Widget widget) {
-        return widget instanceof TicTacToeGridCellsWidget.None
-                || widget instanceof StatefulTransparencyImageWidget
-                && ((StatefulTransparencyImageWidget) widget).isTransparent();
-    }
 
+    // introduce CelLWidgetInterface
     //highlight single cell
+    //no highlighted cell is empty widget
+    // sub widget returns cell an highlight widget
 }

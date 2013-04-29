@@ -127,7 +127,7 @@ public class TicTacToeGridWidget extends EcsWidget {
         if (noWinningTripleHighlighted() || isInWinningTriple(location)) {
             return widget;
         }
-        return new CompositeDecoratorWidget(widget, WinningTripleAlpha);
+        return new CompositeDecoratorWidget<>(widget, WinningTripleAlpha);
     }
 
     private boolean noWinningTripleHighlighted() {

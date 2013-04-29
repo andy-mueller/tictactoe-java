@@ -224,20 +224,20 @@ public class TicTacToeGridWidgetTest {
 
         return asList(
                 new ImageWidget(loc(locations[0][0].getLocation()), cross),
-                new CompositeDecoratorWidget(
+                new CompositeDecoratorWidget<>(
                         new ImageWidget(loc(locations[0][1].getLocation()), nought), TicTacToeGridWidget.WinningTripleAlpha),
-                new CompositeDecoratorWidget(
+                new CompositeDecoratorWidget<>(
                         new EmptyWidget(), TicTacToeGridWidget.WinningTripleAlpha),
 
-                new CompositeDecoratorWidget(
+                new CompositeDecoratorWidget<>(
                         new ImageWidget(loc(locations[1][0].getLocation()), cross), TicTacToeGridWidget.WinningTripleAlpha),
                 new EmptyWidget(),
-                new CompositeDecoratorWidget(
+                new CompositeDecoratorWidget<>(
                         new EmptyWidget(), TicTacToeGridWidget.WinningTripleAlpha),
 
-                new CompositeDecoratorWidget(
+                new CompositeDecoratorWidget<>(
                         new ImageWidget(loc(locations[2][0].getLocation()), nought), TicTacToeGridWidget.WinningTripleAlpha),
-                new CompositeDecoratorWidget(
+                new CompositeDecoratorWidget<>(
                         new ImageWidget(loc(locations[2][1].getLocation()), nought), TicTacToeGridWidget.WinningTripleAlpha),
                 new ImageWidget(loc(locations[2][2].getLocation()), cross)
         );
