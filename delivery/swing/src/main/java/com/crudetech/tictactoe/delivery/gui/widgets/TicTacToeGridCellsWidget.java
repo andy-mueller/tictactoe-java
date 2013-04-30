@@ -7,7 +7,6 @@ import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.tictactoe.game.Grid;
 
-import static com.crudetech.collections.Iterables.emptyListOf;
 import static com.crudetech.query.Query.from;
 
 public class TicTacToeGridCellsWidget extends CompoundWidget {
@@ -98,8 +97,8 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
     }
 
     @Override
-    protected Iterable<Widget> subWidgets() {
-        return emptyListOf(Widget.class);
+    protected Iterable<CellWidget<?>> subWidgets() {
+        return getCells();
     }
 
     Iterable<CellWidget<?>> getCells() {

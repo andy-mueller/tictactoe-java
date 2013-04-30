@@ -3,7 +3,6 @@ package com.crudetech.tictactoe.delivery.gui.widgets;
 
 import com.crudetech.functional.UnaryFunction;
 import com.crudetech.gui.widgets.AlphaValue;
-import com.crudetech.matcher.RangeIsEqual;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import org.junit.Before;
@@ -12,6 +11,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.crudetech.matcher.RangeIsEqual.equalTo;
 import static com.crudetech.query.Query.from;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -51,7 +51,7 @@ public class TicTacToeGridCellsWidgetTest {
         expectedCellTypes.addAll(asList(TicTacToeGridCellsWidget.None.class, TicTacToeGridCellsWidget.Nought.class, TicTacToeGridCellsWidget.None.class));
         expectedCellTypes.addAll(asList(TicTacToeGridCellsWidget.None.class, TicTacToeGridCellsWidget.Cross.class, TicTacToeGridCellsWidget.Cross.class));
 
-        assertThat(cellWidgetsClasses, is(RangeIsEqual.equalTo(expectedCellTypes)));
+        assertThat(cellWidgetsClasses, is(equalTo(expectedCellTypes)));
     }
 
     private UnaryFunction<Object, Class<?>> toClass() {
@@ -141,7 +141,7 @@ public class TicTacToeGridCellsWidgetTest {
                 true, false, true,
                 true, true, false
         );
-        assertThat(cellTransparencies, is(RangeIsEqual.equalTo(expectedTransparency)));
+        assertThat(cellTransparencies, is(equalTo(expectedTransparency)));
     }
 
     private UnaryFunction<? super TicTacToeGridCellsWidget.CellWidget<?>, Boolean> transparency() {
@@ -153,9 +153,10 @@ public class TicTacToeGridCellsWidgetTest {
         };
     }
 
+    @Test
+    public void givenCompleteGridCellWidget_subWidgetsIsSameAsGetCells() throws Exception {
+        TicTacToeGridCellsWidget widget = new TicTacToeGridCellsWidget(gridModel, style);
 
-    // introduce CelLWidgetInterface
-    //highlight single cell
-    //no highlighted cell is empty widget
-    // sub widget returns cell an highlight widget
+        assertThat(widget.subWidgets(), is(equalTo(widget.getCells())));
+    }
 }

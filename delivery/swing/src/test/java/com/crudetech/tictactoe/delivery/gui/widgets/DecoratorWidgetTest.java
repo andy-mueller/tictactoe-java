@@ -8,9 +8,9 @@ import com.crudetech.junit.feature.Features;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Arrays;
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -20,7 +20,7 @@ public class DecoratorWidgetTest {
     @Test
     public void ecsIsTakenFromDecoratedWidget() {
         Widget w = mock(Widget.class);
-        DecoratorWidget<Widget> dec = new DecoratorWidget<Widget>(w);
+        DecoratorTemplateWidget<Widget> dec = new DecoratorWidget<Widget>(w);
 
         dec.widgetCoordinates();
 
@@ -31,7 +31,7 @@ public class DecoratorWidgetTest {
     @Test
     public void paintIsForwardedToDecorated() {
         Widget w = mock(Widget.class);
-        DecoratorWidget<Widget> dec = new DecoratorWidget<Widget>(w);
+        DecoratorTemplateWidget<Widget> dec = new DecoratorWidget<Widget>(w);
         GraphicsStream g2d = mock(GraphicsStream.class);
 
         dec.paint(g2d);
@@ -40,18 +40,18 @@ public class DecoratorWidgetTest {
     }
 
     @Feature(Equivalent.class)
-    public static Equivalent.Factory<DecoratorWidget<Widget>> decoratorIsEquivalent(){
-        return new Equivalent.Factory<DecoratorWidget<Widget>>(){
+    public static Equivalent.Factory<DecoratorTemplateWidget<Widget>> decoratorIsEquivalent(){
+        return new Equivalent.Factory<DecoratorTemplateWidget<Widget>>(){
             private Widget widget = mock(Widget.class);
 
             @Override
-            public DecoratorWidget<Widget> createItem() {
+            public DecoratorTemplateWidget<Widget> createItem() {
                 return new DecoratorWidget<Widget>(widget);
             }
 
             @Override
-            public List<DecoratorWidget<Widget>> createOtherItems() {
-                return asList(new DecoratorWidget<Widget>(mock(Widget.class)));
+            public List<DecoratorTemplateWidget<Widget>> createOtherItems() {
+                return Arrays.<DecoratorTemplateWidget<Widget>>asList(new DecoratorWidget<Widget>(mock(Widget.class)));
             }
         };
     }
