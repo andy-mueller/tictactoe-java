@@ -43,7 +43,6 @@ public class TicTacToeGridWidget extends EcsWidget {
         for (Widget widget : buildPaintList()) {
             widget.paint(pipe);
         }
-
     }
 
 
