@@ -49,9 +49,10 @@ public class TicTacToeGridWidget extends EcsWidget {
     List<Widget> buildPaintList() {
         List<Widget> paintList = new ArrayList<>();
 
+
         paintList.add(backgroundWidget());
         paintList.add(backgroundImageWidget());
-        paintList.addAll(gridMarkWidgetList());
+        paintList.add(gridCellsWidget());
         paintList.add(highlightWidget());
         paintList.add(debugInfoWidget());
 
@@ -103,68 +104,31 @@ public class TicTacToeGridWidget extends EcsWidget {
         return new Point(x, y);
     }
 
-    List<Widget> gridMarkWidgetList() {
-        Point gridOrigin = getBackgroundImageOrigin();
-        List<Widget> gridMArks = new ArrayList<>(9);
-        for (Grid.Cell cell : model.getGrid().getCells()) {
-            Rectangle bounds = getBoundaryForLocation(cell.getLocation());
-            Widget widget = wrapTransparentIfIsNotInHighlightedWinningTriple(
-                    createMarkWidget(cell.getMark(), bounds),
-                    cell.getLocation()
-            );
-            widget.widgetCoordinates().translate(gridOrigin.x, gridOrigin.y);
-            gridMArks.add(widget);
-        }
-        return gridMArks;
+    Widget gridCellsWidget() {
+        return new TicTacToeGridCellsWidget(model, style);
     }
 
-    private Rectangle getBoundaryForLocation(Grid.Location location) {
-        return getAtLocation(style.getGridMarkLocations(), location);
-    }
-
-    private Widget wrapTransparentIfIsNotInHighlightedWinningTriple(Widget widget, Grid.Location location) {
-        if (noWinningTripleHighlighted() || isInWinningTriple(location)) {
-            return widget;
-        }
-        return new CompositeDecoratorWidget<>(widget, WinningTripleAlpha);
-    }
-
-    private boolean noWinningTripleHighlighted() {
-        return !model.hasHighlightedThreeInARow();
-    }
-
-    private boolean isInWinningTriple(Grid.Location location) {
-        return model.getHighlightedThreeInARow().containsLocation(location);
-    }
-
-    private Widget createMarkWidget(Grid.Mark mark, Rectangle bounds) {
-        switch (mark) {
-            case Cross:
-                return new ImageWidget(bounds.x, bounds.y, style.getCrossImage());
-            case Nought:
-                return new ImageWidget(bounds.x, bounds.y, style.getNoughtImage());
-            case None:
-                return new EmptyWidget();
-            default:
-                throw new RuntimeException("This is no sensible state!");
-        }
-    }
 
     private Widget highlightWidget() {
-        if (hasHighlightedCell()) {
-            Point origin = getBackgroundImageOrigin();
-            Rectangle boundaryForLocation = getBoundaryForLocation(model.getHighlightedCell());
-            boundaryForLocation = boundaryForLocation.translate(origin.x, origin.y);
-            return new RectangleWidget(boundaryForLocation, style.getHighlightColor());
-        } else {
-            return new EmptyWidget();
-        }
-    }
+        TicTacToeGridHighlightedCellWidget.HighlightState state = new TicTacToeGridHighlightedCellWidget.HighlightState() {
+            @Override
+            public boolean isHighlighted() {
+                return model.hasHighlightedCell();
+            }
 
-    private boolean hasHighlightedCell() {
-        return model.hasHighlightedCell();
-    }
+            @Override
+            public Grid.Location getLocation() {
+                return model.getHighlightedCell();
+            }
+        };
 
+
+        Widget highlightWidget = new TicTacToeGridHighlightedCellWidget(state, style);
+        Point origin = getBackgroundImageOrigin();
+        highlightWidget.widgetCoordinates().translate(origin.x, origin.y);
+        return highlightWidget;
+    }
+    //Proplem: inner widgets are created on every
     private Widget debugInfoWidget() {
         return isDebugMode ? new DebugWidget() : new EmptyWidget();
     }

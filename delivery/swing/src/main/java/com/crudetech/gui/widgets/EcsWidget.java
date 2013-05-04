@@ -5,7 +5,6 @@ import java.util.Objects;
 public abstract class EcsWidget implements Widget {
     private final CoordinateSystem ecs = CoordinateSystem.world();
 
-
     public EcsWidget(int x, int y) {
         ecs.translate(x, y);
     }
