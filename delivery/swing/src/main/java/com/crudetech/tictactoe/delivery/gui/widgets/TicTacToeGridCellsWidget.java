@@ -1,11 +1,10 @@
 package com.crudetech.tictactoe.delivery.gui.widgets;
 
+import com.crudetech.collections.Pair;
 import com.crudetech.functional.UnaryFunction;
-import com.crudetech.gui.widgets.AlphaValue;
-import com.crudetech.gui.widgets.CompoundWidget;
-import com.crudetech.gui.widgets.Image;
-import com.crudetech.gui.widgets.Widget;
+import com.crudetech.gui.widgets.*;
 import com.crudetech.tictactoe.game.Grid;
+import com.crudetech.tictactoe.game.GridCells;
 
 import static com.crudetech.query.Query.from;
 
@@ -102,14 +101,14 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
     }
 
     Iterable<CellWidget<?>> getCells() {
-        return from(model.getGrid().getCells()).select(toWidget());
+        return from(model.getGrid().getCells()).select(toWidget()).select(toCorrectCoordinates());
     }
 
-    private UnaryFunction<Grid.Cell, CellWidget<?>> toWidget() {
-        return new UnaryFunction<Grid.Cell, CellWidget<?>>() {
+    private UnaryFunction<Grid.Cell, Pair<CellWidget<?>, Grid.Cell>> toWidget() {
+        return new UnaryFunction<Grid.Cell, Pair<CellWidget<?>, Grid.Cell>>() {
             @Override
-            public CellWidget<?> execute(Grid.Cell cell) {
-                return createCellWidgetForMark(cell);
+            public Pair<CellWidget<?>, Grid.Cell> execute(Grid.Cell cell) {
+                return new Pair<CellWidget<?>, Grid.Cell>(createCellWidgetForMark(cell), cell);
             }
         };
     }
@@ -129,5 +128,16 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
 
     private ThreeInARowHighlightTransparencyState createTransparencyState(Grid.Cell cell) {
         return new ThreeInARowHighlightTransparencyState(model, cell.getLocation(), alphaValue);
+    }
+
+    private UnaryFunction<Pair<CellWidget<?>, Grid.Cell>, CellWidget<?>> toCorrectCoordinates() {
+        return new UnaryFunction<Pair<CellWidget<?>, Grid.Cell>, CellWidget<?>>() {
+            @Override
+            public CellWidget<?> execute(Pair<CellWidget<?>, Grid.Cell> cellWidget) {
+                Rectangle cellBoundary = GridCells.getAtLocation(style.getGridMarkLocations(), cellWidget.getSecond().getLocation());
+                cellWidget.getFirst().widgetCoordinates().setLocation(cellBoundary.getLocation());
+                return cellWidget.getFirst();
+            }
+        };
     }
 }

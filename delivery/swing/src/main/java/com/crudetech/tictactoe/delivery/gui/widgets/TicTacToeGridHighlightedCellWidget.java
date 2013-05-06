@@ -36,7 +36,7 @@ public class TicTacToeGridHighlightedCellWidget extends DecoratorTemplateWidget 
         try {
             super.paint(pipe);
         } finally {
-            pipe.popAlpha();
+            pipe.popCoordinateSystem();
         }
     }
 

@@ -6,7 +6,6 @@ import com.crudetech.gui.widgets.*;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -125,30 +124,6 @@ public class TicTacToeGridWidgetTest {
             }
         };
     }
-
-
-    @Ignore
-    @Test
-    public void highlightedRectangleIsAddedWhenModelIsHighlighted() {
-        Grid.Location highlightedLocation = Grid.Location.of(Grid.Row.First, Grid.Column.Third);
-        model.highlightCell(highlightedLocation);
-        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
-                .withBounds(widgetBoundary)
-                .withStyle(style)
-                .withModel(model)
-                .noDebug()
-                .createTicTacToeGridWidget();
-
-
-        List<Widget> widgets = widget.buildPaintList();
-
-        Rectangle rect = new Rectangle(0, 0, 100, 100);
-        Widget expectHighlightRectangle = new RectangleWidget(rect, style.getHighlightColor());
-        expectHighlightRectangle.widgetCoordinates().setLocation(Point.of(475, 75));
-
-        assertThat(widgets.get(widgets.size() - 2), is(expectHighlightRectangle));
-    }
-
 
     @Test
     public void debugIsNotPaintedIfDebugModeIsOf() {

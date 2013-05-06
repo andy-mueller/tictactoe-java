@@ -3,6 +3,8 @@ package com.crudetech.tictactoe.delivery.gui.widgets;
 
 import com.crudetech.functional.UnaryFunction;
 import com.crudetech.gui.widgets.AlphaValue;
+import com.crudetech.gui.widgets.CoordinateSystem;
+import com.crudetech.gui.widgets.Point;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import org.junit.Before;
@@ -52,6 +54,41 @@ public class TicTacToeGridCellsWidgetTest {
         expectedCellTypes.addAll(asList(TicTacToeGridCellsWidget.None.class, TicTacToeGridCellsWidget.Cross.class, TicTacToeGridCellsWidget.Cross.class));
 
         assertThat(cellWidgetsClasses, is(equalTo(expectedCellTypes)));
+    }
+
+    @Test
+    public void cellsAreLocatedAtCorrectPosition() throws Exception {
+
+        TicTacToeGridCellsWidget widget = new TicTacToeGridCellsWidget(gridModel, style);
+
+        Iterable<Point> realCellLocations = from(widget.getCells()).select(toCoordinates()).select(toLocation());
+
+
+        Iterable<Point> expectedLocations = asList(
+                Point.of(50,  25), Point.of(200,  25), Point.of(350,  25),
+                Point.of(50, 150), Point.of(200, 150), Point.of(350, 150),
+                Point.of(50, 275), Point.of(200, 275), Point.of(350, 275)
+        );
+
+        assertThat(expectedLocations, is(equalTo(realCellLocations)));
+    }
+
+    private UnaryFunction<CoordinateSystem, Point> toLocation() {
+        return new UnaryFunction<CoordinateSystem, Point>() {
+            @Override
+            public Point execute(CoordinateSystem coordinateSystem) {
+                return coordinateSystem.getLocation();
+            }
+        };
+    }
+
+    private UnaryFunction<TicTacToeGridCellsWidget.CellWidget<?>, CoordinateSystem> toCoordinates() {
+        return new UnaryFunction<TicTacToeGridCellsWidget.CellWidget<?>, CoordinateSystem>() {
+            @Override
+            public CoordinateSystem execute(TicTacToeGridCellsWidget.CellWidget<?> cellWidget) {
+                return cellWidget.widgetCoordinates();
+            }
+        };
     }
 
     private UnaryFunction<Object, Class<?>> toClass() {
