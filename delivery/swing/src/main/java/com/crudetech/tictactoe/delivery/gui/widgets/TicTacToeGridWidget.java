@@ -47,17 +47,13 @@ public class TicTacToeGridWidget extends EcsWidget {
 
 
     List<Widget> buildPaintList() {
-        List<Widget> paintList = new ArrayList<>();
-
-
-        paintList.add(backgroundWidget());
-        paintList.add(backgroundImageWidget());
-        paintList.add(gridCellsWidget());
-        paintList.add(highlightWidget());
-        paintList.add(debugInfoWidget());
-
-
-        return paintList;
+        return new ArrayList<Widget>() {{
+            add(backgroundWidget());
+            add(backgroundImageWidget());
+            add(gridCellsWidget());
+            add(highlightWidget());
+            add(debugInfoWidget());
+        }};
     }
 
     public GridCellHit checkGridCellHit(Point hitInWorld) {
@@ -74,26 +70,32 @@ public class TicTacToeGridWidget extends EcsWidget {
         return new FilledRectangleWidget(boundary, style.getBackgroundColor());
     }
 
-    private Widget backgroundImageWidget() {
+    Widget backgroundImageWidget() {
         Image backgroundImage = style.getBackgroundImage();
 
-        Point imageLocation = getBackgroundImageOrigin();
 
         StatefulTransparencyImageWidget.TransparencyState state =
-                new StatefulTransparencyImageWidget.TransparencyState() {
-                    @Override
-                    public boolean isTransparent() {
-                        return model.hasHighlightedThreeInARow();
-                    }
-
-                    @Override
-                    public AlphaValue transparency() {
-                        return WinningTripleAlpha;
-                    }
-                };
+                backgroundImageTransparencyState();
         Widget backgroundImageWidget = new StatefulTransparencyImageWidget(state, backgroundImage);
+
+        Point imageLocation = getBackgroundImageOrigin();
         backgroundImageWidget.widgetCoordinates().setLocation(imageLocation);
+
         return backgroundImageWidget;
+    }
+
+    private StatefulTransparencyImageWidget.TransparencyState backgroundImageTransparencyState() {
+        return new StatefulTransparencyImageWidget.TransparencyState() {
+            @Override
+            public boolean isTransparent() {
+                return model.hasHighlightedThreeInARow();
+            }
+
+            @Override
+            public AlphaValue transparency() {
+                return WinningTripleAlpha;
+            }
+        };
     }
 
 
@@ -105,12 +107,25 @@ public class TicTacToeGridWidget extends EcsWidget {
     }
 
     Widget gridCellsWidget() {
-        return new TicTacToeGridCellsWidget(model, style);
+        TicTacToeGridCellsWidget widget = new TicTacToeGridCellsWidget(model, style);
+        return widgetAtBackgroundImageLocation(widget);
+    }
+
+    private Widget widgetAtBackgroundImageLocation(Widget widget) {
+        widget.widgetCoordinates().setLocation(getBackgroundImageOrigin());
+        return widget;
     }
 
 
     private Widget highlightWidget() {
-        TicTacToeGridHighlightedCellWidget.HighlightState state = new TicTacToeGridHighlightedCellWidget.HighlightState() {
+        TicTacToeGridHighlightedCellWidget.HighlightState state = highlightWidgetState();
+
+        Widget highlightWidget = new TicTacToeGridHighlightedCellWidget(state, style);
+        return widgetAtBackgroundImageLocation(highlightWidget);
+    }
+
+    private TicTacToeGridHighlightedCellWidget.HighlightState highlightWidgetState() {
+        return new TicTacToeGridHighlightedCellWidget.HighlightState() {
             @Override
             public boolean isHighlighted() {
                 return model.hasHighlightedCell();
@@ -121,14 +136,8 @@ public class TicTacToeGridWidget extends EcsWidget {
                 return model.getHighlightedCell();
             }
         };
-
-
-        Widget highlightWidget = new TicTacToeGridHighlightedCellWidget(state, style);
-        Point origin = getBackgroundImageOrigin();
-        highlightWidget.widgetCoordinates().translate(origin.x, origin.y);
-        return highlightWidget;
     }
-    //Proplem: inner widgets are created on every
+
     private Widget debugInfoWidget() {
         return isDebugMode ? new DebugWidget() : new EmptyWidget();
     }
@@ -156,6 +165,7 @@ public class TicTacToeGridWidget extends EcsWidget {
             }
         };
     }
+
 
     class DebugWidget extends EcsWidget {
         @Override

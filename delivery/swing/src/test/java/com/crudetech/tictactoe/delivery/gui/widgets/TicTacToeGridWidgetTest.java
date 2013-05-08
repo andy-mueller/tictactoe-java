@@ -171,4 +171,19 @@ public class TicTacToeGridWidgetTest {
         boolean hasDebugWidget = from(widgets).select(classOf()).where(isKindOf(TicTacToeGridWidget.DebugWidget.class)).any();
         assertThat(hasDebugWidget, is(true));
     }
+
+    @Test
+    public void givenImageThatFitsInWidget_CellWidgetAndImageOvelapp() throws Exception {
+        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
+                .withBounds(widgetBoundary)
+                .withStyle(style)
+                .withModel(model)
+                .noDebug()
+                .createTicTacToeGridWidget();
+
+        Widget backgroundImage = widget.backgroundImageWidget();
+        Widget cellWidget = widget.gridCellsWidget();
+
+        assertThat(cellWidget.widgetCoordinates(), is(backgroundImage.widgetCoordinates()));
+    }
 }
