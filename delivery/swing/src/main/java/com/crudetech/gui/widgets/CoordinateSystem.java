@@ -11,7 +11,7 @@ public class CoordinateSystem {
         return new CoordinateSystem();
     }
 
-    public static CoordinateSystem idenitity() {
+    public static CoordinateSystem identity() {
         return world();
     }
 
