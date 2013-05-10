@@ -2,6 +2,7 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 
 import com.crudetech.functional.UnaryFunction;
+import com.crudetech.gui.widgets.Coordinates;
 import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.tictactoe.delivery.gui.widgets.GridCellHit;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
@@ -80,7 +81,7 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     public GridCellHit checkGridCellHit(int x, int y) {
-        return getGridWidget().checkGridCellHit(com.crudetech.gui.widgets.Point.of(x, y));
+        return getGridWidget().checkGridCellHit(com.crudetech.gui.widgets.Point.of(x, y), Coordinates.World);
     }
 
     private TicTacToeGridModel getModel() {

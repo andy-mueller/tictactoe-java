@@ -70,7 +70,7 @@ public class StatefulTransparencyImageWidgetTest {
     public void givenNoTransparency_imageLocationWillBeAtOrigin() {
         Widget actualWidget = firstOf(widget.subWidgets());
 
-        assertThat(actualWidget.widgetCoordinates(), is(CoordinateSystem.idenitity()));
+        assertThat(actualWidget.widgetCoordinates(), is(CoordinateSystem.identity()));
     }
 
     @Test
