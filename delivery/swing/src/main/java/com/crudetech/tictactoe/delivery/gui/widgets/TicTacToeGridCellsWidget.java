@@ -13,6 +13,7 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
     private final Style style;
     private final AlphaValue alphaValue = new AlphaValue(0.4f);
 
+
     public static abstract class CellWidget<TWidget extends Widget> extends DecoratorWidget<TWidget> {
         private CellWidget(TWidget decorated) {
             super(decorated);
@@ -93,6 +94,14 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
     public TicTacToeGridCellsWidget(TicTacToeGridModel model, Style style) {
         this.model = model;
         this.style = style;
+    }
+
+    public GridCellHit hitTest(Point hitPoint, Coordinates coordinates) {
+        Point hitPointInWidgetCoordinates = coordinates.toWidgetCoordinates(this, hitPoint);
+
+        Iterable<Grid.Cell> allCells = model.getGrid().getCells();
+        Rectangle[][] hitBoundaries = style.getGridMarkLocations();
+        return new GridCellHit(allCells, hitPointInWidgetCoordinates, hitBoundaries);
     }
 
     @Override
