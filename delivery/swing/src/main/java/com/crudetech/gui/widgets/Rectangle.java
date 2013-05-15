@@ -2,7 +2,9 @@ package com.crudetech.gui.widgets;
 
 import java.util.Objects;
 
-public class Rectangle {
+import static java.lang.Math.abs;
+
+public class Rectangle implements Transformable<Rectangle> {
 
     public final int x;
     public final int y;
@@ -22,6 +24,10 @@ public class Rectangle {
 
     public Rectangle(Point location, int width, int height) {
         this(location.x, location.y, width, height);
+    }
+
+    public Rectangle(Point upperLeft, Point lowerRight) {
+        this(upperLeft, abs(lowerRight.x - upperLeft.x), abs(lowerRight.y - upperLeft.y));
     }
 
     @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
@@ -79,6 +85,13 @@ public class Rectangle {
 
     public Rectangle inflate(int dx, int dy) {
         return new Rectangle(x, y, width + dx, height + dy);
+    }
+
+    @Override
+    public Rectangle transformBy(Transformation xform) {
+        Point transformedUpperLeft = xform.transform(getLocation());
+        Point transformedLowerRight = xform.transform(Point.of(x + width, y + height));
+        return new Rectangle(transformedUpperLeft, transformedLowerRight);
     }
 
     private static class HashCodeBuilder {

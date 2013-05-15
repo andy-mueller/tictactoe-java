@@ -97,13 +97,13 @@ public class CoordinateSystemTest {
     }
 
     @Test
-    public void givenRectangleNotOnEcsOrigin_worldToEcsApliesTranslationAndScale() throws Exception {
+    public void givenRectangleNotOnEcsOrigin_worldToEcsAppliesTranslationAndScale() throws Exception {
         CoordinateSystem coos = new CoordinateSystem(Point.of(2, 1), 0.5);
 
         Rectangle r = new Rectangle(3, 3, 2, 1);
-        Rectangle inWorldCoordinates = coos.toWidgetCoordinates(r);
+        Rectangle inWidgetCoordinates = coos.toWidgetCoordinates(r);
 
-        assertThat(inWorldCoordinates, is(new Rectangle(2, 4, 4, 2)));
+        assertThat(inWidgetCoordinates, is(new Rectangle(2, 4, 4, 2)));
     }
 
     @Test

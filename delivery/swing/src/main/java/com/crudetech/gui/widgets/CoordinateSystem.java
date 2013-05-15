@@ -80,34 +80,15 @@ public class CoordinateSystem {
                 '}';
     }
 
-    public Rectangle toWorldCoordinates(Rectangle rectangle) {
-        return new Rectangle(
-                toWorldCoordinates(rectangle.getLocation()),
-                toWorldLength(rectangle.width),
-                toWorldLength(rectangle.height));
+    public <TTransformable extends Transformable<TTransformable>>
+    TTransformable toWorldCoordinates(TTransformable point) {
+        Transformation xform = new Transformation(location.x, location.y, scale);
+        return point.transformBy(xform);
     }
 
-    private int toWorldLength(int length) {
-        return (int) (length * scale);
-    }
-
-    public Point toWorldCoordinates(Point point) {
-        return Point.of(toWorldLength(point.x) + location.x, toWorldLength(point.y) + location.y);
-    }
-
-    public Point toWidgetCoordinates(Point world) {
-        return Point.of(toWidgetLength(world.x - location.x), toWidgetLength(world.y - location.y));
-    }
-
-
-    public Rectangle toWidgetCoordinates(Rectangle rectangle) {
-        return new Rectangle(
-                toWidgetCoordinates(rectangle.getLocation()),
-                toWidgetLength(rectangle.width),
-                toWidgetLength(rectangle.height));
-    }
-
-    private int toWidgetLength(int length) {
-        return (int) (length / scale);
+    public <TTransformable extends Transformable<TTransformable>>
+    TTransformable toWidgetCoordinates(TTransformable point) {
+        Transformation xform = new Transformation(location.x, location.y, scale).inverse();
+        return point.transformBy(xform);
     }
 }
