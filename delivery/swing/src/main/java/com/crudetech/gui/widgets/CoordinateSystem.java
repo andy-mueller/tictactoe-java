@@ -81,14 +81,14 @@ public class CoordinateSystem {
     }
 
     public <TTransformable extends Transformable<TTransformable>>
-    TTransformable toWorldCoordinates(TTransformable point) {
+    TTransformable toWorldCoordinates(TTransformable potransformablent) {
         Transformation xform = new Transformation(location.x, location.y, scale);
-        return point.transformBy(xform);
+        return potransformablent.transformBy(xform);
     }
 
     public <TTransformable extends Transformable<TTransformable>>
-    TTransformable toWidgetCoordinates(TTransformable point) {
+    TTransformable toWidgetCoordinates(TTransformable transformable) {
         Transformation xform = new Transformation(location.x, location.y, scale).inverse();
-        return point.transformBy(xform);
+        return transformable.transformBy(xform);
     }
 }
