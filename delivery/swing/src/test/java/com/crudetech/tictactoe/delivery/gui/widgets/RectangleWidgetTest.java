@@ -39,6 +39,15 @@ public class RectangleWidgetTest {
 
         verify(g2d).pushColor(AwtColor.ORANGE);
     }
+    @Test
+    public void colorIsResetForAfterPainting() {
+        RectangleWidget w = new RectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
+        GraphicsStream g2d = mock(GraphicsStream.class);
+
+        w.paintEcs(g2d);
+
+        verify(g2d).popColor();
+    }
 
     @Feature(Equivalent.class)
     public static Equivalent.Factory<RectangleWidget> equivalentFixture() {

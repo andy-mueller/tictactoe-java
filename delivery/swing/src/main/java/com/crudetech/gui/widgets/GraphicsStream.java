@@ -6,6 +6,7 @@ public interface GraphicsStream {
     void popCoordinateSystem();
 
     void pushColor(Color color);
+    void popColor();
 
     void drawRectangle(Rectangle rectangle);
     void fillRectangle(Rectangle boundary);

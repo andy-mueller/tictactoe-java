@@ -175,6 +175,7 @@ public class TicTacToeGridWidget extends EcsWidget {
             for (int col = 0; col < bounds.width; col += 50) {
                 pipe.drawLine(Point.of(col, 0), Point.of(col, bounds.height));
             }
+            pipe.popColor();
         }
     }
 }

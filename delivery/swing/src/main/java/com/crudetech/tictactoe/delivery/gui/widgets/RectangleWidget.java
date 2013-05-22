@@ -5,7 +5,7 @@ import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Rectangle;
 
 
-public class RectangleWidget extends RectangularWidget{
+public class RectangleWidget extends RectangularWidget {
     public RectangleWidget(Rectangle boundary, Color color) {
         super(boundary, color);
     }
@@ -13,7 +13,11 @@ public class RectangleWidget extends RectangularWidget{
     @Override
     public void paintEcs(GraphicsStream pipe) {
         pipe.pushColor(getColor());
-        pipe.drawRectangle(getBoundary());
+        try {
+            pipe.drawRectangle(getBoundary());
+        } finally {
+            pipe.popColor();
+        }
     }
 
 }

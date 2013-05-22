@@ -31,7 +31,7 @@ class AwtGraphicsStream implements GraphicsStream {
         pushTranslation(coos.getLocation().x, coos.getLocation().y);
     }
 
-    private void pushCurrentTransformationOnStack() {
+        private void pushCurrentTransformationOnStack() {
             xforms.add(pipe.getTransform());
         }
 
@@ -48,6 +48,11 @@ class AwtGraphicsStream implements GraphicsStream {
     public void pushColor(Color color) {
         colors.add(pipe.getPaint());
         pipe.setPaint(((AwtColor) color).color);
+    }
+
+    @Override
+    public void popColor() {
+        pipe.setPaint(removeLastOf(colors));
     }
 
     @Override
