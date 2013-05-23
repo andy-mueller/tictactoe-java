@@ -74,8 +74,7 @@ public class TicTacToeGridWidget extends EcsWidget {
                 backgroundImageTransparencyState();
         Widget backgroundImageWidget = new StatefulTransparencyImageWidget(state, backgroundImage);
 
-        Point imageLocation = getBackgroundImageOrigin();
-        backgroundImageWidget.widgetCoordinates().setLocation(imageLocation);
+        backgroundImageWidget = widgetAtBackgroundImageLocation(backgroundImageWidget);
 
         return backgroundImageWidget;
     }

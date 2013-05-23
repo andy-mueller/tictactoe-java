@@ -173,7 +173,7 @@ public class TicTacToeGridWidgetTest {
     }
 
     @Test
-    public void givenImageThatFitsInWidget_CellWidgetAndImageOvelapp() throws Exception {
+    public void givenImageThatFitsInWidget_CellWidgetAndImageOverlap() throws Exception {
         TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
                 .withBounds(widgetBoundary)
                 .withStyle(style)
