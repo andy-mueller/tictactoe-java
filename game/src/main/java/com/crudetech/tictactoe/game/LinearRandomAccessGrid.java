@@ -135,7 +135,7 @@ public class LinearRandomAccessGrid implements Grid {
         return new Cell(location, getAt(location));
     }
 
-    Integer[][] allPossibleThreeInARows = {
+    private static final Integer[][] allPossibleThreeInARows = {
             {0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6},
             {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {6, 4, 2}
     };
