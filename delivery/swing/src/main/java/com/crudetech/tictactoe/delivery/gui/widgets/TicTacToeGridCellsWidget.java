@@ -1,6 +1,5 @@
 package com.crudetech.tictactoe.delivery.gui.widgets;
 
-import com.crudetech.collections.Pair;
 import com.crudetech.functional.UnaryFunction;
 import com.crudetech.gui.widgets.*;
 import com.crudetech.tictactoe.game.Grid;
@@ -11,12 +10,15 @@ import static com.crudetech.query.Query.from;
 public class TicTacToeGridCellsWidget extends CompoundWidget {
     private final TicTacToeGridModel model;
     private final Style style;
-    private final AlphaValue alphaValue = new AlphaValue(0.4f);
+    private static final AlphaValue alphaValue = new AlphaValue(0.4f);
 
 
     public static abstract class CellWidget<TWidget extends Widget> extends DecoratorWidget<TWidget> {
-        private CellWidget(TWidget decorated) {
+        private final Grid.Cell model;
+
+        private CellWidget(TWidget decorated, Grid.Cell model) {
             super(decorated);
+            this.model = model;
         }
 
         public abstract boolean isTransparent();
@@ -25,8 +27,8 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
     }
 
     public static class CellImageWidget extends CellWidget<StatefulTransparencyImageWidget> {
-        public CellImageWidget(Image image, StatefulTransparencyImageWidget.TransparencyState state) {
-            super(new StatefulTransparencyImageWidget(state, image));
+        public CellImageWidget(Grid.Cell model, Image image, StatefulTransparencyImageWidget.TransparencyState state) {
+            super(new StatefulTransparencyImageWidget(state,  image), model);
         }
 
         @Override
@@ -38,35 +40,7 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
         public boolean hasImage(Image image) {
             return getDecorated().hasImage(image);
         }
-    }
-
-    public static class Cross extends CellImageWidget {
-        public Cross(Style style, StatefulTransparencyImageWidget.TransparencyState state) {
-            super(style.getCrossImage(), state);
-        }
-    }
-
-    public static class None extends CellWidget<Widget> {
-        None() {
-            super(new EmptyWidget());
-        }
-
-        @Override
-        public boolean isTransparent() {
-            return true;
-        }
-
-        @Override
-        public boolean hasImage(Image image) {
-            return false;
-        }
-    }
-
-    public static class Nought extends CellImageWidget {
-        public Nought(Style style, StatefulTransparencyImageWidget.TransparencyState state) {
-            super(style.getNoughtImage(), state);
-        }
-    }
+      }
 
     static class ThreeInARowHighlightTransparencyState implements StatefulTransparencyImageWidget.TransparencyState {
         private final TicTacToeGridModel model;
@@ -88,6 +62,34 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
         @Override
         public AlphaValue transparency() {
             return alphaValue;
+        }
+    }
+
+    public static class Cross extends CellImageWidget {
+        public Cross(Grid.Cell model, Style style, StatefulTransparencyImageWidget.TransparencyState state) {
+            super(model, style.getCrossImage(), state);
+        }
+    }
+
+    public static class None extends CellWidget<Widget> {
+        None(Grid.Cell model) {
+            super(new EmptyWidget(), model);
+        }
+
+        @Override
+        public boolean isTransparent() {
+            return true;
+        }
+
+        @Override
+        public boolean hasImage(Image image) {
+            return false;
+        }
+    }
+
+    public static class Nought extends CellImageWidget {
+        public Nought(Grid.Cell model, Style style, StatefulTransparencyImageWidget.TransparencyState state) {
+            super(model, style.getNoughtImage(), state);
         }
     }
 
@@ -113,39 +115,41 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
         return from(model.getGrid().getCells()).select(toWidget()).select(toCorrectCoordinates());
     }
 
-    private UnaryFunction<Grid.Cell, Pair<CellWidget<?>, Grid.Cell>> toWidget() {
-        return new UnaryFunction<Grid.Cell, Pair<CellWidget<?>, Grid.Cell>>() {
+    private UnaryFunction<Grid.Cell, CellWidget<?>> toWidget() {
+        return new UnaryFunction<Grid.Cell, CellWidget<?>>() {
             @Override
-            public Pair<CellWidget<?>, Grid.Cell> execute(Grid.Cell cell) {
-                return new Pair<CellWidget<?>, Grid.Cell>(createCellWidgetForMark(cell), cell);
+            public CellWidget<?> execute(Grid.Cell cell) {
+                return createCellWidgetForMark(cell);
             }
         };
     }
 
+
     private CellWidget<?> createCellWidgetForMark(Grid.Cell cell) {
         switch (cell.getMark()) {
             case Cross:
-                return new Cross(style, createTransparencyState(cell));
+                return new Cross(cell, style, createTransparencyStateFor(cell));
             case Nought:
-                return new Nought(style, createTransparencyState(cell));
+                return new Nought(cell, style, createTransparencyStateFor(cell));
             case None:
-                return new None();
+                return new None(cell);
             default:
                 throw new IllegalStateException("Unexpected cell mark");
         }
     }
 
-    private ThreeInARowHighlightTransparencyState createTransparencyState(Grid.Cell cell) {
+    private ThreeInARowHighlightTransparencyState createTransparencyStateFor(Grid.Cell cell) {
         return new ThreeInARowHighlightTransparencyState(model, cell.getLocation(), alphaValue);
     }
 
-    private UnaryFunction<Pair<CellWidget<?>, Grid.Cell>, CellWidget<?>> toCorrectCoordinates() {
-        return new UnaryFunction<Pair<CellWidget<?>, Grid.Cell>, CellWidget<?>>() {
+
+    private UnaryFunction<CellWidget<?>, CellWidget<?>> toCorrectCoordinates() {
+        return new UnaryFunction<CellWidget<?>, CellWidget<?>>() {
             @Override
-            public CellWidget<?> execute(Pair<CellWidget<?>, Grid.Cell> cellWidget) {
-                Rectangle cellBoundary = GridCells.getAtLocation(style.getGridMarkLocations(), cellWidget.getSecond().getLocation());
-                cellWidget.getFirst().widgetCoordinates().setLocation(cellBoundary.getLocation());
-                return cellWidget.getFirst();
+            public CellWidget<?> execute(CellWidget<?> cellWidget) {
+                Rectangle cellBoundary = GridCells.getAtLocation(style.getGridMarkLocations(), cellWidget.model.getLocation());
+                cellWidget.widgetCoordinates().setLocation(cellBoundary.getLocation());
+                return cellWidget;
             }
         };
     }
