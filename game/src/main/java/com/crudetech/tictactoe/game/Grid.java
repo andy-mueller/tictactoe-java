@@ -17,6 +17,8 @@ public interface Grid {
 
     Iterable<Cell> difference(Grid rhs);
 
+    Cell getCellAt(Location location);
+
     public enum Mark {
         Cross {
             @Override

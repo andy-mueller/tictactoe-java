@@ -100,24 +100,25 @@ public class TicTacToeGridCellsWidgetTest {
         };
     }
 
-    private static final Grid.Cell middleCell = new Grid.Cell(Grid.Location.of(Grid.Row.Second, Grid.Column.Second), Grid.Mark.None);
+    private static final Grid.Location middleCell = Grid.Location.of(Grid.Row.Second, Grid.Column.Second);
+    TicTacToeGridModel model = new TicTacToeGridModel();
     @Test
     public void givenCrossWidget_ImageIsUsedFromStyle() throws Exception {
-        TicTacToeGridCellsWidget.Cross crossWidget = new TicTacToeGridCellsWidget.Cross(middleCell, style, null);
+        TicTacToeGridCellsWidget.Cross crossWidget = new TicTacToeGridCellsWidget.Cross(middleCell, model, style);
 
         assertThat(crossWidget.hasImage(style.getCrossImage()), is(true));
     }
 
     @Test
     public void givenNoughtWidget_ImageIsUsedFromStyle() throws Exception {
-        TicTacToeGridCellsWidget.Nought noughtWidget = new TicTacToeGridCellsWidget.Nought(middleCell, style, null);
+        TicTacToeGridCellsWidget.Nought noughtWidget = new TicTacToeGridCellsWidget.Nought(middleCell, model, style);
 
         assertThat(noughtWidget.hasImage(style.getNoughtImage()), is(true));
     }
 
     @Test
     public void givenNoneWidget_NoImageIsUsed() throws Exception {
-        TicTacToeGridCellsWidget.None noneWidget = new TicTacToeGridCellsWidget.None(middleCell);
+        TicTacToeGridCellsWidget.None noneWidget = new TicTacToeGridCellsWidget.None(middleCell, model);
 
         assertThat(noneWidget.getDecorated(), is(instanceOf(EmptyWidget.class)));
     }

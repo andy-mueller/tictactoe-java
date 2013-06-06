@@ -131,7 +131,8 @@ public class LinearRandomAccessGrid implements Grid {
         };
     }
 
-    private Cell getCellAt(Location location) {
+    @Override
+    public Cell getCellAt(Location location) {
         return new Cell(location, getAt(location));
     }
 

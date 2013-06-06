@@ -16,9 +16,9 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
     public static abstract class CellWidget<TWidget extends Widget> extends DecoratorWidget<TWidget> {
         private final Grid.Cell model;
 
-        private CellWidget(TWidget decorated, Grid.Cell model) {
+        private CellWidget(TWidget decorated, Grid.Location location, TicTacToeGridModel model) {
             super(decorated);
-            this.model = model;
+            this.model = model.getGrid().getCellAt(location);
         }
 
         public abstract boolean isTransparent();
@@ -27,8 +27,13 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
     }
 
     public static class CellImageWidget extends CellWidget<StatefulTransparencyImageWidget> {
-        public CellImageWidget(Grid.Cell model, Image image, StatefulTransparencyImageWidget.TransparencyState state) {
-            super(new StatefulTransparencyImageWidget(state,  image), model);
+        public CellImageWidget(Grid.Location location, TicTacToeGridModel model, Image image) {
+            super(
+                    new StatefulTransparencyImageWidget(
+                            new ThreeInARowHighlightTransparencyState(model, location, alphaValue),
+                            image),
+                    location, model
+            );
         }
 
         @Override
@@ -40,7 +45,7 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
         public boolean hasImage(Image image) {
             return getDecorated().hasImage(image);
         }
-      }
+    }
 
     static class ThreeInARowHighlightTransparencyState implements StatefulTransparencyImageWidget.TransparencyState {
         private final TicTacToeGridModel model;
@@ -66,14 +71,20 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
     }
 
     public static class Cross extends CellImageWidget {
-        public Cross(Grid.Cell model, Style style, StatefulTransparencyImageWidget.TransparencyState state) {
-            super(model, style.getCrossImage(), state);
+        public Cross(Grid.Location location, TicTacToeGridModel model, Style style) {
+            super(location, model, style.getCrossImage());
+        }
+    }
+
+    public static class Nought extends CellImageWidget {
+        public Nought(Grid.Location location, TicTacToeGridModel model, Style style) {
+            super(location, model, style.getNoughtImage());
         }
     }
 
     public static class None extends CellWidget<Widget> {
-        None(Grid.Cell model) {
-            super(new EmptyWidget(), model);
+        None(Grid.Location location, TicTacToeGridModel model) {
+            super(new EmptyWidget(), location, model);
         }
 
         @Override
@@ -84,12 +95,6 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
         @Override
         public boolean hasImage(Image image) {
             return false;
-        }
-    }
-
-    public static class Nought extends CellImageWidget {
-        public Nought(Grid.Cell model, Style style, StatefulTransparencyImageWidget.TransparencyState state) {
-            super(model, style.getNoughtImage(), state);
         }
     }
 
@@ -128,20 +133,15 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
     private CellWidget<?> createCellWidgetForMark(Grid.Cell cell) {
         switch (cell.getMark()) {
             case Cross:
-                return new Cross(cell, style, createTransparencyStateFor(cell));
+                return new Cross(cell.getLocation(), model, style);
             case Nought:
-                return new Nought(cell, style, createTransparencyStateFor(cell));
+                return new Nought(cell.getLocation(), model, style);
             case None:
-                return new None(cell);
+                return new None(cell.getLocation(), model);
             default:
                 throw new IllegalStateException("Unexpected cell mark");
         }
     }
-
-    private ThreeInARowHighlightTransparencyState createTransparencyStateFor(Grid.Cell cell) {
-        return new ThreeInARowHighlightTransparencyState(model, cell.getLocation(), alphaValue);
-    }
-
 
     private UnaryFunction<CellWidget<?>, CellWidget<?>> toCorrectCoordinates() {
         return new UnaryFunction<CellWidget<?>, CellWidget<?>>() {
