@@ -65,7 +65,7 @@ public class TicTacToeGridCellsWidgetTest {
 
 
         Iterable<Point> expectedLocations = asList(
-                Point.of(50,  25), Point.of(200,  25), Point.of(350,  25),
+                Point.of(50, 25), Point.of(200, 25), Point.of(350, 25),
                 Point.of(50, 150), Point.of(200, 150), Point.of(350, 150),
                 Point.of(50, 275), Point.of(200, 275), Point.of(350, 275)
         );
@@ -102,6 +102,7 @@ public class TicTacToeGridCellsWidgetTest {
 
     private static final Grid.Location middleCell = Grid.Location.of(Grid.Row.Second, Grid.Column.Second);
     TicTacToeGridModel model = new TicTacToeGridModel();
+
     @Test
     public void givenCrossWidget_ImageIsUsedFromStyle() throws Exception {
         TicTacToeGridCellsWidget.Cross crossWidget = new TicTacToeGridCellsWidget.Cross(middleCell, model, style);
@@ -118,7 +119,7 @@ public class TicTacToeGridCellsWidgetTest {
 
     @Test
     public void givenNoneWidget_NoImageIsUsed() throws Exception {
-        TicTacToeGridCellsWidget.None noneWidget = new TicTacToeGridCellsWidget.None(middleCell, model);
+        TicTacToeGridCellsWidget.None noneWidget = new TicTacToeGridCellsWidget.None(middleCell, model, style);
 
         assertThat(noneWidget.getDecorated(), is(instanceOf(EmptyWidget.class)));
     }

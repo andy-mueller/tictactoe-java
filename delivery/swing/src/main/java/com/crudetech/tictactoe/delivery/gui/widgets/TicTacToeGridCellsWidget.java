@@ -15,9 +15,11 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
 
     public static abstract class CellWidget<TWidget extends Widget> extends DecoratorWidget<TWidget> {
         private final Grid.Cell model;
+        private final Rectangle boundary;
 
-        private CellWidget(TWidget decorated, Grid.Location location, TicTacToeGridModel model) {
+        private CellWidget(TWidget decorated, Grid.Location location, TicTacToeGridModel model, Style style) {
             super(decorated);
+            this.boundary = GridCells.getAtLocation(style.getGridMarkLocations(), location);
             this.model = model.getGrid().getCellAt(location);
         }
 
@@ -27,12 +29,12 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
     }
 
     public static class CellImageWidget extends CellWidget<StatefulTransparencyImageWidget> {
-        public CellImageWidget(Grid.Location location, TicTacToeGridModel model, Image image) {
+        public CellImageWidget(Grid.Location location, TicTacToeGridModel model, Image image, Style style) {
             super(
                     new StatefulTransparencyImageWidget(
                             new ThreeInARowHighlightTransparencyState(model, location, alphaValue),
                             image),
-                    location, model
+                    location, model, style
             );
         }
 
@@ -72,19 +74,19 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
 
     public static class Cross extends CellImageWidget {
         public Cross(Grid.Location location, TicTacToeGridModel model, Style style) {
-            super(location, model, style.getCrossImage());
+            super(location, model, style.getCrossImage(), style);
         }
     }
 
     public static class Nought extends CellImageWidget {
         public Nought(Grid.Location location, TicTacToeGridModel model, Style style) {
-            super(location, model, style.getNoughtImage());
+            super(location, model, style.getNoughtImage(), style);
         }
     }
 
     public static class None extends CellWidget<Widget> {
-        None(Grid.Location location, TicTacToeGridModel model) {
-            super(new EmptyWidget(), location, model);
+        None(Grid.Location location, TicTacToeGridModel model, Style style) {
+            super(new EmptyWidget(), location, model, style);
         }
 
         @Override
@@ -131,13 +133,14 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
 
 
     private CellWidget<?> createCellWidgetForMark(Grid.Cell cell) {
+        Grid.Location location = cell.getLocation();
         switch (cell.getMark()) {
             case Cross:
-                return new Cross(cell.getLocation(), model, style);
+                return new Cross(location, model, style);
             case Nought:
-                return new Nought(cell.getLocation(), model, style);
+                return new Nought(location, model, style);
             case None:
-                return new None(cell.getLocation(), model);
+                return new None(location, model, style);
             default:
                 throw new IllegalStateException("Unexpected cell mark");
         }
