@@ -19,7 +19,9 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
 
         private CellWidget(TWidget decorated, Grid.Location location, TicTacToeGridModel model, Style style) {
             super(decorated);
-            this.boundary = GridCells.getAtLocation(style.getGridMarkLocations(), location);
+            Rectangle boundaryInWorld = GridCells.getAtLocation(style.getGridMarkLocations(), location);
+            widgetCoordinates().setLocation(boundaryInWorld.getLocation());
+            this.boundary = widgetCoordinates().toWidgetCoordinates(boundaryInWorld);
             this.model = model.getGrid().getCellAt(location);
         }
 
@@ -119,7 +121,7 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
     }
 
     Iterable<CellWidget<?>> getCells() {
-        return from(model.getGrid().getCells()).select(toWidget()).select(toCorrectCoordinates());
+        return from(model.getGrid().getCells()).select(toWidget());
     }
 
     private UnaryFunction<Grid.Cell, CellWidget<?>> toWidget() {
@@ -144,16 +146,5 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
             default:
                 throw new IllegalStateException("Unexpected cell mark");
         }
-    }
-
-    private UnaryFunction<CellWidget<?>, CellWidget<?>> toCorrectCoordinates() {
-        return new UnaryFunction<CellWidget<?>, CellWidget<?>>() {
-            @Override
-            public CellWidget<?> execute(CellWidget<?> cellWidget) {
-                Rectangle cellBoundary = GridCells.getAtLocation(style.getGridMarkLocations(), cellWidget.model.getLocation());
-                cellWidget.widgetCoordinates().setLocation(cellBoundary.getLocation());
-                return cellWidget;
-            }
-        };
     }
 }
