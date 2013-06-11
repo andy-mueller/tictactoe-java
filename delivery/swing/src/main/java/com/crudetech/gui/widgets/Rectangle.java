@@ -61,6 +61,10 @@ public class Rectangle implements Transformable<Rectangle> {
                 && this.y <= y && y <= (this.y + height);
     }
 
+    public boolean contains(Point p) {
+        return contains(p.x, p.y);
+    }
+
     @Override
     public String toString() {
         return "Rectangle{" +

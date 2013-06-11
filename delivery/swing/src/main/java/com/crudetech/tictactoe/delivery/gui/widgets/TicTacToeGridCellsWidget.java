@@ -14,20 +14,24 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
 
 
     public static abstract class CellWidget<TWidget extends Widget> extends DecoratorWidget<TWidget> {
-        private final Grid.Cell model;
         private final Rectangle boundary;
+        private final Grid.Location location;
 
-        private CellWidget(TWidget decorated, Grid.Location location, TicTacToeGridModel model, Style style) {
+        private CellWidget(TWidget decorated, Grid.Location location, Style style) {
             super(decorated);
+            this.location = location;
             Rectangle boundaryInWorld = GridCells.getAtLocation(style.getGridMarkLocations(), location);
             widgetCoordinates().setLocation(boundaryInWorld.getLocation());
             this.boundary = widgetCoordinates().toWidgetCoordinates(boundaryInWorld);
-            this.model = model.getGrid().getCellAt(location);
         }
 
         public abstract boolean isTransparent();
 
         public abstract boolean hasImage(Image image);
+
+        public GridCellHit hitTest(final Point hitPoint, final Coordinates coordinates) {
+            return new GridCellHit(location, boundary, coordinates.toWidgetCoordinates(CellWidget.this, hitPoint));
+        }
     }
 
     public static class CellImageWidget extends CellWidget<StatefulTransparencyImageWidget> {
@@ -36,7 +40,7 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
                     new StatefulTransparencyImageWidget(
                             new ThreeInARowHighlightTransparencyState(model, location, alphaValue),
                             image),
-                    location, model, style
+                    location, style
             );
         }
 
@@ -87,8 +91,8 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
     }
 
     public static class None extends CellWidget<Widget> {
-        None(Grid.Location location, TicTacToeGridModel model, Style style) {
-            super(new EmptyWidget(), location, model, style);
+        None(Grid.Location location, Style style) {
+            super(new EmptyWidget(), location, style);
         }
 
         @Override
@@ -110,10 +114,27 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
     public GridCellHit hitTest(Point hitPoint, Coordinates coordinates) {
         Point hitPointInWidgetCoordinates = coordinates.toWidgetCoordinates(this, hitPoint);
 
-        Iterable<Grid.Cell> allCells = model.getGrid().getCells();
-        Rectangle[][] hitBoundaries = style.getGridMarkLocations();
-        return new GridCellHit(allCells, hitPointInWidgetCoordinates, hitBoundaries);
+        return from(getCells()).select(toGridCellHit(hitPointInWidgetCoordinates, Coordinates.World)).where(isHit()).firstOr(GridCellHit.NoHit);
     }
+
+    private UnaryFunction<GridCellHit, Boolean> isHit() {
+        return new UnaryFunction<GridCellHit, Boolean>() {
+            @Override
+            public Boolean execute(GridCellHit gridCellHit) {
+                return gridCellHit.hasHit();
+            }
+        };
+    }
+
+    private UnaryFunction<CellWidget<?>, GridCellHit> toGridCellHit(final Point hitPoint, final Coordinates coordinates) {
+        return new UnaryFunction<CellWidget<?>, GridCellHit>() {
+            @Override
+            public GridCellHit execute(CellWidget<?> cellWidget) {
+                return cellWidget.hitTest(hitPoint, coordinates);
+            }
+        };
+    }
+
 
     @Override
     protected Iterable<CellWidget<?>> subWidgets() {
@@ -142,7 +163,7 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
             case Nought:
                 return new Nought(location, model, style);
             case None:
-                return new None(location, model, style);
+                return new None(location, style);
             default:
                 throw new IllegalStateException("Unexpected cell mark");
         }

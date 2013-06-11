@@ -7,8 +7,7 @@ import com.crudetech.tictactoe.delivery.gui.widgets.GridCellHit;
 import com.crudetech.tictactoe.delivery.gui.widgets.TicTacToeGridModel;
 import com.crudetech.tictactoe.ui.CellEventObject;
 
-import javax.swing.JComponent;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.plaf.ComponentUI;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -46,18 +45,8 @@ public class JTicTacToeGrid extends JComponent {
     }
 
     private void initializeListeners() {
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                onMouseClicked(e);
-            }
-        });
-        addMouseMotionListener(new MouseAdapter() {
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                onMouseMoved(e);
-            }
-        });
+        addMouseListener();
+        addMouseMotionListener();
         modelCellChangedListener = new EventListener<TicTacToeGridModel.CellsChangedEventObject>() {
             @Override
             public void onEvent(TicTacToeGridModel.CellsChangedEventObject e) {
@@ -72,8 +61,30 @@ public class JTicTacToeGrid extends JComponent {
         };
     }
 
+    private void addMouseMotionListener() {
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                onMouseMoved(e);
+            }
+        });
+    }
+
+    private void addMouseListener() {
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                onMouseClicked(e);
+            }
+        });
+    }
+
     private void onMouseMoved(MouseEvent e) {
         GridCellHit hit = cellHitFromMouseEvent(e);
+        highlightHoveredCell(hit);
+    }
+
+    private void highlightHoveredCell(GridCellHit hit) {
         if (hit.hasHit()) {
             getModel().highlightCell(hit.getHit());
         } else {
@@ -83,6 +94,10 @@ public class JTicTacToeGrid extends JComponent {
 
     private void onMouseClicked(MouseEvent e) {
         GridCellHit hit = cellHitFromMouseEvent(e);
+        raiseCellEvent(hit);
+    }
+
+    private void raiseCellEvent(GridCellHit hit) {
         if (hit.hasHit()) {
             onCellEvent(hit);
         }
@@ -93,7 +108,7 @@ public class JTicTacToeGrid extends JComponent {
     }
 
     private GridCellHit cellHitFromMouseEvent(MouseEvent e) {
-        return getUI().checkGridCellHit(e.getX(), e.getY());
+        return getUI().gridCellHit(e.getX(), e.getY());
     }
 
     public void setModel(TicTacToeGridModel model) {

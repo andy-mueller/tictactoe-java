@@ -119,7 +119,7 @@ public class TicTacToeGridCellsWidgetTest {
 
     @Test
     public void givenNoneWidget_NoImageIsUsed() throws Exception {
-        TicTacToeGridCellsWidget.None noneWidget = new TicTacToeGridCellsWidget.None(middleCell, model, style);
+        TicTacToeGridCellsWidget.None noneWidget = new TicTacToeGridCellsWidget.None(middleCell, style);
 
         assertThat(noneWidget.getDecorated(), is(instanceOf(EmptyWidget.class)));
     }

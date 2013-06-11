@@ -80,9 +80,9 @@ public class TicTacToeGridUI extends ComponentUI {
                 .createTicTacToeGridWidget();
     }
 
-    public GridCellHit checkGridCellHit(int x, int y) {
+    public GridCellHit gridCellHit(int x, int y) {
         com.crudetech.gui.widgets.Point hitPoint = com.crudetech.gui.widgets.Point.of(x, y);
-        return getGridWidget().checkGridCellHit(hitPoint, Coordinates.World);
+        return getGridWidget().gridCellHit(hitPoint, Coordinates.World);
     }
 
     private TicTacToeGridModel getModel() {
@@ -133,7 +133,7 @@ public class TicTacToeGridUI extends ComponentUI {
 
 
     private TicTacToeGridWidget getGridWidget() {
-        if(gridWidget == null){
+        if (gridWidget == null) {
             buildGraphic();
         }
         return gridWidget;

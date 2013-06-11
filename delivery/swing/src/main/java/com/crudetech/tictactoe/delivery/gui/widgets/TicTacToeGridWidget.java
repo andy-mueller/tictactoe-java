@@ -56,7 +56,7 @@ public class TicTacToeGridWidget extends EcsWidget {
         }};
     }
 
-    public GridCellHit checkGridCellHit(Point hitInWorld, Coordinates coordinates) {
+    public GridCellHit gridCellHit(Point hitInWorld, Coordinates coordinates) {
         Point hitInEcs = coordinates.toWidgetCoordinates(this, hitInWorld);
         return gridCellsWidget().hitTest(hitInEcs, Coordinates.World);
     }
