@@ -39,8 +39,9 @@ public class RectangleWidgetTest {
 
         verify(g2d).pushColor(AwtColor.ORANGE);
     }
+
     @Test
-    public void colorIsResetForAfterPainting() {
+    public void colorIsResetAfterPainting() {
         RectangleWidget w = new RectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
         GraphicsStream g2d = mock(GraphicsStream.class);
 
