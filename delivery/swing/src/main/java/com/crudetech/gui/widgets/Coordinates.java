@@ -1,31 +1,37 @@
 package com.crudetech.gui.widgets;
 
 public abstract class Coordinates {
-    public abstract Point toWidgetCoordinates(Widget widget, Point point);
+    public abstract <TTransformable extends Transformable<TTransformable>>
+    TTransformable toWidgetCoordinates(Widget widget, TTransformable transformable);
 
-    public abstract Point toWorldCoordinates(Widget widget, Point point);
+    public abstract <TTransformable extends Transformable<TTransformable>>
+    TTransformable toWorldCoordinates(Widget widget, TTransformable transformable);
 
     public static Coordinates World = new Coordinates() {
 
         @Override
-        public Point toWidgetCoordinates(Widget widget, Point point) {
-            return widget.widgetCoordinates().toWidgetCoordinates(point);
+        public <TTransformable extends Transformable<TTransformable>>
+        TTransformable toWidgetCoordinates(Widget widget, TTransformable transformable) {
+            return widget.widgetCoordinates().toWidgetCoordinates(transformable);
         }
 
         @Override
-        public Point toWorldCoordinates(Widget widget, Point point) {
-            return point;
+        public <TTransformable extends Transformable<TTransformable>>
+        TTransformable toWorldCoordinates(Widget widget, TTransformable transformable) {
+            return transformable;
         }
     };
     public static Coordinates Widget = new Coordinates() {
         @Override
-        public Point toWidgetCoordinates(Widget widget, Point point) {
-            return point;
+        public <TTransformable extends Transformable<TTransformable>>
+        TTransformable toWidgetCoordinates(Widget widget, TTransformable transformable) {
+            return transformable;
         }
 
         @Override
-        public Point toWorldCoordinates(Widget widget, Point point) {
-            return widget.widgetCoordinates().toWorldCoordinates(point);
+        public <TTransformable extends Transformable<TTransformable>>
+        TTransformable toWorldCoordinates(Widget widget, TTransformable transformable) {
+            return widget.widgetCoordinates().toWorldCoordinates(transformable);
         }
     };
 }
