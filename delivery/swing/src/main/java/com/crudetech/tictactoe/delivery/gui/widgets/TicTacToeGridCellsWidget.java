@@ -30,7 +30,8 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
         public abstract boolean hasImage(Image image);
 
         public GridCellHit hitTest(final Point hitPoint, final Coordinates coordinates) {
-            return new GridCellHit(location, boundary, coordinates.toWidgetCoordinates(CellWidget.this, hitPoint));
+            Point hitPointInCellCoos = coordinates.toWidgetCoordinates(CellWidget.this, hitPoint);
+            return new GridCellHit(location, boundary, hitPointInCellCoos);
         }
     }
 
