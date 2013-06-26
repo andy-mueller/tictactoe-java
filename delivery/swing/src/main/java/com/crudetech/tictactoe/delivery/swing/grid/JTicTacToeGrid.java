@@ -70,6 +70,12 @@ public class JTicTacToeGrid extends JComponent {
         });
     }
 
+    @Override
+    public void setSize(int width, int height) {
+        getUI().repaintAll();
+        super.setSize(width, height);
+    }
+
     private void addMouseListener() {
         addMouseListener(new MouseAdapter() {
             @Override
