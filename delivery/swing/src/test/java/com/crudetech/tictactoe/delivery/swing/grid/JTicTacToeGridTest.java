@@ -195,4 +195,14 @@ public class JTicTacToeGridTest {
         assertThat(firstModel.changedRemovedHandler, is(firstModel.changedAddedHandler));
         assertThat(secondModel.changedAddedHandler, is(firstModel.changedAddedHandler));
     }
+
+    @Test
+    public void resizeTriggersRepaint() {
+        TicTacToeGridModel model = new TicTacToeGridModel();
+        TicTacToeGridUI ui = spy(new TicTacToeGridUI());
+        JTicTacToeGrid jgrid = new JTicTacToeGrid(model, ui);
+
+        jgrid.setSize(600, 600);
+        verify(ui).repaintAll();
+    }
 }
