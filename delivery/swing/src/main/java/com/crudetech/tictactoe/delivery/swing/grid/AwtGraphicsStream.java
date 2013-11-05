@@ -21,23 +21,28 @@ class AwtGraphicsStream implements GraphicsStream {
         this.pipe = g2d;
     }
 
-    private  void pushTranslation(int dx, int dy) {
+    @Override
+    public void pushCoordinateSystem(CoordinateSystem coos) {
         pushCurrentTransformationOnStack();
+        pushTranslation(coos.getLocation().x, coos.getLocation().y);
+        pushScale(coos.getScale());
+    }
+
+    private void pushTranslation(int dx, int dy) {
         applyNewTranslation(dx, dy);
     }
 
-    @Override
-    public void pushCoordinateSystem(CoordinateSystem coos) {
-        pushTranslation(coos.getLocation().x, coos.getLocation().y);
+    private void pushScale(double scale) {
+        pipe.scale(scale, scale);
     }
 
-        private void pushCurrentTransformationOnStack() {
-            xforms.add(pipe.getTransform());
-        }
+    private void pushCurrentTransformationOnStack() {
+        xforms.add(pipe.getTransform());
+    }
 
-        private void applyNewTranslation(int dx, int dy) {
-            pipe.translate(dx, dy);
-        }
+    private void applyNewTranslation(int dx, int dy) {
+        pipe.translate(dx, dy);
+    }
 
     @Override
     public void popCoordinateSystem() {
