@@ -1,10 +1,10 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
 
+import com.crudetech.collections.Iterables;
 import com.crudetech.event.EventListener;
 import com.crudetech.event.EventObject;
 import com.crudetech.gui.widgets.Point;
-import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.delivery.gui.widgets.StyleStub;
 import com.crudetech.tictactoe.delivery.gui.widgets.TicTacToeGridModel;
@@ -16,6 +16,7 @@ import org.junit.Test;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
@@ -34,13 +35,14 @@ public class JTicTacToeGridMouseMoveTest {
         grid.getUI().setStyle(style);
 
         outsideAnyCell = new Point(10, 10);
-        inLastCell = getPointInsideOfRectangle(style.getGridMarkLocations()[2][2], style);
+        inLastCell = computePointInsideOfLastCell();
 
         grid.getUI().buildGraphic();
     }
 
-    private Point getPointInsideOfRectangle(Rectangle rectangle, Style style) {
-        return new Point(rectangle.x + 1 + style.getBackgroundImage().getWidth() / 2, rectangle.y + 1 + style.getBackgroundImage().getHeight() / 2);
+    private Point computePointInsideOfLastCell() {
+        java.awt.Rectangle r = Iterables.firstOf(grid.getUI().getRectanglesForCells(asList(Grid.Location.of(Grid.Row.Third, Grid.Column.Third))));
+        return new Point(r.x + r.width / 2, r.y + r.height / 2);
     }
 
     @Test
