@@ -53,7 +53,15 @@ public class JTicTacToeGridModelChangedTest {
         };
         aGrid = new PaintTrackingTicTacToeGrid(model);
         StyleStub style = new StyleStub.Builder().build();
-        aGrid.setSize(style.getBackgroundImage().getWidth()* 2, style.getBackgroundImage().getHeight() * 2);
+        aGrid.setSize(style.getBackgroundImage().getWidth() * 2, style.getBackgroundImage().getHeight() * 2);
+
+        TicTacToeGridUI ui = new TicTacToeGridUI() {
+            @Override
+            Iterable<Rectangle> getRectanglesForCells(Iterable<Grid.Location> cells) {
+                return asList(magicRectangle());
+            }
+        };
+        aGrid.setUI(ui);
         aGrid.getUI().setStyle(style);
 
         aGrid.getUI().buildGraphic();
@@ -77,21 +85,13 @@ public class JTicTacToeGridModelChangedTest {
     }
 
     private List<Rectangle> expectedRepaintedRegions() {
-        return asList(
-                expectedRectangleOf(Grid.Location.of(Grid.Row.First, Grid.Column.Third)),
-                expectedRectangleOf(Grid.Location.of(Grid.Row.First, Grid.Column.Second)),
-                expectedRectangleOf(Grid.Location.of(Grid.Row.Second, Grid.Column.Third))
-        );                                                  
+        return asList(magicRectangle());
     }
 
-    Rectangle expectedRectangleOf(Grid.Location location) {
-        com.crudetech.gui.widgets.Rectangle r1 = aGrid.getUI().getStyle().getGridMarkLocations()[location.getRow().position()][location.getColumn().position()];
-        StyleStub style = (StyleStub) aGrid.getUI().getStyle();
-        int imageLocationX =style.getBackgroundImage().getWidth()/ 2;
-        int imageLocationY = style.getBackgroundImage().getHeight() / 2;
-        r1 = r1.translate(imageLocationX, imageLocationY).inflate(1, 1);
-        return WidgetAwtConverter.rectangle(r1);
+    private Rectangle magicRectangle() {
+        return new Rectangle(-1, -1, -1, -1);
     }
+
 
     @Test
     public void changingModelTriggersFullRepaint() {
