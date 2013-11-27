@@ -3,7 +3,6 @@ package com.crudetech.tictactoe.delivery.gui.widgets;
 import com.crudetech.functional.UnaryFunction;
 import com.crudetech.gui.widgets.*;
 import com.crudetech.tictactoe.game.Grid;
-import com.crudetech.tictactoe.game.GridCells;
 
 import static com.crudetech.query.Query.from;
 
@@ -20,7 +19,7 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
         private CellWidget(TWidget decorated, Grid.Location location, Style style) {
             super(decorated);
             this.location = location;
-            Rectangle boundaryInWorld = GridCells.getAtLocation(style.getGridMarkLocations(), location);
+            Rectangle boundaryInWorld = style.getGridMarkLocations(location);
             widgetCoordinates().setLocation(boundaryInWorld.getLocation());
             this.boundary = widgetCoordinates().toWidgetCoordinates(boundaryInWorld);
         }

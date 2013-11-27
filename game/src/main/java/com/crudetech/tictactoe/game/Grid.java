@@ -2,6 +2,8 @@ package com.crudetech.tictactoe.game;
 
 import com.crudetech.lang.Enums;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 
 import static com.crudetech.collections.Iterables.contains;
@@ -69,8 +71,8 @@ public interface Grid {
     public static enum Column {
         First, Second, Third;
 
-        static Column of(int row) {
-            return Enums.ofOrdinal(Column.class, row);
+        static Column of(int col) {
+            return Enums.ofOrdinal(Column.class, col);
         }
 
         public Column nextOrFlip() {
@@ -137,6 +139,20 @@ public interface Grid {
 
         public static Location of(Row row, Column column) {
             return new Location(row, column);
+        }
+
+        public <T> T selectOf(T[][] array) {
+            return array[getRow().position()][getColumn().position()];
+        }
+
+        public static Iterable<Location> allLocations() {
+            Collection<Location> locations = new ArrayList<>(9);
+            for (Grid.Row row : Row.values()) {
+                for (Grid.Column col : Column.values()) {
+                    locations.add(Grid.Location.of(row, col));
+                }
+            }
+            return locations;
         }
     }
 

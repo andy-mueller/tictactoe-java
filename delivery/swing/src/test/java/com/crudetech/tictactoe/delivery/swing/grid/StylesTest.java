@@ -2,6 +2,7 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Rectangle;
+import com.crudetech.tictactoe.game.Grid;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -13,9 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.hamcrest.Matchers.*;
 
 @RunWith(Parameterized.class)
 public class StylesTest {
@@ -47,7 +46,7 @@ public class StylesTest {
 
     private AwtImage loadBackGroundImageFromResources() throws Exception {
         try (InputStream in = getClass().getResourceAsStream("/com/crudetech/tictactoe/delivery/swing/grid/" + style.name().toLowerCase() + "style/tic-tac-toe-grid.jpg")) {
-            return  new AwtImage(ImageIO.read(in));
+            return new AwtImage(ImageIO.read(in));
         }
     }
 
@@ -60,36 +59,32 @@ public class StylesTest {
     public void crossImageLoads() {
         assertThat(style.getCrossImage(), is(notNullValue()));
     }
+
     @Test
     public void crossImageIsCached() {
         assertThat(style.getCrossImage(), is(sameInstance(style.getCrossImage())));
     }
+
     @Test
     public void noughtImageLoads() {
         assertThat(style.getNoughtImage(), is(notNullValue()));
     }
+
     @Test
     public void noughtImageIsCached() {
         assertThat(style.getNoughtImage(), is(sameInstance(style.getNoughtImage())));
     }
 
     @Test
-    public void markImagesHaveSameDimensions(){
+    public void markImagesHaveSameDimensions() {
         assertThat(style.getCrossImage().getWidth(), is(style.getNoughtImage().getWidth()));
         assertThat(style.getCrossImage().getHeight(), is(style.getNoughtImage().getHeight()));
 
-        for (Rectangle[] rectangles : style.getGridMarkLocations()) {
-            for (Rectangle rectangle : rectangles) {
-                assertThat(rectangle.width, is(style.getCrossImage().getWidth()));
-                assertThat(rectangle.height, is(style.getCrossImage().getHeight()));
-            }
+        for (Grid.Location location : Grid.Location.allLocations()) {
+            Rectangle rectangle = style.getGridMarkLocations(location);
+            assertThat(rectangle.width, is(style.getCrossImage().getWidth()));
+            assertThat(rectangle.height, is(style.getCrossImage().getHeight()));
         }
     }
-    @Test
-    public void markBounds(){
-        assertThat(style.getGridMarkLocations().length, is(3));
-        assertThat(style.getGridMarkLocations()[0].length, is(3));
-        assertThat(style.getGridMarkLocations()[1].length, is(3));
-        assertThat(style.getGridMarkLocations()[2].length, is(3));
-    }
+
 }

@@ -3,17 +3,26 @@ package com.crudetech.tictactoe.delivery.gui.widgets;
 import com.crudetech.gui.widgets.Color;
 import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Rectangle;
+import com.crudetech.tictactoe.game.Grid;
 
 public class StyleStub implements Style {
     private final Image nought;
     private final Image cross;
     private final Image back;
-    private final Rectangle[][] locations = new Rectangle[3][3];
+    private final Rectangle[][] gridMarkLocations = new Rectangle[3][3];
     private final Color backColor = newColor();
     private final Color highlightColor = newColor();
+    private final int width;
+    private final int height;
+    private final int cellWidth;
+    private final int cellHeight;
 
     public StyleStub(int width, int height, int cellWidth, int cellHeight) {
-        fillLocations(cellWidth, cellHeight, width, height);
+        this.width = width;
+        this.height = height;
+        this.cellWidth = cellWidth;
+        this.cellHeight = cellHeight;
+        fillLocations();
         back = newImageStub(width, height);
         cross = newImageStub(cellWidth, cellHeight);
         nought = newImageStub(cellWidth, cellHeight);
@@ -38,14 +47,24 @@ public class StyleStub implements Style {
         };
     }
 
-    private void fillLocations(int cellWidth, int cellHeight, int width, int height) {
-        int widthDistance = (width - 3 * cellWidth) / 4;
-        int heightDistance = (height - 3 * cellHeight) / 4;
+    private void fillLocations() {
+        final int widthDistance = getHorizontalCellDistance();
+        final int heightDistance = getVerticalCellDistance();
         for (int row = 0; row < 3; ++row) {
             for (int col = 0; col < 3; ++col) {
-                locations[row][col] = new Rectangle(widthDistance + col * (widthDistance + cellWidth), heightDistance + row * (heightDistance + cellHeight), cellWidth, cellHeight);
+                final int x = widthDistance + col * (widthDistance + cellWidth);
+                final int y = heightDistance + row * (heightDistance + cellHeight);
+                gridMarkLocations[row][col] = new Rectangle(x, y, cellWidth, cellHeight);
             }
         }
+    }
+
+    int getVerticalCellDistance() {
+        return (height - 3 * cellHeight) / 4;
+    }
+
+    int getHorizontalCellDistance() {
+        return (width - 3 * cellWidth) / 4;
     }
 
     @Override
@@ -69,8 +88,8 @@ public class StyleStub implements Style {
     }
 
     @Override
-    public Rectangle[][] getGridMarkLocations() {
-        return locations;
+    public Rectangle getGridMarkLocations(Grid.Location location) {
+        return location.selectOf(gridMarkLocations);
     }
 
     @Override
@@ -82,9 +101,11 @@ public class StyleStub implements Style {
     public Image getNoughtImage() {
         return nought;
     }
-    public static Builder builder(){
+
+    public static Builder builder() {
         return new Builder();
     }
+
     public static class Builder {
         private int width = 500;
         private int height = 1000;

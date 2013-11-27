@@ -32,9 +32,13 @@ public class CoordinateSystem {
         return location;
     }
 
-
     public double getScale() {
         return scale;
+    }
+
+    public CoordinateSystem setScale(double scale) {
+        this.scale = scale;
+        return this;
     }
 
     @Override
@@ -68,8 +72,9 @@ public class CoordinateSystem {
         return this;
     }
 
-    public void setLocation(Point location) {
+    public CoordinateSystem setLocation(Point location) {
         this.location = location;
+        return this;
     }
 
     @Override
@@ -98,3 +103,4 @@ public class CoordinateSystem {
         return toWorldTransformation().inverse();
     }
 }
+

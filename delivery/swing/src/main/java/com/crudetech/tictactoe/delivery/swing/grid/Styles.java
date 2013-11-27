@@ -5,6 +5,7 @@ import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.tictactoe.delivery.gui.widgets.Dimension;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
+import com.crudetech.tictactoe.game.Grid;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
@@ -25,11 +26,11 @@ public enum Styles implements Style {
 
         @Override
         public Color getBackgroundColor() {
-            return new AwtColor (java.awt.Color.WHITE);
+            return new AwtColor(java.awt.Color.WHITE);
         }
 
         @Override
-        public Rectangle[][] getGridMarkLocations() {
+        public Rectangle getGridMarkLocations(Grid.Location location) {
             int width = 215;
             int height = 170;
 
@@ -39,11 +40,12 @@ public enum Styles implements Style {
             int y1 = 310;
             int x2 = 600;
             int y2 = 538;
-            return new Rectangle[][]{
+            Rectangle[][] rectLocations = new Rectangle[][]{
                     {new Rectangle(x0, y0, width, height), new Rectangle(x1, y0, width, height), new Rectangle(x2, y0, width, height)},
                     {new Rectangle(x0, y1, width, height), new Rectangle(x1, y1, width, height), new Rectangle(x2, y1, width, height)},
                     {new Rectangle(x0, y2, width, height), new Rectangle(x1, y2, width, height), new Rectangle(x2, y2, width, height)},
             };
+            return location.selectOf(rectLocations);
         }
 
         @Override
@@ -61,14 +63,12 @@ public enum Styles implements Style {
     private Image cross;
     private Image nought;
 
-    private Styles() {
-    }
-
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(getBackgroundImage().getWidth(), getBackgroundImage().getHeight());
     }
 
+    @Override
     public Image getCrossImage() {
         if (cross == null) {
             try {
@@ -82,6 +82,7 @@ public enum Styles implements Style {
 
     abstract String getCrossImageName();
 
+    @Override
     public Image getNoughtImage() {
         if (nought == null) {
             try {

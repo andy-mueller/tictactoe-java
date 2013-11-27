@@ -6,18 +6,21 @@ import com.crudetech.gui.widgets.*;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.crudetech.query.Query.from;
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 public class TicTacToeGridWidgetTest {
 
+    private static final int CellDimension = 100;
     private Style style;
     private TicTacToeGridModel model;
 
@@ -29,7 +32,7 @@ public class TicTacToeGridWidgetTest {
     public void setUp() throws Exception {
         style = StyleStub.builder()
                 .withBackgroundImageSize(500, 400)
-                .withCellSize(100, 100)
+                .withCellSize(CellDimension, CellDimension)
                 .build();
 
         model = new TicTacToeGridModel(LinearRandomAccessGrid.of(
@@ -185,5 +188,26 @@ public class TicTacToeGridWidgetTest {
         Widget cellWidget = widget.gridCellsWidget();
 
         assertThat(cellWidget.widgetCoordinates(), is(backgroundImage.widgetCoordinates()));
+    }
+
+    @Ignore
+    @Test
+    public void givenScaledWidget_CellRectanglesAreMappedFromLocations() {
+        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
+                .withBounds(widgetBoundary)
+                .withStyle(style)
+                .withModel(model)
+                .noDebug()
+                .createTicTacToeGridWidget();
+//        widget.widgetCoordinates()
+//                .setLocation(Point.of(10, 20))
+//                .setScale(0.5);
+
+        Iterable<Rectangle> cellBoundaries = widget.getCellBoundaries(asList(Grid.Location.of(Grid.Row.Third, Grid.Column.Third)));
+
+        final int horizontalCellPadding = (widgetBoundary.width - 3 * CellDimension) / 4;
+        Rectangle bl = new Rectangle((int) ((widgetBoundary.width - horizontalCellPadding) * 0.5) + 10, 0, 0, 0);
+
+        assertThat(cellBoundaries, is(equalTo((Iterable) asList(bl))));
     }
 }

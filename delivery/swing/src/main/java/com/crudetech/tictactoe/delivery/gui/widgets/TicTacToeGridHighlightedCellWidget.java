@@ -5,7 +5,6 @@ import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.tictactoe.game.Grid;
-import com.crudetech.tictactoe.game.GridCells;
 
 
 public class TicTacToeGridHighlightedCellWidget extends DecoratorTemplateWidget {
@@ -52,7 +51,7 @@ public class TicTacToeGridHighlightedCellWidget extends DecoratorTemplateWidget 
     }
 
     private Widget makeRectangleWidget() {
-        Rectangle bound = GridCells.getAtLocation(style.getGridMarkLocations(), state.getLocation());
+        Rectangle bound = style.getGridMarkLocations(state.getLocation());
         return new RectangleWidget(bound, style.getHighlightColor());
     }
 

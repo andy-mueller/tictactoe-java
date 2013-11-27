@@ -105,7 +105,7 @@ public class TicTacToeGridUI extends ComponentUI {
         }
     }
 
-    private Iterable<Rectangle> getRectanglesForCells(Iterable<Grid.Location> cells) {
+    Iterable<Rectangle> getRectanglesForCells(Iterable<Grid.Location> cells) {
         return from(getGridWidget().getCellBoundaries(cells))
                 .select(toAwtRectangle())
                 .select(toInflatedRectangle());

@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.List;
 
 import static com.crudetech.query.Query.from;
-import static com.crudetech.tictactoe.game.GridCells.getAtLocation;
 import static java.lang.Math.max;
 
 public class TicTacToeGridWidget extends EcsWidget {
@@ -138,8 +137,16 @@ public class TicTacToeGridWidget extends EcsWidget {
     }
 
     public Iterable<Rectangle> getCellBoundaries(Iterable<Grid.Location> changedCells) {
-        return from(changedCells).select(toBoundaryRectangle()).select(toComponentCoos());
+        return from(changedCells).select(toBoundaryRectangle()).select(toComponentCoos()).select(toWorldCoordinates());
+    }
 
+    private UnaryFunction<? super Rectangle, Rectangle> toWorldCoordinates() {
+        return new UnaryFunction<Rectangle, Rectangle>() {
+            @Override
+            public Rectangle execute(Rectangle r) {
+                return widgetCoordinates().toWorldCoordinates(r);
+            }
+        };
     }
 
     private UnaryFunction<Rectangle, Rectangle> toComponentCoos() {
@@ -156,11 +163,10 @@ public class TicTacToeGridWidget extends EcsWidget {
         return new UnaryFunction<Grid.Location, Rectangle>() {
             @Override
             public Rectangle execute(Grid.Location location) {
-                return getAtLocation(style.getGridMarkLocations(), location);
+                return style.getGridMarkLocations(location);
             }
         };
     }
-
 
     class DebugWidget extends EcsWidget {
         @Override
