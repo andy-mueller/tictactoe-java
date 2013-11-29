@@ -163,7 +163,7 @@ public class TicTacToeGridWidget extends EcsWidget {
         return new UnaryFunction<Grid.Location, Rectangle>() {
             @Override
             public Rectangle execute(Grid.Location location) {
-                return style.getGridMarkLocations(location);
+                return style.getGridMarkLocation(location);
             }
         };
     }

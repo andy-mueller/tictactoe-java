@@ -88,7 +88,7 @@ public class StyleStub implements Style {
     }
 
     @Override
-    public Rectangle getGridMarkLocations(Grid.Location location) {
+    public Rectangle getGridMarkLocation(Grid.Location location) {
         return location.selectOf(gridMarkLocations);
     }
 

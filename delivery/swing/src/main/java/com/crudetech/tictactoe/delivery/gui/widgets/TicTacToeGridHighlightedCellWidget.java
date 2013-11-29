@@ -51,7 +51,7 @@ public class TicTacToeGridHighlightedCellWidget extends DecoratorTemplateWidget 
     }
 
     private Widget makeRectangleWidget() {
-        Rectangle bound = style.getGridMarkLocations(state.getLocation());
+        Rectangle bound = style.getGridMarkLocation(state.getLocation());
         return new RectangleWidget(bound, style.getHighlightColor());
     }
 
