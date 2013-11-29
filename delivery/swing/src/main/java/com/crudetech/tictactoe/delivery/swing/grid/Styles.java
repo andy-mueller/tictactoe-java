@@ -30,7 +30,7 @@ public enum Styles implements Style {
         }
 
         @Override
-        public Rectangle getGridMarkLocation(Grid.Location location) {
+        public Rectangle getGridMarkBoundary(Grid.Location location) {
             int width = 215;
             int height = 170;
 

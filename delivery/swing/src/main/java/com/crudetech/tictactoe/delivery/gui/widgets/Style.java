@@ -15,7 +15,7 @@ public interface Style {
 
     Dimension getPreferredSize();
 
-    Rectangle getGridMarkLocation(Grid.Location location);
+    Rectangle getGridMarkBoundary(Grid.Location location);
 
     Image getCrossImage();
 

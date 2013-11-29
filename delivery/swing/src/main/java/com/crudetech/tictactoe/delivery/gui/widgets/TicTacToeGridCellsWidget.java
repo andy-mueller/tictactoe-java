@@ -19,7 +19,7 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
         private CellWidget(TWidget decorated, Grid.Location location, Style style) {
             super(decorated);
             this.location = location;
-            Rectangle boundaryInWorld = style.getGridMarkLocation(location);
+            Rectangle boundaryInWorld = style.getGridMarkBoundary(location);
             widgetCoordinates().setLocation(boundaryInWorld.getLocation());
             this.boundary = widgetCoordinates().toWidgetCoordinates(boundaryInWorld);
         }

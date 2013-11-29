@@ -81,7 +81,7 @@ public class StylesTest {
         assertThat(style.getCrossImage().getHeight(), is(style.getNoughtImage().getHeight()));
 
         for (Grid.Location location : Grid.Location.allLocations()) {
-            Rectangle rectangle = style.getGridMarkLocation(location);
+            Rectangle rectangle = style.getGridMarkBoundary(location);
             assertThat(rectangle.width, is(style.getCrossImage().getWidth()));
             assertThat(rectangle.height, is(style.getCrossImage().getHeight()));
         }

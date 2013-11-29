@@ -6,6 +6,7 @@ import com.crudetech.gui.widgets.*;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -189,6 +190,7 @@ public class TicTacToeGridWidgetTest {
         assertThat(cellWidget.widgetCoordinates(), is(backgroundImage.widgetCoordinates()));
     }
 
+    @Ignore
     @Test
     public void givenScaledWidget_CellRectanglesAreMappedFromLocations() {
         TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
