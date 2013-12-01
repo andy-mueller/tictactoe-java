@@ -92,7 +92,6 @@ public class TicTacToeGridWidget extends EcsWidget {
         };
     }
 
-
     Point getBackgroundImageOrigin() {
         Image backgroundImage = style.getBackgroundImage();
         int x = max((bounds.width - backgroundImage.getWidth()) / 2, 0);

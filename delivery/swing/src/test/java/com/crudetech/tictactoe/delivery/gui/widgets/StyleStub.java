@@ -12,18 +12,18 @@ public class StyleStub implements Style {
     private final Rectangle[][] gridMarkLocations = new Rectangle[3][3];
     private final Color backColor = newColor();
     private final Color highlightColor = newColor();
-    private final int width;
-    private final int height;
+    private final int backgroundImageWidth;
+    private final int backgroundImageHeight;
     private final int cellWidth;
     private final int cellHeight;
 
-    public StyleStub(int width, int height, int cellWidth, int cellHeight) {
-        this.width = width;
-        this.height = height;
+    public StyleStub(int backgroundImageWidth, int backgroundImageHeight, int cellWidth, int cellHeight) {
+        this.backgroundImageWidth = backgroundImageWidth;
+        this.backgroundImageHeight = backgroundImageHeight;
         this.cellWidth = cellWidth;
         this.cellHeight = cellHeight;
         fillLocations();
-        back = newImageStub(width, height);
+        back = newImageStub(backgroundImageWidth, backgroundImageHeight);
         cross = newImageStub(cellWidth, cellHeight);
         nought = newImageStub(cellWidth, cellHeight);
     }
@@ -60,11 +60,11 @@ public class StyleStub implements Style {
     }
 
     int getVerticalCellDistance() {
-        return (height - 3 * cellHeight) / 4;
+        return (backgroundImageHeight - 3 * cellHeight) / 4;
     }
 
     int getHorizontalCellDistance() {
-        return (width - 3 * cellWidth) / 4;
+        return (backgroundImageWidth - 3 * cellWidth) / 4;
     }
 
     @Override

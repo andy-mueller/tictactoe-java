@@ -6,18 +6,52 @@ import com.crudetech.gui.widgets.*;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.crudetech.matcher.RangeIsEqual.equalTo;
 import static com.crudetech.query.Query.from;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
+/**
+ * This test tests the aspects of the grid widget class. As the grid widget renders itself by
+ * arranging several sub widget for its primitive elements, this test  has a white box character
+ * and is always in danger to be coupled tightly to the internal appearance.
+ * <p/>
+ * This test sets up the following widget structure:
+ * <p/>
+ * 125          100          100         100         125
+ * 50          50          50          50
+ * +----------+---+-------+---+-------+---+-------+---+----------+
+ * <p/>
+ * (1/1)
+ * +-------------------------------------------------------------+    +
+ * |                                                             |    | 50
+ * |          +---------------------------------------+          |    +
+ * |          |                                       |          |    | 50
+ * |          |   +-------+   +-------+   +-------+   |          |    +
+ * |          |   |       |   |       |   |       |   |          |    |
+ * |          |   |       |   |       |   |       |   |          |    | 100
+ * |          |   +-------+   +-------+   +-------+   |          |    +
+ * |          |                                       |          |    | 50
+ * |          |   +-------+   +-------+   +-------+   |          |    +
+ * |          |   |       |   |       |   |       |   |          |    |
+ * |          |   |       |   |       |   |       |   |          |    | 100
+ * |          |   +-------+   +-------+   +-------+   |          |    +
+ * |          |                                       |          |    | 50
+ * |          |   +-------+   +-------+   +-------+   |          |    +
+ * |          |   |       |   |       |   |       |   |          |    |
+ * |          |   |       |   |       |   |       |   |          |    | 100
+ * |          |   +-------+   +-------+   +-------+   |          |    +
+ * |          |                                       |          |    | 50
+ * |          +---------------------------------------+          |    +
+ * |                                                             |    | 50
+ * +-------------------------------------------------------------+    +
+ */
 public class TicTacToeGridWidgetTest {
 
     private static final int CellDimension = 100;
@@ -27,6 +61,7 @@ public class TicTacToeGridWidgetTest {
     private static final Color Orange = new Color() {
     };
     private static final Rectangle widgetBoundary = new Rectangle(1, 1, 750, 500);
+    private TicTacToeGridWidget widget;
 
     @Before
     public void setUp() throws Exception {
@@ -40,17 +75,17 @@ public class TicTacToeGridWidgetTest {
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.Cross
         ));
-    }
-
-
-    @Test
-    public void givenWidgetIsLargerThanBackgroundImage_ImageIsCentered() {
-        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
+        widget = TicTacToeGridWidget.builder()
                 .withBounds(widgetBoundary)
                 .withStyle(style)
                 .withModel(model)
                 .noDebug()
                 .createTicTacToeGridWidget();
+    }
+
+
+    @Test
+    public void givenWidgetIsLargerThanBackgroundImage_ImageIsCentered() {
         List<Widget> widgets = widget.buildPaintList();
 
         Widget backGroundImage = widgets.get(1);
@@ -77,13 +112,6 @@ public class TicTacToeGridWidgetTest {
 
     @Test
     public void backGroundIsInvalidated() {
-        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
-                .withBounds(widgetBoundary)
-                .withStyle(style)
-                .withModel(model)
-                .noDebug()
-                .createTicTacToeGridWidget();
-
         List<Widget> widgets = widget.buildPaintList();
         Widget background = widgets.get(0);
 
@@ -97,12 +125,6 @@ public class TicTacToeGridWidgetTest {
 
     @Test
     public void paintListIsPaintedInOrder() {
-        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
-                .withBounds(widgetBoundary)
-                .withStyle(style)
-                .withModel(model)
-                .noDebug()
-                .createTicTacToeGridWidget();
         List<Widget> widgets = widget.buildPaintList();
 
         List<Class<? extends Widget>> widgetClasses = from(widgets).select(toClass()).toList();
@@ -128,20 +150,6 @@ public class TicTacToeGridWidgetTest {
         };
     }
 
-    @Test
-    public void debugIsNotPaintedIfDebugModeIsOf() {
-        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
-                .withBounds(new Rectangle(0, 0, 500, 600))
-                .withStyle(style)
-                .withModel(model)
-                .noDebug()
-                .createTicTacToeGridWidget();
-
-        List<Widget> widgets = widget.buildPaintList();
-        boolean hasDebugWidget = from(widgets).select(classOf()).where(isKindOf(TicTacToeGridWidget.DebugWidget.class)).any();
-        assertThat(hasDebugWidget, is(false));
-    }
-
     private <T> UnaryFunction<T, Class<T>> classOf() {
         return new UnaryFunction<T, Class<T>>() {
             @SuppressWarnings("unchecked")
@@ -162,52 +170,58 @@ public class TicTacToeGridWidgetTest {
     }
 
     @Test
-    public void debugIsOnlyPaintedIfDebugModeIsOn() {
-        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
-                .withBounds(new Rectangle(0, 0, 500, 600))
+    public void givenDebugModeIsOn_debugInfoIsPainted() {
+        TicTacToeGridWidget widgetInDebugMode = TicTacToeGridWidget.builder()
+                .withBounds(widgetBoundary)
                 .withStyle(style)
                 .withModel(model)
                 .setDebugModeOn(Orange)
                 .createTicTacToeGridWidget();
 
-        List<Widget> widgets = widget.buildPaintList();
+        List<Widget> widgets = widgetInDebugMode.buildPaintList();
         boolean hasDebugWidget = from(widgets).select(classOf()).where(isKindOf(TicTacToeGridWidget.DebugWidget.class)).any();
         assertThat(hasDebugWidget, is(true));
     }
 
     @Test
-    public void givenImageThatFitsInWidget_CellWidgetAndImageOverlap() throws Exception {
-        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
+    public void givenDebugModeIsOf_NoDebugInfoIsPainted() {
+        TicTacToeGridWidget widgetInNoDebugMode = TicTacToeGridWidget.builder()
                 .withBounds(widgetBoundary)
                 .withStyle(style)
                 .withModel(model)
                 .noDebug()
                 .createTicTacToeGridWidget();
 
+        List<Widget> widgets = widgetInNoDebugMode.buildPaintList();
+        boolean hasDebugWidget = from(widgets).select(classOf()).where(isKindOf(TicTacToeGridWidget.DebugWidget.class)).any();
+        assertThat(hasDebugWidget, is(false));
+    }
+
+    @Test
+    public void givenImageThatFitsInWidget_CellWidgetAndImageOverlap() throws Exception {
         Widget backgroundImage = widget.backgroundImageWidget();
         Widget cellWidget = widget.gridCellsWidget();
 
         assertThat(cellWidget.widgetCoordinates(), is(backgroundImage.widgetCoordinates()));
     }
 
-    @Ignore
+    @Test
+    public void givenNonScaledWidget_CellRectanglesAreMappedFromLocations() {
+        Iterable<Rectangle> bottomLeftBoundary = widget.getCellBoundaries(asList(Grid.Location.of(Grid.Row.Third, Grid.Column.Third)));
+
+        Iterable<Rectangle> expectedBoundary = asList(new Rectangle(476, 326, 100, 100));
+        assertThat(bottomLeftBoundary, is(equalTo(expectedBoundary)));
+    }
+
     @Test
     public void givenScaledWidget_CellRectanglesAreMappedFromLocations() {
-        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
-                .withBounds(widgetBoundary)
-                .withStyle(style)
-                .withModel(model)
-                .noDebug()
-                .createTicTacToeGridWidget();
-//        widget.widgetCoordinates()
-//                .setLocation(Point.of(10, 20))
-//                .setScale(0.5);
+        widget.widgetCoordinates()
+                .setLocation(Point.of(10, 20))
+                .setScale(0.5);
 
-        Iterable<Rectangle> cellBoundaries = widget.getCellBoundaries(asList(Grid.Location.of(Grid.Row.Third, Grid.Column.Third)));
+        Iterable<Rectangle> bottomLeftBoundary = widget.getCellBoundaries(asList(Grid.Location.of(Grid.Row.Third, Grid.Column.Third)));
 
-        final int horizontalCellPadding = (widgetBoundary.width - 3 * CellDimension) / 4;
-        Rectangle bl = new Rectangle((int) ((widgetBoundary.width - horizontalCellPadding) * 0.5) + 10, 0, 0, 0);
-
-        assertThat(cellBoundaries, is(equalTo((Iterable) asList(bl))));
+        Iterable<Rectangle> expectedBoundary = asList(new Rectangle(247, 182, 50, 50));
+        assertThat(bottomLeftBoundary, is(equalTo(expectedBoundary)));
     }
 }
