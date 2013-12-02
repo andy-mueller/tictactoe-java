@@ -96,7 +96,7 @@ public class TicTacToeGridWidget extends EcsWidget {
         Image backgroundImage = style.getBackgroundImage();
         int x = max((bounds.width - backgroundImage.getWidth()) / 2, 0);
         int y = max((bounds.height - backgroundImage.getHeight()) / 2, 0);
-        return new Point(x, y);
+        return Point.of(x, y);
     }
 
     TicTacToeGridCellsWidget gridCellsWidget() {
