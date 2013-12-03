@@ -5,10 +5,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
 import static com.crudetech.matcher.Verify.verifyThat;
-import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 
 public class TicTacToeGame {
 
@@ -44,8 +41,9 @@ public class TicTacToeGame {
             super("The game was already started!");
         }
     }
-    static class NotThisPlayersTurn extends IllegalStateException {
-        private NotThisPlayersTurn() {
+
+    static class NotThisPlayersTurnException extends IllegalStateException {
+        private NotThisPlayersTurnException() {
             super("It is not the passed in players turn!");
         }
     }
@@ -90,8 +88,8 @@ public class TicTacToeGame {
     }
 
     private void verifyThatItIsPlayersTurn(Player player) {
-        if(currentPlayer != player){
-            throw new NotThisPlayersTurn();
+        if (currentPlayer != player) {
+            throw new NotThisPlayersTurnException();
         }
     }
 
