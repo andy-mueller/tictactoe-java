@@ -22,7 +22,7 @@ public class StyleStub implements Style {
         this.backgroundImageHeight = backgroundImageHeight;
         this.cellWidth = cellWidth;
         this.cellHeight = cellHeight;
-        fillLocations();
+        evenlyDistributeCells();
         back = newImageStub(backgroundImageWidth, backgroundImageHeight);
         cross = newImageStub(cellWidth, cellHeight);
         nought = newImageStub(cellWidth, cellHeight);
@@ -47,7 +47,7 @@ public class StyleStub implements Style {
         };
     }
 
-    private void fillLocations() {
+    private void evenlyDistributeCells() {
         final int widthDistance = getHorizontalCellDistance();
         final int heightDistance = getVerticalCellDistance();
         for (int row = 0; row < 3; ++row) {
