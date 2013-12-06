@@ -1,7 +1,7 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.event.EventSupport;
-import com.crudetech.tictactoe.delivery.gui.widgets.StyleStub;
+import com.crudetech.tictactoe.delivery.gui.widgets.EvenlyDistributedCellsStyleStub;
 import com.crudetech.tictactoe.delivery.gui.widgets.TicTacToeGridModel;
 import com.crudetech.tictactoe.game.Grid;
 import org.junit.Before;
@@ -52,7 +52,7 @@ public class JTicTacToeGridModelChangedTest {
             }
         };
         aGrid = new PaintTrackingTicTacToeGrid(model);
-        StyleStub style = new StyleStub.Builder().build();
+        EvenlyDistributedCellsStyleStub style = new EvenlyDistributedCellsStyleStub.Builder().build();
         aGrid.setSize(style.getBackgroundImage().getWidth() * 2, style.getBackgroundImage().getHeight() * 2);
 
         TicTacToeGridUI ui = new TicTacToeGridUI() {

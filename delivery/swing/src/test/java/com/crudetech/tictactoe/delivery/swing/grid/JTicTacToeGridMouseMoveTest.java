@@ -5,8 +5,8 @@ import com.crudetech.collections.Iterables;
 import com.crudetech.event.EventListener;
 import com.crudetech.event.EventObject;
 import com.crudetech.gui.widgets.Point;
+import com.crudetech.tictactoe.delivery.gui.widgets.EvenlyDistributedCellsStyleStub;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
-import com.crudetech.tictactoe.delivery.gui.widgets.StyleStub;
 import com.crudetech.tictactoe.delivery.gui.widgets.TicTacToeGridModel;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.ui.CellEventObject;
@@ -30,7 +30,7 @@ public class JTicTacToeGridMouseMoveTest {
     @Before
     public void setUp() throws Exception {
         grid = new JTicTacToeGrid();
-        Style style = new StyleStub.Builder().build();
+        Style style = new EvenlyDistributedCellsStyleStub.Builder().build();
         grid.setSize(style.getBackgroundImage().getWidth() * 2, style.getBackgroundImage().getHeight() * 2);
         grid.getUI().setStyle(style);
 

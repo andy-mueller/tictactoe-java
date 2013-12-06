@@ -5,7 +5,7 @@ import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.tictactoe.game.Grid;
 
-public class StyleStub implements Style {
+public class EvenlyDistributedCellsStyleStub implements Style {
     private final Image nought;
     private final Image cross;
     private final Image back;
@@ -17,7 +17,7 @@ public class StyleStub implements Style {
     private final int cellWidth;
     private final int cellHeight;
 
-    public StyleStub(int backgroundImageWidth, int backgroundImageHeight, int cellWidth, int cellHeight) {
+    public EvenlyDistributedCellsStyleStub(int backgroundImageWidth, int backgroundImageHeight, int cellWidth, int cellHeight) {
         this.backgroundImageWidth = backgroundImageWidth;
         this.backgroundImageHeight = backgroundImageHeight;
         this.cellWidth = cellWidth;
@@ -126,8 +126,8 @@ public class StyleStub implements Style {
         }
 
 
-        public StyleStub build() {
-            return new StyleStub(width, height, cellWidth, cellHeight);
+        public EvenlyDistributedCellsStyleStub build() {
+            return new EvenlyDistributedCellsStyleStub(width, height, cellWidth, cellHeight);
         }
     }
 }

@@ -27,7 +27,7 @@ import static org.hamcrest.Matchers.is;
  *         125          100          100         100         125
  *                50          50          50          50
  *    +----------+---+-------+---+-------+---+-------+---+----------+
- *
+ * <p/>
  * (1/1)
  *    +-------------------------------------------------------------+    +
  *    |                                                             |    | 50
@@ -51,7 +51,7 @@ import static org.hamcrest.Matchers.is;
  *    |          +---------------------------------------+          |    +
  *    |                                                             |    | 50
  *    +-------------------------------------------------------------+    +
- *
+ * <p/>
  * </pre>
  */
 public class TicTacToeGridWidgetTest {
@@ -67,7 +67,7 @@ public class TicTacToeGridWidgetTest {
 
     @Before
     public void setUp() throws Exception {
-        style = StyleStub.builder()
+        style = EvenlyDistributedCellsStyleStub.builder()
                 .withBackgroundImageSize(500, 400)
                 .withCellSize(CellDimension, CellDimension)
                 .build();
@@ -97,7 +97,7 @@ public class TicTacToeGridWidgetTest {
     @Test
     public void givenWidgetIsSmallerThanBackgroundImage_ImageIsAtOrigin() {
         Style styleWithBiggerBackground =
-                StyleStub.builder()
+                EvenlyDistributedCellsStyleStub.builder()
                         .withBackgroundImageSize(500, 1000)
                         .withCellSize(100, 200)
                         .build();

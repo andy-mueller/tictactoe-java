@@ -40,7 +40,7 @@ public class TicTacToeGridHighlightedCellWidgetTest {
     @Before
     public void setUp() throws Exception {
         state = new HighlightStateStub();
-        style = StyleStub.builder()
+        style = EvenlyDistributedCellsStyleStub.builder()
                 .withBackgroundImageSize(500, 400)
                 .withCellSize(100, 100)
                 .build();
