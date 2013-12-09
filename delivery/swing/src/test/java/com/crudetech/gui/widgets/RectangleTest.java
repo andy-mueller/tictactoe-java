@@ -10,9 +10,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 
 @RunWith(Features.class)
 public class RectangleTest {
@@ -26,7 +24,7 @@ public class RectangleTest {
         assertThat(r.height, is(4));
     }
     @Test
-    public void equalsWithBadType() throws Exception {
+    public void givenComparisonWithBadType_equalsReturnsFalse() throws Exception {
         Rectangle r = new Rectangle(1, 2, 3, 4);
 
         assertThat(r.equals(this), is(false));
