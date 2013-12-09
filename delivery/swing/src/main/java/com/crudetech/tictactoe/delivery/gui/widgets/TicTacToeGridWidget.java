@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.List;
 
 import static com.crudetech.query.Query.from;
-import static java.lang.Math.max;
 
 public class TicTacToeGridWidget extends EcsWidget {
     private final Rectangle bounds;
@@ -48,16 +47,13 @@ public class TicTacToeGridWidget extends EcsWidget {
     List<Widget> buildPaintList() {
         return new ArrayList<Widget>() {{
             add(backgroundWidget());
-            add(backgroundImageWidget());
-            add(gridCellsWidget());
-            add(highlightWidget());
+            add(centeredGridWidget());
             add(debugInfoWidget());
         }};
     }
 
-    public GridCellHit gridCellHit(Point hitInWorld, Coordinates coordinates) {
-        Point hitInEcs = coordinates.toWidgetCoordinates(this, hitInWorld);
-        return gridCellsWidget().hitTest(hitInEcs, Coordinates.World);
+    private TicTacToeCenteredGridWidget centeredGridWidget() {
+        return new TicTacToeCenteredGridWidget(bounds, style, model);
     }
 
     private Widget backgroundWidget() {
@@ -65,78 +61,18 @@ public class TicTacToeGridWidget extends EcsWidget {
         return new FilledRectangleWidget(boundary, style.getBackgroundColor());
     }
 
-    Widget backgroundImageWidget() {
-        Image backgroundImage = style.getBackgroundImage();
-
-
-        StatefulTransparencyImageWidget.TransparencyState state =
-                backgroundImageTransparencyState();
-        Widget backgroundImageWidget = new StatefulTransparencyImageWidget(state, backgroundImage);
-
-        backgroundImageWidget = widgetAtBackgroundImageLocation(backgroundImageWidget);
-
-        return backgroundImageWidget;
-    }
-
-    private StatefulTransparencyImageWidget.TransparencyState backgroundImageTransparencyState() {
-        return new StatefulTransparencyImageWidget.TransparencyState() {
-            @Override
-            public boolean isTransparent() {
-                return model.hasHighlightedThreeInARow();
-            }
-
-            @Override
-            public AlphaValue transparency() {
-                return WinningTripleAlpha;
-            }
-        };
-    }
-
-    Point getBackgroundImageOrigin() {
-        Image backgroundImage = style.getBackgroundImage();
-        int x = max((bounds.width - backgroundImage.getWidth()) / 2, 0);
-        int y = max((bounds.height - backgroundImage.getHeight()) / 2, 0);
-        return Point.of(x, y);
-    }
-
-    TicTacToeGridCellsWidget gridCellsWidget() {
-        TicTacToeGridCellsWidget widget = new TicTacToeGridCellsWidget(model, style);
-        return widgetAtBackgroundImageLocation(widget);
-    }
-
-    private <T extends Widget> T widgetAtBackgroundImageLocation(T widget) {
-        widget.widgetCoordinates().setLocation(getBackgroundImageOrigin());
-        return widget;
-    }
-
-
-    private Widget highlightWidget() {
-        TicTacToeGridHighlightedCellWidget.HighlightState state = highlightWidgetState();
-
-        Widget highlightWidget = new TicTacToeGridHighlightedCellWidget(state, style);
-        return widgetAtBackgroundImageLocation(highlightWidget);
-    }
-
-    private TicTacToeGridHighlightedCellWidget.HighlightState highlightWidgetState() {
-        return new TicTacToeGridHighlightedCellWidget.HighlightState() {
-            @Override
-            public boolean isHighlighted() {
-                return model.hasHighlightedCell();
-            }
-
-            @Override
-            public Grid.Location getLocation() {
-                return model.getHighlightedCell();
-            }
-        };
-    }
 
     private Widget debugInfoWidget() {
         return isDebugMode ? new DebugWidget() : new EmptyWidget();
     }
 
+    public GridCellHit gridCellHit(Point hitInWorld, Coordinates coordinates) {
+        Point hitInEcs = coordinates.toWidgetCoordinates(this, hitInWorld);
+        return centeredGridWidget().hitTest(hitInEcs, Coordinates.World);
+    }
+
     public Iterable<Rectangle> getCellBoundaries(Iterable<Grid.Location> changedCells) {
-        return from(changedCells).select(toBoundaryRectangle()).select(toComponentCoos()).select(toWorldCoordinates());
+        return from(centeredGridWidget().getCellBoundaries(changedCells)).select(toWorldCoordinates());
     }
 
     private UnaryFunction<? super Rectangle, Rectangle> toWorldCoordinates() {
@@ -144,25 +80,6 @@ public class TicTacToeGridWidget extends EcsWidget {
             @Override
             public Rectangle execute(Rectangle r) {
                 return widgetCoordinates().toWorldCoordinates(r);
-            }
-        };
-    }
-
-    private UnaryFunction<Rectangle, Rectangle> toComponentCoos() {
-        return new UnaryFunction<Rectangle, Rectangle>() {
-            @Override
-            public Rectangle execute(Rectangle rectangle) {
-                CoordinateSystem backgroundImageCoos = backgroundImageWidget().widgetCoordinates();
-                return backgroundImageCoos.toWorldCoordinates(rectangle);
-            }
-        };
-    }
-
-    private UnaryFunction<Grid.Location, Rectangle> toBoundaryRectangle() {
-        return new UnaryFunction<Grid.Location, Rectangle>() {
-            @Override
-            public Rectangle execute(Grid.Location location) {
-                return style.getGridMarkBoundary(location);
             }
         };
     }

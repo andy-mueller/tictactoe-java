@@ -133,9 +133,7 @@ public class TicTacToeGridWidgetTest {
 
         List<Class<? extends Widget>> expectedList = new ArrayList<>();
         expectedList.add(FilledRectangleWidget.class);
-        expectedList.add(StatefulTransparencyImageWidget.class);
-        expectedList.add(TicTacToeGridCellsWidget.class);
-        expectedList.add(TicTacToeGridHighlightedCellWidget.class);
+        expectedList.add(TicTacToeCenteredGridWidget.class);
         expectedList.add(EmptyWidget.class);
 
         assertThat(widgetClasses, is(equalTo(expectedList)));
@@ -197,14 +195,6 @@ public class TicTacToeGridWidgetTest {
         List<Widget> widgets = widgetInNoDebugMode.buildPaintList();
         boolean hasDebugWidget = from(widgets).select(classOf()).where(isKindOf(TicTacToeGridWidget.DebugWidget.class)).any();
         assertThat(hasDebugWidget, is(false));
-    }
-
-    @Test
-    public void givenImageThatFitsInWidget_CellWidgetAndImageOverlap() throws Exception {
-        Widget backgroundImage = widget.backgroundImageWidget();
-        Widget cellWidget = widget.gridCellsWidget();
-
-        assertThat(cellWidget.widgetCoordinates(), is(backgroundImage.widgetCoordinates()));
     }
 
     @Test
