@@ -1,9 +1,6 @@
 package com.crudetech.tictactoe.delivery.gui.widgets;
 
-import com.crudetech.gui.widgets.CoordinateSystem;
-import com.crudetech.gui.widgets.GraphicsStream;
-import com.crudetech.gui.widgets.Rectangle;
-import com.crudetech.gui.widgets.Widget;
+import com.crudetech.gui.widgets.*;
 import com.crudetech.tictactoe.game.Grid;
 
 
@@ -40,7 +37,7 @@ public class TicTacToeGridHighlightedCellWidget extends DecoratorTemplateWidget 
     }
 
     @Override
-    Widget getDecorated() {
+    protected Widget getDecorated() {
         return state.isHighlighted()
                 ? makeRectangleWidget()
                 : makeEmptyWidget();

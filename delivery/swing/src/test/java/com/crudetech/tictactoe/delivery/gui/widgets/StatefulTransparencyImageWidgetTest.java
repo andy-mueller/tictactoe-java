@@ -1,9 +1,6 @@
 package com.crudetech.tictactoe.delivery.gui.widgets;
 
-import com.crudetech.gui.widgets.AlphaValue;
-import com.crudetech.gui.widgets.CoordinateSystem;
-import com.crudetech.gui.widgets.Image;
-import com.crudetech.gui.widgets.Widget;
+import com.crudetech.gui.widgets.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -64,7 +61,6 @@ public class StatefulTransparencyImageWidgetTest {
 
         assertThat(actualWidget, hasSizeOf(1));
         assertThat(firstOf(actualWidget), is(instanceOf(CompositeDecoratorWidget.class)));
-        assertThat(((CompositeDecoratorWidget) firstOf(actualWidget)).getDecorated(), is(instanceOf(ImageWidget.class)));
     }
     @Test
     public void givenNoTransparency_imageLocationWillBeAtOrigin() {

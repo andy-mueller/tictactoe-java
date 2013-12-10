@@ -1,8 +1,4 @@
-package com.crudetech.tictactoe.delivery.gui.widgets;
-
-import com.crudetech.gui.widgets.Color;
-import com.crudetech.gui.widgets.EcsWidget;
-import com.crudetech.gui.widgets.Rectangle;
+package com.crudetech.gui.widgets;
 
 import java.util.Objects;
 

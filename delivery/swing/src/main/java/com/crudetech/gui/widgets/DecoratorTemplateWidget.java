@@ -1,8 +1,4 @@
-package com.crudetech.tictactoe.delivery.gui.widgets;
-
-import com.crudetech.gui.widgets.CoordinateSystem;
-import com.crudetech.gui.widgets.GraphicsStream;
-import com.crudetech.gui.widgets.Widget;
+package com.crudetech.gui.widgets;
 
 import java.util.Objects;
 
@@ -33,5 +29,5 @@ public abstract class DecoratorTemplateWidget<TDecorated extends Widget> impleme
         return Objects.hashCode(getDecorated());
     }
 
-    abstract TDecorated getDecorated();
+    protected abstract TDecorated getDecorated();
 }

@@ -1,9 +1,5 @@
-package com.crudetech.tictactoe.delivery.gui.widgets;
+package com.crudetech.gui.widgets;
 
-import com.crudetech.gui.widgets.GraphicsStream;
-import com.crudetech.gui.widgets.Point;
-import com.crudetech.gui.widgets.Rectangle;
-import com.crudetech.gui.widgets.Widget;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
 import com.crudetech.junit.feature.Features;
@@ -39,6 +35,7 @@ public class FilledRectangleWidgetTest {
 
         verify(g2d).pushColor(AwtColor.ORANGE);
     }
+
     @Test
     public void colorIsRemovedAfterPainting() {
         FilledRectangleWidget w = new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);

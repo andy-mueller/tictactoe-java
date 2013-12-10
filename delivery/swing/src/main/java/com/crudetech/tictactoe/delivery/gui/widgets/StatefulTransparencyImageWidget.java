@@ -43,4 +43,5 @@ class StatefulTransparencyImageWidget extends CompoundWidget {
     private CompositeDecoratorWidget<?> addTransparency(Widget imageWidget) {
         return new CompositeDecoratorWidget<>(imageWidget, transparencyState.transparency());
     }
+
 }

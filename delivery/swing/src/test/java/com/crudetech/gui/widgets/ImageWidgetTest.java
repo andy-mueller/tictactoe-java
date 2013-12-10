@@ -1,8 +1,5 @@
-package com.crudetech.tictactoe.delivery.gui.widgets;
+package com.crudetech.gui.widgets;
 
-import com.crudetech.gui.widgets.GraphicsStream;
-import com.crudetech.gui.widgets.Image;
-import com.crudetech.gui.widgets.Widget;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
 import com.crudetech.junit.feature.Features;
@@ -41,7 +38,7 @@ public class ImageWidgetTest {
             @Override
             public List<ImageWidget> createOtherItems() {
                 return asList(
-                        new ImageWidget(0,0, image),
+                        new ImageWidget(0, 0, image),
                         new ImageWidget(42, 42, mock(Image.class))
                 );
             }

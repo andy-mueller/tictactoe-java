@@ -1,25 +1,20 @@
-package com.crudetech.tictactoe.delivery.gui.widgets;
-
-import com.crudetech.gui.widgets.EcsWidget;
-import com.crudetech.gui.widgets.GraphicsStream;
-import com.crudetech.gui.widgets.Image;
-import com.crudetech.gui.widgets.Point;
+package com.crudetech.gui.widgets;
 
 import java.util.Objects;
 
-class ImageWidget extends EcsWidget {
+public class ImageWidget extends EcsWidget {
     private final Image image;
 
-    ImageWidget(Point location, Image image) {
+    public ImageWidget(Point location, Image image) {
         this(location.x, location.y, image);
     }
 
-    ImageWidget(int x, int y, Image image) {
+    public ImageWidget(int x, int y, Image image) {
         super(x, y);
         this.image = image;
     }
 
-    ImageWidget(Image image) {
+    public ImageWidget(Image image) {
         this(Point.Origin, image);
     }
 

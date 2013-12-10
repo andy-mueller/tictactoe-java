@@ -1,9 +1,6 @@
-package com.crudetech.tictactoe.delivery.gui.widgets;
+package com.crudetech.gui.widgets;
 
 
-import com.crudetech.gui.widgets.AlphaValue;
-import com.crudetech.gui.widgets.GraphicsStream;
-import com.crudetech.gui.widgets.Widget;
 import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
 import com.crudetech.junit.feature.Features;
@@ -48,6 +45,7 @@ public class CompositeDecoratorWidgetTest {
 
     private static class BaBoomException extends RuntimeException {
     }
+
     @Test
     public void decoratorResetsTransparencyLevelOnException() {
         doThrow(new BaBoomException()).when(decorated).paint(g2d);
@@ -57,9 +55,10 @@ public class CompositeDecoratorWidgetTest {
         }
         verify(g2d).popAlpha();
     }
+
     @Feature(Equivalent.class)
-    public static Equivalent.Factory<CompositeDecoratorWidget<Widget>> decoratorIsEquivalent(){
-        return new Equivalent.Factory<CompositeDecoratorWidget<Widget>>(){
+    public static Equivalent.Factory<CompositeDecoratorWidget<Widget>> decoratorIsEquivalent() {
+        return new Equivalent.Factory<CompositeDecoratorWidget<Widget>>() {
             AlphaValue alpha = new AlphaValue(0.4f);
             Widget decorated = mock(Widget.class);
 
@@ -71,8 +70,8 @@ public class CompositeDecoratorWidgetTest {
             @Override
             public List<CompositeDecoratorWidget<Widget>> createOtherItems() {
                 return asList(
-                        new CompositeDecoratorWidget<Widget>(mock(Widget.class), alpha),
-                        new CompositeDecoratorWidget<Widget>(decorated, new AlphaValue(0.1f))
+                        new CompositeDecoratorWidget<>(mock(Widget.class), alpha),
+                        new CompositeDecoratorWidget<>(decorated, new AlphaValue(0.1f))
                 );
             }
         };

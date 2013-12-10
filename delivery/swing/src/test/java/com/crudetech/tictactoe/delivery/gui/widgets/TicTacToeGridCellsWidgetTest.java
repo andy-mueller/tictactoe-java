@@ -4,6 +4,7 @@ package com.crudetech.tictactoe.delivery.gui.widgets;
 import com.crudetech.functional.UnaryFunction;
 import com.crudetech.gui.widgets.AlphaValue;
 import com.crudetech.gui.widgets.CoordinateSystem;
+import com.crudetech.gui.widgets.EmptyWidget;
 import com.crudetech.gui.widgets.Point;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.LinearRandomAccessGrid;

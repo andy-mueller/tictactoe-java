@@ -1,6 +1,8 @@
 package com.crudetech.tictactoe.delivery.gui.widgets;
 
+import com.crudetech.gui.widgets.EmptyWidget;
 import com.crudetech.gui.widgets.Rectangle;
+import com.crudetech.gui.widgets.RectangleWidget;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.tictactoe.game.Grid;
 import org.junit.Before;

@@ -1,6 +1,5 @@
 package com.crudetech.gui.widgets;
 
-import com.crudetech.tictactoe.delivery.gui.widgets.EmptyWidget;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
