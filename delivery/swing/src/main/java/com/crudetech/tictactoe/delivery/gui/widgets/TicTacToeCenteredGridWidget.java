@@ -25,9 +25,9 @@ class TicTacToeCenteredGridWidget extends CompoundWidget {
 
     private List<Widget> createSubWidgets() {
         return asList(
-                backgroundImageWidget(),
-                gridCellsWidget(),
-                highlightWidget()
+                createBackgroundImageWidget(),
+                createGridCellsWidget(),
+                createHighlightWidget()
         );
     }
 
@@ -57,7 +57,7 @@ class TicTacToeCenteredGridWidget extends CompoundWidget {
         };
     }
 
-    private Widget backgroundImageWidget() {
+    private Widget createBackgroundImageWidget() {
         Image backgroundImage = style.getBackgroundImage();
 
 
@@ -67,11 +67,11 @@ class TicTacToeCenteredGridWidget extends CompoundWidget {
         return new StatefulTransparencyImageWidget(state, backgroundImage);
     }
 
-    private TicTacToeGridCellsWidget gridCellsWidget() {
+    private TicTacToeGridCellsWidget createGridCellsWidget() {
         return new TicTacToeGridCellsWidget(model, style);
     }
 
-    private Widget highlightWidget() {
+    private Widget createHighlightWidget() {
         TicTacToeGridHighlightedCellWidget.HighlightState state = highlightWidgetState();
 
         return new TicTacToeGridHighlightedCellWidget(state, style);
@@ -93,7 +93,7 @@ class TicTacToeCenteredGridWidget extends CompoundWidget {
 
     public GridCellHit hitTest(Point hitPoint, Coordinates coordinates) {
         Point hitInEcs = coordinates.toWidgetCoordinates(this, hitPoint);
-        return gridCellsWidget().hitTest(hitInEcs, Coordinates.World);
+        return getGridCellsWidget().hitTest(hitInEcs, Coordinates.World);
     }
 
     public Iterable<Rectangle> getCellBoundaries(Iterable<Grid.Location> changedCells) {
@@ -116,5 +116,9 @@ class TicTacToeCenteredGridWidget extends CompoundWidget {
                 return widgetCoordinates().toWorldCoordinates(rectangle);
             }
         };
+    }
+
+    private TicTacToeGridCellsWidget getGridCellsWidget() {
+        return (TicTacToeGridCellsWidget) widgets.get(1);
     }
 }
