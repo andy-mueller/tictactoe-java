@@ -56,7 +56,7 @@ public class JTicTacToeGrid extends JComponent {
         modelChangedListener = new EventListener<TicTacToeGridModel.ChangedEventObject>() {
             @Override
             public void onEvent(TicTacToeGridModel.ChangedEventObject e) {
-                getUI().repaintAll();
+                getUI().invalidate();
             }
         };
     }
@@ -72,7 +72,7 @@ public class JTicTacToeGrid extends JComponent {
 
     @Override
     public void setSize(int width, int height) {
-        getUI().repaintAll();
+        getUI().invalidate();
         super.setSize(width, height);
     }
 

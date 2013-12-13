@@ -89,9 +89,8 @@ public class TicTacToeGridUI extends ComponentUI {
         return component.getModel();
     }
 
-    void repaintAll() {
+    void invalidate() {
         invalidateGraphic();
-        component.repaint();
     }
 
     private void invalidateGraphic() {

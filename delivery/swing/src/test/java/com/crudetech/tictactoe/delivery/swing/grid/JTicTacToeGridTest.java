@@ -203,6 +203,6 @@ public class JTicTacToeGridTest {
         JTicTacToeGrid jgrid = new JTicTacToeGrid(model, ui);
 
         jgrid.setSize(600, 600);
-        verify(ui).repaintAll();
+        verify(ui).invalidate();
     }
 }
