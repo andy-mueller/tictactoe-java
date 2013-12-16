@@ -23,12 +23,16 @@ public class TicTacToeCenteredGridWidgetTest {
     private static final Rectangle widgetBoundary = new Rectangle(1, 1, 750, 500);
 
     @Before
-    public void setUp() throws Exception {
+    public void createStyleStub() throws Exception {
         style = EvenlyDistributedCellsStyleStub.builder()
                 .withBackgroundImageSize(500, 400)
                 .withCellSize(100, 100)
                 .build();
 
+    }
+
+    @Before
+    public void createModelStub() throws Exception {
         model = new TicTacToeGridModel(LinearRandomAccessGrid.of(
                 Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None,
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
@@ -40,6 +44,7 @@ public class TicTacToeCenteredGridWidgetTest {
     @Test
     public void subPaintListIsPaintedInOrder() {
         TicTacToeCenteredGridWidget widget = new TicTacToeCenteredGridWidget(widgetBoundary, style, model);
+
         List<Class<? extends Widget>> widgetClasses = from(widget.subWidgets()).select(toClass()).toList();
 
         List<Class<? extends Widget>> expectedList = new ArrayList<>();
@@ -48,7 +53,6 @@ public class TicTacToeCenteredGridWidgetTest {
         expectedList.add(TicTacToeGridHighlightedCellWidget.class);
 
         assertThat(widgetClasses, is(equalTo(expectedList)));
-        assertThat(widgetClasses, is(expectedList));
     }
 
     private UnaryFunction<Widget, Class<? extends Widget>> toClass() {
