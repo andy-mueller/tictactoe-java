@@ -2,6 +2,8 @@ package com.crudetech.tictactoe.delivery.gui.widgets;
 
 
 import com.crudetech.functional.UnaryFunction;
+import com.crudetech.gui.widgets.CoordinateSystem;
+import com.crudetech.gui.widgets.Point;
 import com.crudetech.gui.widgets.Rectangle;
 import com.crudetech.gui.widgets.Widget;
 import com.crudetech.tictactoe.game.Grid;
@@ -63,5 +65,12 @@ public class TicTacToeCenteredGridWidgetTest {
             }
         };
     }
-    //
+
+    @Test
+    public void givenBackgroundImageThatFitsIntoBoundary_widgetIsCentered() throws Exception {
+        TicTacToeCenteredGridWidget widget = new TicTacToeCenteredGridWidget(widgetBoundary, style, model);
+
+        assertThat(widget.widgetCoordinates(), is(new CoordinateSystem(Point.of(125, 50), CoordinateSystem.NoScale)));
+    }
+    //rename widget.widgetCoordinates
 }
