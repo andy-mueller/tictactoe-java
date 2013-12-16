@@ -70,7 +70,6 @@ public class TicTacToeCenteredGridWidgetTest {
     public void givenBackgroundImageThatFitsIntoBoundary_widgetIsCentered() throws Exception {
         TicTacToeCenteredGridWidget widget = new TicTacToeCenteredGridWidget(widgetBoundary, style, model);
 
-        assertThat(widget.widgetCoordinates(), is(new CoordinateSystem(Point.of(125, 50), CoordinateSystem.NoScale)));
+        assertThat(widget.coordinateSystem(), is(new CoordinateSystem(Point.of(125, 50), CoordinateSystem.NoScale)));
     }
-    //rename widget.widgetCoordinates
 }

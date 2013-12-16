@@ -36,15 +36,16 @@ public class EcsWidgetTest {
 
 
     @Test
-    public void ctorSetsCordinateSystem(){
-        assertThat(ecsWidget.widgetCoordinates(), is(new CoordinateSystem(Point.of(42, 42))));
+    public void ctorSetsCordinateSystem() {
+        assertThat(ecsWidget.coordinateSystem(), is(new CoordinateSystem(Point.of(42, 42))));
     }
+
     @Feature(Equivalent.class)
-    public static Equivalent.Factory<EcsWidget> isEquivalentByLocation(){
+    public static Equivalent.Factory<EcsWidget> isEquivalentByLocation() {
         return new Equivalent.Factory<EcsWidget>() {
             @Override
             public EcsWidget createItem() {
-            return new NoPaintEcsWidget(42, 42);
+                return new NoPaintEcsWidget(42, 42);
             }
 
             @Override

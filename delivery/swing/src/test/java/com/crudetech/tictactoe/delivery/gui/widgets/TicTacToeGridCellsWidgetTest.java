@@ -87,7 +87,7 @@ public class TicTacToeGridCellsWidgetTest {
         return new UnaryFunction<TicTacToeGridCellsWidget.CellWidget<?>, CoordinateSystem>() {
             @Override
             public CoordinateSystem execute(TicTacToeGridCellsWidget.CellWidget<?> cellWidget) {
-                return cellWidget.widgetCoordinates();
+                return cellWidget.coordinateSystem();
             }
         };
     }

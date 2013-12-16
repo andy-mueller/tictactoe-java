@@ -10,8 +10,8 @@ public abstract class DecoratorTemplateWidget<TDecorated extends Widget> impleme
     }
 
     @Override
-    public CoordinateSystem widgetCoordinates() {
-        return getDecorated().widgetCoordinates();
+    public CoordinateSystem coordinateSystem() {
+        return getDecorated().coordinateSystem();
     }
 
     @Override

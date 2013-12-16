@@ -21,9 +21,10 @@ public class StatefulTransparencyImageWidgetTest {
     class TransparencyStub implements StatefulTransparencyImageWidget.TransparencyState {
         private boolean transparency = false;
 
-        void makeTransparent(){
+        void makeTransparent() {
             transparency = true;
         }
+
         @Override
         public boolean isTransparent() {
             return transparency;
@@ -62,11 +63,12 @@ public class StatefulTransparencyImageWidgetTest {
         assertThat(actualWidget, hasSizeOf(1));
         assertThat(firstOf(actualWidget), is(instanceOf(CompositeDecoratorWidget.class)));
     }
+
     @Test
     public void givenNoTransparency_imageLocationWillBeAtOrigin() {
         Widget actualWidget = firstOf(widget.subWidgets());
 
-        assertThat(actualWidget.widgetCoordinates(), is(CoordinateSystem.identity()));
+        assertThat(actualWidget.coordinateSystem(), is(CoordinateSystem.identity()));
     }
 
     @Test

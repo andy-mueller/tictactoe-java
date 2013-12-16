@@ -20,8 +20,8 @@ public class TicTacToeGridCellsWidget extends CompoundWidget {
             super(decorated);
             this.location = location;
             Rectangle boundaryInWorld = style.getGridMarkBoundary(location);
-            widgetCoordinates().setLocation(boundaryInWorld.getLocation());
-            this.boundary = widgetCoordinates().toWidgetCoordinates(boundaryInWorld);
+            coordinateSystem().setLocation(boundaryInWorld.getLocation());
+            this.boundary = coordinateSystem().toWidgetCoordinates(boundaryInWorld);
         }
 
         public abstract boolean isTransparent();

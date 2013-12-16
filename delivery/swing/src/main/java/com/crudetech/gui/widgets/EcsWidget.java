@@ -23,7 +23,7 @@ public abstract class EcsWidget implements Widget {
     }
 
     @Override
-    public CoordinateSystem widgetCoordinates() {
+    public CoordinateSystem coordinateSystem() {
         return ecs;
     }
 

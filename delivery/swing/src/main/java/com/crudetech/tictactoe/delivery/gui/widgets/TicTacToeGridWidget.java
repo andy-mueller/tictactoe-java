@@ -79,7 +79,7 @@ public class TicTacToeGridWidget extends EcsWidget {
         return new UnaryFunction<Rectangle, Rectangle>() {
             @Override
             public Rectangle execute(Rectangle r) {
-                return widgetCoordinates().toWorldCoordinates(r);
+                return coordinateSystem().toWorldCoordinates(r);
             }
         };
     }

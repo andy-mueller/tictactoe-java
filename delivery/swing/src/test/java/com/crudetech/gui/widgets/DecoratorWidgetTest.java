@@ -20,9 +20,9 @@ public class DecoratorWidgetTest {
         Widget w = mock(Widget.class);
         DecoratorTemplateWidget<Widget> dec = new DecoratorWidget<>(w);
 
-        dec.widgetCoordinates();
+        dec.coordinateSystem();
 
-        verify(w).widgetCoordinates();
+        verify(w).coordinateSystem();
     }
 
 

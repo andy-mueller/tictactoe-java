@@ -12,7 +12,7 @@ public abstract class Coordinates {
         @Override
         public <TTransformable extends Transformable<TTransformable>>
         TTransformable toWidgetCoordinates(Widget widget, TTransformable transformable) {
-            return widget.widgetCoordinates().toWidgetCoordinates(transformable);
+            return widget.coordinateSystem().toWidgetCoordinates(transformable);
         }
 
         @Override
@@ -31,7 +31,7 @@ public abstract class Coordinates {
         @Override
         public <TTransformable extends Transformable<TTransformable>>
         TTransformable toWorldCoordinates(Widget widget, TTransformable transformable) {
-            return widget.widgetCoordinates().toWorldCoordinates(transformable);
+            return widget.coordinateSystem().toWorldCoordinates(transformable);
         }
     };
 }

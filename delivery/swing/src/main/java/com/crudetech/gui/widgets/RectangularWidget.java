@@ -42,7 +42,7 @@ public abstract class RectangularWidget extends EcsWidget {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "{" +
-                "ecs=" + widgetCoordinates() +
+                "ecs=" + coordinateSystem() +
                 "boundary=" + getBoundary() +
                 ", color=" + getColor() +
                 '}';

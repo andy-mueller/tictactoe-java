@@ -22,7 +22,7 @@ public class TicTacToeGridHighlightedCellWidget extends DecoratorTemplateWidget 
     }
 
     @Override
-    public CoordinateSystem widgetCoordinates() {
+    public CoordinateSystem coordinateSystem() {
         return ecs;
     }
 

@@ -91,7 +91,7 @@ public class TicTacToeGridWidgetTest {
         List<Widget> widgets = widget.buildPaintList();
 
         Widget backGroundImage = widgets.get(1);
-        assertThat(backGroundImage.widgetCoordinates(), is(new CoordinateSystem(Point.of(125, 50))));
+        assertThat(backGroundImage.coordinateSystem(), is(new CoordinateSystem(Point.of(125, 50))));
     }
 
     @Test
@@ -109,7 +109,7 @@ public class TicTacToeGridWidgetTest {
                 .createTicTacToeGridWidget();
 
         Widget backgroundImage = widget.buildPaintList().get(1);
-        assertThat(backgroundImage.widgetCoordinates(), is(new CoordinateSystem(Point.of(125, 0), CoordinateSystem.NoScale)));
+        assertThat(backgroundImage.coordinateSystem(), is(new CoordinateSystem(Point.of(125, 0), CoordinateSystem.NoScale)));
     }
 
     @Test
@@ -207,7 +207,7 @@ public class TicTacToeGridWidgetTest {
 
     @Test
     public void givenScaledWidget_CellRectanglesAreMappedFromLocations() {
-        widget.widgetCoordinates()
+        widget.coordinateSystem()
                 .setLocation(Point.of(10, 20))
                 .setScale(0.5);
 

@@ -20,7 +20,7 @@ class TicTacToeCenteredGridWidget extends CompoundWidget {
         this.style = style;
         this.model = model;
         widgets = createSubWidgets();
-        widgetCoordinates().setLocation(getBackgroundImageOrigin(bounds));
+        coordinateSystem().setLocation(getBackgroundImageOrigin(bounds));
     }
 
     private List<Widget> createSubWidgets() {
@@ -113,7 +113,7 @@ class TicTacToeCenteredGridWidget extends CompoundWidget {
         return new UnaryFunction<Rectangle, Rectangle>() {
             @Override
             public Rectangle execute(Rectangle rectangle) {
-                return widgetCoordinates().toWorldCoordinates(rectangle);
+                return coordinateSystem().toWorldCoordinates(rectangle);
             }
         };
     }
