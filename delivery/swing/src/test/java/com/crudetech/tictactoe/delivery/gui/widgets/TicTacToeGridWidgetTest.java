@@ -95,24 +95,6 @@ public class TicTacToeGridWidgetTest {
     }
 
     @Test
-    public void givenWidgetIsSmallerThanBackgroundImage_ImageIsAtOrigin() {
-        Style styleWithBiggerBackground =
-                EvenlyDistributedCellsStyleStub.builder()
-                        .withBackgroundImageSize(500, 1000)
-                        .withCellSize(100, 200)
-                        .build();
-        TicTacToeGridWidget widget = TicTacToeGridWidget.builder()
-                .withBounds(widgetBoundary)
-                .withStyle(styleWithBiggerBackground)
-                .withModel(model)
-                .noDebug()
-                .createTicTacToeGridWidget();
-
-        Widget backgroundImage = widget.buildPaintList().get(1);
-        assertThat(backgroundImage.coordinateSystem(), is(new CoordinateSystem(Point.of(125, 0), CoordinateSystem.NoScale)));
-    }
-
-    @Test
     public void backGroundIsInvalidated() {
         List<Widget> widgets = widget.buildPaintList();
         Widget background = widgets.get(0);

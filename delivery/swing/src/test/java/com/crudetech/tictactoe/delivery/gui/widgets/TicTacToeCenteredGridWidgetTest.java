@@ -30,7 +30,6 @@ public class TicTacToeCenteredGridWidgetTest {
                 .withBackgroundImageSize(500, 400)
                 .withCellSize(100, 100)
                 .build();
-
     }
 
     @Before
@@ -72,4 +71,29 @@ public class TicTacToeCenteredGridWidgetTest {
 
         assertThat(widget.coordinateSystem(), is(new CoordinateSystem(Point.of(125, 50), CoordinateSystem.NoScale)));
     }
+
+    @Test
+    public void givenBackgroundImageThatIsLargerThanBoundaryWithADominantWidth_widgetIsScaledAndCenteredByWidth() throws Exception {
+        Style styleWiderThanBounds = EvenlyDistributedCellsStyleStub.builder()
+                .withBackgroundImageSize(widgetBoundary.width * 4, widgetBoundary.height * 3)  //3000x1500 ->750x500 ->750x375
+                .withCellSize(100, 100)
+                .build();
+
+        TicTacToeCenteredGridWidget widget = new TicTacToeCenteredGridWidget(widgetBoundary, styleWiderThanBounds, model);
+
+        assertThat(widget.coordinateSystem(), is(new CoordinateSystem(Point.of(0, 62), 0.25)));
+    }
+
+    @Test
+    public void givenBackgroundImageThatIsLargerThanBoundaryWithADominantHeight_widgetIsScaledAndCenteredByHeight() throws Exception {
+        Style styleWiderThanBounds = EvenlyDistributedCellsStyleStub.builder()
+                .withBackgroundImageSize(widgetBoundary.width * 2, widgetBoundary.height * 4)  //1500x2000 ->750x500 ->.25 -> 375x500
+                .withCellSize(100, 100)
+                .build();
+
+        TicTacToeCenteredGridWidget widget = new TicTacToeCenteredGridWidget(widgetBoundary, styleWiderThanBounds, model);
+
+        assertThat(widget.coordinateSystem(), is(new CoordinateSystem(Point.of(187, 0), 0.25)));
+    }
+
 }

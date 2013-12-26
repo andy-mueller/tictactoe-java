@@ -64,8 +64,8 @@ public enum Styles implements Style {
     private Image nought;
 
     @Override
-    public Dimension getPreferredSize() {
-        return new Dimension(getBackgroundImage().getWidth(), getBackgroundImage().getHeight());
+    public Dimension getMinimumSize() {
+        return new Dimension(getBackgroundImage().getWidth() / 2, getBackgroundImage().getHeight() / 2);
     }
 
     @Override

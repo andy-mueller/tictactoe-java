@@ -83,7 +83,7 @@ public class EvenlyDistributedCellsStyleStub implements Style {
     }
 
     @Override
-    public Dimension getPreferredSize() {
+    public Dimension getMinimumSize() {
         return new Dimension(42, 42);
     }
 
@@ -107,14 +107,14 @@ public class EvenlyDistributedCellsStyleStub implements Style {
     }
 
     public static class Builder {
-        private int width = 500;
-        private int height = 1000;
+        private int backgroundImageWidth = 500;
+        private int backgroundImageHeight = 1000;
         private int cellWidth = 10;
         private int cellHeight = 10;
 
         public Builder withBackgroundImageSize(int width, int height) {
-            this.width = width;
-            this.height = height;
+            this.backgroundImageWidth = width;
+            this.backgroundImageHeight = height;
             return this;
         }
 
@@ -127,7 +127,7 @@ public class EvenlyDistributedCellsStyleStub implements Style {
 
 
         public EvenlyDistributedCellsStyleStub build() {
-            return new EvenlyDistributedCellsStyleStub(width, height, cellWidth, cellHeight);
+            return new EvenlyDistributedCellsStyleStub(backgroundImageWidth, backgroundImageHeight, cellWidth, cellHeight);
         }
     }
 }

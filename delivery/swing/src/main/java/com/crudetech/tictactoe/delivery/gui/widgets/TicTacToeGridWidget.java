@@ -18,6 +18,7 @@ public class TicTacToeGridWidget extends EcsWidget {
     private final boolean isDebugMode;
     private final Color debugColor;
 
+    private final List<Widget> paintList;
     static final AlphaValue WinningTripleAlpha = new AlphaValue(0.4f);
 
 
@@ -30,6 +31,7 @@ public class TicTacToeGridWidget extends EcsWidget {
         this.model = model;
         this.isDebugMode = debugMode;
         this.debugColor = debugColor;
+        paintList = buildPaintList();
     }
 
     public static TicTacToeGridWidgetBuilder builder() {
@@ -38,7 +40,7 @@ public class TicTacToeGridWidget extends EcsWidget {
 
     @Override
     public void paintEcs(GraphicsStream pipe) {
-        for (Widget widget : buildPaintList()) {
+        for (Widget widget : paintList) {
             widget.paint(pipe);
         }
     }
@@ -56,6 +58,10 @@ public class TicTacToeGridWidget extends EcsWidget {
         return new TicTacToeCenteredGridWidget(bounds, style, model);
     }
 
+    private TicTacToeCenteredGridWidget getCenteredGridWidget() {
+        return (TicTacToeCenteredGridWidget) paintList.get(1);
+    }
+
     private Widget backgroundWidget() {
         Rectangle boundary = new Rectangle(bounds.x, bounds.y, bounds.width, bounds.height + 500);
         return new FilledRectangleWidget(boundary, style.getBackgroundColor());
@@ -68,11 +74,11 @@ public class TicTacToeGridWidget extends EcsWidget {
 
     public GridCellHit gridCellHit(Point hitInWorld, Coordinates coordinates) {
         Point hitInEcs = coordinates.toWidgetCoordinates(this, hitInWorld);
-        return centeredGridWidget().hitTest(hitInEcs, Coordinates.World);
+        return getCenteredGridWidget().hitTest(hitInEcs, Coordinates.World);
     }
 
     public Iterable<Rectangle> getCellBoundaries(Iterable<Grid.Location> changedCells) {
-        return from(centeredGridWidget().getCellBoundaries(changedCells)).select(toWorldCoordinates());
+        return from(getCenteredGridWidget().getCellBoundaries(changedCells)).select(toWorldCoordinates());
     }
 
     private UnaryFunction<? super Rectangle, Rectangle> toWorldCoordinates() {

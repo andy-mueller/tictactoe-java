@@ -13,7 +13,7 @@ public interface Style {
 
     Color getHighlightColor();
 
-    Dimension getPreferredSize();
+    Dimension getMinimumSize();
 
     Rectangle getGridMarkBoundary(Grid.Location location);
 

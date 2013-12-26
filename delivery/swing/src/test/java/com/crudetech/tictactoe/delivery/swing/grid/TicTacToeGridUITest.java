@@ -45,7 +45,7 @@ public class TicTacToeGridUITest {
 
     @Test
     public void preferredSizeIsStyleSize() throws Exception {
-        Dimension expected = WidgetAwtConverter.dimension(style.getPreferredSize());
+        Dimension expected = WidgetAwtConverter.dimension(style.getMinimumSize());
 
         assertThat(grid.getUI().getPreferredSize(grid), is(expected));
     }

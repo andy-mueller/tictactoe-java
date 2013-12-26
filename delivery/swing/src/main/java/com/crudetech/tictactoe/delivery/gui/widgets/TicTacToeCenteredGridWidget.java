@@ -20,7 +20,7 @@ class TicTacToeCenteredGridWidget extends CompoundWidget {
         this.style = style;
         this.model = model;
         widgets = createSubWidgets();
-        coordinateSystem().setLocation(getBackgroundImageOrigin(bounds));
+        centerWidget(bounds);
     }
 
     private List<Widget> createSubWidgets() {
@@ -31,10 +31,39 @@ class TicTacToeCenteredGridWidget extends CompoundWidget {
         );
     }
 
+    private void centerWidget(Rectangle bounds) {
+        coordinateSystem().setScale(computeScale(bounds));
+        coordinateSystem().setLocation(getBackgroundImageOrigin(bounds));
+    }
+
+    private double computeScale(Rectangle bounds) {
+        Image background = style.getBackgroundImage();
+        final double scale = 1.0;
+
+        final double horizontalScale = horizontalScale(bounds, background);
+        final double verticalScale = verticalScale(bounds, background, horizontalScale);
+
+        return scale * horizontalScale * verticalScale;
+    }
+
+    private double verticalScale(Rectangle bounds, Image background, double scaleW) {
+        final int scaledImageHeight = (int) (background.getHeight() * scaleW);
+        return scaledImageHeight > bounds.height ? ((double) bounds.height) / (background.getHeight() * scaleW) : 1.0;
+    }
+
+    private double horizontalScale(Rectangle bounds, Image background) {
+        return imageIsWider(bounds, background) ? ((double) bounds.width) / background.getWidth() : 1.0;
+    }
+
+    private boolean imageIsWider(Rectangle bounds, Image background) {
+        return background.getWidth() > bounds.width;
+    }
+
     private Point getBackgroundImageOrigin(Rectangle bounds) {
+        final double scale = coordinateSystem().getScale();
         Image backgroundImage = style.getBackgroundImage();
-        int x = max((bounds.width - backgroundImage.getWidth()) / 2, 0);
-        int y = max((bounds.height - backgroundImage.getHeight()) / 2, 0);
+        int x = (int) max((bounds.width - backgroundImage.getWidth() * scale) / 2, 0);
+        int y = (int) max((bounds.height - backgroundImage.getHeight() * scale) / 2, 0);
         return Point.of(x, y);
     }
 

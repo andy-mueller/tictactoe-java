@@ -13,6 +13,7 @@ import com.crudetech.tictactoe.game.Grid;
 import javax.swing.*;
 import javax.swing.plaf.ComponentUI;
 import java.awt.*;
+import java.util.Date;
 
 import static com.crudetech.query.Query.from;
 
@@ -55,12 +56,12 @@ public class TicTacToeGridUI extends ComponentUI {
 
     @Override
     public Dimension getMinimumSize(JComponent c) {
-        return getPreferredSize(c);
+        return WidgetAwtConverter.dimension(style.getMinimumSize());
     }
 
     @Override
     public Dimension getPreferredSize(JComponent c) {
-        return WidgetAwtConverter.dimension(style.getPreferredSize());
+        return getMinimumSize(c);
     }
 
     public void setStyle(Style style) {
@@ -94,7 +95,13 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     private void invalidateGraphic() {
+        System.out.println("---->" + new Date() + ": invalidating graphic");
         gridWidget = null;
+    }
+
+    public void repaint() {
+        invalidateGraphic();
+        component.repaint();
     }
 
     void repaintCells(Iterable<Grid.Location> changedCells) {
@@ -114,8 +121,8 @@ public class TicTacToeGridUI extends ComponentUI {
         return new UnaryFunction<Rectangle, Rectangle>() {
             @Override
             public Rectangle execute(Rectangle rectangle) {
-                rectangle.width += 1;
-                rectangle.height += 1;
+                rectangle.width += 3;
+                rectangle.height += 3;
                 return rectangle;
             }
         };
