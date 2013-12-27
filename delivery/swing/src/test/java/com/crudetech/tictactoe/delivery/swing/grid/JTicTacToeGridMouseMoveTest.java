@@ -1,7 +1,6 @@
 package com.crudetech.tictactoe.delivery.swing.grid;
 
 
-import com.crudetech.collections.Iterables;
 import com.crudetech.event.EventListener;
 import com.crudetech.event.EventObject;
 import com.crudetech.gui.widgets.Point;
@@ -16,7 +15,6 @@ import org.junit.Test;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 
-import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
@@ -30,19 +28,19 @@ public class JTicTacToeGridMouseMoveTest {
     @Before
     public void setUp() throws Exception {
         grid = new JTicTacToeGrid();
-        Style style = new EvenlyDistributedCellsStyleStub.Builder().build();
-        grid.setSize(style.getBackgroundImage().getWidth() * 2, style.getBackgroundImage().getHeight() * 2);
+        Style style = EvenlyDistributedCellsStyleStub.builder()
+                .withBackgroundImageSize(700, 500)
+                .withCellSize(100, 100)
+                .build();
+        grid.setSize(1400, 1000);
         grid.getUI().setStyle(style);
 
         outsideAnyCell = new Point(10, 10);
-        inLastCell = computePointInsideOfLastCell();
+
+        final Point lastCellLocation = Point.of(850, 600);
+        inLastCell = lastCellLocation.translate(10, 10);
 
         grid.getUI().buildGraphic();
-    }
-
-    private Point computePointInsideOfLastCell() {
-        java.awt.Rectangle r = Iterables.firstOf(grid.getUI().getRectanglesForCells(asList(Grid.Location.of(Grid.Row.Third, Grid.Column.Third))));
-        return new Point(r.x + r.width / 2, r.y + r.height / 2);
     }
 
     @Test
@@ -80,7 +78,7 @@ public class JTicTacToeGridMouseMoveTest {
         grid.raiseMouseEvent(click);
 
         Grid.Location expectedCell = Grid.Location.of(Grid.Row.Third, Grid.Column.Third);
-        verify(cellClicked).onEvent(new CellEventObject<JTicTacToeGrid>(grid, expectedCell));
+        verify(cellClicked).onEvent(new CellEventObject<>(grid, expectedCell));
     }
 
     @Test
