@@ -6,15 +6,14 @@ public class Transformation {
     private final double s;
 
     public Transformation(double dx, double dy, double scale) {
-
         this.dx = dx;
         this.dy = dy;
         this.s = scale;
     }
 
     public Point transform(Point point) {
-        int x = (int) (point.x * s + dx);
-        int y = (int) (point.y * s + dy);
+        final int x = (int) (point.x * s + dx);
+        final int y = (int) (point.y * s + dy);
         return Point.of(x, y);
     }
 
