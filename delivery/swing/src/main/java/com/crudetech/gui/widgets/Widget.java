@@ -4,4 +4,5 @@ public interface Widget {
     void paint(GraphicsStream pipe);
 
     CoordinateSystem coordinateSystem();
+    void setCoordinateSystem(CoordinateSystem coordinates);
 }

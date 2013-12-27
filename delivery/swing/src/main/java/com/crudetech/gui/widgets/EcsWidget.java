@@ -3,13 +3,14 @@ package com.crudetech.gui.widgets;
 import java.util.Objects;
 
 public abstract class EcsWidget implements Widget {
-    private final CoordinateSystem ecs = CoordinateSystem.world();
+    private CoordinateSystem ecs = CoordinateSystem.world();
 
     public EcsWidget(int x, int y) {
-        ecs.translate(x, y);
+        ecs = new CoordinateSystem(Point.of(x, y));
     }
 
     public EcsWidget() {
+        ecs = CoordinateSystem.world();
     }
 
     @Override
@@ -25,6 +26,11 @@ public abstract class EcsWidget implements Widget {
     @Override
     public CoordinateSystem coordinateSystem() {
         return ecs;
+    }
+
+    @Override
+    public void setCoordinateSystem(CoordinateSystem coordinates) {
+                this.ecs = coordinates;
     }
 
     protected abstract void paintEcs(GraphicsStream pipe);

@@ -15,6 +15,11 @@ public abstract class DecoratorTemplateWidget<TDecorated extends Widget> impleme
     }
 
     @Override
+    public void setCoordinateSystem(CoordinateSystem coordinates) {
+        getDecorated().setCoordinateSystem(coordinates);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
