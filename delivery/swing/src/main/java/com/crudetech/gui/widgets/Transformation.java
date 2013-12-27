@@ -19,11 +19,11 @@ public class Transformation {
     }
 
     public Transformation inverse() {
-        double det = s * s;
+        final double det = s * s;
 
-        double s1 = s / det;
-        double dx1 = -dx * s / det;
-        double dy1 = -s * dy / det;
+        final double s1 = s / det;
+        final double dx1 = -dx * s / det;
+        final double dy1 = -s * dy / det;
 
         return new Transformation(dx1, dy1, s1);
     }
