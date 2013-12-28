@@ -18,12 +18,17 @@ public class RectangleWidgetTest {
     @Test
     public void paintingIsInEcs() {
         Widget w = new RectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
-        w.coordinateSystem().setLocation(Point.of(42, 42));
+        setLocation(w, Point.of(42, 42));
         GraphicsStream g2d = mock(GraphicsStream.class);
 
         w.paint(g2d);
 
         verify(g2d).drawRectangle(new Rectangle(0, 0, 84, 966));
+    }
+
+    private void setLocation(Widget w, Point location) {
+        WidgetJig jig = new WidgetJig(w);
+        jig.setLocation(location);
     }
 
     @Test

@@ -30,17 +30,25 @@ public class WidgetJigTest {
 
         assertThat(widget.coordinateSystem(), is(new CoordinateSystem(Point.of(84, 84), 0.5)));
     }
+
     @Test
     public void givenAWidget_setLocationPutsWidgetOnThatLocation() throws Exception {
-        jig.setLocation(2, 2);
+        jig.setLocation(Point.of(2, 2));
 
         assertThat(widget.coordinateSystem(), is(new CoordinateSystem(Point.of(2, 2), 0.5)));
     }
 
     @Test
-    public void givenAWidget_scaleScalesTheWidget() throws Exception {
+    public void givenAWidget_scaleAddsOnTopOfWidgetsScale() throws Exception {
         jig.scale(0.5);
 
         assertThat(widget.coordinateSystem(), is(new CoordinateSystem(Point.of(42, 42), 0.25)));
+    }
+
+    @Test
+    public void givenAWidget_setScaleReplacesWidgetsScale() throws Exception {
+        jig.setScale(0.42);
+
+        assertThat(widget.coordinateSystem(), is(new CoordinateSystem(Point.of(42, 42), 0.42)));
     }
 }

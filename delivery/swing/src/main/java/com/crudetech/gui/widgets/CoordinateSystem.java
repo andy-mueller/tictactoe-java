@@ -4,8 +4,8 @@ import com.crudetech.lang.Compare;
 
 public class CoordinateSystem {
     public static final double NoScale = 1.0;
-    private Point location;
-    private double scale;
+    private final Point location;
+    private final double scale;
 
     public static CoordinateSystem world() {
         return new CoordinateSystem();
@@ -36,10 +36,6 @@ public class CoordinateSystem {
         return scale;
     }
 
-    public CoordinateSystem setScale(double scale) {
-        this.scale = scale;
-        return this;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -62,19 +58,13 @@ public class CoordinateSystem {
         return result;
     }
 
-    public CoordinateSystem translate(int dx, int dy) {
-        location = location.translate(dx, dy);
-        return this;
+    CoordinateSystem translate(int dx, int dy) {
+        return new CoordinateSystem(location.translate(dx, dy), scale);
     }
 
-    public CoordinateSystem scale(double scale) {
-        this.scale *= scale;
-        return this;
-    }
+    CoordinateSystem scale(double scale) {
+        return new CoordinateSystem(location, this.scale * scale);
 
-    public CoordinateSystem setLocation(Point location) {
-        this.location = location;
-        return this;
     }
 
     @Override

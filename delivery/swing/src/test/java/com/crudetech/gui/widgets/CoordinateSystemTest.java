@@ -52,18 +52,36 @@ public class CoordinateSystemTest {
     public void translationMovesLocation() throws Exception {
         CoordinateSystem coos = new CoordinateSystem(Point.of(1, 2));
 
+        CoordinateSystem translated = coos.translate(2, 1);
+
+        assertThat(translated, is(new CoordinateSystem(Point.of(3, 3))));
+    }
+
+    @Test
+    public void translationIsImmutable() throws Exception {
+        CoordinateSystem coos = new CoordinateSystem(Point.of(1, 2));
+
         coos.translate(2, 1);
 
-        assertThat(coos, is(new CoordinateSystem(Point.of(3, 3))));
+        assertThat(coos, is(new CoordinateSystem(Point.of(1, 2))));
     }
 
     @Test
     public void scaleMultipliesOnScale() throws Exception {
         CoordinateSystem coos = new CoordinateSystem(Point.Origin, 3.0);
 
+        CoordinateSystem translated = coos.scale(2.0);
+
+        assertThat(translated, is(new CoordinateSystem(Point.Origin, 6.0)));
+    }
+
+    @Test
+    public void scaleIsImmutable() throws Exception {
+        CoordinateSystem coos = new CoordinateSystem(Point.Origin, 3.0);
+
         coos.scale(2.0);
 
-        assertThat(coos, is(new CoordinateSystem(Point.Origin, 6.0)));
+        assertThat(coos, is(new CoordinateSystem(Point.Origin, 3.0)));
     }
 
     @Test
@@ -107,7 +125,7 @@ public class CoordinateSystemTest {
     }
 
     @Test
-    public void toWidgetRemovesLocationToPoint() throws Exception {
+    public void toWidgetRemovesLocationFromPoint() throws Exception {
         CoordinateSystem coos = new CoordinateSystem(Point.of(2, 3));
 
         Point actual = coos.toWidgetCoordinates(Point.of(2, 3));

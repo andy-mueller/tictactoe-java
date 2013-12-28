@@ -189,9 +189,9 @@ public class TicTacToeGridWidgetTest {
 
     @Test
     public void givenScaledWidget_CellRectanglesAreMappedFromLocations() {
-        widget.coordinateSystem()
-                .setLocation(Point.of(10, 20))
-                .setScale(0.5);
+        WidgetJig jig = new WidgetJig(widget);
+        jig.setLocation(Point.of(10, 20));
+        jig.setScale(0.5);
 
         Iterable<Rectangle> bottomLeftBoundary = widget.getCellBoundaries(asList(Grid.Location.of(Grid.Row.Third, Grid.Column.Third)));
 

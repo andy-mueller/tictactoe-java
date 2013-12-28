@@ -18,12 +18,17 @@ public class FilledRectangleWidgetTest {
     @Test
     public void paintingIsInEcs() {
         Widget w = new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
-        w.coordinateSystem().setLocation(Point.of(42, 42));
+        moveAtAnother(w, Point.of(42, 42));
         GraphicsStream g2d = mock(GraphicsStream.class);
 
         w.paint(g2d);
 
         verify(g2d).fillRectangle(new Rectangle(0, 0, 84, 966));
+    }
+
+    private void moveAtAnother(Widget w, Point location) {
+        WidgetJig jig = new WidgetJig(w);
+        jig.setLocation(location);
     }
 
     @Test

@@ -34,10 +34,11 @@ public class CompoundWidgetTest {
 
     @Test
     public void widgetCoordinateSystemIsPushed() throws Exception {
-        widget.coordinateSystem().setLocation(Point.of(42, 42));
+        CoordinateSystem coordinates = new CoordinateSystem(Point.of(42, 42), CoordinateSystem.NoScale);
+        widget.setCoordinateSystem(coordinates);
 
         widget.paint(pipe);
 
-        verify(pipe).pushCoordinateSystem(widget.coordinateSystem());
+        verify(pipe).pushCoordinateSystem(coordinates);
     }
 }

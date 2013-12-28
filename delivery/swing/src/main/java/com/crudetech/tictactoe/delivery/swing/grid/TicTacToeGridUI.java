@@ -13,7 +13,6 @@ import com.crudetech.tictactoe.game.Grid;
 import javax.swing.*;
 import javax.swing.plaf.ComponentUI;
 import java.awt.*;
-import java.util.Date;
 
 import static com.crudetech.query.Query.from;
 
@@ -95,7 +94,6 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     private void invalidateGraphic() {
-        System.out.println("---->" + new Date() + ": invalidating graphic");
         gridWidget = null;
     }
 

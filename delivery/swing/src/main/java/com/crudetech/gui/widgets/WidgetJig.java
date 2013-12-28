@@ -4,7 +4,6 @@ public class WidgetJig {
     private final Widget widget;
 
     public WidgetJig(Widget widget) {
-
         this.widget = widget;
     }
 
@@ -13,12 +12,17 @@ public class WidgetJig {
     }
 
 
-    public void setLocation(int x, int y) {
-        CoordinateSystem newLocation = new CoordinateSystem(Point.of(x, y), widget.coordinateSystem().getScale());
+    public void setLocation(Point location) {
+        CoordinateSystem newLocation = new CoordinateSystem(location, widget.coordinateSystem().getScale());
         widget.setCoordinateSystem(newLocation);
     }
 
     public void scale(double scale) {
         widget.setCoordinateSystem(widget.coordinateSystem().scale(scale));
+    }
+
+    public void setScale(double scale) {
+        CoordinateSystem newLocation = new CoordinateSystem(widget.coordinateSystem().getLocation(), scale);
+        widget.setCoordinateSystem(newLocation);
     }
 }

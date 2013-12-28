@@ -32,8 +32,9 @@ class TicTacToeCenteredGridWidget extends CompoundWidget {
     }
 
     private void centerWidget(Rectangle bounds) {
-        coordinateSystem().setScale(computeScale(bounds));
-        coordinateSystem().setLocation(getBackgroundImageOrigin(bounds));
+        WidgetJig jig = new WidgetJig(this);
+        jig.setScale(computeScale(bounds));
+        jig.setLocation(getBackgroundImageOrigin(bounds));
     }
 
     private double computeScale(Rectangle bounds) {
