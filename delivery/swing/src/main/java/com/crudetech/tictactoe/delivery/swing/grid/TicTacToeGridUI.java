@@ -2,8 +2,7 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 
 import com.crudetech.functional.UnaryFunction;
-import com.crudetech.gui.widgets.Coordinates;
-import com.crudetech.gui.widgets.GraphicsStream;
+import com.crudetech.gui.widgets.*;
 import com.crudetech.tictactoe.delivery.gui.widgets.GridCellHit;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.delivery.gui.widgets.TicTacToeGridModel;
@@ -13,6 +12,7 @@ import com.crudetech.tictactoe.game.Grid;
 import javax.swing.*;
 import javax.swing.plaf.ComponentUI;
 import java.awt.*;
+import java.awt.Rectangle;
 
 import static com.crudetech.query.Query.from;
 
@@ -111,17 +111,15 @@ public class TicTacToeGridUI extends ComponentUI {
 
     Iterable<Rectangle> getRectanglesForCells(Iterable<Grid.Location> cells) {
         return from(getGridWidget().getCellBoundaries(cells))
-                .select(toAwtRectangle())
-                .select(toInflatedRectangle());
+                .select(toInflatedRectangle())
+                .select(toAwtRectangle());
     }
 
-    private UnaryFunction<Rectangle, Rectangle> toInflatedRectangle() {
-        return new UnaryFunction<Rectangle, Rectangle>() {
+    private UnaryFunction<com.crudetech.gui.widgets.Rectangle, com.crudetech.gui.widgets.Rectangle> toInflatedRectangle() {
+        return new UnaryFunction<com.crudetech.gui.widgets.Rectangle, com.crudetech.gui.widgets.Rectangle>() {
             @Override
-            public Rectangle execute(Rectangle rectangle) {
-                rectangle.width += 3;
-                rectangle.height += 3;
-                return rectangle;
+            public com.crudetech.gui.widgets.Rectangle execute(com.crudetech.gui.widgets.Rectangle rectangle) {
+                return rectangle.inflate(3, 3);
             }
         };
     }
