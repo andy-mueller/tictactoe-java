@@ -15,12 +15,76 @@ class TicTacToeCenteredGridWidget extends CompoundWidget {
     private final Style style;
     private final TicTacToeGridModel model;
     private final List<Widget> widgets;
+    private final BoundaryAnchor anchor;
 
     TicTacToeCenteredGridWidget(Rectangle bounds, Style style, TicTacToeGridModel model) {
         this.style = style;
         this.model = model;
         widgets = createSubWidgets();
-        centerWidget(bounds);
+        anchor = new BoundaryAnchor(this, backgroundImageBoundary());
+        anchor.positionWidget(bounds);
+    }
+
+    private Rectangle backgroundImageBoundary() {
+        Image img = style.getBackgroundImage();
+        return new Rectangle(Point.Origin, img.getWidth(), img.getHeight());
+    }
+
+    static class BoundaryAnchor {
+        private final Rectangle anchoredItemBoundary;
+        private final Widget anchoredWidget;
+
+        private double horizontalScale;
+        private double verticalScale;
+        private double scale;
+        private Point location;
+
+        BoundaryAnchor(Widget anchoredWidget, Rectangle anchoredItemBoundary) {
+            this.anchoredWidget = anchoredWidget;
+            this.anchoredItemBoundary = anchoredItemBoundary;
+        }
+
+        public void positionWidget(Rectangle anchoredTargetBounds) {
+            computeCoordinateSystem(anchoredTargetBounds);
+            applyCoordinateSystemOnAnchoredWidget();
+        }
+
+        private void applyCoordinateSystemOnAnchoredWidget() {
+            anchoredWidget.setCoordinateSystem(new CoordinateSystem(location, scale));
+        }
+
+        private void computeCoordinateSystem(Rectangle anchoredTargetBounds) {
+            scale = computeScale(anchoredTargetBounds);
+            location = getBackgroundImageOrigin(anchoredTargetBounds);
+        }
+
+        private double computeScale(Rectangle anchoredTargetBounds) {
+            final double scale = 1.0;
+
+            horizontalScale = horizontalScale(anchoredTargetBounds);
+            verticalScale = verticalScale(anchoredTargetBounds);
+
+            return scale * horizontalScale * verticalScale;
+        }
+
+        private double horizontalScale(Rectangle anchoredTargetBounds) {
+            return anchoredIsWider(anchoredTargetBounds) ? ((double) anchoredTargetBounds.width) / anchoredItemBoundary.width : 1.0;
+        }
+
+        private boolean anchoredIsWider(Rectangle anchoredTargetBounds) {
+            return anchoredItemBoundary.width > anchoredTargetBounds.width;
+        }
+
+        private double verticalScale(Rectangle bounds) {
+            final int scaledImageHeight = (int) (anchoredItemBoundary.height * horizontalScale);
+            return scaledImageHeight > bounds.height ? ((double) bounds.height) / (anchoredItemBoundary.height * horizontalScale) : 1.0;
+        }
+
+        private Point getBackgroundImageOrigin(Rectangle bounds) {
+            int x = (int) max((bounds.width - anchoredItemBoundary.width * scale) / 2, 0);
+            int y = (int) max((bounds.height - anchoredItemBoundary.height * scale) / 2, 0);
+            return Point.of(x, y);
+        }
     }
 
     private List<Widget> createSubWidgets() {
@@ -29,43 +93,6 @@ class TicTacToeCenteredGridWidget extends CompoundWidget {
                 createGridCellsWidget(),
                 createHighlightWidget()
         );
-    }
-
-    private void centerWidget(Rectangle bounds) {
-        WidgetJig jig = new WidgetJig(this);
-        jig.setScale(computeScale(bounds));
-        jig.setLocation(getBackgroundImageOrigin(bounds));
-    }
-
-    private double computeScale(Rectangle bounds) {
-        Image background = style.getBackgroundImage();
-        final double scale = 1.0;
-
-        final double horizontalScale = horizontalScale(bounds, background);
-        final double verticalScale = verticalScale(bounds, background, horizontalScale);
-
-        return scale * horizontalScale * verticalScale;
-    }
-
-    private double verticalScale(Rectangle bounds, Image background, double scaleW) {
-        final int scaledImageHeight = (int) (background.getHeight() * scaleW);
-        return scaledImageHeight > bounds.height ? ((double) bounds.height) / (background.getHeight() * scaleW) : 1.0;
-    }
-
-    private double horizontalScale(Rectangle bounds, Image background) {
-        return imageIsWider(bounds, background) ? ((double) bounds.width) / background.getWidth() : 1.0;
-    }
-
-    private boolean imageIsWider(Rectangle bounds, Image background) {
-        return background.getWidth() > bounds.width;
-    }
-
-    private Point getBackgroundImageOrigin(Rectangle bounds) {
-        final double scale = coordinateSystem().getScale();
-        Image backgroundImage = style.getBackgroundImage();
-        int x = (int) max((bounds.width - backgroundImage.getWidth() * scale) / 2, 0);
-        int y = (int) max((bounds.height - backgroundImage.getHeight() * scale) / 2, 0);
-        return Point.of(x, y);
     }
 
     @Override
