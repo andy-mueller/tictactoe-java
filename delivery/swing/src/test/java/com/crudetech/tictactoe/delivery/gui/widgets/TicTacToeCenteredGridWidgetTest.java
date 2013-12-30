@@ -95,5 +95,4 @@ public class TicTacToeCenteredGridWidgetTest {
 
         assertThat(widget.coordinateSystem(), is(new CoordinateSystem(Point.of(187, 0), 0.25)));
     }
-
 }
