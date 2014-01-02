@@ -71,11 +71,7 @@ public enum Styles implements Style {
     @Override
     public Image getCrossImage() {
         if (cross == null) {
-            try {
-                cross = loadImage(getCrossImageName());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            cross = loadImage(getCrossImageName());
         }
         return cross;
     }
@@ -85,11 +81,7 @@ public enum Styles implements Style {
     @Override
     public Image getNoughtImage() {
         if (nought == null) {
-            try {
-                nought = loadImage(getNoughtImageName());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            nought = loadImage(getNoughtImageName());
         }
         return nought;
     }
@@ -99,11 +91,7 @@ public enum Styles implements Style {
     @Override
     public Image getBackgroundImage() {
         if (background == null) {
-            try {
-                background = loadImage(getBackgroundImageName());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            background = loadImage(getBackgroundImageName());
         }
         return background;
     }
@@ -111,10 +99,12 @@ public enum Styles implements Style {
     abstract String getBackgroundImageName();
 
 
-    private Image loadImage(String resourceId) throws IOException {
+    private Image loadImage(String resourceId) {
         String resourcePath = getResourcePath(resourceId);
         try (InputStream in = Objects.requireNonNull(getClass().getResourceAsStream(resourcePath))) {
             return new AwtImage(ImageIO.read(in));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
