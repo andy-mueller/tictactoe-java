@@ -47,16 +47,24 @@ public class JTicTacToeGrid extends JComponent {
     private void initializeListeners() {
         addMouseListener();
         addMouseMotionListener();
-        modelCellChangedListener = new EventListener<TicTacToeGridModel.CellsChangedEventObject>() {
-            @Override
-            public void onEvent(TicTacToeGridModel.CellsChangedEventObject e) {
-                getUI().repaintCells(e.getChangedCells());
-            }
-        };
+        createCellChangedListener();
+        createModelChangedListener();
+    }
+
+    private void createModelChangedListener() {
         modelChangedListener = new EventListener<TicTacToeGridModel.ChangedEventObject>() {
             @Override
             public void onEvent(TicTacToeGridModel.ChangedEventObject e) {
                 getUI().repaint();
+            }
+        };
+    }
+
+    private void createCellChangedListener() {
+        modelCellChangedListener = new EventListener<TicTacToeGridModel.CellsChangedEventObject>() {
+            @Override
+            public void onEvent(TicTacToeGridModel.CellsChangedEventObject e) {
+                getUI().repaintCells(e.getChangedCells());
             }
         };
     }
