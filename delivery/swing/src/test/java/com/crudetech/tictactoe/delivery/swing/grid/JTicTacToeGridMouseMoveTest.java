@@ -39,8 +39,6 @@ public class JTicTacToeGridMouseMoveTest {
 
         final Point lastCellLocation = Point.of(850, 600);
         inLastCell = lastCellLocation.translate(10, 10);
-
-        grid.getUI().buildGraphic();
     }
 
     @Test
