@@ -73,11 +73,15 @@ public class TicTacToeGridUI extends ComponentUI {
 
     void buildGraphic() {
         gridWidget = TicTacToeGridWidget.builder()
-                .withBounds(WidgetAwtConverter.rectangle(component.getBounds()))
+                .withBounds(getComponentBoundary())
                 .withStyle(style)
                 .withModel(getModel())
                 .noDebug()
                 .createTicTacToeGridWidget();
+    }
+
+    private com.crudetech.gui.widgets.Rectangle getComponentBoundary() {
+        return WidgetAwtConverter.rectangle(component.getBounds());
     }
 
     public GridCellHit gridCellHit(int x, int y) {
@@ -98,12 +102,10 @@ public class TicTacToeGridUI extends ComponentUI {
     }
 
     public void repaint() {
-        invalidateGraphic();
         component.repaint();
     }
 
     void repaintCells(Iterable<Grid.Location> changedCells) {
-        invalidateGraphic();
         for (Rectangle rect : getRectanglesForCells(changedCells)) {
             component.repaint(rect);
         }

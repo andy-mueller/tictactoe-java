@@ -34,14 +34,14 @@ public class JTicTacToeGrid extends JComponent {
 
     public JTicTacToeGrid(TicTacToeGridModel model) {
         initializeListeners();
-        setModel(model);
         updateUI();
+        setModel(model);
     }
 
     public JTicTacToeGrid(TicTacToeGridModel model, TicTacToeGridUI ui) {
         initializeListeners();
-        setModel(model);
         setUI(ui);
+        setModel(model);
     }
 
     private void initializeListeners() {
@@ -80,7 +80,7 @@ public class JTicTacToeGrid extends JComponent {
 
     @Override
     public void setSize(int width, int height) {
-        getUI().invalidate();
+        invalidateUI();
         super.setSize(width, height);
     }
 
@@ -129,7 +129,12 @@ public class JTicTacToeGrid extends JComponent {
         unhookModelEvents();
         hookModelEvents(model);
         this.model = model;
+        invalidateUI();
         repaint();
+    }
+
+    private void invalidateUI() {
+        getUI().invalidate();
     }
 
     private void hookModelEvents(TicTacToeGridModel model) {

@@ -18,15 +18,15 @@ import static org.junit.Assert.assertThat;
 
 public class JTicTacToeGridModelChangedTest {
     private EventSupport<TicTacToeGridModel.CellsChangedEventObject> modelCellChanged;
-    private PaintTrackingTicTacToeGrid aGrid;
+    private PaintTrackingTicTacToeGridSpy aGrid;
 
-    static class PaintTrackingTicTacToeGrid extends JTicTacToeGrid {
+    static class PaintTrackingTicTacToeGridSpy extends JTicTacToeGrid {
         private boolean areaRepainted = false;
         private List<Rectangle> repaintedRegions = new ArrayList<>();
         public boolean fullRepaint = false;
 
-        PaintTrackingTicTacToeGrid(TicTacToeGridModel model) {
-            super(model);
+        PaintTrackingTicTacToeGridSpy(TicTacToeGridModel model, TicTacToeGridUI ui) {
+            super(model, ui);
         }
 
         @Override
@@ -42,6 +42,13 @@ public class JTicTacToeGridModelChangedTest {
         }
     }
 
+    static class TicTacToeGridUIStub extends TicTacToeGridUI {
+        @Override
+        Iterable<Rectangle> getRectanglesForCells(Iterable<Grid.Location> cells) {
+            return asList(magicRectangle());
+        }
+    }
+
     @Before
     public void before() {
         modelCellChanged = new EventSupport<>();
@@ -51,20 +58,13 @@ public class JTicTacToeGridModelChangedTest {
                 return modelCellChanged;
             }
         };
-        aGrid = new PaintTrackingTicTacToeGrid(model);
+
         EvenlyDistributedCellsStyleStub style = new EvenlyDistributedCellsStyleStub.Builder().build();
-        aGrid.setSize(style.getBackgroundImage().getWidth() * 2, style.getBackgroundImage().getHeight() * 2);
+        TicTacToeGridUI ui = new TicTacToeGridUIStub();
+        ui.setStyle(style);
 
-        TicTacToeGridUI ui = new TicTacToeGridUI() {
-            @Override
-            Iterable<Rectangle> getRectanglesForCells(Iterable<Grid.Location> cells) {
-                return asList(magicRectangle());
-            }
-        };
-        aGrid.setUI(ui);
-        aGrid.getUI().setStyle(style);
-
-        aGrid.getUI().buildGraphic();
+        aGrid = new PaintTrackingTicTacToeGridSpy(model, ui);
+        aGrid.setSize(style.backgroundImageWidth * 2, style.backgroundImageHeight * 2);
     }
 
     @Test
@@ -88,7 +88,7 @@ public class JTicTacToeGridModelChangedTest {
         return asList(magicRectangle());
     }
 
-    private Rectangle magicRectangle() {
+    private static Rectangle magicRectangle() {
         return new Rectangle(-1, -1, -1, -1);
     }
 

@@ -12,8 +12,8 @@ public class EvenlyDistributedCellsStyleStub implements Style {
     private final Rectangle[][] gridMarkLocations = new Rectangle[3][3];
     private final Color backColor = newColor();
     private final Color highlightColor = newColor();
-    private final int backgroundImageWidth;
-    private final int backgroundImageHeight;
+    public final int backgroundImageWidth;
+    public final int backgroundImageHeight;
     private final int cellWidth;
     private final int cellHeight;
 
