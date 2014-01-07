@@ -61,11 +61,11 @@ public class TicTacToeGame {
         currentPlayer.yourTurn(grid);
     }
 
-    public void addMark(Player player, Grid.Location location) {
-        addMark(player, location.getRow(), location.getColumn());
+    public void makeMove(Player player, Grid.Location location) {
+        makeMove(player, location.getRow(), location.getColumn());
     }
 
-    public void addMark(Player player, Grid.Row row, Grid.Column column) {
+    public void makeMove(Player player, Grid.Row row, Grid.Column column) {
         verifyGameIsNotFinished();
         verifyThatItIsPlayersTurn(player);
         verifyThat(grid, isNotMarkedAt(row, column));

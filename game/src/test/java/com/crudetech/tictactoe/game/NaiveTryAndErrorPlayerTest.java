@@ -40,11 +40,11 @@ public class NaiveTryAndErrorPlayerTest {
     @Test
     public void naivePlayerMarksNextUnMarkedFieldOnSecondMove() {
         game.startWithPlayer(naivePlayer, Grid.Mark.Cross);
-        
-        game.addMark(otherPlayer, nextFreeLocation());
+
+        game.makeMove(otherPlayer, nextFreeLocation());
 
         List<Grid.Cell> crossedCells = from(otherPlayer.getLastGrid().getCells()).where(markIsEqualTo(Grid.Mark.Cross)).toList();
-        List<Grid.Cell> noughtCells= from(otherPlayer.getLastGrid().getCells()).where(markIsEqualTo(Grid.Mark.Nought)).toList();
+        List<Grid.Cell> noughtCells = from(otherPlayer.getLastGrid().getCells()).where(markIsEqualTo(Grid.Mark.Nought)).toList();
 
         assertThat(crossedCells, hasSize(2));
         assertThat(noughtCells, hasSize(1));
@@ -52,27 +52,28 @@ public class NaiveTryAndErrorPlayerTest {
 
     private Grid.Location nextFreeLocation() {
         for (Grid.Cell cell : otherPlayer.getLastGrid().getCells()) {
-            if(cell.getMark().equals(Grid.Mark.None))         {
+            if (cell.getMark().equals(Grid.Mark.None)) {
                 return cell.getLocation();
             }
         }
         throw new RuntimeException();
     }
+
     @Test
     public void naivePlayerThrowsWhenGameGridIsFull() {
         final Grid fullGrid = LinearRandomAccessGrid.of(
-                Grid.Mark.Cross,Grid.Mark.Cross,Grid.Mark.Cross,
-                Grid.Mark.Cross,Grid.Mark.Cross,Grid.Mark.Cross,
-                Grid.Mark.Cross,Grid.Mark.Cross,Grid.Mark.Cross
+                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Cross,
+                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Cross,
+                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Cross
         );
-        
+
         Runnable yourTurnWithFullGrid = new Runnable() {
             @Override
             public void run() {
                 naivePlayer.yourTurn(fullGrid);
             }
         };
-        
+
         assertThat(yourTurnWithFullGrid, doesThrow(IllegalStateException.class));
     }
 
@@ -83,6 +84,6 @@ public class NaiveTryAndErrorPlayerTest {
         naivePlayer.setGame(gameSpy);
         naivePlayer.yourTurn(LinearRandomAccessGrid.empty());
 
-        verify(gameSpy).addMark(any(Player.class), any(Grid.Location.class));
+        verify(gameSpy).makeMove(any(Player.class), any(Grid.Location.class));
     }
 }

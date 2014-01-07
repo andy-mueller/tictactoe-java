@@ -19,7 +19,7 @@ public class AlphaBetaPruningPlayerTest {
 
         player.yourTurn(currentGrid);
 
-        verify(game).addMark(player, Grid.Location.of(Grid.Row.First, Grid.Column.Second));
+        verify(game).makeMove(player, Grid.Location.of(Grid.Row.First, Grid.Column.Second));
     }
 
     @Test
@@ -36,8 +36,9 @@ public class AlphaBetaPruningPlayerTest {
 
         player.yourTurn(currentGrid);
 
-        verify(game).addMark(player, Grid.Location.of(Grid.Row.First, Grid.Column.Third));
+        verify(game).makeMove(player, Grid.Location.of(Grid.Row.First, Grid.Column.Third));
     }
+
     @Test
     public void builderAssemblesSecondPlayer() throws Exception {
         AlphaBetaPruningPlayer player = AlphaBetaPruningPlayer.builder().withMark(Grid.Mark.Nought).asSecondPlayer();
@@ -52,6 +53,6 @@ public class AlphaBetaPruningPlayerTest {
 
         player.yourTurn(currentGrid);
 
-        verify(game).addMark(player, Grid.Location.of(Grid.Row.First, Grid.Column.Third));
+        verify(game).makeMove(player, Grid.Location.of(Grid.Row.First, Grid.Column.Third));
     }
 }

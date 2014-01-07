@@ -42,6 +42,6 @@ public class UiPlayer implements Player {
     }
 
     protected void makeMove(Grid.Location location) {
-        game.addMark(this, location);
+        game.makeMove(this, location);
     }
 }

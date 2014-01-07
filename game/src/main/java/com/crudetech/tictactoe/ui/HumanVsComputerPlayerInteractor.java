@@ -36,11 +36,11 @@ public class HumanVsComputerPlayerInteractor {
     }
 
     public void makeHumanPlayerMove(Grid.Location move) {
-        game.addMark(humanPlayer, move);
+        game.makeMove(humanPlayer, move);
     }
 
     public void makeComputerPlayerMove(Grid.Location move) {
-           game.addMark(computerPlayer, move);
+        game.makeMove(computerPlayer, move);
     }
 
     public static class Builder {
@@ -93,7 +93,7 @@ public class HumanVsComputerPlayerInteractor {
                 }
             };
 
-            return new EventHookingBean<CellEventObject<?>>(covariant_cast(cellClickedEvent), asList(cellClickedListener));
+            return new EventHookingBean<>(covariant_cast(cellClickedEvent), asList(cellClickedListener));
         }
 
         @SuppressWarnings("unchecked")

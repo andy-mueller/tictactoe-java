@@ -98,7 +98,7 @@ public class TicTacToeGameTest {
         Runnable startWithDifferentPlayer = new Runnable() {
             @Override
             public void run() {
-                game.addMark(secondPlayer, Grid.Row.Second, Grid.Column.First);
+                game.makeMove(secondPlayer, Grid.Row.Second, Grid.Column.First);
             }
         };
 
@@ -109,7 +109,7 @@ public class TicTacToeGameTest {
     public void addMarkAddsMarkAndLetsOtherPlayerPlay() {
         game.startWithPlayer(firstPlayer, Grid.Mark.Nought);
 
-        game.addMark(firstPlayer, Grid.Row.Second, Grid.Column.First);
+        game.makeMove(firstPlayer, Grid.Row.Second, Grid.Column.First);
 
         Grid expectedGrid = LinearRandomAccessGrid.of(
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
@@ -123,12 +123,12 @@ public class TicTacToeGameTest {
     @Test
     public void addSameMarkTwiceThrows() {
         game.startWithPlayer(firstPlayer, Grid.Mark.Nought);
-        game.addMark(firstPlayer, Grid.Row.Second, Grid.Column.First);
+        game.makeMove(firstPlayer, Grid.Row.Second, Grid.Column.First);
 
         Runnable addSameMarkSecondTime = new Runnable() {
             @Override
             public void run() {
-                game.addMark(secondPlayer, Grid.Row.Second, Grid.Column.First);
+                game.makeMove(secondPlayer, Grid.Row.Second, Grid.Column.First);
             }
         };
 
@@ -143,7 +143,7 @@ public class TicTacToeGameTest {
         Runnable addWithNullRow = new Runnable() {
             @Override
             public void run() {
-                game.addMark(firstPlayer, null, Grid.Column.First);
+                game.makeMove(firstPlayer, null, Grid.Column.First);
             }
         };
 
@@ -157,7 +157,7 @@ public class TicTacToeGameTest {
         Runnable addWithNullColumn = new Runnable() {
             @Override
             public void run() {
-                game.addMark(firstPlayer, Grid.Row.Second, null);
+                game.makeMove(firstPlayer, Grid.Row.Second, null);
             }
         };
 
@@ -186,14 +186,14 @@ public class TicTacToeGameTest {
         // 1 | 1 | 2
         //---+---+---
         // 1 | 2 |
-        game.addMark(first, Grid.Row.Second, Grid.Column.First);
-        game.addMark(second, Grid.Row.First, Grid.Column.Third);
+        game.makeMove(first, Grid.Row.Second, Grid.Column.First);
+        game.makeMove(second, Grid.Row.First, Grid.Column.Third);
 
-        game.addMark(first, Grid.Row.Third, Grid.Column.First);
-        game.addMark(second, Grid.Row.Second, Grid.Column.Third);
+        game.makeMove(first, Grid.Row.Third, Grid.Column.First);
+        game.makeMove(second, Grid.Row.Second, Grid.Column.Third);
 
-        game.addMark(first, Grid.Row.Second, Grid.Column.Second);
-        game.addMark(second, Grid.Row.Third, Grid.Column.Second);
+        game.makeMove(first, Grid.Row.Second, Grid.Column.Second);
+        game.makeMove(second, Grid.Row.Third, Grid.Column.Second);
     }
 
     @Test
@@ -202,7 +202,7 @@ public class TicTacToeGameTest {
 
         setupAlmostFinishedGame(firstPlayer, secondPlayer, game);
 
-        game.addMark(firstPlayer, Grid.Row.First, Grid.Column.First);
+        game.makeMove(firstPlayer, Grid.Row.First, Grid.Column.First);
 
 
         Grid expectedGrid = LinearRandomAccessGrid.of(
@@ -221,7 +221,7 @@ public class TicTacToeGameTest {
 
         setupAlmostFinishedGame(firstPlayer, secondPlayer, game);
 
-        game.addMark(firstPlayer, Grid.Row.First, Grid.Column.First);
+        game.makeMove(firstPlayer, Grid.Row.First, Grid.Column.First);
 
 
         Grid.ThreeInARow expected = Grid.ThreeInARow.of(Grid.Mark.Cross,
@@ -238,7 +238,7 @@ public class TicTacToeGameTest {
 
         setupAlmostFinishedGame(firstPlayer, secondPlayer, game);
 
-        game.addMark(firstPlayer, Grid.Row.First, Grid.Column.First);
+        game.makeMove(firstPlayer, Grid.Row.First, Grid.Column.First);
 
 
         Grid expectedGrid = LinearRandomAccessGrid.of(
@@ -256,7 +256,7 @@ public class TicTacToeGameTest {
 
         setupAlmostFinishedGame(firstPlayer, secondPlayer, game);
 
-        game.addMark(firstPlayer, Grid.Row.First, Grid.Column.First);
+        game.makeMove(firstPlayer, Grid.Row.First, Grid.Column.First);
 
         assertThat(firstPlayer.wasWinning(), is(true));
         assertThat(firstPlayer.getTurnCount(), is(4));
@@ -269,12 +269,12 @@ public class TicTacToeGameTest {
 
         setupAlmostFinishedGame(firstPlayer, secondPlayer, game);
 
-        game.addMark(firstPlayer, Grid.Row.First, Grid.Column.First);
+        game.makeMove(firstPlayer, Grid.Row.First, Grid.Column.First);
 
         Runnable addMark = new Runnable() {
             @Override
             public void run() {
-                game.addMark(secondPlayer, Grid.Row.First, Grid.Column.Second);
+                game.makeMove(secondPlayer, Grid.Row.First, Grid.Column.Second);
             }
         };
 
@@ -287,8 +287,8 @@ public class TicTacToeGameTest {
 
         setupAlmostFinishedGame(firstPlayer, secondPlayer, game);
 
-        game.addMark(firstPlayer, Grid.Row.Third, Grid.Column.Third);
-        game.addMark(secondPlayer, Grid.Row.First, Grid.Column.First);
+        game.makeMove(firstPlayer, Grid.Row.Third, Grid.Column.Third);
+        game.makeMove(secondPlayer, Grid.Row.First, Grid.Column.First);
 
 
         Grid expectedGrid = LinearRandomAccessGrid.of(
@@ -312,8 +312,8 @@ public class TicTacToeGameTest {
 
         setupAlmostFinishedGame(firstPlayer, secondPlayer, game);
 
-        game.addMark(firstPlayer, Grid.Row.Third, Grid.Column.Third);
-        game.addMark(secondPlayer, Grid.Row.First, Grid.Column.First);
+        game.makeMove(firstPlayer, Grid.Row.Third, Grid.Column.Third);
+        game.makeMove(secondPlayer, Grid.Row.First, Grid.Column.First);
 
 
         assertThat(firstPlayer.getTurnCount(), is(4));
@@ -326,13 +326,13 @@ public class TicTacToeGameTest {
 
         setupAlmostFinishedGame(firstPlayer, secondPlayer, game);
 
-        game.addMark(firstPlayer, Grid.Row.Third, Grid.Column.Third);
-        game.addMark(secondPlayer, Grid.Row.First, Grid.Column.First);
+        game.makeMove(firstPlayer, Grid.Row.Third, Grid.Column.Third);
+        game.makeMove(secondPlayer, Grid.Row.First, Grid.Column.First);
 
         Runnable addMarkOnLastFreeCell = new Runnable() {
             @Override
             public void run() {
-                game.addMark(firstPlayer, Grid.Row.First, Grid.Column.Second);
+                game.makeMove(firstPlayer, Grid.Row.First, Grid.Column.Second);
             }
         };
 

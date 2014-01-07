@@ -2,7 +2,8 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 
 import com.crudetech.functional.UnaryFunction;
-import com.crudetech.gui.widgets.*;
+import com.crudetech.gui.widgets.Coordinates;
+import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.tictactoe.delivery.gui.widgets.GridCellHit;
 import com.crudetech.tictactoe.delivery.gui.widgets.Style;
 import com.crudetech.tictactoe.delivery.gui.widgets.TicTacToeGridModel;
@@ -12,7 +13,6 @@ import com.crudetech.tictactoe.game.Grid;
 import javax.swing.*;
 import javax.swing.plaf.ComponentUI;
 import java.awt.*;
-import java.awt.Rectangle;
 
 import static com.crudetech.query.Query.from;
 
