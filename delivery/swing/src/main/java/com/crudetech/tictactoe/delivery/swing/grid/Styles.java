@@ -34,12 +34,13 @@ public enum Styles implements Style {
             int width = 215;
             int height = 170;
 
+            final int yoff = 70;
             int x0 = 55;
-            int y0 = 98;
+            int y0 = 98 - yoff;
             int x1 = 320;
-            int y1 = 310;
+            int y1 = 310 - yoff;
             int x2 = 600;
-            int y2 = 538;
+            int y2 = 538 - yoff;
             Rectangle[][] rectLocations = new Rectangle[][]{
                     {new Rectangle(x0, y0, width, height), new Rectangle(x1, y0, width, height), new Rectangle(x2, y0, width, height)},
                     {new Rectangle(x0, y1, width, height), new Rectangle(x1, y1, width, height), new Rectangle(x2, y1, width, height)},
