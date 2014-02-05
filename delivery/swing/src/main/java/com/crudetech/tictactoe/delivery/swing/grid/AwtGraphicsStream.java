@@ -91,6 +91,11 @@ class AwtGraphicsStream implements GraphicsStream {
         pipe.setComposite(removeLastOf(composites));
     }
 
+    @Override
+    public void drawText(int x, int y, String text) {
+        throw new RuntimeException("Not implemented yet!");
+    }
+
     private <T> T removeLastOf(List<T> list) {
         return list.remove(list.size() - 1);
     }

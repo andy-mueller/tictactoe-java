@@ -17,4 +17,6 @@ public interface GraphicsStream {
 
     void pushAlpha(AlphaValue alpha);
     void popAlpha();
+
+    void drawText(int x, int y, String text);
 }
