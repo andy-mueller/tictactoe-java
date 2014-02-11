@@ -2,6 +2,7 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.gui.widgets.*;
 import com.crudetech.gui.widgets.Color;
+import com.crudetech.gui.widgets.Font;
 import com.crudetech.gui.widgets.Image;
 import com.crudetech.gui.widgets.Rectangle;
 
@@ -93,6 +94,11 @@ class AwtGraphicsStream implements GraphicsStream {
 
     @Override
     public void drawText(int x, int y, String text) {
+        throw new RuntimeException("Not implemented yet!");
+    }
+
+    @Override
+    public void pushFont(Font font) {
         throw new RuntimeException("Not implemented yet!");
     }
 
