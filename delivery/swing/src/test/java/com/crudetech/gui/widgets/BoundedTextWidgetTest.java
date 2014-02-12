@@ -45,8 +45,17 @@ public class BoundedTextWidgetTest {
 
         @Override
         protected void paintEcs(GraphicsStream pipe) {
-            pipe.pushFont(font);
+            pipe.pushFont(computeFont());
             pipe.drawText(0, 0, text);
+        }
+
+        private Font computeFont() {
+            final double scale = computeScaleToFitInRectangle();
+            return font.deriveFont((int) (font.getHeight()*scale));
+        }
+
+        private double computeScaleToFitInRectangle() {
+            return ((double)boundary.height) / font.getHeight();
         }
     }
 
@@ -66,7 +75,7 @@ public class BoundedTextWidgetTest {
         };
     }
 
-    //    @Test
+        @Test
     public void givenAFontThatIsHigherThanTheBoundingBox_fontHeightIsAdjusted() throws Exception {
         Rectangle flatBound = new Rectangle(2, 3, 10000, 5);
         Font highFont = new FontStub(flatBound.height * 2);
@@ -99,6 +108,11 @@ public class BoundedTextWidgetTest {
         @Override
         public int getHeight() {
             return height;
+        }
+
+        @Override
+        public Font deriveFont(int height) {
+            return new FontStub(height);
         }
 
         @Override
