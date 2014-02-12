@@ -1,15 +1,16 @@
 package com.crudetech.gui.widgets;
 
+import com.crudetech.lang.Compare;
+import org.hamcrest.Description;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class BoundedTextWidgetTest {
 
@@ -31,34 +32,6 @@ public class BoundedTextWidgetTest {
         return new BoundedTextWidget(smallFont, VERY_LARGE_BOUNDARY, SHORT_TEXT);
     }
 
-    static class BoundedTextWidget extends EcsWidget {
-        private final Rectangle boundary;
-        private final String text;
-        private final Font font;
-
-        public BoundedTextWidget(Font font, Rectangle boundary, String text) {
-            super(boundary.x, boundary.y);
-            this.font = font;
-            this.boundary = boundary.setLocation(0, 0);
-            this.text = text;
-        }
-
-        @Override
-        protected void paintEcs(GraphicsStream pipe) {
-            pipe.pushFont(computeFont());
-            pipe.drawText(0, 0, text);
-        }
-
-        private Font computeFont() {
-            final double scale = computeScaleToFitInRectangle();
-            return font.deriveFont((int) (font.getHeight()*scale));
-        }
-
-        private double computeScaleToFitInRectangle() {
-            return ((double)boundary.height) / font.getHeight();
-        }
-    }
-
     @Test
     public void givenABoundaryWithAnOffset_widgetLocationsIsAdjusted() throws Exception {
         BoundedTextWidget boundedTextWidget = createBoundedTextWidgetWithTextThatFits();
@@ -75,28 +48,51 @@ public class BoundedTextWidgetTest {
         };
     }
 
-        @Test
+    @Test
     public void givenAFontThatIsHigherThanTheBoundingBox_fontHeightIsAdjusted() throws Exception {
         Rectangle flatBound = new Rectangle(2, 3, 10000, 5);
         Font highFont = new FontStub(flatBound.height * 2);
-        BoundedTextWidget widget = new BoundedTextWidget(highFont, flatBound, "some text");
+        BoundedTextWidget widget = new BoundedTextWidget(highFont, flatBound, SHORT_TEXT);
         GraphicsStream pipe = mock(GraphicsStream.class);
 
         widget.paint(pipe);
 
-        verify(pipe).pushFont(fontWithHeightLessOrEqualTo(flatBound.height));
+        verify(pipe, atLeastOnce()).pushCoordinateSystem(widget.coordinateSystem());
+        verify(pipe).pushCoordinateSystem(withScale(0.5));
     }
 
-    private static Font fontWithHeightLessOrEqualTo(int expectedMaxHeight) {
+    private CoordinateSystem withScale(double scale) {
         return argThat(
-                new FeatureMatcher<Font, Integer>(lessThanOrEqualTo(expectedMaxHeight), "Font with height", "height") {
+                new FeatureMatcher<CoordinateSystem, Double>(doubleEqualTo(scale), "CoordinateSystem with scale", "scale") {
                     @Override
-                    protected Integer featureValueOf(Font actual) {
-                        return actual.getHeight();
+                    protected Double featureValueOf(CoordinateSystem actual) {
+                        return actual.getScale();
                     }
                 }
         );
     }
+
+    private Matcher<? super Double> doubleEqualTo(final double d) {
+        return new TypeSafeDiagnosingMatcher<Double>() {
+
+            private final double tolerance = 1e-3;
+
+            @Override
+            protected boolean matchesSafely(Double item, Description mismatchDescription) {
+                if (Compare.equals(d, item, tolerance)) {
+                    return true;
+                }
+                mismatchDescription.appendText("was not within the tolerance of " + tolerance);
+                return false;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText(String.format("equal to <%s> within the tolerance of <%s>", d, tolerance));
+            }
+        };
+    }
+
 
     static class FontStub implements Font {
         private final int height;
@@ -108,11 +104,6 @@ public class BoundedTextWidgetTest {
         @Override
         public int getHeight() {
             return height;
-        }
-
-        @Override
-        public Font deriveFont(int height) {
-            return new FontStub(height);
         }
 
         @Override
