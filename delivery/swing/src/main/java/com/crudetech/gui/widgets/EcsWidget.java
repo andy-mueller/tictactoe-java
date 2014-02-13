@@ -15,11 +15,9 @@ public abstract class EcsWidget implements Widget {
 
     @Override
     public void paint(GraphicsStream pipe) {
-        pipe.pushCoordinateSystem(ecs);
-        try {
+        try (GraphicsStream.Context ctx = pipe.newContext()) {
+            ctx.pushCoordinateSystem(ecs);
             paintEcs(pipe);
-        } finally {
-            pipe.popCoordinateSystem();
         }
     }
 
@@ -30,7 +28,7 @@ public abstract class EcsWidget implements Widget {
 
     @Override
     public void setCoordinateSystem(CoordinateSystem coordinates) {
-                this.ecs = coordinates;
+        this.ecs = coordinates;
     }
 
     protected abstract void paintEcs(GraphicsStream pipe);

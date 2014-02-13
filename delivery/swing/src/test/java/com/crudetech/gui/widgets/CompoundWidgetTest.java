@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -15,7 +16,7 @@ public class CompoundWidgetTest {
 
     @Before
     public void setUp() throws Exception {
-        pipe = mock(GraphicsStream.class);
+        pipe = mock(GraphicsStream.class, RETURNS_DEEP_STUBS);
         subWidget = mock(Widget.class);
         widget = new CompoundWidget() {
             @Override
@@ -39,6 +40,6 @@ public class CompoundWidgetTest {
 
         widget.paint(pipe);
 
-        verify(pipe).pushCoordinateSystem(coordinates);
+        verify(pipe.newContext()).pushCoordinateSystem(coordinates);
     }
 }

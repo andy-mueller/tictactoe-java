@@ -28,11 +28,9 @@ public class TicTacToeGridHighlightedCellWidget extends DecoratorTemplateWidget 
 
     @Override
     public void paint(GraphicsStream pipe) {
-        pipe.pushCoordinateSystem(ecs);
-        try {
+        try (GraphicsStream.Context ctx = pipe.newContext()){
+            ctx.pushCoordinateSystem(ecs);
             super.paint(pipe);
-        } finally {
-            pipe.popCoordinateSystem();
         }
     }
 

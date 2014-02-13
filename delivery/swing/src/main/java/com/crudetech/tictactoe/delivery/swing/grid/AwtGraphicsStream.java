@@ -10,55 +10,87 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 class AwtGraphicsStream implements GraphicsStream {
     private final List<AffineTransform> xforms = new ArrayList<>();
     private final List<Paint> colors = new ArrayList<>();
     private final List<Composite> composites = new ArrayList<>();
-    private final Graphics2D pipe;
+    private Graphics2D pipe;
 
     public AwtGraphicsStream(Graphics2D g2d) {
-        this.pipe = g2d;
+        this.pipe = Objects.requireNonNull(g2d);
     }
+
 
     @Override
-    public void pushCoordinateSystem(CoordinateSystem coos) {
-        pushCurrentTransformationOnStack();
-        pushTranslation(coos.getLocation().x, coos.getLocation().y);
-        pushScale(coos.getScale());
-    }
+    public Context newContext() {
+        return new Context() {
+            Graphics2D oldPipe = pipe;
+            {
+                pipe = (Graphics2D) pipe.create();
+            }
+            @Override
+            public void close() {
+                Graphics toBeDisposed = pipe;
+                pipe = oldPipe;
+                toBeDisposed.dispose();
+            }
+            @Override
+            public void popCoordinateSystem() {
+                pipe.setTransform(removeLastOf(xforms));
+            }
 
-    private void pushTranslation(int dx, int dy) {
-        applyNewTranslation(dx, dy);
-    }
+            @Override
+            public void pushColor(Color color) {
+                colors.add(pipe.getPaint());
+                pipe.setPaint(((AwtColor) color).color);
+            }
 
-    private void pushScale(double scale) {
-        pipe.scale(scale, scale);
-    }
+            @Override
+            public void popColor() {
+                pipe.setPaint(removeLastOf(colors));
+            }
 
-    private void pushCurrentTransformationOnStack() {
-        xforms.add(pipe.getTransform());
-    }
+            @Override
+            public void pushCoordinateSystem(CoordinateSystem coos) {
+                pushCurrentTransformationOnStack();
+                pushTranslation(coos.getLocation().x, coos.getLocation().y);
+                pushScale(coos.getScale());
+            }
 
-    private void applyNewTranslation(int dx, int dy) {
-        pipe.translate(dx, dy);
-    }
+            private void pushTranslation(int dx, int dy) {
+                applyNewTranslation(dx, dy);
+            }
 
-    @Override
-    public void popCoordinateSystem() {
-        pipe.setTransform(removeLastOf(xforms));
-    }
+            private void pushScale(double scale) {
+                pipe.scale(scale, scale);
+            }
 
-    @Override
-    public void pushColor(Color color) {
-        colors.add(pipe.getPaint());
-        pipe.setPaint(((AwtColor) color).color);
-    }
+            private void pushCurrentTransformationOnStack() {
+                xforms.add(pipe.getTransform());
+            }
 
-    @Override
-    public void popColor() {
-        pipe.setPaint(removeLastOf(colors));
+            private void applyNewTranslation(int dx, int dy) {
+                pipe.translate(dx, dy);
+            }
+
+            public void pushAlpha(AlphaValue alpha) {
+                composites.add(pipe.getComposite());
+                pipe.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha.alpha));
+            }
+
+            @Override
+            public void popAlpha() {
+                pipe.setComposite(removeLastOf(composites));
+            }
+
+            @Override
+            public void pushFont(Font font) {
+                throw new RuntimeException("Not implemented yet!");
+            }
+        };
     }
 
     @Override
@@ -82,25 +114,10 @@ class AwtGraphicsStream implements GraphicsStream {
     }
 
     @Override
-    public void pushAlpha(AlphaValue alpha) {
-        composites.add(pipe.getComposite());
-        pipe.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha.alpha));
-    }
-
-    @Override
-    public void popAlpha() {
-        pipe.setComposite(removeLastOf(composites));
-    }
-
-    @Override
     public void drawText(int x, int y, String text) {
         throw new RuntimeException("Not implemented yet!");
     }
 
-    @Override
-    public void pushFont(Font font) {
-        throw new RuntimeException("Not implemented yet!");
-    }
 
     private <T> T removeLastOf(List<T> list) {
         return list.remove(list.size() - 1);
