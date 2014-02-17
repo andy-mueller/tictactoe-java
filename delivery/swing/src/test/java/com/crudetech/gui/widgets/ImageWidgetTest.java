@@ -9,7 +9,6 @@ import org.junit.runner.RunWith;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -20,7 +19,7 @@ public class ImageWidgetTest {
         Image image = mock(Image.class);
         Widget w = new ImageWidget(1, 1, image);
 
-        GraphicsStream g2d = mock(GraphicsStream.class, RETURNS_DEEP_STUBS);
+        GraphicsStream g2d = mock(GraphicsStream.class);
         w.paint(g2d);
 
         verify(g2d).drawImage(image);

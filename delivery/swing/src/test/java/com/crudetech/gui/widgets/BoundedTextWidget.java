@@ -16,11 +16,9 @@ class BoundedTextWidget extends EcsWidget {
     @Override
     protected void paintEcs(GraphicsStream pipe) {
         final CoordinateSystem scale = computeScaleToFitInRectangle();
-        try (GraphicsStream.Context ctx = pipe.newContext()) {
-            ctx.pushCoordinateSystem(scale);
-            ctx.pushFont(font);
-            pipe.drawText(0, 0, text);
-        }
+        pipe.pushCoordinateSystem(scale);
+        pipe.pushFont(font);
+        pipe.drawText(0, 0, text);
     }
 
 

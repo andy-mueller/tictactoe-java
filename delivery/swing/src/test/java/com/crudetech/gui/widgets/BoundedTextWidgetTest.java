@@ -20,7 +20,7 @@ public class BoundedTextWidgetTest {
     @Test
     public void givenTextIsSmallerThanBoundary_textIsPaintedAsItIs() throws Exception {
         BoundedTextWidget boundedTextWidget = createBoundedTextWidgetWithTextThatFits();
-        GraphicsStream pipe = mock(GraphicsStream.class, RETURNS_DEEP_STUBS);
+        GraphicsStream pipe = mock(GraphicsStream.class);
 
         boundedTextWidget.paint(pipe);
 
@@ -53,12 +53,12 @@ public class BoundedTextWidgetTest {
         Rectangle flatBound = new Rectangle(2, 3, 10000, 5);
         Font highFont = new FontStub(flatBound.height * 2);
         BoundedTextWidget widget = new BoundedTextWidget(highFont, flatBound, SHORT_TEXT);
-        GraphicsStream pipe = mock(GraphicsStream.class, RETURNS_DEEP_STUBS);
+        GraphicsStream pipe = mock(GraphicsStream.class);
 
         widget.paint(pipe);
 
-        verify(pipe.newContext(), atLeastOnce()).pushCoordinateSystem(widget.coordinateSystem());
-        verify(pipe.newContext()).pushCoordinateSystem(withScale(0.5));
+        verify(pipe, atLeastOnce()).pushCoordinateSystem(widget.coordinateSystem());
+        verify(pipe).pushCoordinateSystem(withScale(0.5));
     }
 
     private CoordinateSystem withScale(double scale) {

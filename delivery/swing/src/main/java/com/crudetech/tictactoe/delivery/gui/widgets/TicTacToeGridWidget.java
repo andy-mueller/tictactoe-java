@@ -94,16 +94,15 @@ public class TicTacToeGridWidget extends EcsWidget {
         @Override
         public void paintEcs(GraphicsStream pipe) {
             System.out.println("---->Painting @" + new Date());
-            try (GraphicsStream.Context ctx = pipe.newContext()) {
-                ctx.pushColor(debugColor);
-                for (int row = 0; row < bounds.width; row += 50) {
-                    //noinspection SuspiciousNameCombination
-                    pipe.drawLine(Point.of(0, row), Point.of(bounds.height, row));
-                }
-                for (int col = 0; col < bounds.width; col += 50) {
-                    pipe.drawLine(Point.of(col, 0), Point.of(col, bounds.height));
-                }
+            pipe.pushColor(debugColor);
+            for (int row = 0; row < bounds.width; row += 50) {
+                //noinspection SuspiciousNameCombination
+                pipe.drawLine(Point.of(0, row), Point.of(bounds.height, row));
             }
+            for (int col = 0; col < bounds.width; col += 50) {
+                pipe.drawLine(Point.of(col, 0), Point.of(col, bounds.height));
+            }
+            pipe.popColor();
         }
     }
 }

@@ -8,9 +8,11 @@ public class RectangleWidget extends RectangularWidget {
 
     @Override
     public void paintEcs(GraphicsStream pipe) {
-        try(GraphicsStream.Context ctx = pipe.newContext()) {
-            ctx.pushColor(getColor());
+        pipe.pushColor(getColor());
+        try {
             pipe.drawRectangle(getBoundary());
+        } finally {
+            pipe.popColor();
         }
     }
 

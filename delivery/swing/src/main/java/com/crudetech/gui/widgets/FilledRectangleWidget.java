@@ -10,9 +10,11 @@ public class FilledRectangleWidget extends RectangularWidget {
 
     @Override
     public void paintEcs(GraphicsStream pipe) {
-        try (GraphicsStream.Context ctx = pipe.newContext()) {
-            ctx.pushColor(getColor());
+        pipe.pushColor(getColor());
+        try {
             pipe.fillRectangle(getBoundary());
+        } finally {
+            pipe.popColor();
         }
     }
 }

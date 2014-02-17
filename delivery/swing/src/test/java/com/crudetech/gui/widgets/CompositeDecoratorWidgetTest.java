@@ -26,21 +26,21 @@ public class CompositeDecoratorWidgetTest {
         alpha = new AlphaValue(0.4f);
         decorated = mock(Widget.class);
         dec = new CompositeDecoratorWidget<>(decorated, alpha);
-        g2d = mock(GraphicsStream.class, RETURNS_DEEP_STUBS);
+        g2d = mock(GraphicsStream.class);
     }
 
     @Test
     public void decoratorSetsTransparencyLevel() {
         dec.paint(g2d);
 
-        verify(g2d.newContext()).pushAlpha(alpha);
+        verify(g2d).pushAlpha(alpha);
     }
 
     @Test
     public void decoratorResetsTransparencyLevel() {
         dec.paint(g2d);
 
-        verify(g2d.newContext()).close();
+        verify(g2d).popAlpha();
     }
 
     private static class BaBoomException extends RuntimeException {
@@ -53,7 +53,7 @@ public class CompositeDecoratorWidgetTest {
             dec.paint(g2d);
         } catch (BaBoomException e) {
         }
-        verify(g2d.newContext()).close();
+        verify(g2d).popAlpha();
     }
 
     @Feature(Equivalent.class)

@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -20,7 +19,7 @@ public class FilledRectangleWidgetTest {
     public void paintingIsInEcs() {
         Widget w = new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
         moveAtAnother(w, Point.of(42, 42));
-        GraphicsStream g2d = mock(GraphicsStream.class, RETURNS_DEEP_STUBS);
+        GraphicsStream g2d = mock(GraphicsStream.class);
 
         w.paint(g2d);
 
@@ -35,21 +34,21 @@ public class FilledRectangleWidgetTest {
     @Test
     public void colorIsSetForPainting() {
         FilledRectangleWidget w = new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
-        GraphicsStream g2d = mock(GraphicsStream.class, RETURNS_DEEP_STUBS);
+        GraphicsStream g2d = mock(GraphicsStream.class);
 
         w.paintEcs(g2d);
 
-        verify(g2d.newContext()).pushColor(AwtColor.ORANGE);
+        verify(g2d).pushColor(AwtColor.ORANGE);
     }
 
     @Test
     public void colorIsRemovedAfterPainting() {
         FilledRectangleWidget w = new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
-        GraphicsStream g2d = mock(GraphicsStream.class, RETURNS_DEEP_STUBS);
+        GraphicsStream g2d = mock(GraphicsStream.class);
 
         w.paintEcs(g2d);
 
-        verify(g2d.newContext()).close();
+        verify(g2d).popColor();
     }
 
     @Feature(Equivalent.class)
