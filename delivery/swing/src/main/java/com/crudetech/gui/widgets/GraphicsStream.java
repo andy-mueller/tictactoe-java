@@ -2,6 +2,13 @@ package com.crudetech.gui.widgets;
 
 
 public interface GraphicsStream {
+    public interface Context extends GraphicsStream, AutoCloseable {
+        @Override
+        void close();
+    }
+
+    Context newContext();
+
     void pushCoordinateSystem(CoordinateSystem coos);
     void popCoordinateSystem();
 

@@ -23,6 +23,11 @@ class AwtGraphicsStream implements GraphicsStream {
     }
 
     @Override
+    public Context newContext() {
+        throw new RuntimeException("Not implemented yet!");
+    }
+
+    @Override
     public void pushCoordinateSystem(CoordinateSystem coos) {
         pushCurrentTransformationOnStack();
         pushTranslation(coos.getLocation().x, coos.getLocation().y);
