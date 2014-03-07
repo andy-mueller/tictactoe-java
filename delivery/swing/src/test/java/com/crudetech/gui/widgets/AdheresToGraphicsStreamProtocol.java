@@ -4,15 +4,21 @@ import com.crudetech.collections.Iterables;
 import com.crudetech.junit.feature.FeatureFixture;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.exceptions.Reporter;
+import org.mockito.exceptions.verification.NoInteractionsWanted;
+import org.mockito.internal.debugging.Location;
 import org.mockito.internal.invocation.Invocation;
 import org.mockito.internal.invocation.InvocationMatcher;
 import org.mockito.internal.verification.api.VerificationData;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.mockito.verification.VerificationMode;
 
 import java.util.List;
 
+import static com.crudetech.matcher.ThrowsException.doesThrow;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
+import static org.mockito.internal.util.StringJoiner.join;
 
 
 public class AdheresToGraphicsStreamProtocol implements FeatureFixture {
@@ -34,8 +40,14 @@ public class AdheresToGraphicsStreamProtocol implements FeatureFixture {
     public void createGraphicStreamMock() throws Exception {
         stream = mock(GraphicsStream.class);
         ctx = mock(GraphicsStream.Context.class);
-        when(stream.newContext()).thenReturn(ctx);
+        when(stream.newContext()).thenAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return ctx;
+            }
+        });
     }
+
 
     @Test
     public void widgetTakesOnlyANewContextFromStream() throws Exception {
@@ -56,17 +68,49 @@ public class AdheresToGraphicsStreamProtocol implements FeatureFixture {
     }
 
     private static class LastCall implements VerificationMode {
-        private final Reporter reporter = new Reporter();
-
+        @Override
         public void verify(VerificationData data) {
-            List<Invocation> invocations = data.getAllInvocations();
-            InvocationMatcher lastInvocation = data.getWanted();
-            Invocation invocation = Iterables.lastOf(invocations);
-            if (!lastInvocation.matches(invocation)) {
-                reporter.noMoreInteractionsWanted(invocation);
+            List<Invocation> allInvocationOnMock = data.getAllInvocations();
+            InvocationMatcher expectedInvocation = data.getWanted();
+            Invocation lastInvocationOnMock = Iterables.lastOf(allInvocationOnMock);
+            if (!expectedInvocation.matches(lastInvocationOnMock)) {
+                reportWrongLastInteraction(expectedInvocation, lastInvocationOnMock);
             }
         }
+
+        private void reportWrongLastInteraction(InvocationMatcher expectedInvocation, Invocation lastInvocationOnMock) {
+            throw new NoInteractionsWanted(join(
+                    "Expected last interaction: " + expectedInvocation,
+                    "But found this interaction:",
+                    lastInvocationOnMock.getLocation(),
+                    "No interactions wanted here:",
+                    new Location()
+            ));
+        }
+    }
+
+    @Test
+    public void givenAnExceptionIsThrown_contextIsClosed() throws Exception {
+        final Widget w = factory.createWidget();
+        ctx = mock(GraphicsStream.Context.class, new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                if (invocation.getMethod().getName().equals("close")) {
+                    return null;
+                }
+                throw new RuntimeException();
+            }
+        });
+
+        assertThat(new Runnable() {
+            @Override
+            public void run() {
+                w.paint(stream);
+            }
+        }, doesThrow(RuntimeException.class));
+        verify(ctx, new LastCall()).close();
     }
     // closes are called in reverse order
-    // all sub streams are closed
+    // *all* sub streams are closed
+    // al sub streams throw exceptions??
 }

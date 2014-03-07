@@ -7,14 +7,12 @@ import org.junit.runner.RunWith;
 
 @RunWith(Features.class)
 public class GraphicsStreamProtocolTest {
-
-
     static class ExampleWidget implements Widget {
         @Override
         public void paint(GraphicsStream pipe) {
-            GraphicsStream.Context ctx = pipe.newContext();
-            ctx.drawImage(null);
-            ctx.close();
+            try (GraphicsStream.Context ctx = pipe.newContext()) {
+                ctx.drawImage(null);
+            }
         }
 
         @Override
