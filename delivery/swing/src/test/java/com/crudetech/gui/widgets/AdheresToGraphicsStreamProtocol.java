@@ -4,6 +4,7 @@ import com.crudetech.collections.Iterables;
 import com.crudetech.junit.feature.FeatureFixture;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InOrder;
 import org.mockito.exceptions.verification.NoInteractionsWanted;
 import org.mockito.internal.debugging.Location;
 import org.mockito.internal.invocation.Invocation;
@@ -13,6 +14,8 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.mockito.verification.VerificationMode;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.crudetech.matcher.ThrowsException.doesThrow;
@@ -22,14 +25,13 @@ import static org.mockito.internal.util.StringJoiner.join;
 
 
 public class AdheresToGraphicsStreamProtocol implements FeatureFixture {
-
-    private GraphicsStream stream;
-    private GraphicsStream.Context ctx;
-
     public static interface Factory {
         Widget createWidget();
     }
 
+    private AdheresToGraphicsStreamProtocol.RecursiveSubContextCreator recursiveSubContextCreator;
+    private GraphicsStream stream;
+    private List<GraphicsStream.Context> subContexts;
     private final Factory factory;
 
     public AdheresToGraphicsStreamProtocol(Factory factory) {
@@ -38,16 +40,29 @@ public class AdheresToGraphicsStreamProtocol implements FeatureFixture {
 
     @Before
     public void createGraphicStreamMock() throws Exception {
+        recursiveSubContextCreator = new RecursiveSubContextCreator();
         stream = mock(GraphicsStream.class);
-        ctx = mock(GraphicsStream.Context.class);
-        when(stream.newContext()).thenAnswer(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return ctx;
-            }
-        });
+        subContexts = new ArrayList<>();
+        recursivelySetupNewContextMocks(stream);
     }
 
+    private void recursivelySetupNewContextMocks(GraphicsStream stream) {
+        when(stream.newContext()).thenAnswer(recursiveSubContextCreator);
+    }
+
+    private class RecursiveSubContextCreator implements Answer<GraphicsStream.Context> {
+        @Override
+        public GraphicsStream.Context answer(InvocationOnMock invocation) throws Throwable {
+            GraphicsStream.Context subMock = createMock();
+            subContexts.add(subMock);
+            recursivelySetupNewContextMocks(subMock);
+            return subMock;
+        }
+
+        GraphicsStream.Context createMock() {
+            return mock(GraphicsStream.Context.class);
+        }
+    }
 
     @Test
     public void widgetTakesOnlyANewContextFromStream() throws Exception {
@@ -64,7 +79,7 @@ public class AdheresToGraphicsStreamProtocol implements FeatureFixture {
 
         w.paint(stream);
 
-        verify(ctx, new LastCall()).close();
+        verify(subContexts.get(0), new LastCall()).close();
     }
 
     private static class LastCall implements VerificationMode {
@@ -91,16 +106,21 @@ public class AdheresToGraphicsStreamProtocol implements FeatureFixture {
 
     @Test
     public void givenAnExceptionIsThrown_contextIsClosed() throws Exception {
-        final Widget w = factory.createWidget();
-        ctx = mock(GraphicsStream.Context.class, new Answer() {
+        recursiveSubContextCreator = new RecursiveSubContextCreator() {
             @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                if (invocation.getMethod().getName().equals("close")) {
-                    return null;
-                }
-                throw new RuntimeException();
+            GraphicsStream.Context createMock() {
+                return mock(GraphicsStream.Context.class, new Answer() {
+                    @Override
+                    public Object answer(InvocationOnMock invocation) throws Throwable {
+                        if (invocation.getMethod().getName().equals("close")) {
+                            return null;
+                        }
+                        throw new RuntimeException();
+                    }
+                });
             }
-        });
+        };
+        final Widget w = factory.createWidget();
 
         assertThat(new Runnable() {
             @Override
@@ -108,9 +128,27 @@ public class AdheresToGraphicsStreamProtocol implements FeatureFixture {
                 w.paint(stream);
             }
         }, doesThrow(RuntimeException.class));
-        verify(ctx, new LastCall()).close();
+        verify(subContexts.get(0), new LastCall()).close();
     }
-    // closes are called in reverse order
-    // *all* sub streams are closed
+
+    @Test
+    public void allSubContextsAreClosedInReversedOrder() throws Exception {
+        Widget w = factory.createWidget();
+
+        w.paint(stream);
+
+        GraphicsStream.Context[] reversedSubContexts = reversedSubContexts();
+        InOrder reverseSubContexts = inOrder(reversedSubContexts);
+        for (GraphicsStream.Context ctx : reversedSubContexts) {
+            reverseSubContexts.verify(ctx).close();
+            verify(ctx, new LastCall()).close();
+        }
+    }
+
+    private GraphicsStream.Context[] reversedSubContexts() {
+        List<GraphicsStream.Context> copy = new ArrayList<>(subContexts);
+        Collections.reverse(copy);
+        return copy.toArray(new GraphicsStream.Context[copy.size()]);
+    }
     // al sub streams throw exceptions??
 }
