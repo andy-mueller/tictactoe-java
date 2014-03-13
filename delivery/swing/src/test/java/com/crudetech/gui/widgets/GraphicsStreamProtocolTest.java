@@ -35,9 +35,9 @@ public class GraphicsStreamProtocolTest {
     static class ExampleSubWidget extends AWidget {
         @Override
         public void paint(GraphicsStream pipe) {
-            GraphicsStream.Context ctx = pipe.newContext();
-            ctx.drawImage(AnyImage);
-            ctx.close();
+            try (GraphicsStream.Context ctx = pipe.newContext()) {
+                ctx.drawImage(AnyImage);
+            }
         }
     }
 
