@@ -354,7 +354,6 @@ public class AdheresToGraphicsStreamProtocol implements FeatureFixture {
             @Override
             public void close() {
                 onMethodCall();
-//                recorder.recordMethodCall();
             }
 
             @Override
