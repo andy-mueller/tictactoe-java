@@ -36,7 +36,7 @@ public class EcsWidgetTest {
 
 
     @Test
-    public void ctorSetsCordinateSystem() {
+    public void ctorSetsCoordinateSystem() {
         assertThat(ecsWidget.coordinateSystem(), is(new CoordinateSystem(Point.of(42, 42))));
     }
 
