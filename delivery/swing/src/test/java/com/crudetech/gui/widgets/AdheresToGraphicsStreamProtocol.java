@@ -186,7 +186,7 @@ public class AdheresToGraphicsStreamProtocol implements FeatureFixture {
             Strict {
                 @Override
                 void interact(String method) {
-                    fail("Unwanted Interaction");
+                    fail("Unwanted Interaction " + method);
                 }
             },
             Weak {
