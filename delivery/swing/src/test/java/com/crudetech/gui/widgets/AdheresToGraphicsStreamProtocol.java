@@ -2,27 +2,24 @@ package com.crudetech.gui.widgets;
 
 import com.crudetech.collections.Iterables;
 import com.crudetech.junit.feature.FeatureFixture;
-import org.junit.Before;
-import org.junit.Ignore;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeDiagnosingMatcher;
+import org.junit.Assert;
 import org.junit.Test;
-import org.mockito.InOrder;
-import org.mockito.exceptions.verification.NoInteractionsWanted;
-import org.mockito.internal.debugging.Location;
-import org.mockito.internal.invocation.Invocation;
-import org.mockito.internal.invocation.InvocationMatcher;
-import org.mockito.internal.verification.api.VerificationData;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.mockito.verification.VerificationMode;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
+import static com.crudetech.gui.widgets.AdheresToGraphicsStreamProtocol.NothingExcept.nothingExcept;
 import static com.crudetech.matcher.ThrowsException.doesThrow;
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.*;
-import static org.mockito.internal.util.StringJoiner.join;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.fail;
 
 
 public class AdheresToGraphicsStreamProtocol implements FeatureFixture {
@@ -30,242 +27,325 @@ public class AdheresToGraphicsStreamProtocol implements FeatureFixture {
         Widget createWidget();
     }
 
-    private AdheresToGraphicsStreamProtocol.RecursiveSubContextCreator recursiveSubContextCreator;
-    private GraphicsStream stream;
-    private List<GraphicsStream.Context> subContexts;
     private final Factory factory;
 
     public AdheresToGraphicsStreamProtocol(Factory factory) {
         this.factory = factory;
     }
 
-    @Before
-    public void createGraphicStreamMock() throws Exception {
-        recursiveSubContextCreator = new RecursiveSubContextCreator();
-        stream = mock(GraphicsStream.class);
-        subContexts = new ArrayList<>();
-        recursivelySetupNewContextMocks(stream);
-    }
-
-    private void recursivelySetupNewContextMocks(GraphicsStream stream) {
-        when(stream.newContext()).thenAnswer(recursiveSubContextCreator);
-    }
-
-    private class RecursiveSubContextCreator implements Answer<GraphicsStream.Context> {
-        @Override
-        public GraphicsStream.Context answer(InvocationOnMock invocation) throws Throwable {
-            GraphicsStream.Context subMock = createMock(invocation);
-            subContexts.add(subMock);
-            recursivelySetupNewContextMocks(subMock);
-            return subMock;
-        }
-
-        GraphicsStream.Context createMock(InvocationOnMock unused) {
-            return mock(GraphicsStream.Context.class);
-        }
-    }
-
     @Test
     public void widgetTakesOnlyANewContextFromStream() throws Exception {
         Widget w = factory.createWidget();
+        GraphicsStreamMock stream = new GraphicsStreamMock();
 
         w.paint(stream);
 
-        verify(stream, only()).newContext();
+        stream.verifyOnlyNewContextWasCalled();
     }
 
     @Test
     public void newContextIsClosed() throws Exception {
         Widget w = factory.createWidget();
+        GraphicsStreamMock stream = new GraphicsStreamMock();
 
         w.paint(stream);
 
-        verify(subContexts.get(0), new LastCall()).close();
-    }
-
-    private static class LastCall implements VerificationMode {
-        @Override
-        public void verify(VerificationData data) {
-            List<Invocation> allInvocationOnMock = data.getAllInvocations();
-            InvocationMatcher expectedInvocation = data.getWanted();
-            Invocation lastInvocationOnMock = Iterables.lastOf(allInvocationOnMock);
-            if (!expectedInvocation.matches(lastInvocationOnMock)) {
-                reportWrongLastInteraction(expectedInvocation, lastInvocationOnMock);
-            }
-        }
-
-        private void reportWrongLastInteraction(InvocationMatcher expectedInvocation, Invocation lastInvocationOnMock) {
-            throw new NoInteractionsWanted(join(
-                    "Expected last interaction: " + expectedInvocation,
-                    "But actual last interaction was:",
-                    lastInvocationOnMock.getLocation(),
-                    "No interactions wanted here:",
-                    new Location()
-            ));
-        }
+        stream.verifyAllNewContextsAreClosedOnLastCall();
     }
 
     @Test
     public void givenAnExceptionIsThrown_contextIsClosed() throws Exception {
-        recursiveSubContextCreator = new ThrowingRecursiveSubContextCreator();
         final Widget w = factory.createWidget();
+        final GraphicsStreamMock stream = new GraphicsStreamMock();
+        stream.setSubInstanceToThrow(0);
 
-        assertThat(new Runnable() {
+        assertThat("Expecting the stream mock to throw", new Runnable() {
             @Override
             public void run() {
                 w.paint(stream);
             }
         }, doesThrow(RuntimeException.class));
-        verify(subContexts.get(0), new LastCall()).close();
-    }
-
-    private class ThrowingRecursiveSubContextCreator extends RecursiveSubContextCreator {
-        private final int instanceThatWillThrow;
-        private int instanceCounter = 0;
-
-        public ThrowingRecursiveSubContextCreator(int instanceThatWillThrow) {
-            this.instanceThatWillThrow = instanceThatWillThrow;
-        }
-
-        public ThrowingRecursiveSubContextCreator() {
-            this(0);
-        }
-
-        @Override
-        GraphicsStream.Context createMock(InvocationOnMock invocation) {
-
-            if (instanceCounter++ != instanceThatWillThrow) {
-                return super.createMock(invocation);
-            }
-            return mock(GraphicsStream.Context.class, new Answer() {
-                @Override
-                public Object answer(InvocationOnMock invocation) throws Throwable {
-                    if (isCloseMethod(invocation)) {
-                        return null;
-                    }
-                    throw new RuntimeException();
-                }
-
-
-                private boolean isCloseMethod(InvocationOnMock invocation) {
-                    return invocation.getMethod().getName().equals("close");
-                }
-            });
-        }
+        stream.verifyAllNewContextsAreClosedOnLastCall();
     }
 
     @Test
     public void allSubContextsAreClosedInReversedOrder() throws Exception {
         Widget w = factory.createWidget();
+        final GraphicsStreamMock stream = new GraphicsStreamMock();
 
         w.paint(stream);
 
-        GraphicsStream.Context[] reversedSubContexts = reversedSubContexts();
-        InOrder reverseSubContexts = inOrder(reversedSubContexts);
-        for (GraphicsStream.Context ctx : reversedSubContexts) {
-            reverseSubContexts.verify(ctx).close();
-            verify(ctx, new LastCall()).close();
-        }
+        stream.verifyAllSubContextAreClosedInReverseOrder();
     }
 
-    private GraphicsStream.Context[] reversedSubContexts() {
-        List<GraphicsStream.Context> copy = new ArrayList<>(subContexts);
-        Collections.reverse(copy);
-        return copy.toArray(new GraphicsStream.Context[copy.size()]);
-    }
-
-    @Ignore
     @Test
     public void givenAnExceptionIsThrownAnyWhere_allContextsAreClosedInCorrectOrder() throws Exception {
         int recursiveContextCounts = computeSubContextCount();
 
-        while (recursiveContextCounts >= 0) {
-            recursiveSubContextCreator = new ThrowingRecursiveSubContextCreator(--recursiveContextCounts);
-            final Widget w = factory.createWidget();
+        while (recursiveContextCounts > 0) {
+            final Widget widget = factory.createWidget();
+            final GraphicsStreamMock stream = new GraphicsStreamMock();
+            stream.setSubInstanceToThrow(--recursiveContextCounts);
 
-            assertThat(new Runnable() {
+            executeThrowingCall(new Runnable() {
                 @Override
                 public void run() {
-                    w.paint(stream);
+                    widget.paint(stream);
                 }
-            }, doesThrow(RuntimeException.class));
-            for (GraphicsStream.Context subContext : subContexts) {
-                verify(subContext, new LastCall()).close();
-            }
+            });
+
+            stream.verifyAllNewContextsAreClosedOnLastCall();
+            stream.verifyAllSubContextAreClosedInReverseOrder();
         }
+    }
+
+    private void executeThrowingCall(Runnable runnable) {
+        assertThat("Expecting the runnable to throw", runnable, doesThrow(RuntimeException.class));
     }
 
     private int computeSubContextCount() {
         Widget w = factory.createWidget();
-        w.paint(stream);
-        final int count = subContexts.size();
-        subContexts.clear();
-        return count;
+        GraphicsStreamMock pipe = new GraphicsStreamMock();
+        w.paint(pipe);
+        return pipe.countOfAllCreatedSubContexts();
+    }
+
+
+    static class NothingExcept<T> extends TypeSafeDiagnosingMatcher<Collection<T>> {
+        private final List<T> except;
+
+        @SafeVarargs
+        NothingExcept(T... except) {
+            this.except = asList(except);
+        }
+
+        @SafeVarargs
+        static <T> Matcher<Collection<T>> nothingExcept(final T... except) {
+            return new NothingExcept<>(except);
+        }
+
+
+        @Override
+        protected boolean matchesSafely(Collection<T> item, Description mismatchDescription) {
+            HashSet<? super T> copy = new HashSet<>(item);
+            copy.removeAll(except);
+            if (!copy.isEmpty()) {
+                mismatchDescription.appendText("contains also ").appendValue(Iterables.toString(copy));
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("Contains only items: " + Iterables.toString(except));
+        }
     }
 
     static abstract class GraphicsStreamDouble implements GraphicsStream {
+        static final String CloseMethod = "close";
+        static final String NewContextMethod = "newContext";
+
+        static class MethodCallRecorder {
+            private final List<String> calledMethods = new ArrayList<>();
+
+            String lastMethodCall() {
+                return calledMethods.get(calledMethods.size() - 1);
+            }
+
+            public void recordMethodCall(int methodsOnStackToIgnore) {
+                StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+                StackTraceElement e = stackTrace[2 + methodsOnStackToIgnore];
+                String methodName = e.getMethodName();
+                calledMethods.add(methodName);
+            }
+
+            public void recordMethodCall() {
+                recordMethodCall(1);
+            }
+
+            private Matcher<Collection<String>> noMethodsExcept(final String[] methods) {
+                return nothingExcept(methods);
+            }
+
+            public void verifyOnlyMethods(String... methods) {
+                Assert.assertThat(calledMethods, noMethodsExcept(methods));
+            }
+
+            @Override
+            public String toString() {
+                return "MethodCallRecorder{" +
+                        "calledMethods=" + calledMethods +
+                        '}';
+            }
+        }
+
+        MethodCallRecorder recorder = new MethodCallRecorder();
+
+        enum Interaction {
+            Strict {
+                @Override
+                void interact(String method) {
+                    fail("Unwanted Interaction");
+                }
+            },
+            Weak {
+                @Override
+                void interact(String method) {
+                }
+            },
+            Throw {
+                @Override
+                void interact(String method) {
+
+                    if (isNonThrowingMethod(method))
+                        return;
+                    throw new RuntimeException();
+                }
+
+                private boolean isNonThrowingMethod(String method) {
+                    return method.equals(CloseMethod) || method.equals(NewContextMethod);
+                }
+            };
+
+            abstract void interact(String method);
+        }
+
+        final Interaction interaction;
+
+
+        GraphicsStreamDouble(Interaction interaction) {
+            this.interaction = interaction;
+        }
+
+        public void verifyLastCallWasClose() {
+            assertThat("Expected last methods call", recorder.lastMethodCall(), is(CloseMethod));
+        }
 
         @Override
         public void pushCoordinateSystem(CoordinateSystem coos) {
+            onMethodCall();
+        }
+
+        void onMethodCall() {
+            onMethodCall(interaction);
+        }
+
+        void onMethodCall(Interaction override) {
+            recorder.recordMethodCall(2);
+            override.interact(recorder.lastMethodCall());
         }
 
         @Override
         public void popCoordinateSystem() {
+            onMethodCall();
         }
 
         @Override
         public void pushColor(Color color) {
+            onMethodCall();
         }
 
         @Override
         public void popColor() {
+            onMethodCall();
         }
 
         @Override
         public void drawRectangle(Rectangle rectangle) {
+            onMethodCall();
         }
 
         @Override
         public void fillRectangle(Rectangle boundary) {
+            onMethodCall();
         }
 
         @Override
         public void drawLine(Point start, Point end) {
+            onMethodCall();
         }
 
         @Override
         public void drawImage(Image image) {
+            onMethodCall();
         }
 
         @Override
         public void pushAlpha(AlphaValue alpha) {
+            onMethodCall();
         }
 
         @Override
         public void popAlpha() {
+            onMethodCall();
         }
 
         @Override
         public void drawText(int x, int y, String text) {
+            onMethodCall();
         }
 
         @Override
         public void pushFont(Font font) {
+            onMethodCall();
         }
     }
 
 
     static class GraphicsStreamMock extends GraphicsStreamDouble {
-        private List<Context> allCreatedSubContexts = new ArrayList<>();
+        private List<GraphicsContextMock> allCreatedSubContexts = new ArrayList<>();
+        private int subContextInstanceThatThrows = -1;
+
+        GraphicsStreamMock() {
+            super(Interaction.Strict);
+        }
+
+        void setSubInstanceToThrow(int subContextInstanceThatThrows) {
+            this.subContextInstanceThatThrows = subContextInstanceThatThrows;
+        }
 
         @Override
         public Context newContext() {
-            GraphicsContextMock contextMock = new GraphicsContextMock();
+            recorder.recordMethodCall();
+            Interaction interaction = willBeThrowingInstance() ? Interaction.Throw : Interaction.Weak;
+            GraphicsContextMock contextMock = new GraphicsContextMock(interaction, allCreatedSubContexts.size());
             allCreatedSubContexts.add(contextMock);
             return contextMock;
         }
 
+        private boolean willBeThrowingInstance() {
+            return subContextInstanceThatThrows == allCreatedSubContexts.size();
+        }
+
+        public void verifyOnlyNewContextWasCalled() {
+            recorder.verifyOnlyMethods(CloseMethod, NewContextMethod);
+            assertThat(allCreatedSubContexts.size(), is(greaterThanOrEqualTo(0)));
+        }
+
+        public void verifyAllNewContextsAreClosedOnLastCall() {
+            allCreatedSubContexts.get(0).verifyLastCallWasClose();
+        }
+
+        public void verifyAllSubContextAreClosedInReverseOrder() {
+            for (int i = allCreatedSubContexts.size() - 1; i >= 0; --i) {
+                allCreatedSubContexts.get(i).verifyLastCallWasClose();
+            }
+        }
+
+        public int countOfAllCreatedSubContexts() {
+            return allCreatedSubContexts.size();
+        }
+
+
         class GraphicsContextMock extends GraphicsStreamDouble implements GraphicsStream.Context {
+            private int id;
+
+            GraphicsContextMock(Interaction interaction, int id) {
+                super(interaction);
+                this.id = id;
+            }
+
             @Override
             public Context newContext() {
                 return GraphicsStreamMock.this.newContext();
@@ -273,6 +353,15 @@ public class AdheresToGraphicsStreamProtocol implements FeatureFixture {
 
             @Override
             public void close() {
+                onMethodCall();
+//                recorder.recordMethodCall();
+            }
+
+            @Override
+            public String toString() {
+                return "GraphicsContextMock{" +
+                        "id=" + id +
+                        '}';
             }
         }
     }
