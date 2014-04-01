@@ -10,12 +10,10 @@ public class CompositeDecoratorWidget<TDecorated extends Widget> extends Decorat
         this.alpha = alpha;
     }
 
-    public void paint(GraphicsStream pipe) {
-        pipe.pushAlpha(alpha);
-        try {
+    public void paint(GraphicsStream stream) {
+        try (GraphicsStream.Context pipe = stream.newContext()) {
+            pipe.pushAlpha(alpha);
             super.paint(pipe);
-        } finally {
-            pipe.popAlpha();
         }
     }
 

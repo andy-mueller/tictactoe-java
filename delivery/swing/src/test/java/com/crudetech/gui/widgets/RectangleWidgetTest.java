@@ -4,26 +4,27 @@ import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
 import com.crudetech.junit.feature.Features;
 import com.crudetech.tictactoe.delivery.swing.grid.AwtColor;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 @RunWith(Features.class)
 public class RectangleWidgetTest {
+    @Rule
+    public GraphicStreamMockery streamMockery = GraphicStreamMockery.withOnlyOneSubContext();
+
     @Test
     public void paintingIsInEcs() {
         Widget w = new RectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
         setLocation(w, Point.of(42, 42));
-        GraphicsStream g2d = mock(GraphicsStream.class);
 
-        w.paint(g2d);
+        w.paint(streamMockery.stream());
 
-        verify(g2d).drawRectangle(new Rectangle(0, 0, 84, 966));
+        streamMockery.verifyOnLastSubContext().drawRectangle(new Rectangle(0, 0, 84, 966));
     }
 
     private void setLocation(Widget w, Point location) {
@@ -34,21 +35,20 @@ public class RectangleWidgetTest {
     @Test
     public void colorIsSetForPainting() {
         RectangleWidget w = new RectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
-        GraphicsStream g2d = mock(GraphicsStream.class);
 
-        w.paintEcs(g2d);
+        w.paint(streamMockery.stream());
 
-        verify(g2d).pushColor(AwtColor.ORANGE);
+        streamMockery.verifyOnLastSubContext().pushColor(AwtColor.ORANGE);
     }
 
-    @Test
-    public void colorIsResetAfterPainting() {
-        RectangleWidget w = new RectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
-        GraphicsStream g2d = mock(GraphicsStream.class);
-
-        w.paintEcs(g2d);
-
-        verify(g2d).popColor();
+    @Feature(AdheresToGraphicsStreamProtocol.class)
+    public static AdheresToGraphicsStreamProtocol.Factory adheresToSteamProtocol() {
+        return new AdheresToGraphicsStreamProtocol.Factory() {
+            @Override
+            public Widget createWidget() {
+                return new RectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
+            }
+        };
     }
 
     @Feature(Equivalent.class)

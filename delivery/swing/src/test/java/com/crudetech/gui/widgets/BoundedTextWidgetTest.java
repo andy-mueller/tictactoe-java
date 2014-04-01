@@ -1,42 +1,40 @@
 package com.crudetech.gui.widgets;
 
+import com.crudetech.junit.feature.Feature;
+import com.crudetech.junit.feature.Features;
 import com.crudetech.lang.Compare;
 import org.hamcrest.Description;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
-import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.junit.runner.RunWith;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeastOnce;
 
+@RunWith(Features.class)
 public class BoundedTextWidgetTest {
 
     private static final String SHORT_TEXT = "short text";
     private static final Rectangle VERY_LARGE_BOUNDARY = new Rectangle(2, 3, 10000, 10000);
 
+    @Rule
+    public GraphicStreamMockery streamMockery = GraphicStreamMockery.withOnlyOneSubContext();
+
     @Test
     public void givenTextIsSmallerThanBoundary_textIsPaintedAsItIs() throws Exception {
         BoundedTextWidget boundedTextWidget = createBoundedTextWidgetWithTextThatFits();
-        GraphicsStream pipe = mock(GraphicsStream.class);
 
-        boundedTextWidget.paint(pipe);
+        boundedTextWidget.paint(streamMockery.stream());
 
-        verify(pipe).drawText(0, 0, SHORT_TEXT);
+        streamMockery.verifyOnLastSubContext().drawText(0, 0, SHORT_TEXT);
     }
 
-    private BoundedTextWidget createBoundedTextWidgetWithTextThatFits() {
+    private static BoundedTextWidget createBoundedTextWidgetWithTextThatFits() {
         Font smallFont = new FontStub(2);
         return new BoundedTextWidget(smallFont, VERY_LARGE_BOUNDARY, SHORT_TEXT);
     }
@@ -62,12 +60,12 @@ public class BoundedTextWidgetTest {
         Rectangle flatBound = new Rectangle(2, 3, 10000, 5);
         Font highFont = new FontStub(flatBound.height * 2);
         BoundedTextWidget widget = new BoundedTextWidget(highFont, flatBound, SHORT_TEXT);
-        GraphicsStream pipe = mock(GraphicsStream.class);
 
-        widget.paint(pipe);
+        widget.paint(streamMockery.stream());
 
-        verify(pipe, atLeastOnce()).pushCoordinateSystem(widget.coordinateSystem());
-        verify(pipe).pushCoordinateSystem(withScale(0.5));
+
+        streamMockery.verifyOnLastSubContext(atLeastOnce()).pushCoordinateSystem(widget.coordinateSystem());
+        streamMockery.verifyOnLastSubContext().pushCoordinateSystem(withScale(0.5));
     }
 
     private CoordinateSystem withScale(double scale) {
@@ -123,71 +121,15 @@ public class BoundedTextWidgetTest {
         }
     }
 
-    @Ignore
-    @Test
-    public void onlyOperatesOnNewContextBoundedStream() throws Exception {
-        BoundedTextWidget boundedTextWidget = createBoundedTextWidgetWithTextThatFits();
-        GraphicsStreamStub pipe = GraphicsStreamStub.create();
-
-        boundedTextWidget.paint(pipe);
-
-        pipe.verifyNewContextWasCreated();
-        pipe.verifyNoInteractionsOnStream();
+    @Feature(AdheresToGraphicsStreamProtocol.class)
+    public static AdheresToGraphicsStreamProtocol.Factory adheresToStreamProtocol() {
+        return new AdheresToGraphicsStreamProtocol.Factory() {
+            @Override
+            public Widget createWidget() {
+                return createBoundedTextWidgetWithTextThatFits();
+            }
+        };
     }
-
-    private static abstract class GraphicsStreamStub implements GraphicsStream {
-        private GraphicsStream streamMock;
-        private List<GraphicsStream.Context> contexts = new ArrayList<>();
-
-        static GraphicsStreamStub create() {
-            final GraphicsStream streamMock = mock(GraphicsStream.class);
-
-            Answer callInterception = new Answer() {
-                @Override
-                public Object answer(InvocationOnMock invocation) throws Throwable {
-                    if (invocation.getMethod().getName().equals("newContext")) {
-                        Context ctxMock = mock(Context.class);
-                        ((GraphicsStreamStub) invocation.getMock()).contexts.add(ctxMock);
-                        return ctxMock;
-                    }
-                    if (invocation.getMethod().getDeclaringClass() == GraphicsStream.class) {
-                        return invocation.getMethod().invoke(streamMock, invocation.getArguments());
-                    }
-                    if (invocation.getMethod().getDeclaringClass() == GraphicsStreamStub.class) {
-                        return invocation.callRealMethod();
-                    }
-                    throw new RuntimeException("Could not dispatch");
-                }
-            };
-            final GraphicsStreamStub mock = Mockito.mock(GraphicsStreamStub.class, callInterception);
-            mock.streamMock = streamMock;
-            mock.contexts = new ArrayList<>();
-
-            return mock;
-        }
-
-
-        public void verifyNewContextWasCreated() {
-            assertThat("New fresh context was created", contexts, hasSize(greaterThan(0)));
-        }
-
-
-        public void verifyNoInteractionsOnStream() {
-            Mockito.verifyNoMoreInteractions(streamMock);
-        }
-
-    }
-
-
-//    @Test
-//    public void callsCloseOnContextBoundedStream() throws Exception {
-//        BoundedTextWidget boundedTextWidget = createBoundedTextWidgetWithTextThatFits();
-//        GraphicsStream pipe = mock(GraphicsStream.class);
-//
-//        boundedTextWidget.paint(pipe);
-//
-//        verifyCloseWasCalledLast();
-//    }
 
     // pop font??->Alternative: restoration
     // adjustFontHeight when necessary

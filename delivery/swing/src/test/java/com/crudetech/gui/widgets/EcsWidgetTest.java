@@ -12,6 +12,9 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(Features.class)
 public class EcsWidgetTest {
@@ -53,5 +56,29 @@ public class EcsWidgetTest {
                 return Arrays.<EcsWidget>asList(new NoPaintEcsWidget(1, 1));
             }
         };
+    }
+
+    @Feature(AdheresToGraphicsStreamProtocol.class)
+    public static AdheresToGraphicsStreamProtocol.Factory adheresGraphicStreamProtocol() {
+        return new AdheresToGraphicsStreamProtocol.Factory() {
+            @Override
+            public Widget createWidget() {
+                return new NoPaintEcsWidget(2, 2);
+            }
+        };
+    }
+
+    @Test
+    public void widgetCoordinateSystemIsPushed() throws Exception {
+        GraphicsStream stream = mock(GraphicsStream.class);
+        GraphicsStream.Context ecsPipe = mock(GraphicsStream.Context.class);
+        when(stream.newContext()).thenReturn(ecsPipe);
+
+        CoordinateSystem coordinates = new CoordinateSystem(Point.of(42, 42), CoordinateSystem.NoScale);
+        ecsWidget.setCoordinateSystem(coordinates);
+
+        ecsWidget.paint(stream);
+
+        verify(ecsPipe).pushCoordinateSystem(coordinates);
     }
 }

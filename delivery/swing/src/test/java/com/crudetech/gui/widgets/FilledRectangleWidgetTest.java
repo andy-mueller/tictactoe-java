@@ -4,26 +4,28 @@ import com.crudetech.junit.feature.Equivalent;
 import com.crudetech.junit.feature.Feature;
 import com.crudetech.junit.feature.Features;
 import com.crudetech.tictactoe.delivery.swing.grid.AwtColor;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 @RunWith(Features.class)
 public class FilledRectangleWidgetTest {
+
+    @Rule
+    public GraphicStreamMockery streamMockery = GraphicStreamMockery.withOnlyOneSubContext();
+
     @Test
     public void paintingIsInEcs() {
-        Widget w = new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
+        Widget w = aFilledRectangle();
         moveAtAnother(w, Point.of(42, 42));
-        GraphicsStream g2d = mock(GraphicsStream.class);
 
-        w.paint(g2d);
+        w.paint(streamMockery.stream());
 
-        verify(g2d).fillRectangle(new Rectangle(0, 0, 84, 966));
+        streamMockery.verifyOnLastSubContext().fillRectangle(someBoundary());
     }
 
     private void moveAtAnother(Widget w, Point location) {
@@ -33,22 +35,30 @@ public class FilledRectangleWidgetTest {
 
     @Test
     public void colorIsSetForPainting() {
-        FilledRectangleWidget w = new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
-        GraphicsStream g2d = mock(GraphicsStream.class);
+        FilledRectangleWidget w = aFilledRectangle();
 
-        w.paintEcs(g2d);
+        w.paintEcs(streamMockery.stream());
 
-        verify(g2d).pushColor(AwtColor.ORANGE);
+        streamMockery.verifyOnlyOneSubContextCreated();
+        streamMockery.verifyOnOnlySubContext().pushColor(AwtColor.ORANGE);
     }
 
-    @Test
-    public void colorIsRemovedAfterPainting() {
-        FilledRectangleWidget w = new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
-        GraphicsStream g2d = mock(GraphicsStream.class);
+    @Feature(AdheresToGraphicsStreamProtocol.class)
+    public static AdheresToGraphicsStreamProtocol.Factory adheresToStreamProtocol() {
+        return new AdheresToGraphicsStreamProtocol.Factory() {
+            @Override
+            public Widget createWidget() {
+                return aFilledRectangle();
+            }
+        };
+    }
 
-        w.paintEcs(g2d);
+    private static FilledRectangleWidget aFilledRectangle() {
+        return new FilledRectangleWidget(someBoundary(), AwtColor.ORANGE);
+    }
 
-        verify(g2d).popColor();
+    private static Rectangle someBoundary() {
+        return new Rectangle(0, 0, 84, 966);
     }
 
     @Feature(Equivalent.class)
@@ -56,7 +66,7 @@ public class FilledRectangleWidgetTest {
         return new Equivalent.Factory<FilledRectangleWidget>() {
             @Override
             public FilledRectangleWidget createItem() {
-                return new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.ORANGE);
+                return aFilledRectangle();
             }
 
             @Override
@@ -64,7 +74,7 @@ public class FilledRectangleWidgetTest {
                 return asList(
                         new FilledRectangleWidget(new Rectangle(0, 0, 42, 966), AwtColor.ORANGE),
                         new FilledRectangleWidget(new Rectangle(0, 0, 84, 42), AwtColor.ORANGE),
-                        new FilledRectangleWidget(new Rectangle(0, 0, 84, 966), AwtColor.CYAN)
+                        new FilledRectangleWidget(someBoundary(), AwtColor.CYAN)
                 );
             }
         };
