@@ -3,7 +3,7 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.gui.widgets.CoordinateSystem;
 import com.crudetech.gui.widgets.Point;
-import com.crudetech.tictactoe.delivery.swing.LastCall;
+import com.crudetech.tictactoe.delivery.swing.LastCallOnMethod;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -34,8 +34,9 @@ public class AwtGraphicsStreamTest {
 
         awtStream.pushCoordinateSystem(coordinates);
         awtStream.pushCoordinateSystem(CoordinateSystem.identity());
+        awtStream.popCoordinateSystem();
 
-        verify(g2d, new LastCall()).translate(42, 42);
-        verify(g2d, new LastCall()).scale(0.5, 0.5);
+        verify(g2d, new LastCallOnMethod()).translate(42, 42);
+        verify(g2d, new LastCallOnMethod()).scale(0.5, 0.5);
     }
 }
