@@ -89,7 +89,11 @@ class AwtGraphicsStream implements GraphicsStream {
     @Override
     public void pushAlpha(AlphaValue alpha) {
         composites.add(pipe.getComposite());
-        pipe.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha.alpha));
+        pipe.setComposite(convertAlphaToComposite(alpha));
+    }
+
+    static AlphaComposite convertAlphaToComposite(AlphaValue alpha) {
+        return AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha.alpha);
     }
 
     @Override
