@@ -3,20 +3,19 @@ package com.crudetech.tictactoe.delivery.swing.grid;
 
 import com.crudetech.gui.widgets.AlphaValue;
 import com.crudetech.gui.widgets.CoordinateSystem;
-import com.crudetech.gui.widgets.GraphicsStream;
 import com.crudetech.gui.widgets.Point;
 import com.crudetech.lang.Compare;
 import com.crudetech.tictactoe.delivery.swing.LastCallOnMock;
 import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
-import static junit.framework.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 
 public class AwtGraphicsStreamTest {
@@ -107,7 +106,6 @@ public class AwtGraphicsStreamTest {
         return AlphaComposite.getInstance(AlphaComposite.DST_ATOP, 0.1f);
     }
 
-    @Ignore
     @Test
     public void whenNewSubContextIsCreated_aClonedGraphicsObjectIsUsed() throws Exception {
         Graphics2D clone = mock(Graphics2D.class);
@@ -115,9 +113,40 @@ public class AwtGraphicsStreamTest {
         when(g2d.create()).thenReturn(clone);
 
         AwtGraphicsStream awtStream = new AwtGraphicsStream(g2d);
-        GraphicsStream.Context ctx = awtStream.newContext();
+        AwtGraphicsStream.Context ctx = awtStream.newContext();
 
-        fail("TBD");
-        // assertThat(ctx.pipe, is(clone));
+        assertThat(ctx, hasGraphics(clone));
+    }
+
+    private Matcher<? super AwtGraphicsStream.Context> hasGraphics(final Graphics2D g2d) {
+        return new TypeSafeDiagnosingMatcher<AwtGraphicsStream.Context>() {
+            @Override
+            protected boolean matchesSafely(AwtGraphicsStream.Context item, Description mismatchDescription) {
+                if (!item.hasGraphics(g2d)) {
+                    mismatchDescription.appendText("different Graphics2D object");
+                    return false;
+                }
+                return true;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Awt graphic adapter has specific Graphics2D: " + g2d);
+            }
+        };
+    }
+
+    @Test
+    public void whenClosed_subContextCallsDisposeOnGraphics() throws Exception {
+        Graphics2D clone = mock(Graphics2D.class);
+        Graphics2D g2d = mock(Graphics2D.class);
+        when(g2d.create()).thenReturn(clone);
+
+        AwtGraphicsStream awtStream = new AwtGraphicsStream(g2d);
+        AwtGraphicsStream.Context ctx = awtStream.newContext();
+
+        ctx.close();
+
+        verify(clone, new LastCallOnMock()).dispose();
     }
 }

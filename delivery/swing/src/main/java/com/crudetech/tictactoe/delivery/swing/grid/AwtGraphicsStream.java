@@ -16,7 +16,7 @@ class AwtGraphicsStream implements GraphicsStream {
     private final List<AffineTransform> xforms = new ArrayList<>();
     private final List<Paint> colors = new ArrayList<>();
     private final List<Composite> composites = new ArrayList<>();
-    private final Graphics2D pipe;
+    final Graphics2D pipe;
 
     public AwtGraphicsStream(Graphics2D g2d) {
         this.pipe = g2d;
@@ -24,7 +24,22 @@ class AwtGraphicsStream implements GraphicsStream {
 
     @Override
     public Context newContext() {
-        throw new RuntimeException("Not implemented yet!");
+        return new Context((Graphics2D) pipe.create());
+    }
+
+    static class Context extends AwtGraphicsStream implements GraphicsStream.Context {
+        public Context(Graphics2D g2d) {
+            super(g2d);
+        }
+
+        @Override
+        public void close() {
+            pipe.dispose();
+        }
+    }
+
+    public boolean hasGraphics(Graphics2D g) {
+        return g == pipe;
     }
 
     @Override
