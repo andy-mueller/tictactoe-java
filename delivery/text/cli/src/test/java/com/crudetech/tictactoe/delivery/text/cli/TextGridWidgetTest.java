@@ -34,7 +34,7 @@ public class TextGridWidgetTest {
     //   ^   ^   ^
     //  01234567890
     @Test
-    public void dgivenAGridWasSet_WidgetDisplaysItToUser() {
+    public void givenAGridWasSet_WidgetDisplaysItToUser() {
         String expectedOutput =
                 " X |   | X " + "\n" +
                         "---+---+---" + "\n" +
