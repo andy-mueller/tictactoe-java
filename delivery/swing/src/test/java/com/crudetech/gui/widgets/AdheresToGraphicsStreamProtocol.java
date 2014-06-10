@@ -142,7 +142,7 @@ public class AdheresToGraphicsStreamProtocol implements FeatureFixture {
         }
     }
 
-    static abstract class GraphicsStreamDouble implements GraphicsStream {
+    private static abstract class GraphicsStreamDouble implements GraphicsStream {
         static final String CloseMethod = "close";
         static final String NewContextMethod = "newContext";
 
@@ -293,7 +293,7 @@ public class AdheresToGraphicsStreamProtocol implements FeatureFixture {
     }
 
 
-    static class GraphicsStreamMock extends GraphicsStreamDouble {
+    private static class GraphicsStreamMock extends GraphicsStreamDouble {
         private List<GraphicsContextMock> allCreatedSubContexts = new ArrayList<>();
         private int subContextInstanceThatThrows = -1;
 
