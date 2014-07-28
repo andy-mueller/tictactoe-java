@@ -24,13 +24,13 @@ public class GameTree<TGameState> {
             }
 
             @Override
-            public <TGameState> Pair<Integer, Node<TGameState>> alphaBeta(Node<TGameState> node, int alpha, int beta, int depth, Player player) {
+            public <TGameState> Pair<Integer, Node<TGameState>> alphaBeta(Node<TGameState> node, int alpha, int beta, int depth) {
                 if (hasSufficientDepth(node, depth)) {
                     return new Pair<>(node.getHeuristicValue(), node);
                 }
                 Pair<Integer, Node<TGameState>> alphaPair = new Pair<>(alpha, null);
                 for (Node<TGameState> child : node.getChildren()) {
-                    Pair<Integer, Node<TGameState>> value = otherPlayer().alphaBeta(child, alphaPair.getFirst(), beta, depth - 1, player);
+                    Pair<Integer, Node<TGameState>> value = otherPlayer().alphaBeta(child, alphaPair.getFirst(), beta, depth - 1);
 
                     if (value.getFirst() > alphaPair.getFirst()) {
                         alphaPair = new Pair<>(value.getFirst(), child);
@@ -49,13 +49,13 @@ public class GameTree<TGameState> {
             }
 
             @Override
-            public <TGameState> Pair<Integer, Node<TGameState>> alphaBeta(Node<TGameState> node, int alpha, int beta, int depth, Player player) {
+            public <TGameState> Pair<Integer, Node<TGameState>> alphaBeta(Node<TGameState> node, int alpha, int beta, int depth) {
                 if (hasSufficientDepth(node, depth)) {
                     return new Pair<>(node.getHeuristicValue(), node);
                 }
                 Pair<Integer, Node<TGameState>> betaPair = new Pair<>(beta, null);
                 for (Node<TGameState> child : node.getChildren()) {
-                    Pair<Integer, Node<TGameState>> value = otherPlayer().alphaBeta(child, alpha, betaPair.getFirst(), depth - 1, player);
+                    Pair<Integer, Node<TGameState>> value = otherPlayer().alphaBeta(child, alpha, betaPair.getFirst(), depth - 1);
                     if (value.getFirst() < betaPair.getFirst()) {
                         betaPair = new Pair<>(value.getFirst(), child);
                     }
@@ -74,7 +74,7 @@ public class GameTree<TGameState> {
 
         abstract Player otherPlayer();
 
-        abstract <TGameState> Pair<Integer, Node<TGameState>> alphaBeta(Node<TGameState> node, int alpha, int beta, int depth, Player player);
+        abstract <TGameState> Pair<Integer, Node<TGameState>> alphaBeta(Node<TGameState> node, int alpha, int beta, int depth);
     }
 
     public GameTree(Node<TGameState> root) {
@@ -86,7 +86,7 @@ public class GameTree<TGameState> {
     }
 
     static <TGameState> Pair<Integer, Node<TGameState>> alphaBeta(Node<TGameState> node, int alpha, int beta, int depth, Player player) {
-        return player.alphaBeta(node, alpha, beta, depth, player);
+        return player.alphaBeta(node, alpha, beta, depth);
     }
 
     public Pair<Integer, Node<TGameState>> alphaBeta(Player player, int depth) {
