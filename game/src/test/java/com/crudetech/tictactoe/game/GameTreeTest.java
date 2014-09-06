@@ -1,6 +1,5 @@
 package com.crudetech.tictactoe.game;
 
-import com.crudetech.collections.Pair;
 import com.crudetech.tictactoe.game.GameTree.Node;
 import com.crudetech.tictactoe.game.GameTree.Player;
 import org.junit.Test;
@@ -28,10 +27,10 @@ public class GameTreeTest {
 
         Node<Void> maxNode = createNode(a, b, c);
         GameTree<Void> gameTree = new GameTree<>(maxNode);
-        Pair<Integer, Node<Void>> value = gameTree.alphaBeta(Player.Max);
+        GameTree.AlphaBetaValue<Void> value = gameTree.alphaBeta(Player.Max);
 
-        assertThat(value.getFirst(), is(42));
-        assertThat(value.getSecond(), is(a));
+        assertThat(value.value, is(42));
+        assertThat(value.node, is(a));
     }
 
 
@@ -120,9 +119,9 @@ public class GameTreeTest {
         Node<Void> minNode = createNode(a, b, c);
         GameTree<Void> gameTree = new GameTree<>(minNode);
 
-        Pair<Integer, Node<Void>> recursiveValue = gameTree.alphaBeta(Player.Min);
-        assertThat(recursiveValue.getFirst(), is(-4));
-        assertThat(recursiveValue.getSecond(), is(c));
+        GameTree.AlphaBetaValue<Void> recursiveValue = gameTree.alphaBeta(Player.Min);
+        assertThat(recursiveValue.value, is(-4));
+        assertThat(recursiveValue.node, is(c));
     }
 
     @Test
@@ -143,10 +142,9 @@ public class GameTreeTest {
         GameTree<Void> gameTree = new GameTree<>(a);
 
 
-        Pair<Integer, Node<Void>> value = gameTree.alphaBeta(Player.Max);
-        assertThat(value.getFirst(), is(-2));
-        assertThat(value.getSecond(), is(c));
-        assertThat(value, is(new Pair<>(-2, c)));
+        GameTree.AlphaBetaValue<Void> value = gameTree.alphaBeta(Player.Max);
+        assertThat(value.value, is(-2));
+        assertThat(value.node, is(c));
     }
 
     @Test
@@ -167,8 +165,9 @@ public class GameTreeTest {
         GameTree<Void> gameTree = new GameTree<>(a);
 
 
-        Pair<Integer, Node<Void>> nodePair = gameTree.alphaBeta(Player.Min);
-        assertThat(nodePair, is(new Pair<>(-3, d)));
+        GameTree.AlphaBetaValue<Void> nodePair = gameTree.alphaBeta(Player.Min);
+        assertThat(nodePair.value, is(-3));
+        assertThat(nodePair.node, is(d));
     }
 
     @Test
@@ -192,8 +191,9 @@ public class GameTreeTest {
         GameTree<Void> gameTree = new GameTree<>(a);
 
 
-        Pair<Integer, Node<Void>> nodePair = gameTree.alphaBeta(Player.Max);
-        assertThat(nodePair, is(new Pair<>(3, b)));
+        GameTree.AlphaBetaValue<Void> nodePair = gameTree.alphaBeta(Player.Max);
+        assertThat(nodePair.value, is(3));
+        assertThat(nodePair.node, is(b));
         verifyZeroInteractions(i, j);
     }
 
@@ -222,8 +222,9 @@ public class GameTreeTest {
         GameTree<Void> gameTree = new GameTree<>(a);
 
 
-        Pair<Integer, Node<Void>> nodePair = gameTree.alphaBeta(Player.Max, 2);
-        assertThat(nodePair, is(new Pair<>(4, c)));
+        GameTree.AlphaBetaValue<Void> nodePair = gameTree.alphaBeta(Player.Max, 2);
+        assertThat(nodePair.value, is(4));
+        assertThat(nodePair.node, is(c));
         verifyZeroInteractions(n, o);
     }
 
@@ -272,9 +273,10 @@ public class GameTreeTest {
         GameTree<Void> gameTree = new GameTree<>(a);
 
 
-        Pair<Integer, Node<Void>> nodePair = gameTree.alphaBeta(Player.Max);
+        GameTree.AlphaBetaValue<Void> nodePair = gameTree.alphaBeta(Player.Max);
 
-        assertThat(nodePair, is(new Pair<>(6, c)));
+        assertThat(nodePair.value, is(6));
+        assertThat(nodePair.node, is(c));
         verifyZeroInteractions(x, bb, ee, ff, gg, r, s, j);
     }
 }

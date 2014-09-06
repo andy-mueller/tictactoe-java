@@ -1,6 +1,5 @@
 package com.crudetech.tictactoe.game;
 
-import com.crudetech.collections.Pair;
 import com.crudetech.functional.UnaryFunction;
 
 import static com.crudetech.query.Query.from;
@@ -16,13 +15,55 @@ class TicTacToeGameTree {
         private final Grid.Mark currentMark;
         private final Grid.Mark startPlayerMark;
 
+        static class EvaluationState {
+            private final boolean gameFinished;
+            private final int heuristicValue;
+
+            public EvaluationState(boolean gameFinished) {
+                this(gameFinished, 0);
+            }
+
+            static EvaluationState evaluate(LinearRandomAccessGrid grid, Grid.Mark startPlayerMark) {
+
+                if (grid.isWinForMark(startPlayerMark)) {
+                    return new EvaluationState(true, 1);
+                } else if (grid.isWinForMark(startPlayerMark.getOpposite())) {
+                    return new EvaluationState(true, -1);
+                } else if (grid.isTieForFirstPlayersMark(startPlayerMark)) {
+                    return new EvaluationState(true, 0);
+                } else {
+                    return new EvaluationState(false);
+                }
+            }
+
+            EvaluationState(boolean gameFinished, int heuristicValue) {
+                this.gameFinished = gameFinished;
+                this.heuristicValue = heuristicValue;
+            }
+
+            public int getHeuristicValue() {
+                if (!hasFinished())
+                    throw new IllegalStateException("The game is ongoing and cannot be evaluated!");
+
+                return heuristicValue;
+            }
+
+            public boolean hasFinished() {
+                return gameFinished;
+            }
+        }
+
+        private final EvaluationState evaluationState;
+
         Node(LinearRandomAccessGrid grid, Grid.Mark mark) {
             this(grid, mark, Grid.Mark.Cross);
         }
+
         Node(LinearRandomAccessGrid grid, Grid.Mark mark, Grid.Mark startPlayerMark) {
             this.grid = grid;
             this.currentMark = mark;
-            this.startPlayerMark= startPlayerMark;
+            this.startPlayerMark = startPlayerMark;
+            evaluationState = EvaluationState.evaluate(grid, startPlayerMark);
         }
 
         @Override
@@ -41,21 +82,12 @@ class TicTacToeGameTree {
 
         @Override
         public boolean hasFinished() {
-            return grid.isTieForFirstPlayersMark(startPlayerMark)
-                || grid.isWinForMark(currentMark)
-                || grid.isWinForMark(currentMark.getOpposite());
+            return evaluationState.hasFinished();
         }
 
         @Override
         public int getHeuristicValue() {
-            if (grid.isWinForMark(startPlayerMark)) {
-                return 1;
-            } else if (grid.isWinForMark(startPlayerMark.getOpposite())) {
-                return -1;
-            } else if (grid.isTieForFirstPlayersMark(startPlayerMark)) {
-                return 0;
-            }
-            throw new IllegalStateException("The game is ongoing and cannot be evaluated!");
+            return evaluationState.getHeuristicValue();
         }
 
         @Override
@@ -98,7 +130,7 @@ class TicTacToeGameTree {
     }
 
     Grid bestNextMove() {
-        Pair<Integer, GameTree.Node<Grid>> nextMove = getGameTree().alphaBeta(playerStrategy);
-        return nextMove.getSecond().getGameState();
+        GameTree.AlphaBetaValue<Grid> nextMove = getGameTree().alphaBeta(playerStrategy);
+        return nextMove.node.getGameState();
     }
 }

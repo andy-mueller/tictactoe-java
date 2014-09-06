@@ -35,13 +35,14 @@ public class ScoreboardUI extends ComponentUI {
         }
 
         Rectangle getNameRectangle() {
-            final double nameBoxHeightRatio = 0.3;
-            final double nameBoxWidthRatio = 0.85;
-            return null;
+            final double nameBoxHeightRatio = 0.33;
+            final double nameBoxWidthRatio = 0.66;
+            return new Rectangle(0, 0, partOf(getWidth(), nameBoxWidthRatio), partOf(getHeight(), nameBoxHeightRatio));
         }
 
         void paint(Graphics2D pipe) {
             paintBackground(pipe);
+            paintDebugSeparators((Graphics2D) pipe.create());
         }
 
         private void paintBackground(Graphics2D pipe) {
@@ -49,15 +50,10 @@ public class ScoreboardUI extends ComponentUI {
             pipe.fill(new Rectangle(location.x, location.y, getWidth(), getHeight()));
         }
 
-        private void paintDebugSeparators(Graphics pipe, int width, int height) {
-            final int horizontalSeparatorHeight = (int) (height * (1.0 / 3));
-
-            pipe.setColor(Color.RED);
-            pipe.drawLine(0, horizontalSeparatorHeight, width, horizontalSeparatorHeight);
-
-            int vertSeparator = (int) (width * (0.66));
-            pipe.drawLine(vertSeparator, horizontalSeparatorHeight, vertSeparator, 0);
-
+        private void paintDebugSeparators(Graphics2D pipe) {
+            pipe.setColor(Color.red);
+            Rectangle nameRectangle = getNameRectangle();
+            pipe.draw(nameRectangle);
         }
     }
 
