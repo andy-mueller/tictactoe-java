@@ -15,28 +15,28 @@ class TicTacToeGameTree {
         private final Grid.Mark currentMark;
         private final Grid.Mark startPlayerMark;
 
-        static class EvaluationState {
+        static class Evaluation {
             private final boolean gameFinished;
             private final int heuristicValue;
 
-            public EvaluationState(boolean gameFinished) {
+            public Evaluation(boolean gameFinished) {
                 this(gameFinished, 0);
             }
 
-            static EvaluationState evaluate(LinearRandomAccessGrid grid, Grid.Mark startPlayerMark) {
+            static Evaluation evaluate(LinearRandomAccessGrid grid, Grid.Mark startPlayerMark) {
 
                 if (grid.isWinForMark(startPlayerMark)) {
-                    return new EvaluationState(true, 1);
+                    return new Evaluation(true, 1);
                 } else if (grid.isWinForMark(startPlayerMark.getOpposite())) {
-                    return new EvaluationState(true, -1);
+                    return new Evaluation(true, -1);
                 } else if (grid.isTieForFirstPlayersMark(startPlayerMark)) {
-                    return new EvaluationState(true, 0);
+                    return new Evaluation(true, 0);
                 } else {
-                    return new EvaluationState(false);
+                    return new Evaluation(false);
                 }
             }
 
-            EvaluationState(boolean gameFinished, int heuristicValue) {
+            Evaluation(boolean gameFinished, int heuristicValue) {
                 this.gameFinished = gameFinished;
                 this.heuristicValue = heuristicValue;
             }
@@ -53,7 +53,7 @@ class TicTacToeGameTree {
             }
         }
 
-        private final EvaluationState evaluationState;
+        private final Evaluation evaluation;
 
         Node(LinearRandomAccessGrid grid, Grid.Mark mark) {
             this(grid, mark, Grid.Mark.Cross);
@@ -63,7 +63,7 @@ class TicTacToeGameTree {
             this.grid = grid;
             this.currentMark = mark;
             this.startPlayerMark = startPlayerMark;
-            evaluationState = EvaluationState.evaluate(grid, startPlayerMark);
+            evaluation = Evaluation.evaluate(grid, startPlayerMark);
         }
 
         @Override
@@ -82,12 +82,12 @@ class TicTacToeGameTree {
 
         @Override
         public boolean hasFinished() {
-            return evaluationState.hasFinished();
+            return evaluation.hasFinished();
         }
 
         @Override
         public int getHeuristicValue() {
-            return evaluationState.getHeuristicValue();
+            return evaluation.getHeuristicValue();
         }
 
         @Override
