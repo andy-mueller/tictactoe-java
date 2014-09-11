@@ -6,6 +6,8 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.*;
 
@@ -100,6 +102,7 @@ public class AlmostEndlessComputerPlayerTournament {
     static class TracingAlphaBetaPruningPlayer extends AlphaBetaPruningPlayer {
         boolean notFirstMove = false;
         public Grid grid;
+        public List<Duration> durations = new ArrayList<>(5);
         private final static Random random = new Random();
 
         static class Builder extends AlphaBetaPruningPlayer.Builder {
@@ -129,6 +132,12 @@ public class AlmostEndlessComputerPlayerTournament {
 
         @Override
         public void yourTurn(Grid actualGrid) {
+            Stopwatch sw = new Stopwatch();
+            makeMove(actualGrid);
+            durations.add(sw.elapsed());
+        }
+
+        private void makeMove(Grid actualGrid) {
             if (notFirstMove) {
                 super.yourTurn(actualGrid);
             } else {

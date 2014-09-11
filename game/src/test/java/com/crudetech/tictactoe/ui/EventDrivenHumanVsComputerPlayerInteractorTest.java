@@ -12,6 +12,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class EventDrivenHumanVsComputerPlayerInteractorTest extends HumanVsComputerPlayerInteractorTest {
 
     private EventSupport<CellEventObject<Object>> event;
+
     @Before
     public void setUp() throws Exception {
         event = new EventSupport<CellEventObject<Object>>();
@@ -24,7 +25,7 @@ public class EventDrivenHumanVsComputerPlayerInteractorTest extends HumanVsCompu
         return HumanVsComputerPlayerInteractor.builder()
                 .setComputerPlayer(computerPlayer)
                 .setHumanPlayer(uiPlayer)
-                .setMadeMove(event)
+                .setHumanPlayerMadeMove(event)
                 .build();
     }
 

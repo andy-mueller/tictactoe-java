@@ -45,7 +45,7 @@ public class HumanVsComputerPlayerInteractor {
 
     public static class Builder {
         private Player computerPlayer;
-        private Event<? extends CellEventObject<?>> madeMove;
+        private Event<? extends CellEventObject<?>> humanPlayerMadeMove;
         private Player humanPlayer;
 
 
@@ -57,8 +57,8 @@ public class HumanVsComputerPlayerInteractor {
             return this;
         }
 
-        public Builder setMadeMove(Event<? extends CellEventObject<?>> humanPlayerMadeMove) {
-            this.madeMove = humanPlayerMadeMove;
+        public Builder setHumanPlayerMadeMove(Event<? extends CellEventObject<?>> humanPlayerMadeMove) {
+            this.humanPlayerMadeMove = humanPlayerMadeMove;
             return this;
         }
 
@@ -69,8 +69,8 @@ public class HumanVsComputerPlayerInteractor {
         }
 
         public HumanVsComputerPlayerInteractor build() {
-            if (madeMove != null) {
-                return new EventDrivenHumanVsComputerPlayerInteractor(computerPlayer, humanPlayer, madeMove);
+            if (humanPlayerMadeMove != null) {
+                return new EventDrivenHumanVsComputerPlayerInteractor(computerPlayer, humanPlayer, humanPlayerMadeMove);
             }
             return new HumanVsComputerPlayerInteractor(computerPlayer, humanPlayer);
         }

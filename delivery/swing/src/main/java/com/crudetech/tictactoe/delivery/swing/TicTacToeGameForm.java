@@ -137,7 +137,7 @@ public class TicTacToeGameForm extends javax.swing.JFrame {
         return HumanVsComputerPlayerInteractor.builder()
                 .setComputerPlayer(computerPlayer)
                 .setHumanPlayer(humanPlayer)
-                .setMadeMove(ticTacToeGrid.cellClicked())
+                .setHumanPlayerMadeMove(ticTacToeGrid.cellClicked())
                 .build();
     }
 
