@@ -15,7 +15,7 @@ public class InitiateNewGameUseCaseTest {
 
     @Test
     public void givenTwoPlayers_newGameIsCreated() throws Exception {
-        UseCase.Presenter<InitiateGameUseCase.Response> presenter = presenterMockForResponse();
+        UseCase.Presenter<InitiateGameUseCase.Response> presenter = presenterMock();
         UseCase<InitiateGameUseCase.Response> uc = useCaseFactory.create("initiate-game");
 
         UseCase.Request.Builder requestBuilder = uc.requestBuilder();
@@ -32,11 +32,11 @@ public class InitiateNewGameUseCaseTest {
     }
 
     @SuppressWarnings("unchecked")
-    private <TResponse> UseCase.Presenter<TResponse> presenterMockForResponse() {
+    private <TResponse> UseCase.Presenter<TResponse> presenterMock() {
         return (UseCase.Presenter<TResponse>) mock(UseCase.Presenter.class);
     }
 
-    static class InitiateGameUseCase implements UseCase<InitiateGameUseCase.Response> {
+    static class InitiateGameUseCase extends TypedUseCase<InitiateGameUseCase.Request, InitiateGameUseCase.Response> {
         public static class Request implements UseCase.Request {
             public Object player1;
             public Object player2;
@@ -52,9 +52,8 @@ public class InitiateNewGameUseCaseTest {
 
                 Response response = (Response) o;
 
-                if (gameId != null ? !gameId.equals(response.gameId) : response.gameId != null) return false;
+                return !(gameId != null ? !gameId.equals(response.gameId) : response.gameId != null);
 
-                return true;
             }
 
             @Override
@@ -64,7 +63,7 @@ public class InitiateNewGameUseCaseTest {
         }
 
         @Override
-        public void execute(UseCase.Request request, UseCase.Presenter<Response> presenter) {
+        protected void apply(Request request, Presenter<Response> presenter) {
             Response r = new Response();
             r.gameId = 42;
             presenter.display(r);
@@ -82,6 +81,17 @@ public class InitiateNewGameUseCaseTest {
                 }
             };
         }
+    }
+
+    abstract static class TypedUseCase<TRequest extends UseCase.Request, TResponse> implements UseCase<TResponse> {
+        @Override
+        public final void execute(Request request, Presenter<TResponse> presenter) {
+            @SuppressWarnings("unchecked")
+            TRequest typedRequest = (TRequest) request;
+            apply(typedRequest, presenter);
+        }
+
+        protected abstract void apply(TRequest request, Presenter<TResponse> presenter);
     }
 
     interface UseCase<TResponse> {
