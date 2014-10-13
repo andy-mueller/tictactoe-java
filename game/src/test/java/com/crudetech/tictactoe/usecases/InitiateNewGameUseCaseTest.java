@@ -64,6 +64,7 @@ public class InitiateNewGameUseCaseTest {
 
         @Override
         protected void apply(Request request, Presenter<Response> presenter) {
+            Object player1 = request.player1;
             Response r = new Response();
             r.gameId = 42;
             presenter.display(r);
