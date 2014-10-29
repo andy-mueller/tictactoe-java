@@ -12,6 +12,20 @@ public class InitiateNewGameUseCaseTest {
 
     UseCaseFactory useCaseFactory = new UseCaseFactory();
 
+    @Test
+    public void createNewPlayer() throws Exception {
+        UseCase.Presenter<CreateNewPlayerUseCase.Response> newPlayerPresenter = presenterMock();
+        UseCase<CreateNewPlayerUseCase.Response> newPlayerUseCase = useCaseFactory.create("new-player");
+        UseCase.Request.Builder requestBuilder = newPlayerUseCase.requestBuilder();
+
+        UseCase.Request request = requestBuilder.createRequest();
+
+        newPlayerUseCase.execute(request, newPlayerPresenter);
+
+        CreateNewPlayerUseCase.Response expectedResponse = new CreateNewPlayerUseCase.Response();
+        verify(newPlayerPresenter).display(expectedResponse);
+
+    }
 
     @Test
     public void givenTwoPlayers_newGameIsCreated() throws Exception {
@@ -36,6 +50,24 @@ public class InitiateNewGameUseCaseTest {
         return (UseCase.Presenter<TResponse>) mock(UseCase.Presenter.class);
     }
 
+
+    static class CreateNewPlayerUseCase extends TypedUseCase<CreateNewPlayerUseCase.Request, CreateNewPlayerUseCase.Response> {
+        static class Request implements UseCase.Request {
+        }
+
+        static class Response {
+        }
+
+        @Override
+        protected void apply(Request request, Presenter<CreateNewPlayerUseCase.Response> presenter) {
+            throw new RuntimeException("Not implemented yet!");
+        }
+
+        @Override
+        public Request.Builder requestBuilder() {
+            throw new RuntimeException("Not implemented yet!");
+        }
+    }
     static class InitiateGameUseCase extends TypedUseCase<InitiateGameUseCase.Request, InitiateGameUseCase.Response> {
         public static class Request implements UseCase.Request {
             public Object player1;
