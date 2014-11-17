@@ -15,6 +15,7 @@ public abstract class ComputerPlayer implements Player {
     public void tie(Grid g) {
     }
 
+    @Override
     public void setGame(TicTacToeGame game) {
         this.game = game;
     }
