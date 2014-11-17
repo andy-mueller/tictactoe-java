@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.UUID;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -15,14 +16,17 @@ public class InitiateNewGameUseCaseTest {
     @Test
     public void createNewPlayer() throws Exception {
         UseCase.Presenter<CreateNewPlayerUseCase.Response> newPlayerPresenter = presenterMock();
-        UseCase<CreateNewPlayerUseCase.Response> newPlayerUseCase = useCaseFactory.create("new-player");
+        PlayerGateway mockGateway = new MockGateway();
+        UseCase<CreateNewPlayerUseCase.Response> newPlayerUseCase = new CreateNewPlayerUseCase(mockGateway);
         UseCase.Request.Builder requestBuilder = newPlayerUseCase.requestBuilder();
 
         UseCase.Request request = requestBuilder.createRequest();
 
         newPlayerUseCase.execute(request, newPlayerPresenter);
 
+
         CreateNewPlayerUseCase.Response expectedResponse = new CreateNewPlayerUseCase.Response();
+        expectedResponse.createdPlayerId = MockGateway.firstId;
         verify(newPlayerPresenter).display(expectedResponse);
 
     }
@@ -50,24 +54,80 @@ public class InitiateNewGameUseCaseTest {
         return (UseCase.Presenter<TResponse>) mock(UseCase.Presenter.class);
     }
 
+    interface PlayerGateway {
+        UUID create(Object player);
+    }
+
+    static class MockGateway implements PlayerGateway {
+        private static final UUID firstId = UUID.randomUUID();
+
+        @Override
+        public UUID create(Object player) {
+            return firstId;
+        }
+    }
+
 
     static class CreateNewPlayerUseCase extends TypedUseCase<CreateNewPlayerUseCase.Request, CreateNewPlayerUseCase.Response> {
         static class Request implements UseCase.Request {
         }
 
         static class Response {
+            public Object createdPlayerId;
+
+            @Override
+            public boolean equals(Object o) {
+                if (isEqualInInstanceOrType(this, o)) return true;
+
+                Response response = (Response) o;
+
+                return Objects.equals(createdPlayerId, response.createdPlayerId);
+
+            }
+
+            private boolean isEqualInInstanceOrType(Response response, Object that) {
+                if (response == that) return true;
+                if (that == null || response.getClass() != that.getClass()) return false;
+                return false;
+            }
+
+            @Override
+            public int hashCode() {
+                return Objects.hashCode(createdPlayerId);
+            }
+
+            @Override
+            public String toString() {
+                return "Response{" +
+                        "createdPlayerId=" + createdPlayerId +
+                        '}';
+            }
+        }
+
+        private final PlayerGateway players;
+
+        CreateNewPlayerUseCase(PlayerGateway players) {
+            this.players = players;
         }
 
         @Override
         protected void apply(Request request, Presenter<CreateNewPlayerUseCase.Response> presenter) {
-            throw new RuntimeException("Not implemented yet!");
+            Response response = new Response();
+            response.createdPlayerId = players.create(null);
+            presenter.display(response);
         }
 
         @Override
         public Request.Builder requestBuilder() {
-            throw new RuntimeException("Not implemented yet!");
+            return new MapRequestBuilder() {
+                @Override
+                public UseCase.Request createRequest() {
+                    return new Request();
+                }
+            };
         }
     }
+
     static class InitiateGameUseCase extends TypedUseCase<InitiateGameUseCase.Request, InitiateGameUseCase.Response> {
         public static class Request implements UseCase.Request {
             public Object player1;
@@ -164,6 +224,8 @@ public class InitiateNewGameUseCaseTest {
             switch (useCaseId) {
                 case "initiate-game":
                     return (UseCase<TResponse>) new InitiateGameUseCase();
+                case "new-player":
+                    return (UseCase<TResponse>) new CreateNewPlayerUseCase(null);
                 default:
                     throw new IllegalArgumentException("Unknown use case");
             }
