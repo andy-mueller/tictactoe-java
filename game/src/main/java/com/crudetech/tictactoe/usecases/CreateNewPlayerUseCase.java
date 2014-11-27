@@ -7,6 +7,7 @@ import java.util.Objects;
  */
 class CreateNewPlayerUseCase extends TypedUseCase<CreateNewPlayerUseCase.Request, CreateNewPlayerUseCase.Response> {
     static class Request implements UseCase.Request {
+        public Object playerType;
     }
 
     static class Response {
@@ -55,7 +56,9 @@ class CreateNewPlayerUseCase extends TypedUseCase<CreateNewPlayerUseCase.Request
         return new MapRequestBuilder() {
             @Override
             public UseCase.Request createRequest() {
-                return new Request();
+                Request r = new Request();
+                r.playerType = valueFor("playerType");
+                return r;
             }
         };
     }

@@ -1,7 +1,6 @@
 package com.crudetech.tictactoe.usecases;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 /**
  *
@@ -15,6 +14,6 @@ abstract class MapRequestBuilder implements UseCase.Request.Builder {
     }
 
     protected Object valueFor(String name) {
-        return Objects.requireNonNull(parameters.get(name));
+        return parameters.get(name);
     }
 }
