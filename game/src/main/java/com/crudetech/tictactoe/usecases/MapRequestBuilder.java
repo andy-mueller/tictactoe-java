@@ -14,6 +14,8 @@ abstract class MapRequestBuilder implements UseCase.Request.Builder {
     }
 
     protected Object valueFor(String name) {
-        return parameters.get(name);
+        Object value = parameters.get(name);
+        if (value == null) throw new MissingParameterException();
+        return value;
     }
 }

@@ -31,6 +31,7 @@ public class CreatePlayerUseCaseTest {
         PlayerGateway mockGateway = new MockGateway();
         UseCase<CreateNewPlayerUseCase.Response> newPlayerUseCase = new CreateNewPlayerUseCase(mockGateway);
         UseCase.Request.Builder requestBuilder = newPlayerUseCase.requestBuilder();
+        requestBuilder.withParameter("playerType", "computer");
 
         UseCase.Request request = requestBuilder.createRequest();
 
@@ -61,6 +62,25 @@ public class CreatePlayerUseCaseTest {
         verify(newPlayerPresenter).display(expectedResponse);
     }
 
+
+    @Test
+    public void _createNewComputerPlayer() throws Exception {
+        UseCase.Presenter<CreateNewPlayerUseCase.Response> newPlayerPresenter = presenterMock();
+        PlayerGateway mockGateway = new MockGateway();
+        UseCase<CreateNewPlayerUseCase.Response> newPlayerUseCase = new CreateNewPlayerUseCase(mockGateway);
+
+
+        CreateNewPlayerUseCase.Request request = new CreateNewPlayerUseCase.Request();
+        request.playerType = CreateNewPlayerUseCase.PlayerType.Copmuter;
+        request.playerName = "Marianne";
+        newPlayerUseCase.execute(request, newPlayerPresenter);
+
+
+        CreateNewPlayerUseCase.Response expectedResponse = new CreateNewPlayerUseCase.Response();
+        expectedResponse.createdPlayerId = MockGateway.firstId;
+        verify(newPlayerPresenter).display(expectedResponse);
+    }
+
     @Test
     public void givenNoPlayerTypeWasSpecified_NoRequestIsBuilt() throws Exception {
         PlayerGateway mockGateway = new MockGateway();
@@ -69,14 +89,14 @@ public class CreatePlayerUseCaseTest {
 
 
         requestBuilder.withParameter("playerType", null);
-        Runnable executeRequest = new Runnable() {
+        Runnable buildRequest = new Runnable() {
             @Override
             public void run() {
                 requestBuilder.createRequest();
             }
         };
 
-        assertThat(executeRequest, doesThrow(IllegalArgumentException.class));
+        assertThat(buildRequest, doesThrow(UseCase.Request.Builder.MissingParameterException.class));
     }
 
     @SuppressWarnings("unchecked")

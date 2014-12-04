@@ -13,6 +13,9 @@ interface UseCase<TResponse> {
             void withParameter(String name, Object value);
 
             Request createRequest();
+
+            public class MissingParameterException extends RuntimeException {
+            }
         }
     }
 
