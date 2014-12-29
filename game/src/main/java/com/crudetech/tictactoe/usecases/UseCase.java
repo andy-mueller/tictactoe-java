@@ -6,17 +6,7 @@ package com.crudetech.tictactoe.usecases;
 interface UseCase<TResponse> {
     void execute(Request request, Presenter<TResponse> presenter);
 
-    Request.Builder requestBuilder();
-
     static interface Request {
-        public interface Builder {
-            void withParameter(String name, Object value);
-
-            Request createRequest();
-
-            public class MissingParameterException extends RuntimeException {
-            }
-        }
     }
 
     public interface Presenter<TResponse> {
