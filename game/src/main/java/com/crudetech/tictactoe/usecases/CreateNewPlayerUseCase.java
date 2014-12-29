@@ -1,11 +1,25 @@
 package com.crudetech.tictactoe.usecases;
 
+import com.crudetech.tictactoe.game.Player;
+
 import java.util.Objects;
 
 /**
  *
  */
 class CreateNewPlayerUseCase extends TypedUseCase<CreateNewPlayerUseCase.Request, CreateNewPlayerUseCase.Response> {
+    private interface PlayerFactory {
+        Player create();
+    }
+
+    public enum PlayerType implements PlayerFactory {
+        Computer;
+        @Override
+        public Player create() {
+            throw new RuntimeException("Not implemented yet!");
+        }
+    }
+
     static class Request implements UseCase.Request {
         public Object playerType;
     }

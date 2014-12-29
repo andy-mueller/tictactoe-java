@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.crudetech.matcher.ThrowsException.doesThrow;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -26,78 +24,22 @@ public class CreatePlayerUseCaseTest {
     }
 
     @Test
-    public void createNewPlayer() throws Exception {
-        UseCase.Presenter<CreateNewPlayerUseCase.Response> newPlayerPresenter = presenterMock();
+    public void createNewAiPlayer() throws Exception {
+        UseCase.Presenter<CreateNewAiPlayerUseCase.Response> newPlayerPresenter = presenterMock();
         PlayerGateway mockGateway = new MockGateway();
-        UseCase<CreateNewPlayerUseCase.Response> newPlayerUseCase = new CreateNewPlayerUseCase(mockGateway);
-        UseCase.Request.Builder requestBuilder = newPlayerUseCase.requestBuilder();
-        requestBuilder.withParameter("playerType", "computer");
+        UseCase<CreateNewAiPlayerUseCase.Response> newPlayerUseCase = new CreateNewAiPlayerUseCase(mockGateway);
 
-        UseCase.Request request = requestBuilder.createRequest();
+
+        CreateNewAiPlayerUseCase.Request request = new CreateNewAiPlayerUseCase.Request();
 
         newPlayerUseCase.execute(request, newPlayerPresenter);
 
 
-        CreateNewPlayerUseCase.Response expectedResponse = new CreateNewPlayerUseCase.Response();
+        CreateNewAiPlayerUseCase.Response expectedResponse = new CreateNewAiPlayerUseCase.Response();
         expectedResponse.createdPlayerId = MockGateway.firstId;
         verify(newPlayerPresenter).display(expectedResponse);
     }
 
-
-    @Test
-    public void createNewComputerPlayer() throws Exception {
-        UseCase.Presenter<CreateNewPlayerUseCase.Response> newPlayerPresenter = presenterMock();
-        PlayerGateway mockGateway = new MockGateway();
-        UseCase<CreateNewPlayerUseCase.Response> newPlayerUseCase = new CreateNewPlayerUseCase(mockGateway);
-
-        UseCase.Request.Builder requestBuilder = newPlayerUseCase.requestBuilder();
-        requestBuilder.withParameter("playerType", "computer");
-        UseCase.Request request = requestBuilder.createRequest();
-
-        newPlayerUseCase.execute(request, newPlayerPresenter);
-
-
-        CreateNewPlayerUseCase.Response expectedResponse = new CreateNewPlayerUseCase.Response();
-        expectedResponse.createdPlayerId = MockGateway.firstId;
-        verify(newPlayerPresenter).display(expectedResponse);
-    }
-
-
-    @Test
-    public void _createNewComputerPlayer() throws Exception {
-        UseCase.Presenter<CreateNewPlayerUseCase.Response> newPlayerPresenter = presenterMock();
-        PlayerGateway mockGateway = new MockGateway();
-        UseCase<CreateNewPlayerUseCase.Response> newPlayerUseCase = new CreateNewPlayerUseCase(mockGateway);
-
-
-        CreateNewPlayerUseCase.Request request = new CreateNewPlayerUseCase.Request();
-        request.playerType = CreateNewPlayerUseCase.PlayerType.Copmuter;
-        request.playerName = "Marianne";
-        newPlayerUseCase.execute(request, newPlayerPresenter);
-
-
-        CreateNewPlayerUseCase.Response expectedResponse = new CreateNewPlayerUseCase.Response();
-        expectedResponse.createdPlayerId = MockGateway.firstId;
-        verify(newPlayerPresenter).display(expectedResponse);
-    }
-
-    @Test
-    public void givenNoPlayerTypeWasSpecified_NoRequestIsBuilt() throws Exception {
-        PlayerGateway mockGateway = new MockGateway();
-        final UseCase<CreateNewPlayerUseCase.Response> newPlayerUseCase = new CreateNewPlayerUseCase(mockGateway);
-        final UseCase.Request.Builder requestBuilder = newPlayerUseCase.requestBuilder();
-
-
-        requestBuilder.withParameter("playerType", null);
-        Runnable buildRequest = new Runnable() {
-            @Override
-            public void run() {
-                requestBuilder.createRequest();
-            }
-        };
-
-        assertThat(buildRequest, doesThrow(UseCase.Request.Builder.MissingParameterException.class));
-    }
 
     @SuppressWarnings("unchecked")
     private <TResponse> UseCase.Presenter<TResponse> presenterMock() {
