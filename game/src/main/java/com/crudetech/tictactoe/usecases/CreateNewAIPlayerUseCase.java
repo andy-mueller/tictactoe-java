@@ -46,7 +46,7 @@ public class CreateNewAiPlayerUseCase extends TypedUseCase<CreateNewAiPlayerUseC
     @Override
     protected void apply(Request request, Presenter<Response> presenter) {
         Response response = new Response();
-        response.createdPlayerId = players.create(null);
+        response.createdPlayerId = players.create(new PlayerReference());
         presenter.display(response);
     }
 }
