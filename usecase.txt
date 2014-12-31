@@ -1,0 +1,28 @@
+UC-001 Ad a new AI player to the environment
+
+Primary Actor
+	Human Player
+	
+Stakeholders and Their Interests
+	Human Player: The user of the system wants to add a AI (artificial intelligence) player
+	              to the system. this play is able to pay the game w/o any human interaction
+				  and will play a perfect game every time
+	
+Supporting Actors (external systems):
+	
+	
+Data
+	<newPlayerId>
+	
+Primary Course
+    1. User issues "create new AI player" command to the system
+	2. The system will create a new perfect AI player and store it for later use during the current session
+	3. The system delivers the ID if the newly created player to the caller for later uses.
+
+Exception course: Invalid input request
+    1. The system will throw an exception
+
+
+Notes
+	It is unlikely that an exception will happen, as the request will most likely stay empty for now.
+------------------------------------------------------------------------
