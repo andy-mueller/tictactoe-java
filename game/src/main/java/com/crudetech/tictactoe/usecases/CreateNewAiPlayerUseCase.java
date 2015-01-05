@@ -5,13 +5,12 @@ import java.util.Objects;
 /**
  *
  */
-public class CreateNewAiPlayerUseCase2 extends TypedUseCase<CreateNewAiPlayerUseCase2.Request, CreateNewAiPlayerUseCase2.Response> {
+public class CreateNewAiPlayerUseCase extends TypedUseCase<CreateNewAiPlayerUseCase.Request, CreateNewAiPlayerUseCase.Response> {
     private final PlayerGateway players;
 
     public static class Request implements UseCase.Request {
     }
 
-    sdfSLFJsajfsLKJFSL jjJASFSAJ
     //test
     public static class Response {
         public Object createdPlayerId;
@@ -40,7 +39,7 @@ public class CreateNewAiPlayerUseCase2 extends TypedUseCase<CreateNewAiPlayerUse
         }
     }
 
-    public CreateNewAiPlayerUseCase2(PlayerGateway playerGateway) {
+    public CreateNewAiPlayerUseCase(PlayerGateway playerGateway) {
         players = playerGateway;
     }
 
