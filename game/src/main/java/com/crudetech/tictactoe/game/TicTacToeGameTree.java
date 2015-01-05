@@ -59,9 +59,9 @@ class TicTacToeGameTree {
             this(grid, mark, Grid.Mark.Cross);
         }
 
-        Node(LinearRandomAccessGrid grid, Grid.Mark mark, Grid.Mark startPlayerMark) {
+        Node(LinearRandomAccessGrid grid, Grid.Mark playersMark, Grid.Mark startPlayerMark) {
             this.grid = grid;
-            this.currentMark = mark;
+            this.currentMark = playersMark;
             this.startPlayerMark = startPlayerMark;
             evaluation = Evaluation.evaluate(grid, startPlayerMark);
         }
@@ -120,9 +120,9 @@ class TicTacToeGameTree {
         }
     }
 
-    TicTacToeGameTree(LinearRandomAccessGrid grid, Grid.Mark mark, GameTree.Player playerStrategy, Grid.Mark startPlayerMark) {
+    TicTacToeGameTree(LinearRandomAccessGrid grid, Grid.Mark playersMark, GameTree.Player playerStrategy, Grid.Mark startPlayerMark) {
         this.playerStrategy = playerStrategy;
-        this.gameTree = new GameTree<>(new Node(grid, mark, startPlayerMark));
+        this.gameTree = new GameTree<>(new Node(grid, playersMark, startPlayerMark));
     }
 
     GameTree<Grid> getGameTree() {

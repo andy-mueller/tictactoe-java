@@ -1,5 +1,6 @@
 package com.crudetech.tictactoe.usecases;
 
+import com.crudetech.matcher.RangeContains;
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,8 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.crudetech.matcher.RangeContains.contains;
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
@@ -65,7 +67,12 @@ public class CreatePlayerUseCaseTest {
         newPlayerUseCase.execute(request, newPlayerPresenter);
 
 
-        assertThat(mockGateway.players, contains(new Matcher[]{instanceOf(PlayerReference.class)}));
+        assertThat(mockGateway.players, contains(AiPlayerReference.class));
+        assertThat(mockGateway.players, hasSize(1));
+    }
+
+    private Matcher<Iterable> contains(Class<?> clazz) {
+        return RangeContains.contains(asList(instanceOf(clazz)));
     }
 
     @SuppressWarnings("unchecked")

@@ -81,10 +81,14 @@ public class TicTacToeGame {
             player2.tie(grid);
             finished = true;
         } else {
-            currentPlayer = currentPlayer == player1 ? player2 : player1;
-            currentPlayersMark = currentPlayersMark.getOpposite();
+            flipCurrentPlayer();
             currentPlayer.yourTurn(grid);
         }
+    }
+
+    private void flipCurrentPlayer() {
+        currentPlayer = currentPlayer == player1 ? player2 : player1;
+        currentPlayersMark = currentPlayersMark.getOpposite();
     }
 
     private void verifyThatItIsPlayersTurn(Player player) {
