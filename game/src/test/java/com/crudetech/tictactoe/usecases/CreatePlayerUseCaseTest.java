@@ -71,6 +71,21 @@ public class CreatePlayerUseCaseTest {
         assertThat(mockGateway.players, hasSize(1));
     }
 
+    @Test
+    public void createNewHumanPlayerAddsNewHumanPlayerToTheEnvironment() throws Exception {
+        UseCase.Presenter<CreateNewHumanPlayerUseCase.Response> newPlayerPresenter = presenterMock();
+        UseCase<CreateNewHumanPlayerUseCase.Response> newPlayerUseCase = new CreateNewHumanPlayerUseCase(mockGateway);
+
+
+        CreateNewHumanPlayerUseCase.Request request = new CreateNewHumanPlayerUseCase.Request();
+
+        newPlayerUseCase.execute(request, newPlayerPresenter);
+
+
+        assertThat(mockGateway.players, contains(HumanPlayerReference.class));
+        assertThat(mockGateway.players, hasSize(1));
+    }
+
     private Matcher<Iterable> contains(Class<?> clazz) {
         return RangeContains.contains(asList(instanceOf(clazz)));
     }

@@ -2,9 +2,12 @@ package com.crudetech.tictactoe.usecases;
 
 import java.util.Objects;
 
-
-public class CreateNewAiPlayerUseCase extends TypedUseCase<CreateNewAiPlayerUseCase.Request, CreateNewAiPlayerUseCase.Response> {
+/**
+ *
+ */
+public class CreateNewHumanPlayerUseCase implements UseCase<CreateNewHumanPlayerUseCase.Response> {
     private final PlayerGateway players;
+
 
     public static class Request implements UseCase.Request {
     }
@@ -36,15 +39,14 @@ public class CreateNewAiPlayerUseCase extends TypedUseCase<CreateNewAiPlayerUseC
         }
     }
 
-    public CreateNewAiPlayerUseCase(PlayerGateway playerGateway) {
-        players = playerGateway;
+    public CreateNewHumanPlayerUseCase(PlayerGateway players) {
+        this.players = players;
     }
 
-
     @Override
-    protected void apply(Request request, Presenter<Response> presenter) {
+    public void execute(UseCase.Request request, Presenter<Response> presenter) {
         Response response = new Response();
-        response.createdPlayerId = players.create(new AiPlayerReference());
+        response.createdPlayerId = players.create(new HumanPlayerReference());
         presenter.display(response);
     }
 }
