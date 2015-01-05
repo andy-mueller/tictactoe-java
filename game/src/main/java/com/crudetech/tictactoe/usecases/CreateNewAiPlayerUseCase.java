@@ -8,10 +8,9 @@ import java.util.Objects;
 public class CreateNewAiPlayerUseCase extends TypedUseCase<CreateNewAiPlayerUseCase.Request, CreateNewAiPlayerUseCase.Response> {
     private final PlayerGateway players;
 
-    public static class Request implements UseCase.Request {                                          //
+    public static class Request implements UseCase.Request {
     }
 
-    //test
     public static class Response {
         public Object createdPlayerId;
 
