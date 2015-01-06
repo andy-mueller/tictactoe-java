@@ -67,7 +67,11 @@ public class CreatePlayerUseCaseTest {
         newPlayerUseCase.execute(request, newPlayerPresenter);
 
 
-        assertThat(mockGateway.players, contains(AiPlayerReference.class));
+        assertOnePlayerWasAddedOfType(AiPlayerReference.class);
+    }
+
+    private void assertOnePlayerWasAddedOfType(Class<?> type) {
+        assertThat(mockGateway.players, contains(type));
         assertThat(mockGateway.players, hasSize(1));
     }
 
@@ -82,8 +86,7 @@ public class CreatePlayerUseCaseTest {
         newPlayerUseCase.execute(request, newPlayerPresenter);
 
 
-        assertThat(mockGateway.players, contains(HumanPlayerReference.class));
-        assertThat(mockGateway.players, hasSize(1));
+        assertOnePlayerWasAddedOfType(HumanPlayerReference.class);
     }
 
     private Matcher<Iterable> contains(Class<?> clazz) {

@@ -33,7 +33,7 @@ public class CreateNewHumanPlayerUseCase implements UseCase<CreateNewHumanPlayer
 
         @Override
         public String toString() {
-            return "CreateNewAIPlayerUseCase.Response{" +
+            return "CreateNewHumanPlayerUseCase.Response{" +
                     "createdPlayerId=" + createdPlayerId +
                     '}';
         }
