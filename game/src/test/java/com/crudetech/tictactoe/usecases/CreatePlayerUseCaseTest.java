@@ -85,7 +85,6 @@ public class CreatePlayerUseCaseTest {
 
         newPlayerUseCase.execute(request, newPlayerPresenter);
 
-
         assertOnePlayerWasAddedOfType(HumanPlayerReference.class);
     }
 
