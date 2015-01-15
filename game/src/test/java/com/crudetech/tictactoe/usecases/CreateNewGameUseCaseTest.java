@@ -1,34 +1,104 @@
 package com.crudetech.tictactoe.usecases;
 
 import com.crudetech.tictactoe.game.Grid;
+import com.crudetech.tictactoe.game.Player;
+import com.crudetech.tictactoe.game.TicTacToeGame;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Objects;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 public class CreateNewGameUseCaseTest {
-    private Object startPlayerId;
-    private Object secondPlayerId;
-    private Object gameId;
+    private final Grid.Mark startPlayersMark = Grid.Mark.Cross;
+    private PlayerReference startPlayerReference;
+    private PlayerReference secondPlayerReference;
+    private final Object startPlayerId = "__startPlayerId__";
+    private final Object secondPlayerId = "__secondPlayerId__";
+    private final Object gameId = "__gameId__";
     private PlayerGateway mockPlayerGateway;
+    private CreateNewGameUseCase createGame;
+    private GameGateway mockGameGateway;
+    private PlayerFactory mockPlayerFactory;
+    private TicTacToeGame spiedGame;
+    private Player startPlayer;
+
 
     @Before
     public void setUp() throws Exception {
-        gameId = "a_test_ID";
-        mockPlayerGateway = null;
+        setupPlayerGateway();
+
+        setupPlayerFactory();
+
+        setupUseCase();
+    }
+
+    private void setupUseCase() {
+        mockGameGateway = mock(GameGateway.class);
+        createGame = new CreateNewGameUseCase(mockPlayerGateway, mockPlayerFactory, mockGameGateway) {
+            @Override
+            GameBuilder gameBuilder() {
+                return new GameBuilder() {
+                    @Override
+                    TicTacToeGame newGame(Player startingPlayer, Player otherPlayer) {
+                        spiedGame = spy(super.newGame(startingPlayer, otherPlayer));
+                        return spiedGame;
+                    }
+                };
+            }
+        };
+    }
+
+    private void setupPlayerFactory() {
+        startPlayer = mock(Player.class);
+        Player secondPlayer = mock(Player.class);
+        mockPlayerFactory = mock(PlayerFactory.class);
+        when(mockPlayerFactory.create(startPlayerReference)).thenReturn(startPlayer);
+        when(mockPlayerFactory.create(secondPlayerReference)).thenReturn(secondPlayer);
+    }
+
+    private void setupPlayerGateway() {
+        startPlayerReference = new PlayerReference();
+        secondPlayerReference = new PlayerReference();
+        mockPlayerGateway = mock(PlayerGateway.class);
+        when(mockPlayerGateway.fetchById(startPlayerId)).thenReturn(startPlayerReference);
+        when(mockPlayerGateway.fetchById(secondPlayerId)).thenReturn(secondPlayerReference);
     }
 
     @Test
-    public void givenTwoPlayers_GameCanBeCreated() throws Exception {
+    public void givenTwoPlayers_PlayerReferencesAreRetrieved() throws Exception {
         UseCase.Presenter<CreateNewGameUseCase.Response> presenterMock = presenterMock();
-        CreateNewGameUseCase createGame = new CreateNewGameUseCase(mockPlayerGateway);
+        CreateNewGameUseCase.Request request = createRequest();
+
+        createGame.execute(request, presenterMock);
+
+        verify(mockPlayerGateway).fetchById(startPlayerId);
+        verify(mockPlayerGateway).fetchById(secondPlayerId);
+    }
+
+    private CreateNewGameUseCase.Request createRequest() {
         CreateNewGameUseCase.Request request = new CreateNewGameUseCase.Request();
         request.startPlayerId = startPlayerId;
-        request.startPlayerMark = Grid.Mark.Cross;
+        request.startPlayersMark = startPlayersMark;
         request.otherPlayerId = secondPlayerId;
+        return request;
+    }
+
+    @Test
+    public void givenTwoPlayers_NewGameIsCreated() throws Exception {
+        UseCase.Presenter<CreateNewGameUseCase.Response> presenterMock = presenterMock();
+        CreateNewGameUseCase.Request request = createRequest();
+
+        createGame.execute(request, presenterMock);
+
+        verify(mockGameGateway).add(spiedGame);
+    }
+
+    @Test
+    public void givenGameCreation_GameIdIsReturned() throws Exception {
+        UseCase.Presenter<CreateNewGameUseCase.Response> presenterMock = presenterMock();
+        CreateNewGameUseCase.Request request = createRequest();
+        when(mockGameGateway.add(any(TicTacToeGame.class))).thenReturn(gameId);
 
         createGame.execute(request, presenterMock);
 
@@ -37,48 +107,36 @@ public class CreateNewGameUseCaseTest {
         verify(presenterMock).display(expectedResponse);
     }
 
-    //players are retrieved
-    //game is added to gateway
-    //game can be used to play? ->MakeMoveUseCase
 
-    static class CreateNewGameUseCase extends TypedUseCase<CreateNewGameUseCase.Request, CreateNewGameUseCase.Response> {
-        public CreateNewGameUseCase(PlayerGateway players) {
-        }
+    @Test
+    public void givenTwoPlayerIds_GamePlayersAreCreated() throws Exception {
+        UseCase.Presenter<CreateNewGameUseCase.Response> presenterMock = presenterMock();
+        CreateNewGameUseCase.Request request = createRequest();
 
-        public static class Response {
-            public Object createdGameId;
+        createGame.execute(request, presenterMock);
 
-            @Override
-            public boolean equals(Object o) {
-                if (this == o) return true;
-                if (o == null || getClass() != o.getClass()) return false;
-
-                Response response = (Response) o;
-
-                if (!Objects.equals(createdGameId, response.createdGameId)) return false;
-
-                return true;
-            }
-
-            @Override
-            public int hashCode() {
-                return Objects.hashCode(createdGameId);
-            }
-        }
-
-        public static class Request implements UseCase.Request {
-            public Object startPlayerId;
-            public Grid.Mark startPlayerMark;
-            public Object otherPlayerId;
-        }
-
-        @Override
-        protected void apply(Request request, Presenter<Response> presenter) {
-            Response r = new Response();
-            r.createdGameId = "a_test_ID";
-            presenter.display(r);
-        }
+        verify(mockPlayerFactory).create(startPlayerReference);
+        verify(mockPlayerFactory).create(secondPlayerReference);
     }
+
+
+    @Test
+    public void createdGameIsStartedWIthCorrectPlayerAndMark() throws Exception {
+        UseCase.Presenter<CreateNewGameUseCase.Response> presenterMock = presenterMock();
+        CreateNewGameUseCase.Request request = createRequest();
+
+        createGame.execute(request, presenterMock);
+
+        verify(spiedGame).startWithPlayer(startPlayer, startPlayersMark);
+    }
+
+    //request validation??
+    //game can be used to play? ->MakeMoveUseCase
+    //win game
+    //lose game
+    //tie
+    //test all request/response objects for equals/hashcode
+    // ID als object oder UUID??
 
     @SuppressWarnings("unchecked")
     private static <TResponse> UseCase.Presenter<TResponse> presenterMock() {

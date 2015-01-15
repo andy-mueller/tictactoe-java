@@ -27,9 +27,14 @@ public class CreatePlayerUseCaseTest {
         private final List<Object> players = new ArrayList<>();
 
         @Override
-        public UUID create(Object player) {
+        public UUID create(PlayerReference player) {
             players.add(player);
             return firstId;
+        }
+
+        @Override
+        public PlayerReference fetchById(Object playerId) {
+            throw new RuntimeException("Not implemented yet!");
         }
     }
 

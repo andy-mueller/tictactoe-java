@@ -1,5 +1,5 @@
 package com.crudetech.tictactoe.usecases;
 
 
-public class AiPlayerReference {
+public class AiPlayerReference extends PlayerReference {
 }

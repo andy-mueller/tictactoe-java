@@ -71,7 +71,7 @@ class TicTacToeGameTree {
             return "Node{" +
                     "grid=" + grid +
                     ", currentMark=" + currentMark +
-                    ", startPlayerMark=" + startPlayerMark +
+                    ", startPlayersMark=" + startPlayerMark +
                     '}';
         }
 

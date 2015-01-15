@@ -3,5 +3,5 @@ package com.crudetech.tictactoe.usecases;
 /**
  *
  */
-public class HumanPlayerReference {
+public class HumanPlayerReference extends PlayerReference {
 }
