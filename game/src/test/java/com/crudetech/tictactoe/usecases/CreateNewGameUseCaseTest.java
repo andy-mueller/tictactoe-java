@@ -130,14 +130,6 @@ public class CreateNewGameUseCaseTest {
         verify(spiedGame).startWithPlayer(startPlayer, startPlayersMark);
     }
 
-    //request validation??
-    //game can be used to play? ->MakeMoveUseCase
-    //win game
-    //lose game
-    //tie
-    //test all request/response objects for equals/hashcode
-    // ID als object oder UUID??
-
     @SuppressWarnings("unchecked")
     private static <TResponse> UseCase.Presenter<TResponse> presenterMock() {
         return (UseCase.Presenter<TResponse>) mock(UseCase.Presenter.class);
