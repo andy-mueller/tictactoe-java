@@ -13,7 +13,6 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -45,9 +44,9 @@ public class CreatePlayerUseCaseTest {
 
     @Test
     public void createNewAiPlayer() throws Exception {
-        UseCase.Presenter<CreateNewAiPlayerUseCase.Response> newPlayerPresenter = presenterMock();
-        PlayerGateway mockGateway = new MockGateway();
-        UseCase<CreateNewAiPlayerUseCase.Response> newPlayerUseCase = new CreateNewAiPlayerUseCase(mockGateway);
+        CreateNewAiPlayerUseCase.Presenter newPlayerPresenter = mock(CreateNewAiPlayerUseCase.Presenter.class);
+
+        UseCase<CreateNewAiPlayerUseCase.Request, CreateNewAiPlayerUseCase.Presenter> newPlayerUseCase = new CreateNewAiPlayerUseCase(mockGateway);
 
 
         CreateNewAiPlayerUseCase.Request request = new CreateNewAiPlayerUseCase.Request();
@@ -63,8 +62,8 @@ public class CreatePlayerUseCaseTest {
 
     @Test
     public void createNewAiPlayerAddsNewAiPlayerToTheEnvironment() throws Exception {
-        UseCase.Presenter<CreateNewAiPlayerUseCase.Response> newPlayerPresenter = presenterMock();
-        UseCase<CreateNewAiPlayerUseCase.Response> newPlayerUseCase = new CreateNewAiPlayerUseCase(mockGateway);
+        CreateNewAiPlayerUseCase.Presenter newPlayerPresenter = mock(CreateNewAiPlayerUseCase.Presenter.class);
+        UseCase<CreateNewAiPlayerUseCase.Request, CreateNewAiPlayerUseCase.Presenter> newPlayerUseCase = new CreateNewAiPlayerUseCase(mockGateway);
 
 
         CreateNewAiPlayerUseCase.Request request = new CreateNewAiPlayerUseCase.Request();
@@ -82,8 +81,8 @@ public class CreatePlayerUseCaseTest {
 
     @Test
     public void createNewHumanPlayerAddsNewHumanPlayerToTheEnvironment() throws Exception {
-        UseCase.Presenter<CreateNewHumanPlayerUseCase.Response> newPlayerPresenter = presenterMock();
-        UseCase<CreateNewHumanPlayerUseCase.Response> newPlayerUseCase = new CreateNewHumanPlayerUseCase(mockGateway);
+        CreateNewHumanPlayerUseCase.Presenter newPlayerPresenter = mock(CreateNewHumanPlayerUseCase.Presenter.class);
+        UseCase<CreateNewHumanPlayerUseCase.Request, CreateNewHumanPlayerUseCase.Presenter> newPlayerUseCase = new CreateNewHumanPlayerUseCase(mockGateway);
 
 
         CreateNewHumanPlayerUseCase.Request request = new CreateNewHumanPlayerUseCase.Request();
@@ -95,23 +94,5 @@ public class CreatePlayerUseCaseTest {
 
     private Matcher<Iterable> contains(Class<?> clazz) {
         return RangeContains.contains(asList(instanceOf(clazz)));
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <TResponse> UseCase.Presenter<TResponse> presenterMock() {
-        return (UseCase.Presenter<TResponse>) mock(UseCase.Presenter.class);
-    }
-
-    static class MockPresenter<T> implements UseCase.Presenter<T> {
-        private T response;
-
-        @Override
-        public void display(T response) {
-            this.response = response;
-        }
-
-        void verifyLastResponseWas(T expectedResponse) {
-            assertThat(this.response, is(expectedResponse));
-        }
     }
 }

@@ -5,11 +5,11 @@ import java.util.Objects;
 /**
  *
  */
-public class CreateNewHumanPlayerUseCase implements UseCase<CreateNewHumanPlayerUseCase.Response> {
+public class CreateNewHumanPlayerUseCase implements UseCase<CreateNewHumanPlayerUseCase.Request, CreateNewHumanPlayerUseCase.Presenter> {
     private final PlayerGateway players;
 
 
-    public static class Request implements UseCase.Request {
+    public static class Request {
     }
 
     public static class Response {
@@ -39,12 +39,16 @@ public class CreateNewHumanPlayerUseCase implements UseCase<CreateNewHumanPlayer
         }
     }
 
+    public static interface Presenter {
+        void display(Response response);
+    }
+
     public CreateNewHumanPlayerUseCase(PlayerGateway players) {
         this.players = players;
     }
 
     @Override
-    public void execute(UseCase.Request request, Presenter<Response> presenter) {
+    public void execute(Request request, Presenter presenter) {
         Response response = new Response();
         response.createdPlayerId = players.create(new HumanPlayerReference());
         presenter.display(response);

@@ -67,7 +67,7 @@ public class CreateNewGameUseCaseTest {
 
     @Test
     public void givenTwoPlayers_PlayerReferencesAreRetrieved() throws Exception {
-        UseCase.Presenter<CreateNewGameUseCase.Response> presenterMock = presenterMock();
+        CreateNewGameUseCase.Presenter presenterMock = mock(CreateNewGameUseCase.Presenter.class);
         CreateNewGameUseCase.Request request = createRequest();
 
         createGame.execute(request, presenterMock);
@@ -86,7 +86,7 @@ public class CreateNewGameUseCaseTest {
 
     @Test
     public void givenTwoPlayers_NewGameIsCreated() throws Exception {
-        UseCase.Presenter<CreateNewGameUseCase.Response> presenterMock = presenterMock();
+        CreateNewGameUseCase.Presenter presenterMock = mock(CreateNewGameUseCase.Presenter.class);
         CreateNewGameUseCase.Request request = createRequest();
 
         createGame.execute(request, presenterMock);
@@ -96,7 +96,7 @@ public class CreateNewGameUseCaseTest {
 
     @Test
     public void givenGameCreation_GameIdIsReturned() throws Exception {
-        UseCase.Presenter<CreateNewGameUseCase.Response> presenterMock = presenterMock();
+        CreateNewGameUseCase.Presenter presenterMock = mock(CreateNewGameUseCase.Presenter.class);
         CreateNewGameUseCase.Request request = createRequest();
         when(mockGameGateway.add(any(TicTacToeGame.class))).thenReturn(gameId);
 
@@ -110,7 +110,7 @@ public class CreateNewGameUseCaseTest {
 
     @Test
     public void givenTwoPlayerIds_GamePlayersAreCreated() throws Exception {
-        UseCase.Presenter<CreateNewGameUseCase.Response> presenterMock = presenterMock();
+        CreateNewGameUseCase.Presenter presenterMock = mock(CreateNewGameUseCase.Presenter.class);
         CreateNewGameUseCase.Request request = createRequest();
 
         createGame.execute(request, presenterMock);
@@ -122,16 +122,11 @@ public class CreateNewGameUseCaseTest {
 
     @Test
     public void createdGameIsStartedWIthCorrectPlayerAndMark() throws Exception {
-        UseCase.Presenter<CreateNewGameUseCase.Response> presenterMock = presenterMock();
+        CreateNewGameUseCase.Presenter presenterMock = mock(CreateNewGameUseCase.Presenter.class);
         CreateNewGameUseCase.Request request = createRequest();
 
         createGame.execute(request, presenterMock);
 
         verify(spiedGame).startWithPlayer(startPlayer, startPlayersMark);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <TResponse> UseCase.Presenter<TResponse> presenterMock() {
-        return (UseCase.Presenter<TResponse>) mock(UseCase.Presenter.class);
     }
 }

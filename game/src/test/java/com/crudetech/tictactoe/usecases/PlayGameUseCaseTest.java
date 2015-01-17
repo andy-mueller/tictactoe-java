@@ -3,8 +3,6 @@ package com.crudetech.tictactoe.usecases;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.mockito.Mockito.mock;
-
 public class PlayGameUseCaseTest {
 
     @Ignore
@@ -21,12 +19,9 @@ public class PlayGameUseCaseTest {
 //        verify(mockPresenter).display(expectedGrid);
     }
 
-    private UseCase.Presenter<PlayGameUseCase.Response> newMockPresenter() {
-        return mock(UseCase.Presenter.class);
-    }
 
-    static class PlayGameUseCase extends TypedUseCase<PlayGameUseCase.Request, PlayGameUseCase.Response> {
-        public static class Request implements UseCase.Request {
+    static class PlayGameUseCase implements UseCase<PlayGameUseCase.Request, PlayGameUseCase.Presenter> {
+        public static class Request {
         }
 
         public static class Response {
@@ -37,8 +32,11 @@ public class PlayGameUseCaseTest {
 //            void gameAlreadyFinished();
 //        }
 
+        static class Presenter {
+        }
+
         @Override
-        protected void apply(Request request, Presenter<Response> presenter) {
+        public void execute(Request request, Presenter presenter) {
         }
     }
 }

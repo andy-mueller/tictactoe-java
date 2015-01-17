@@ -4,10 +4,8 @@ import com.crudetech.tictactoe.game.*;
 
 import java.util.Objects;
 
-/**
- *
- */
-class CreateNewGameUseCase extends TypedUseCase<CreateNewGameUseCase.Request, CreateNewGameUseCase.Response> {
+
+class CreateNewGameUseCase implements UseCase<CreateNewGameUseCase.Request, CreateNewGameUseCase.Presenter> {
     private final PlayerGateway playerReferences;
     private final PlayerFactory playerFactory;
     private final GameGateway games;
@@ -46,7 +44,11 @@ class CreateNewGameUseCase extends TypedUseCase<CreateNewGameUseCase.Request, Cr
         }
     }
 
-    public static class Request implements UseCase.Request {
+    public static interface Presenter {
+        void display(Response response);
+    }
+
+    public static class Request {
         public Object startPlayerId;
         public Grid.Mark startPlayersMark;
         public Object otherPlayerId;
@@ -85,7 +87,7 @@ class CreateNewGameUseCase extends TypedUseCase<CreateNewGameUseCase.Request, Cr
     }
 
     @Override
-    protected void apply(Request request, Presenter<Response> presenter) {
+    public void execute(Request request, Presenter presenter) {
         Player startPlayer = createPlayer(request.startPlayerId);
         Player secondPlayer = createPlayer(request.otherPlayerId);
 
