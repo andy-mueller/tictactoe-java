@@ -121,7 +121,7 @@ public class CreateNewGameUseCaseTest {
 
 
     @Test
-    public void createdGameIsStartedWIthCorrectPlayerAndMark() throws Exception {
+    public void createdGameIsStartedWithCorrectPlayerAndMark() throws Exception {
         CreateNewGameUseCase.Presenter presenterMock = mock(CreateNewGameUseCase.Presenter.class);
         CreateNewGameUseCase.Request request = createRequest();
 
