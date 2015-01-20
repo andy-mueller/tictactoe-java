@@ -6,7 +6,7 @@ import java.util.Objects;
  *
  */
 public class CreateNewHumanPlayerUseCase implements UseCase<CreateNewHumanPlayerUseCase.Request, CreateNewHumanPlayerUseCase.Presenter> {
-    private final PlayerGateway players;
+    private final PlayerReferenceGateway players;
 
 
     public static class Request {
@@ -43,7 +43,7 @@ public class CreateNewHumanPlayerUseCase implements UseCase<CreateNewHumanPlayer
         void display(Response response);
     }
 
-    public CreateNewHumanPlayerUseCase(PlayerGateway players) {
+    public CreateNewHumanPlayerUseCase(PlayerReferenceGateway players) {
         this.players = players;
     }
 

@@ -6,11 +6,11 @@ import java.util.Objects;
 
 
 class CreateNewGameUseCase implements UseCase<CreateNewGameUseCase.Request, CreateNewGameUseCase.Presenter> {
-    private final PlayerGateway playerReferences;
+    private final PlayerReferenceGateway playerReferences;
     private final PlayerFactory playerFactory;
-    private final GameGateway games;
+    private final GameReferenceGateway games;
 
-    public CreateNewGameUseCase(PlayerGateway players, PlayerFactory playerFactory, GameGateway games) {
+    public CreateNewGameUseCase(PlayerReferenceGateway players, PlayerFactory playerFactory, GameReferenceGateway games) {
         this.playerReferences = players;
         this.playerFactory = playerFactory;
         this.games = games;
@@ -54,31 +54,31 @@ class CreateNewGameUseCase implements UseCase<CreateNewGameUseCase.Request, Crea
         public Object otherPlayerId;
     }
 
-    static class GameBuilder {
-
+    static class GameReferenceBuilder {
         private Player otherPlayer;
         private Grid.Mark startPlayerMark;
         private Player startingPlayer;
 
-        public GameBuilder withStartPlayer(Player startingPlayer) {
+        public GameReferenceBuilder withStartPlayer(Player startingPlayer) {
             this.startingPlayer = startingPlayer;
             return this;
         }
 
-        public GameBuilder withStartPlayerMark(Grid.Mark startPlayerMark) {
+        public GameReferenceBuilder withStartPlayerMark(Grid.Mark startPlayerMark) {
             this.startPlayerMark = startPlayerMark;
             return this;
         }
 
-        public GameBuilder withOtherPlayer(Player otherPlayer) {
+        public GameReferenceBuilder withOtherPlayer(Player otherPlayer) {
             this.otherPlayer = otherPlayer;
             return this;
         }
 
-        public TicTacToeGame build() {
+        public GameReference build() {
             TicTacToeGame g = newGame(startingPlayer, otherPlayer);
             g.startWithPlayer(startingPlayer, startPlayerMark);
-            return g;
+            GameReference reference = new GameReference(g, startingPlayer, otherPlayer);
+            return reference;
         }
 
         TicTacToeGame newGame(Player startingPlayer, Player otherPlayer) {
@@ -91,13 +91,13 @@ class CreateNewGameUseCase implements UseCase<CreateNewGameUseCase.Request, Crea
         Player startPlayer = createPlayer(request.startPlayerId);
         Player secondPlayer = createPlayer(request.otherPlayerId);
 
-        TicTacToeGame game = gameBuilder()
+        GameReference gameReference = gameReferenceBuilder()
                 .withStartPlayer(startPlayer)
                 .withStartPlayerMark(request.startPlayersMark)
                 .withOtherPlayer(secondPlayer).build();
 
         Response response = new Response();
-        response.createdGameId = games.add(game);
+        response.createdGameId = games.add(gameReference);
         presenter.display(response);
     }
 
@@ -105,7 +105,7 @@ class CreateNewGameUseCase implements UseCase<CreateNewGameUseCase.Request, Crea
         return playerFactory.create(playerReferences.fetchById(playerId));
     }
 
-    GameBuilder gameBuilder() {
-        return new GameBuilder();
+    GameReferenceBuilder gameReferenceBuilder() {
+        return new GameReferenceBuilder();
     }
 }

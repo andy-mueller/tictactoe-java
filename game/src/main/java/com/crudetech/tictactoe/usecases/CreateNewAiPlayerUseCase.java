@@ -4,7 +4,7 @@ import java.util.Objects;
 
 
 public class CreateNewAiPlayerUseCase implements UseCase<CreateNewAiPlayerUseCase.Request, CreateNewAiPlayerUseCase.Presenter> {
-    private final PlayerGateway players;
+    private final PlayerReferenceGateway players;
 
     public static class Request {
     }
@@ -40,8 +40,8 @@ public class CreateNewAiPlayerUseCase implements UseCase<CreateNewAiPlayerUseCas
         void display(Response response);
     }
 
-    public CreateNewAiPlayerUseCase(PlayerGateway playerGateway) {
-        players = playerGateway;
+    public CreateNewAiPlayerUseCase(PlayerReferenceGateway playerReferenceGateway) {
+        players = playerReferenceGateway;
     }
 
 

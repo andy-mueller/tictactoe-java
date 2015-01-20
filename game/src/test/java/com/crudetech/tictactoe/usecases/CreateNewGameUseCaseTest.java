@@ -16,12 +16,13 @@ public class CreateNewGameUseCaseTest {
     private final Object startPlayerId = "__startPlayerId__";
     private final Object secondPlayerId = "__secondPlayerId__";
     private final Object gameId = "__gameId__";
-    private PlayerGateway mockPlayerGateway;
+    private PlayerReferenceGateway mockPlayerReferenceGateway;
     private CreateNewGameUseCase createGame;
-    private GameGateway mockGameGateway;
+    private GameReferenceGateway mockGameReferenceGateway;
     private PlayerFactory mockPlayerFactory;
     private TicTacToeGame spiedGame;
     private Player startPlayer;
+    private Player secondPlayer;
 
 
     @Before
@@ -34,11 +35,11 @@ public class CreateNewGameUseCaseTest {
     }
 
     private void setupUseCase() {
-        mockGameGateway = mock(GameGateway.class);
-        createGame = new CreateNewGameUseCase(mockPlayerGateway, mockPlayerFactory, mockGameGateway) {
+        mockGameReferenceGateway = mock(GameReferenceGateway.class);
+        createGame = new CreateNewGameUseCase(mockPlayerReferenceGateway, mockPlayerFactory, mockGameReferenceGateway) {
             @Override
-            GameBuilder gameBuilder() {
-                return new GameBuilder() {
+            GameReferenceBuilder gameReferenceBuilder() {
+                return new GameReferenceBuilder() {
                     @Override
                     TicTacToeGame newGame(Player startingPlayer, Player otherPlayer) {
                         spiedGame = spy(super.newGame(startingPlayer, otherPlayer));
@@ -51,7 +52,7 @@ public class CreateNewGameUseCaseTest {
 
     private void setupPlayerFactory() {
         startPlayer = mock(Player.class);
-        Player secondPlayer = mock(Player.class);
+        secondPlayer = mock(Player.class);
         mockPlayerFactory = mock(PlayerFactory.class);
         when(mockPlayerFactory.create(startPlayerReference)).thenReturn(startPlayer);
         when(mockPlayerFactory.create(secondPlayerReference)).thenReturn(secondPlayer);
@@ -60,9 +61,9 @@ public class CreateNewGameUseCaseTest {
     private void setupPlayerGateway() {
         startPlayerReference = new PlayerReference();
         secondPlayerReference = new PlayerReference();
-        mockPlayerGateway = mock(PlayerGateway.class);
-        when(mockPlayerGateway.fetchById(startPlayerId)).thenReturn(startPlayerReference);
-        when(mockPlayerGateway.fetchById(secondPlayerId)).thenReturn(secondPlayerReference);
+        mockPlayerReferenceGateway = mock(PlayerReferenceGateway.class);
+        when(mockPlayerReferenceGateway.fetchById(startPlayerId)).thenReturn(startPlayerReference);
+        when(mockPlayerReferenceGateway.fetchById(secondPlayerId)).thenReturn(secondPlayerReference);
     }
 
     @Test
@@ -72,8 +73,8 @@ public class CreateNewGameUseCaseTest {
 
         createGame.execute(request, presenterMock);
 
-        verify(mockPlayerGateway).fetchById(startPlayerId);
-        verify(mockPlayerGateway).fetchById(secondPlayerId);
+        verify(mockPlayerReferenceGateway).fetchById(startPlayerId);
+        verify(mockPlayerReferenceGateway).fetchById(secondPlayerId);
     }
 
     private CreateNewGameUseCase.Request createRequest() {
@@ -91,14 +92,15 @@ public class CreateNewGameUseCaseTest {
 
         createGame.execute(request, presenterMock);
 
-        verify(mockGameGateway).add(spiedGame);
+        GameReference expectedGame = new GameReference(spiedGame, startPlayer, secondPlayer);
+        verify(mockGameReferenceGateway).add(expectedGame);
     }
 
     @Test
     public void givenGameCreation_GameIdIsReturned() throws Exception {
         CreateNewGameUseCase.Presenter presenterMock = mock(CreateNewGameUseCase.Presenter.class);
         CreateNewGameUseCase.Request request = createRequest();
-        when(mockGameGateway.add(any(TicTacToeGame.class))).thenReturn(gameId);
+        when(mockGameReferenceGateway.add(any(GameReference.class))).thenReturn(gameId);
 
         createGame.execute(request, presenterMock);
 

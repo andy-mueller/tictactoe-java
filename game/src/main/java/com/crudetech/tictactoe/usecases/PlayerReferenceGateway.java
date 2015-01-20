@@ -5,7 +5,7 @@ import java.util.UUID;
 /**
  *
  */
-interface PlayerGateway {
+interface PlayerReferenceGateway {
     UUID create(PlayerReference player);
 
     PlayerReference fetchById(Object playerId);

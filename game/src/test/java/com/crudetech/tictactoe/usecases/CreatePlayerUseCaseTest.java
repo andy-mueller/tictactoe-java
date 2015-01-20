@@ -19,9 +19,9 @@ import static org.mockito.Mockito.verify;
 
 public class CreatePlayerUseCaseTest {
 
-    private MockGateway mockGateway;
+    private MockReferenceGateway mockGateway;
 
-    static class MockGateway implements PlayerGateway {
+    static class MockReferenceGateway implements PlayerReferenceGateway {
         private static final UUID firstId = UUID.randomUUID();
         private final List<Object> players = new ArrayList<>();
 
@@ -39,7 +39,7 @@ public class CreatePlayerUseCaseTest {
 
     @Before
     public void setUp() throws Exception {
-        mockGateway = new MockGateway();
+        mockGateway = new MockReferenceGateway();
     }
 
     @Test
@@ -55,7 +55,7 @@ public class CreatePlayerUseCaseTest {
 
 
         CreateNewAiPlayerUseCase.Response expectedResponse = new CreateNewAiPlayerUseCase.Response();
-        expectedResponse.createdPlayerId = MockGateway.firstId;
+        expectedResponse.createdPlayerId = MockReferenceGateway.firstId;
         verify(newPlayerPresenter).display(expectedResponse);
     }
 
