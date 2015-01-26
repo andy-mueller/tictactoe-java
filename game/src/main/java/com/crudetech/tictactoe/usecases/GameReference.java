@@ -1,6 +1,7 @@
 package com.crudetech.tictactoe.usecases;
 
 
+import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.Player;
 import com.crudetech.tictactoe.game.TicTacToeGame;
 
@@ -44,5 +45,13 @@ class GameReference {
                 ", startPlayer=" + startPlayer +
                 ", otherPlayer=" + otherPlayer +
                 '}';
+    }
+
+    public Player getPlayerById(Object playerId) {
+        return startPlayer;
+    }
+
+    public void makeMove(Player movingPlayer, Grid.Location move) {
+        game.makeMove(movingPlayer, move);
     }
 }
