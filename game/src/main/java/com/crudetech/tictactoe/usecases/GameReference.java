@@ -51,7 +51,7 @@ class GameReference {
         return startPlayer;
     }
 
-    public void makeMove(Player movingPlayer, Grid.Location move) {
-        game.makeMove(movingPlayer, move);
+    public void makeMove(Object movingPlayerId, Grid.Location move) {
+        game.makeMove(getPlayerById(movingPlayerId), move);
     }
 }

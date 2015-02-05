@@ -32,6 +32,68 @@ public class PlayGameUseCaseTest {
         Player movingPlayer = new HumanPlayer();
         TicTacToeGame game = new TicTacToeGame(movingPlayer, otherPlayer);
         game.startWithPlayer(movingPlayer, movingPlayersMark);
+
+        GameReference gameReference = new GameReference(game, movingPlayer, otherPlayer);
+        GameReferenceGateway gameReferenceGatewayMock = mock(GameReferenceGateway.class);
+        when(gameReferenceGatewayMock.fetchById(gameId)).thenReturn(gameReference);
+
+
+        UseCase<PlayGameUseCase.Request, PlayGameUseCase.Presenter> playGame = new PlayGameUseCase(gameReferenceGatewayMock);
+
+        PlayGameUseCase.Request request = new PlayGameUseCase.Request();
+        request.gameId = gameId;
+        request.movingPlayerId = movingPlayerId;
+        request.move = movingPlayersMove;
+
+        playGame.execute(request, mockPresenter);
+
+        verify(mockPresenter).display(expectedGrid);
+    }
+
+    @Test
+    public void givenPlayerMakeMove_NewGridIsPresented2() throws Exception {
+        PlayGameUseCase.Presenter mockPresenter = mock(PlayGameUseCase.Presenter.class);
+
+        Grid.Location movingPlayersMove = Grid.Location.of(Grid.Row.First, Grid.Column.First);
+
+
+        GameReference gameReference = mock(GameReference.class);
+        GameReferenceGateway gameReferenceGatewayMock = mock(GameReferenceGateway.class);
+        when(gameReferenceGatewayMock.fetchById(gameId)).thenReturn(gameReference);
+
+
+        UseCase<PlayGameUseCase.Request, PlayGameUseCase.Presenter> playGame = new PlayGameUseCase(gameReferenceGatewayMock);
+
+        PlayGameUseCase.Request request = new PlayGameUseCase.Request();
+        request.gameId = gameId;
+        request.movingPlayerId = movingPlayerId;
+        request.move = movingPlayersMove;
+
+        playGame.execute(request, mockPresenter);
+
+        verify(gameReference).makeMove(movingPlayerId, movingPlayersMove);
+    }
+
+    @Test
+    public void givenPlayerMakeMoveToWin_FinalGridIsPresented() throws Exception {
+        PlayGameUseCase.Presenter mockPresenter = mock(PlayGameUseCase.Presenter.class);
+
+        Grid.Mark movingPlayersMark = Grid.Mark.Cross;
+        Grid.Location movingPlayersMove = Grid.Location.of(Grid.Row.First, Grid.Column.First);
+        Grid.Location otherPlayersMove = Grid.Location.of(Grid.Row.Third, Grid.Column.Third);
+
+        Grid expectedGrid = LinearRandomAccessGrid.of(
+                Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought
+        );
+
+
+        Player otherPlayer = new SingleMovePlayer(otherPlayersMove);
+        Player movingPlayer = new HumanPlayer();
+
+        TicTacToeGameMother gameFactory = new TicTacToeGameMother();
+        TicTacToeGame game = gameFactory.createOpenAndAlmostFinishedGame(movingPlayer, otherPlayer);
         GameReference gameReference = new GameReference(game, movingPlayer, otherPlayer);
 
         GameReferenceGateway gameReferenceGatewayMock = mock(GameReferenceGateway.class);
