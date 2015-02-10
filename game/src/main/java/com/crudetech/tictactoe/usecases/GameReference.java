@@ -47,11 +47,17 @@ class GameReference {
                 '}';
     }
 
+    static interface Presenter {
+        void display(Grid grid);
+    }
     public Player getPlayerById(Object playerId) {
         return startPlayer;
     }
 
-    public void makeMove(Object movingPlayerId, Grid.Location move) {
-        game.makeMove(getPlayerById(movingPlayerId), move);
+    public void makeMove(Object movingPlayerId, Grid.Location move, Presenter presenter) {
+        HumanPlayer movingPlayer = (HumanPlayer) getPlayerById(movingPlayerId);
+        movingPlayer.setPresenter(presenter);
+        game.makeMove(movingPlayer, move);
     }
+
 }

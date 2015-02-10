@@ -8,7 +8,7 @@ import com.crudetech.tictactoe.game.TicTacToeGame;
  *
  */
 class HumanPlayer implements Player {
-    private PlayGameUseCase.Presenter presenter = nullPresenter();
+    private GameReference.Presenter presenter = nullPresenter();
 
     @Override
     public void yourTurn(Grid actualGrid) {
@@ -34,7 +34,7 @@ class HumanPlayer implements Player {
     public void setGame(TicTacToeGame game) {
     }
 
-    public void setPresenter(PlayGameUseCase.Presenter presenter) {
+    public void setPresenter(GameReference.Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -42,8 +42,8 @@ class HumanPlayer implements Player {
         presenter = nullPresenter();
     }
 
-    private PlayGameUseCase.Presenter nullPresenter() {
-        return new PlayGameUseCase.Presenter() {
+    private GameReference.Presenter nullPresenter() {
+        return new GameReference.Presenter() {
             @Override
             public void display(Grid grid) {
             }

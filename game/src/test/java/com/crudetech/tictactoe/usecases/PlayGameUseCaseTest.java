@@ -2,10 +2,12 @@ package com.crudetech.tictactoe.usecases;
 
 import com.crudetech.tictactoe.game.*;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 public class PlayGameUseCaseTest {
 
@@ -51,7 +53,7 @@ public class PlayGameUseCaseTest {
     }
 
     @Test
-    public void givenPlayerMakeMove_NewGridIsPresented2() throws Exception {
+    public void givenPlayerMakeMove_MoveIsForwardedToGame() throws Exception {
         PlayGameUseCase.Presenter mockPresenter = mock(PlayGameUseCase.Presenter.class);
 
         Grid.Location movingPlayersMove = Grid.Location.of(Grid.Row.First, Grid.Column.First);
@@ -71,31 +73,20 @@ public class PlayGameUseCaseTest {
 
         playGame.execute(request, mockPresenter);
 
-        verify(gameReference).makeMove(movingPlayerId, movingPlayersMove);
+        verify(gameReference).makeMove(eq(movingPlayerId), eq(movingPlayersMove), any(GameReference.Presenter.class));
     }
 
     @Test
-    public void givenPlayerMakeMoveToWin_FinalGridIsPresented() throws Exception {
+    public void givenGameAnswers_GridIsDisplayed() throws Exception {
         PlayGameUseCase.Presenter mockPresenter = mock(PlayGameUseCase.Presenter.class);
 
-        Grid.Mark movingPlayersMark = Grid.Mark.Cross;
         Grid.Location movingPlayersMove = Grid.Location.of(Grid.Row.First, Grid.Column.First);
-        Grid.Location otherPlayersMove = Grid.Location.of(Grid.Row.Third, Grid.Column.Third);
-
-        Grid expectedGrid = LinearRandomAccessGrid.of(
-                Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought
-        );
 
 
-        Player otherPlayer = new SingleMovePlayer(otherPlayersMove);
-        Player movingPlayer = new HumanPlayer();
-
-        TicTacToeGameMother gameFactory = new TicTacToeGameMother();
-        TicTacToeGame game = gameFactory.createOpenAndAlmostFinishedGame(movingPlayer, otherPlayer);
-        GameReference gameReference = new GameReference(game, movingPlayer, otherPlayer);
-
+        GameReference gameReference = mock(GameReference.class);
+        GameReferencePresenterMock gameRefPresenterMock = new GameReferencePresenterMock();
+        doAnswer(gameRefPresenterMock).when(gameReference).makeMove(eq(movingPlayerId), eq(movingPlayersMove), any(GameReference.Presenter.class));
+        gameRefPresenterMock.displayGrid(LinearRandomAccessGrid.empty());
         GameReferenceGateway gameReferenceGatewayMock = mock(GameReferenceGateway.class);
         when(gameReferenceGatewayMock.fetchById(gameId)).thenReturn(gameReference);
 
@@ -109,7 +100,7 @@ public class PlayGameUseCaseTest {
 
         playGame.execute(request, mockPresenter);
 
-        verify(mockPresenter).display(expectedGrid);
+        verify(gameReference).makeMove(eq(movingPlayerId), eq(movingPlayersMove), any(GameReference.Presenter.class));
     }
 
     private static class SingleMovePlayer extends ComputerPlayer {
@@ -125,4 +116,29 @@ public class PlayGameUseCaseTest {
         }
     }
 
+
+    private static class GameReferencePresenterMock implements Answer<Void> {
+
+        interface Action<T> {
+            void execute(T item);
+        }
+
+        Action<GameReference.Presenter> action = mock(Action.class);
+
+        @Override
+        public Void answer(InvocationOnMock invocation) throws Throwable {
+            GameReference.Presenter grp = (GameReference.Presenter) invocation.getArguments()[2];
+            action.execute(grp);
+            return null;
+        }
+
+        public void displayGrid(final Grid grid) {
+            action = new Action<GameReference.Presenter>() {
+                @Override
+                public void execute(GameReference.Presenter item) {
+                    item.display(grid);
+                }
+            };
+        }
+    }
 }
