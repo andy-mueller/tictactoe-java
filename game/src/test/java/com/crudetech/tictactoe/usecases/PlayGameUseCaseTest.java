@@ -17,7 +17,6 @@ public class PlayGameUseCaseTest {
 
     private GameReference gameReferenceMock;
     private GameReferencePresenterMock gameReferencePresenterMock;
-    private GameReferenceGateway gameReferenceGatewayMock;
     private Grid.Location movingPlayersMove;
     private PlayGameUseCase.Presenter mockPresenter;
     private UseCase<PlayGameUseCase.Request, PlayGameUseCase.Presenter> playGame;
@@ -32,7 +31,7 @@ public class PlayGameUseCaseTest {
         doAnswer(gameReferencePresenterMock).when(gameReferenceMock).makeMove(eq(movingPlayerId), any(Grid.Location.class), any(GameReference.Presenter.class));
 
 
-        gameReferenceGatewayMock = mock(GameReferenceGateway.class);
+        GameReferenceGateway gameReferenceGatewayMock = mock(GameReferenceGateway.class);
         when(gameReferenceGatewayMock.fetchById(gameId)).thenReturn(gameReferenceMock);
         mockPresenter = mock(PlayGameUseCase.Presenter.class);
 
@@ -120,7 +119,12 @@ public class PlayGameUseCaseTest {
             void execute(T item);
         }
 
-        Action<GameReference.Presenter> action = mock(Action.class);
+        private Action<GameReference.Presenter> action = nullAction();
+
+        @SuppressWarnings("unchecked")
+        private static Action<GameReference.Presenter> nullAction() {
+            return mock(Action.class);
+        }
 
         @Override
         public Void answer(InvocationOnMock invocation) throws Throwable {
