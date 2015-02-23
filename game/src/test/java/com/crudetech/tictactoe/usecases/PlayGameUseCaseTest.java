@@ -1,6 +1,7 @@
 package com.crudetech.tictactoe.usecases;
 
 import com.crudetech.tictactoe.game.*;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -14,13 +15,35 @@ public class PlayGameUseCaseTest {
     private Object gameId = "__gameId__";
     private Object movingPlayerId = "__movingPlayerId__";
 
+    private GameReference gameReferenceMock;
+    private GameReferencePresenterMock gameReferencePresenterMock;
+    private GameReferenceGateway gameReferenceGatewayMock;
+    private Grid.Location movingPlayersMove;
+    private PlayGameUseCase.Presenter mockPresenter;
+    private UseCase<PlayGameUseCase.Request, PlayGameUseCase.Presenter> playGame;
+
+
+    @Before
+    public void setUp() throws Exception {
+        movingPlayersMove = Grid.Location.of(Grid.Row.First, Grid.Column.First);
+
+        gameReferenceMock = mock(GameReference.class);
+        gameReferencePresenterMock = new GameReferencePresenterMock();
+        doAnswer(gameReferencePresenterMock).when(gameReferenceMock).makeMove(eq(movingPlayerId), any(Grid.Location.class), any(GameReference.Presenter.class));
+
+
+        gameReferenceGatewayMock = mock(GameReferenceGateway.class);
+        when(gameReferenceGatewayMock.fetchById(gameId)).thenReturn(gameReferenceMock);
+        mockPresenter = mock(PlayGameUseCase.Presenter.class);
+
+        playGame = new PlayGameUseCase(gameReferenceGatewayMock);
+    }
 
     @Test
     public void givenPlayerMakeMove_NewGridIsPresented() throws Exception {
         PlayGameUseCase.Presenter mockPresenter = mock(PlayGameUseCase.Presenter.class);
 
         Grid.Mark movingPlayersMark = Grid.Mark.Cross;
-        Grid.Location movingPlayersMove = Grid.Location.of(Grid.Row.First, Grid.Column.First);
         Grid.Location otherPlayersMove = Grid.Location.of(Grid.Row.Third, Grid.Column.Third);
 
         Grid expectedGrid = LinearRandomAccessGrid.of(
@@ -42,10 +65,7 @@ public class PlayGameUseCaseTest {
 
         UseCase<PlayGameUseCase.Request, PlayGameUseCase.Presenter> playGame = new PlayGameUseCase(gameReferenceGatewayMock);
 
-        PlayGameUseCase.Request request = new PlayGameUseCase.Request();
-        request.gameId = gameId;
-        request.movingPlayerId = movingPlayerId;
-        request.move = movingPlayersMove;
+        PlayGameUseCase.Request request = createMoveRequest();
 
         playGame.execute(request, mockPresenter);
 
@@ -54,53 +74,30 @@ public class PlayGameUseCaseTest {
 
     @Test
     public void givenPlayerMakeMove_MoveIsForwardedToGame() throws Exception {
-        PlayGameUseCase.Presenter mockPresenter = mock(PlayGameUseCase.Presenter.class);
-
-        Grid.Location movingPlayersMove = Grid.Location.of(Grid.Row.First, Grid.Column.First);
-
-
-        GameReference gameReference = mock(GameReference.class);
-        GameReferenceGateway gameReferenceGatewayMock = mock(GameReferenceGateway.class);
-        when(gameReferenceGatewayMock.fetchById(gameId)).thenReturn(gameReference);
-
-
-        UseCase<PlayGameUseCase.Request, PlayGameUseCase.Presenter> playGame = new PlayGameUseCase(gameReferenceGatewayMock);
-
-        PlayGameUseCase.Request request = new PlayGameUseCase.Request();
-        request.gameId = gameId;
-        request.movingPlayerId = movingPlayerId;
-        request.move = movingPlayersMove;
+        PlayGameUseCase.Request request = createMoveRequest();
 
         playGame.execute(request, mockPresenter);
 
-        verify(gameReference).makeMove(eq(movingPlayerId), eq(movingPlayersMove), any(GameReference.Presenter.class));
+        verify(gameReferenceMock).makeMove(eq(movingPlayerId), eq(movingPlayersMove), any(GameReference.Presenter.class));
     }
 
     @Test
     public void givenGameAnswers_GridIsDisplayed() throws Exception {
-        PlayGameUseCase.Presenter mockPresenter = mock(PlayGameUseCase.Presenter.class);
+        gameReferencePresenterMock.displayGrid(LinearRandomAccessGrid.empty());
 
-        Grid.Location movingPlayersMove = Grid.Location.of(Grid.Row.First, Grid.Column.First);
+        PlayGameUseCase.Request request = createMoveRequest();
 
+        playGame.execute(request, mockPresenter);
 
-        GameReference gameReference = mock(GameReference.class);
-        GameReferencePresenterMock gameRefPresenterMock = new GameReferencePresenterMock();
-        doAnswer(gameRefPresenterMock).when(gameReference).makeMove(eq(movingPlayerId), eq(movingPlayersMove), any(GameReference.Presenter.class));
-        gameRefPresenterMock.displayGrid(LinearRandomAccessGrid.empty());
-        GameReferenceGateway gameReferenceGatewayMock = mock(GameReferenceGateway.class);
-        when(gameReferenceGatewayMock.fetchById(gameId)).thenReturn(gameReference);
+        verify(gameReferenceMock).makeMove(eq(movingPlayerId), eq(movingPlayersMove), any(GameReference.Presenter.class));
+    }
 
-
-        UseCase<PlayGameUseCase.Request, PlayGameUseCase.Presenter> playGame = new PlayGameUseCase(gameReferenceGatewayMock);
-
+    private PlayGameUseCase.Request createMoveRequest() {
         PlayGameUseCase.Request request = new PlayGameUseCase.Request();
         request.gameId = gameId;
         request.movingPlayerId = movingPlayerId;
         request.move = movingPlayersMove;
-
-        playGame.execute(request, mockPresenter);
-
-        verify(gameReference).makeMove(eq(movingPlayerId), eq(movingPlayersMove), any(GameReference.Presenter.class));
+        return request;
     }
 
     private static class SingleMovePlayer extends ComputerPlayer {
