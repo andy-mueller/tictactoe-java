@@ -3,11 +3,9 @@ package com.crudetech.tictactoe.usecases;
 import com.crudetech.tictactoe.game.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 
 public class PlayGameUseCaseTest {
@@ -15,8 +13,7 @@ public class PlayGameUseCaseTest {
     private Object gameId = "__gameId__";
     private Object movingPlayerId = "__movingPlayerId__";
 
-    private GameReference gameReferenceMock;
-    private GameReferencePresenterMock gameReferencePresenterMock;
+    private GameReferenceMock gameReferenceMock;
     private Grid.Location movingPlayersMove;
     private PlayGameUseCase.Presenter mockPresenter;
     private UseCase<PlayGameUseCase.Request, PlayGameUseCase.Presenter> playGame;
@@ -26,9 +23,7 @@ public class PlayGameUseCaseTest {
     public void setUp() throws Exception {
         movingPlayersMove = Grid.Location.of(Grid.Row.First, Grid.Column.First);
 
-        gameReferenceMock = mock(GameReference.class);
-        gameReferencePresenterMock = new GameReferencePresenterMock();
-        doAnswer(gameReferencePresenterMock).when(gameReferenceMock).makeMove(eq(movingPlayerId), any(Grid.Location.class), any(GameReference.Presenter.class));
+        gameReferenceMock = new GameReferenceMock();
 
 
         GameReferenceGateway gameReferenceGatewayMock = mock(GameReferenceGateway.class);
@@ -77,18 +72,23 @@ public class PlayGameUseCaseTest {
 
         playGame.execute(request, mockPresenter);
 
-        verify(gameReferenceMock).makeMove(eq(movingPlayerId), eq(movingPlayersMove), any(GameReference.Presenter.class));
+        gameReferenceMock.verifyMakeMove(movingPlayerId, movingPlayersMove);
     }
 
     @Test
     public void givenGameAnswers_GridIsDisplayed() throws Exception {
-        gameReferencePresenterMock.displayGrid(LinearRandomAccessGrid.empty());
+        Grid grid = anyGrid();
+        gameReferenceMock.displayGrid(grid);
 
         PlayGameUseCase.Request request = createMoveRequest();
 
         playGame.execute(request, mockPresenter);
 
-        verify(gameReferenceMock).makeMove(eq(movingPlayerId), eq(movingPlayersMove), any(GameReference.Presenter.class));
+        verify(mockPresenter).display(grid);
+    }
+
+    private Grid anyGrid() {
+        return LinearRandomAccessGrid.empty();
     }
 
     private PlayGameUseCase.Request createMoveRequest() {
@@ -112,8 +112,14 @@ public class PlayGameUseCaseTest {
         }
     }
 
+    private static class GameReferenceMock extends GameReference {
 
-    private static class GameReferencePresenterMock implements Answer<Void> {
+        private Object movingPlayerId;
+        private Grid.Location move;
+
+        GameReferenceMock() {
+            super(null, null, null);
+        }
 
         interface Action<T> {
             void execute(T item);
@@ -127,19 +133,28 @@ public class PlayGameUseCaseTest {
         }
 
         @Override
-        public Void answer(InvocationOnMock invocation) throws Throwable {
-            GameReference.Presenter grp = (GameReference.Presenter) invocation.getArguments()[2];
-            action.execute(grp);
-            return null;
+        public void makeMove(Object movingPlayerId, Grid.Location move, Presenter presenter) {
+            this.movingPlayerId = movingPlayerId;
+            this.move = move;
+            action.execute(presenter);
         }
 
         public void displayGrid(final Grid grid) {
-            action = new Action<GameReference.Presenter>() {
+            setAction(new Action<GameReference.Presenter>() {
                 @Override
                 public void execute(GameReference.Presenter item) {
                     item.display(grid);
                 }
-            };
+            });
+        }
+
+        public void setAction(Action<Presenter> action) {
+            this.action = action;
+        }
+
+        public void verifyMakeMove(Object playerId, Grid.Location playersMove) {
+            assertThat(this.movingPlayerId, is(playerId));
+            assertThat(this.move, is(playersMove));
         }
     }
 }
