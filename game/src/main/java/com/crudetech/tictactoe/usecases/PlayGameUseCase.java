@@ -15,11 +15,12 @@ class PlayGameUseCase implements UseCase<PlayGameUseCase.Request, PlayGameUseCas
         public Grid.Location move;
     }
 
-    public static class Response {
-    }
-
     static interface Presenter {
         void display(Grid grid);
+
+        void highlight(Grid.ThreeInARow threeInARow);
+
+        void finished();
     }
 
     @Override
@@ -27,7 +28,6 @@ class PlayGameUseCase implements UseCase<PlayGameUseCase.Request, PlayGameUseCas
         GameReference gameReference = games.fetchById(request.gameId);
 
         gameReference.makeMove(request.movingPlayerId, request.move, adapt(presenter));
-//        movingPlayer.resetPresenter();
     }
 
     private GameReference.Presenter adapt(final Presenter presenter) {
@@ -35,6 +35,16 @@ class PlayGameUseCase implements UseCase<PlayGameUseCase.Request, PlayGameUseCas
             @Override
             public void display(Grid grid) {
                 presenter.display(grid);
+            }
+
+            @Override
+            public void highlight(Grid.ThreeInARow threeInARow) {
+                presenter.highlight(threeInARow);
+            }
+
+            @Override
+            public void finished() {
+                presenter.finished();
             }
         };
     }

@@ -49,6 +49,10 @@ class GameReference {
 
     static interface Presenter {
         void display(Grid grid);
+
+        void highlight(Grid.ThreeInARow threeInARow);
+
+        void finished();
     }
     public Player getPlayerById(Object playerId) {
         return startPlayer;
@@ -58,6 +62,7 @@ class GameReference {
         HumanPlayer movingPlayer = (HumanPlayer) getPlayerById(movingPlayerId);
         movingPlayer.setPresenter(presenter);
         game.makeMove(movingPlayer, move);
+//        movingPlayer.resetPresenter();
     }
 
 }

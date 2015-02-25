@@ -87,8 +87,54 @@ public class PlayGameUseCaseTest {
         verify(mockPresenter).display(grid);
     }
 
-    private Grid anyGrid() {
-        return LinearRandomAccessGrid.empty();
+    @Test
+    public void givenGameAnswersWithHighlight_HighLightIsDisplayed() throws Exception {
+        final Grid.ThreeInARow highlightedRow = diagonal();
+        gameReferenceMock.execute(new GameReferenceMock.Action<GameReference.Presenter>() {
+            @Override
+            public void execute(GameReference.Presenter item) {
+                item.highlight(highlightedRow);
+            }
+        });
+
+        PlayGameUseCase.Request request = createMoveRequest();
+
+        playGame.execute(request, mockPresenter);
+
+        verify(mockPresenter).highlight(highlightedRow);
+    }
+
+
+    @Test
+    public void givenGameAnswersFinished_FinishingIsDisplayed() throws Exception {
+        gameReferenceMock.execute(new GameReferenceMock.Action<GameReference.Presenter>() {
+            @Override
+            public void execute(GameReference.Presenter item) {
+                item.finished();
+            }
+        });
+
+        PlayGameUseCase.Request request = createMoveRequest();
+
+        playGame.execute(request, mockPresenter);
+
+        verify(mockPresenter).finished();
+    }
+
+    private Grid.ThreeInARow diagonal() {
+        return Grid.ThreeInARow.of(
+                Grid.Mark.Cross,
+                Grid.Location.of(Grid.Row.First, Grid.Column.First),
+                Grid.Location.of(Grid.Row.Second, Grid.Column.Second),
+                Grid.Location.of(Grid.Row.Third, Grid.Column.Third)
+        );
+    }
+
+    private static Grid anyGrid() {
+        return LinearRandomAccessGrid.of(
+                Grid.Mark.Nought, Grid.Mark.None, Grid.Mark.Cross,
+                Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought);
     }
 
     private PlayGameUseCase.Request createMoveRequest() {
@@ -140,7 +186,7 @@ public class PlayGameUseCaseTest {
         }
 
         public void displayGrid(final Grid grid) {
-            setAction(new Action<GameReference.Presenter>() {
+            execute(new Action<GameReference.Presenter>() {
                 @Override
                 public void execute(GameReference.Presenter item) {
                     item.display(grid);
@@ -148,7 +194,7 @@ public class PlayGameUseCaseTest {
             });
         }
 
-        public void setAction(Action<Presenter> action) {
+        public void execute(Action<Presenter> action) {
             this.action = action;
         }
 

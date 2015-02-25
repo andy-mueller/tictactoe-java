@@ -47,6 +47,15 @@ class HumanPlayer implements Player {
             @Override
             public void display(Grid grid) {
             }
+
+            @Override
+            public void highlight(Grid.ThreeInARow threeInARow) {
+            }
+
+            @Override
+            public void finished() {
+
+            }
         };
     }
 }
