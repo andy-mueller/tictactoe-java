@@ -49,10 +49,13 @@ public class PlayGameUseCaseTest {
 
         Player otherPlayer = new SingleMovePlayer(otherPlayersMove);
         Player movingPlayer = new HumanPlayer();
-        TicTacToeGame game = new TicTacToeGame(movingPlayer, otherPlayer);
-        game.startWithPlayer(movingPlayer, movingPlayersMark);
 
-        GameReference gameReference = new GameReference(game, movingPlayer, otherPlayer);
+        GameReference gameReference = GameReference.builder()
+                .withStartPlayer(movingPlayer)
+                .withStartPlayerMark(movingPlayersMark)
+                .withOtherPlayer(otherPlayer)
+                .build();
+
         GameReferenceGateway gameReferenceGatewayMock = mock(GameReferenceGateway.class);
         when(gameReferenceGatewayMock.fetchById(gameId)).thenReturn(gameReference);
 

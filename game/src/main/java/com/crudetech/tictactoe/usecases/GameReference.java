@@ -65,4 +65,39 @@ class GameReference {
 //        movingPlayer.resetPresenter();
     }
 
+    static Builder builder() {
+        return new Builder();
+    }
+
+    static class Builder {
+        private Player otherPlayer;
+        private Grid.Mark startPlayerMark;
+        private Player startingPlayer;
+
+        public Builder withStartPlayer(Player startingPlayer) {
+            this.startingPlayer = startingPlayer;
+            return this;
+        }
+
+        public Builder withStartPlayerMark(Grid.Mark startPlayerMark) {
+            this.startPlayerMark = startPlayerMark;
+            return this;
+        }
+
+        public Builder withOtherPlayer(Player otherPlayer) {
+            this.otherPlayer = otherPlayer;
+            return this;
+        }
+
+        public GameReference build() {
+            TicTacToeGame g = newGame(startingPlayer, otherPlayer);
+            g.startWithPlayer(startingPlayer, startPlayerMark);
+            GameReference reference = new GameReference(g, startingPlayer, otherPlayer);
+            return reference;
+        }
+
+        TicTacToeGame newGame(Player startingPlayer, Player otherPlayer) {
+            return new TicTacToeGame(startingPlayer, otherPlayer);
+        }
+    }
 }

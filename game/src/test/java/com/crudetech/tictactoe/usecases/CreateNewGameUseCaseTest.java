@@ -38,8 +38,8 @@ public class CreateNewGameUseCaseTest {
         mockGameReferenceGateway = mock(GameReferenceGateway.class);
         createGame = new CreateNewGameUseCase(mockPlayerReferenceGateway, mockPlayerFactory, mockGameReferenceGateway) {
             @Override
-            GameReferenceBuilder gameReferenceBuilder() {
-                return new GameReferenceBuilder() {
+            GameReference.Builder gameReferenceBuilder() {
+                return new GameReference.Builder() {
                     @Override
                     TicTacToeGame newGame(Player startingPlayer, Player otherPlayer) {
                         spiedGame = spy(super.newGame(startingPlayer, otherPlayer));
@@ -92,8 +92,7 @@ public class CreateNewGameUseCaseTest {
 
         createGame.execute(request, presenterMock);
 
-        GameReference expectedGame = new GameReference(spiedGame, startPlayer, secondPlayer);
-        verify(mockGameReferenceGateway).add(expectedGame);
+        verify(mockGameReferenceGateway).add(any(GameReference.class));
     }
 
     @Test
