@@ -121,7 +121,7 @@ public class TicTacToeGameTest {
         }
 
         @Test
-        public void addMarkAddsMarkAndLetsOtherPlayerPlay() {
+        public void makeMoveAddsMarkAndLetsOtherPlayerPlay() {
             game.makeMove(firstPlayer, Grid.Row.Second, Grid.Column.First);
 
             Grid expectedGrid = LinearRandomAccessGrid.of(
