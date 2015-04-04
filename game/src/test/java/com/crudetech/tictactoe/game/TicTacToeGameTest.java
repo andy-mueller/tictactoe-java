@@ -109,7 +109,7 @@ public class TicTacToeGameTest {
         }
 
         @Test
-        public void addMarkWithWrongPlayerThrows() {
+        public void makeMoveWithWrongPlayerThrows() {
             Runnable startWithDifferentPlayer = new Runnable() {
                 @Override
                 public void run() {
@@ -244,17 +244,17 @@ public class TicTacToeGameTest {
         }
 
         @Test
-        public void addMarkThrowsAfterDecidedGame() {
+        public void makeMoveThrowsAfterDecidedGame() {
             game.makeMove(firstPlayer, Grid.Row.First, Grid.Column.First);
 
-            Runnable addMark = new Runnable() {
+            Runnable makeMove = new Runnable() {
                 @Override
                 public void run() {
                     game.makeMove(secondPlayer, Grid.Row.First, Grid.Column.Second);
                 }
             };
 
-            assertThat(addMark, doesThrow(TicTacToeGame.GameIsFinishedException.class));
+            assertThat(makeMove, doesThrow(TicTacToeGame.GameIsFinishedException.class));
         }
 
         @Test
@@ -289,18 +289,18 @@ public class TicTacToeGameTest {
         }
 
         @Test
-        public void addMarkThrowsAfterTieGame() {
+        public void makeMoveThrowsAfterTieGame() {
             game.makeMove(firstPlayer, Grid.Row.Third, Grid.Column.Third);
             game.makeMove(secondPlayer, Grid.Row.First, Grid.Column.First);
 
-            Runnable addMarkOnLastFreeCell = new Runnable() {
+            Runnable makeMoveOnLastFreeCell = new Runnable() {
                 @Override
                 public void run() {
                     game.makeMove(firstPlayer, Grid.Row.First, Grid.Column.Second);
                 }
             };
 
-            assertThat(addMarkOnLastFreeCell, doesThrow(TicTacToeGame.GameIsFinishedException.class));
+            assertThat(makeMoveOnLastFreeCell, doesThrow(TicTacToeGame.GameIsFinishedException.class));
         }
     }
 
