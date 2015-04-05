@@ -20,6 +20,11 @@ public class UiPlayer implements Player {
     }
 
     @Override
+    public void moveWasMade(Grid actualGrid) {
+        view.setModel(actualGrid);
+    }
+
+    @Override
     public void youWin(Grid actualGrid, Grid.ThreeInARow triple) {
         view.highlight(triple);
         uiFeedback.showMessage("You win!");

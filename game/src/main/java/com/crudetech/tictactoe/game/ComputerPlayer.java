@@ -16,6 +16,10 @@ public abstract class ComputerPlayer implements Player {
     }
 
     @Override
+    public void moveWasMade(Grid actualGrid) {
+    }
+
+    @Override
     public void setGame(TicTacToeGame game) {
         this.game = game;
     }

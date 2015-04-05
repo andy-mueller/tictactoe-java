@@ -47,7 +47,7 @@ class GameReference {
                 '}';
     }
 
-    static interface Presenter {
+    interface Presenter {
         void display(Grid grid);
 
         void highlight(Grid.ThreeInARow threeInARow);
@@ -92,8 +92,7 @@ class GameReference {
         public GameReference build() {
             TicTacToeGame g = newGame(startingPlayer, otherPlayer);
             g.startWithPlayer(startingPlayer, startPlayerMark);
-            GameReference reference = new GameReference(g, startingPlayer, otherPlayer);
-            return reference;
+            return new GameReference(g, startingPlayer, otherPlayer);
         }
 
         TicTacToeGame newGame(Player startingPlayer, Player otherPlayer) {

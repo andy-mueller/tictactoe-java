@@ -8,6 +8,7 @@ class PlayerStub implements Player {
     private Grid.ThreeInARow winTriple;
     private Grid tieGrid;
     public TicTacToeGame game;
+    private Grid lastMoveResult;
 
     @Override
     public void yourTurn(Grid actualGrid) {
@@ -29,6 +30,11 @@ class PlayerStub implements Player {
     @Override
     public void tie(Grid actualGrid) {
         this.tieGrid = actualGrid;
+    }
+
+    @Override
+    public void moveWasMade(Grid actualGrid) {
+        lastMoveResult = actualGrid;
     }
 
     @Override
@@ -70,5 +76,9 @@ class PlayerStub implements Player {
 
     boolean wasTie() {
         return getTieGrid() != null;
+    }
+
+    Grid getLastMoveGrid() {
+        return lastMoveResult;
     }
 }

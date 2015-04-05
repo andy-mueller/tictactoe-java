@@ -18,7 +18,8 @@ public class CliWindowTest {
 
         try {
             window.start();
-        } catch (TextGridLocationInput.BadFormatException e) { }
+        } catch (TextGridLocationInput.BadFormatException ignored) {
+        }
         String expected =
                 "Play a game of tic tac toe. Make a move by specifying the grids cell by \n" +
                         "zero based, comma separated coordinates. I.e, you want to place your mark \n" +
@@ -29,7 +30,7 @@ public class CliWindowTest {
                         "---+---+---\n" +
                         "   |   |   \n" +
                         "---+---+---\n" +
-                        "   |   |   " + nl +
+                        "   |   |   " + nl + nl +
                         "Make your move" +
                         nl;
 

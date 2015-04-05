@@ -97,6 +97,22 @@ public class TicTacToeGameTest {
         }
 
         @Test
+        public void movingPlayerIsInformedOnGameState() throws Exception {
+            Grid.Location firstMove = Grid.Location.of(Grid.Row.First, Grid.Column.First);
+
+            game.makeMove(firstPlayer, firstMove);
+
+
+            Grid expectedGridAfterFirstMove = LinearRandomAccessGrid.of(
+                    Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
+                    Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
+                    Grid.Mark.None, Grid.Mark.None, Grid.Mark.None
+            );
+
+            assertThat(firstPlayer.getLastMoveGrid(), is(expectedGridAfterFirstMove));
+        }
+
+        @Test
         public void startCanOnlyBeCalledOnce() {
             Runnable startASecondTime = new Runnable() {
                 @Override
@@ -172,6 +188,7 @@ public class TicTacToeGameTest {
             assertThat(addWithNullColumn, doesThrow(IllegalArgumentException.class));
         }
     }
+
 
     @SuppressWarnings("unused")
     public class WithAlmostFinishedGame {

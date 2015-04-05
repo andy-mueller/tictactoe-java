@@ -36,7 +36,7 @@ public class LinearRandomAccessGrid implements Grid {
         }
     }
 
-    public static Grid empty() {
+    public static LinearRandomAccessGrid empty() {
         return new LinearRandomAccessGrid();
     }
 

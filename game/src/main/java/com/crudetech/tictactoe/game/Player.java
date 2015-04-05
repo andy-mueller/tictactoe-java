@@ -6,5 +6,7 @@ public interface Player {
     void youLoose(Grid actualGrid, Grid.ThreeInARow triple);
     void tie(Grid actualGrid);
 
+    void moveWasMade(Grid actualGrid);
+
     void setGame(TicTacToeGame game);
 }

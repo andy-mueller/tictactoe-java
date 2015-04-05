@@ -19,6 +19,7 @@ public class TextGridWidgetUiView implements UiView{
         widget.setModel(grid);
         widget.render(pipe);
         lineBreak();
+        lineBreak();
     }
 
     private void lineBreak() {
