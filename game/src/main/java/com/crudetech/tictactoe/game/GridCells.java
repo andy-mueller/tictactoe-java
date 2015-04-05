@@ -4,6 +4,8 @@ import com.crudetech.functional.UnaryFunction;
 
 import java.util.Objects;
 
+import static com.crudetech.query.Query.from;
+
 public class GridCells {
     private GridCells() {
     }
@@ -24,5 +26,9 @@ public class GridCells {
                 return Objects.equals(cell.getMark(), mark);
             }
         };
+    }
+
+    public static Iterable<Grid.Location> allCells() {
+        return from(LinearRandomAccessGrid.empty().getCells()).select(location());
     }
 }

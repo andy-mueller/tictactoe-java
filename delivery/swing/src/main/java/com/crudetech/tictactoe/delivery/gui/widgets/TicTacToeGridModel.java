@@ -16,7 +16,7 @@ import static com.crudetech.collections.Iterables.concat;
 import static com.crudetech.collections.Iterables.emptyListOf;
 import static com.crudetech.matcher.Verify.verifyThat;
 import static com.crudetech.query.Query.from;
-import static com.crudetech.tictactoe.game.GridCells.location;
+import static com.crudetech.tictactoe.game.GridCells.allCells;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -44,14 +44,6 @@ public class TicTacToeGridModel {
         verifyThat(grid, is((notNullValue())));
         this.grid = grid;
         onCellsChanged(allCells());
-    }
-
-    private Iterable<Grid.Location> allCells() {
-        if (this.grid == null) {
-            return emptyListOf(Grid.Location.class);
-        } else {
-            return from(grid.getCells()).select(location());
-        }
     }
 
     private UnaryFunction<Object, Boolean> notNull() {
