@@ -7,14 +7,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class GameReferenceTest {
     @Ignore
     @Test
-    public void bootstrap() throws Exception {
+    public void givenPlayerMakesMove_ResultIsPresented() throws Exception {
         Player startPlayer = new HumanPlayer();
         Player otherPlayer = mock(Player.class);
         GameReference gameRef = GameReference.builder()
@@ -26,7 +24,7 @@ public class GameReferenceTest {
         Grid.Location move = Grid.Location.of(Grid.Row.First, Grid.Column.Second);
         GameReference.Presenter presenter = mock(GameReference.Presenter.class);
 
-        gameRef.makeMove("__movingPlayerId", move, presenter);
+        gameRef.makeMove("__movingPlayerId__", move, presenter);
 
         Grid expectedGrid = LinearRandomAccessGrid.of(
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
