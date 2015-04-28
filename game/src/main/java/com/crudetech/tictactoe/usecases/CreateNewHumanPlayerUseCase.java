@@ -39,7 +39,7 @@ public class CreateNewHumanPlayerUseCase implements UseCase<CreateNewHumanPlayer
         }
     }
 
-    public static interface Presenter {
+    public interface Presenter {
         void display(Response response);
     }
 

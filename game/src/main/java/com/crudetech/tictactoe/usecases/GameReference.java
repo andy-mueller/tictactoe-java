@@ -59,8 +59,10 @@ class GameReference {
     }
 
     public void makeMove(Object movingPlayerId, Grid.Location move, Presenter presenter) {
-        HumanPlayer movingPlayer = (HumanPlayer) getPlayerById(movingPlayerId);
-        movingPlayer.setPresenter(presenter);
+        Player movingPlayer = getPlayerById(movingPlayerId) ;
+        if(movingPlayer instanceof HumanPlayer) {
+            ((HumanPlayer)movingPlayer).setPresenter(presenter);
+        }
         game.makeMove(movingPlayer, move);
 //        movingPlayer.resetPresenter();
     }

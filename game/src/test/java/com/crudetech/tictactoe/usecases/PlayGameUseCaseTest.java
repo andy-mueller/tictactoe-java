@@ -40,7 +40,13 @@ public class PlayGameUseCaseTest {
         Grid.Mark movingPlayersMark = Grid.Mark.Cross;
         Grid.Location otherPlayersMove = Grid.Location.of(Grid.Row.Third, Grid.Column.Third);
 
-        Grid expectedGrid = LinearRandomAccessGrid.of(
+        Grid expectedGridAfterInitialMove = LinearRandomAccessGrid.of(
+                Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None
+        );
+
+        Grid expectedGridAfterMove = LinearRandomAccessGrid.of(
                 Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought
@@ -66,7 +72,8 @@ public class PlayGameUseCaseTest {
 
         playGame.execute(request, mockPresenter);
 
-        verify(mockPresenter).display(expectedGrid);
+        verify(mockPresenter).display(expectedGridAfterInitialMove);
+        verify(mockPresenter).display(expectedGridAfterMove);
     }
 
     @Test

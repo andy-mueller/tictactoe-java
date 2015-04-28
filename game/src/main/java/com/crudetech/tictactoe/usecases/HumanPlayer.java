@@ -32,6 +32,7 @@ class HumanPlayer implements Player {
 
     @Override
     public void moveWasMade(Grid actualGrid) {
+        presenter.display(actualGrid);
     }
 
     @Override

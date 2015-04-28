@@ -3,14 +3,12 @@ package com.crudetech.tictactoe.usecases;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import com.crudetech.tictactoe.game.Player;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class GameReferenceTest {
-    @Ignore
     @Test
     public void givenPlayerMakesMove_ResultIsPresented() throws Exception {
         Player startPlayer = new HumanPlayer();
