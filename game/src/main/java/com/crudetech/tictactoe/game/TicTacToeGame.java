@@ -58,7 +58,7 @@ public class TicTacToeGame {
         currentPlayer = player;
         startingPlayersMark = playersMark;
         currentPlayersMark = playersMark;
-        currentPlayer.yourTurn(grid);
+        currentPlayer.yourTurn(grid.snapshot());
     }
 
     public void makeMove(Player player, Grid.Location location) {

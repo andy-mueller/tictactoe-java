@@ -82,7 +82,7 @@ public abstract class HumanVsComputerPlayerInteractorTest {
         interactor.makeComputerPlayerMove(Grid.Location.of(Grid.Row.First, Grid.Column.Third));
 
         Grid expectedGrid = LinearRandomAccessGrid.of(
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.None);
         verify(computerPlayer).yourTurn(expectedGrid);
