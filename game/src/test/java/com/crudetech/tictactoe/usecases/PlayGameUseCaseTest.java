@@ -1,6 +1,9 @@
 package com.crudetech.tictactoe.usecases;
 
-import com.crudetech.tictactoe.game.*;
+import com.crudetech.tictactoe.game.ComputerPlayer;
+import com.crudetech.tictactoe.game.Grid;
+import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
+import com.crudetech.tictactoe.game.Player;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -72,8 +75,8 @@ public class PlayGameUseCaseTest {
 
         playGame.execute(request, mockPresenter);
 
-        verify(mockPresenter).display(expectedGridAfterInitialMove);
         verify(mockPresenter).display(expectedGridAfterMove);
+        verify(mockPresenter).display(expectedGridAfterInitialMove);
     }
 
     @Test

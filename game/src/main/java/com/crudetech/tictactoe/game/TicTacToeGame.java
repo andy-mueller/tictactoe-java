@@ -81,9 +81,9 @@ public class TicTacToeGame {
             player2.tie(grid);
             finished = true;
         } else {
-            currentPlayer.moveWasMade(grid);
+            currentPlayer.moveWasMade(grid.snapshot());
             flipCurrentPlayer();
-            currentPlayer.yourTurn(grid);
+            currentPlayer.yourTurn(grid.snapshot());
         }
     }
 

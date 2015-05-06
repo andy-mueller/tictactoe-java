@@ -26,14 +26,18 @@ public class LinearRandomAccessGrid implements Grid {
 
     private LinearRandomAccessGrid(Mark[] matrix) {
         verifyThat(matrix, is(allOf(notNullValue(), arrayWithSize(9))));
-        this.matrix = matrix;
+        this.matrix = Arrays.copyOf(matrix, matrix.length);
     }
 
     LinearRandomAccessGrid(Grid src) {
         this(new Mark[9]);
         for (Cell cell : src.getCells()) {
-            matrix[computeIndexFrom(cell.getLocation().getRow(), cell.getLocation().getColumn())] = cell.getMark();
+            matrix[computeIndexFrom(cell)] = cell.getMark();
         }
+    }
+
+    LinearRandomAccessGrid(LinearRandomAccessGrid src) {
+        this(src.matrix);
     }
 
     public static LinearRandomAccessGrid empty() {
@@ -48,6 +52,10 @@ public class LinearRandomAccessGrid implements Grid {
         return new LinearRandomAccessGrid(grid);
     }
 
+
+    public static LinearRandomAccessGrid of(LinearRandomAccessGrid grid) {
+        return new LinearRandomAccessGrid(grid);
+    }
     public Mark getAt(Row row, Column column) {
         verifyThat(row, is(not(nullValue())));
         verifyThat(column, is(not(nullValue())));
@@ -71,6 +79,14 @@ public class LinearRandomAccessGrid implements Grid {
 
     private static int computeIndexFrom(Row row, Column column) {
         return row.position() * Dimension + column.position();
+    }
+
+    private int computeIndexFrom(Location location) {
+        return computeIndexFrom(location.getRow(), location.getColumn());
+    }
+
+    private int computeIndexFrom(Cell cell) {
+        return computeIndexFrom(cell.getLocation());
     }
 
     void setAt(Row row, Column column, Mark mark) {
@@ -254,5 +270,9 @@ public class LinearRandomAccessGrid implements Grid {
                 return matrix[integer].equals(Mark.None);
             }
         };
+    }
+
+    public Grid snapshot() {
+        return LinearRandomAccessGrid.of(this);
     }
 }
