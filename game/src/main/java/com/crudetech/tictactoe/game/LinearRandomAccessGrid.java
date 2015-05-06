@@ -89,13 +89,6 @@ public class LinearRandomAccessGrid implements Grid {
         return computeIndexFrom(cell.getLocation());
     }
 
-    void setAt(Row row, Column column, Mark mark) {
-        verifyThat(row, is(notNullValue()));
-        verifyThat(column, is(notNullValue()));
-        verifyThat(mark, is(allOf(not(Mark.None), notNullValue())));
-
-        matrix[computeIndexFrom(row, column)] = mark;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -131,6 +124,14 @@ public class LinearRandomAccessGrid implements Grid {
 
     void setAt(Location location, Mark mark) {
         setAt(location.getRow(), location.getColumn(), mark);
+    }
+
+    void setAt(Row row, Column column, Mark mark) {
+        verifyThat(row, is(notNullValue()));
+        verifyThat(column, is(notNullValue()));
+        verifyThat(mark, is(allOf(not(Mark.None), notNullValue())));
+
+        matrix[computeIndexFrom(row, column)] = mark;
     }
 
     @Override

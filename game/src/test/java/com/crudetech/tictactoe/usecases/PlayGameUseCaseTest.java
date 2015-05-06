@@ -37,7 +37,7 @@ public class PlayGameUseCaseTest {
     }
 
     @Test
-    public void givenPlayerMakeMove_NewGridIsPresented() throws Exception {
+    public void givenPlayerMakeMove_ChangedGridsArePresented() throws Exception {
         PlayGameUseCase.Presenter mockPresenter = mock(PlayGameUseCase.Presenter.class);
 
         Grid.Mark movingPlayersMark = Grid.Mark.Cross;
