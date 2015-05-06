@@ -19,6 +19,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.sameInstance;
 
 @RunWith(Features.class)
 public class LinearRandomAccessGridTest {
@@ -34,7 +35,7 @@ public class LinearRandomAccessGridTest {
         LinearRandomAccessGrid grid = new LinearRandomAccessGrid();
 
         final Grid.Location location = Grid.Location.of(Grid.Row.First, Grid.Column.Second);
-        grid.setAt(location, Grid.Mark.Nought);
+        grid = grid.setAt(location, Grid.Mark.Nought);
 
         UnaryFunction<Grid.Cell, Boolean> notChanged = new UnaryFunction<Grid.Cell, Boolean>() {
             @Override
@@ -51,7 +52,19 @@ public class LinearRandomAccessGridTest {
 
         boolean othersAreNone = from(grid.getCells()).where(notChanged).select(gridMark).where(notEquals(Grid.Mark.None)).any();
         assertThat(othersAreNone, is(false));
+    }
 
+    @Test
+    public void setAtCreateNeModifiedGrid() {
+        LinearRandomAccessGrid grid = LinearRandomAccessGrid.empty();
+        LinearRandomAccessGrid copy = LinearRandomAccessGrid.of(grid);
+
+        final Grid.Location location = Grid.Location.of(Grid.Row.First, Grid.Column.Second);
+        LinearRandomAccessGrid newModifiedGrid = grid.setAt(location, Grid.Mark.Nought);
+
+        assertThat(newModifiedGrid, is(not(grid)));
+        assertThat(grid, is(not(sameInstance(copy))));
+        assertThat(grid, is(copy));
     }
 
     private static <T> UnaryFunction<T, Boolean> notEquals(final T rhs) {
@@ -84,8 +97,7 @@ public class LinearRandomAccessGridTest {
                     @Override
                     public Grid execute(Grid.Cell cell) {
                         LinearRandomAccessGrid grid = new LinearRandomAccessGrid();
-                        grid.setAt(cell.getLocation(), Grid.Mark.Cross);
-                        return grid;
+                        return grid.setAt(cell.getLocation(), Grid.Mark.Cross);
                     }
                 };
 
@@ -114,7 +126,7 @@ public class LinearRandomAccessGridTest {
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross);
 
         LinearRandomAccessGrid copy = new LinearRandomAccessGrid(grid);
-        copy.setAt(Grid.Location.of(Grid.Row.Second, Grid.Column.Third), Grid.Mark.Cross);
+        copy = copy.setAt(Grid.Location.of(Grid.Row.Second, Grid.Column.Third), Grid.Mark.Cross);
 
         assertThat(copy, is(not(grid)));
     }

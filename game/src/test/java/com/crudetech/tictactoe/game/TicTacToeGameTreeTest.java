@@ -11,7 +11,7 @@ import static com.crudetech.lang.Enums.iterableOf;
 import static com.crudetech.matcher.RangeIsEquivalent.equivalentTo;
 import static com.crudetech.matcher.ThrowsException.doesThrow;
 import static com.crudetech.query.Query.from;
-import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -61,8 +61,8 @@ public class TicTacToeGameTreeTest {
 
         Iterable<Grid> actualGrids = from(children).select(toGrid());
 
-        Iterable<Grid> expected = asList(
-                (Grid)LinearRandomAccessGrid.of(
+        Iterable<Grid> expected = singletonList(
+                (Grid) LinearRandomAccessGrid.of(
                         Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Cross,
                         Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.Cross,
                         Grid.Mark.Nought, Grid.Mark.Cross, Grid.Mark.Nought)
@@ -77,8 +77,7 @@ public class TicTacToeGameTreeTest {
 
         for (Grid.Row row : iterableOf(Grid.Row.class)) {
             for (Grid.Column col : iterableOf(Grid.Column.class)) {
-                LinearRandomAccessGrid permutation = new LinearRandomAccessGrid(this.grid);
-                permutation.setAt(Grid.Location.of(row, col), mark);
+                LinearRandomAccessGrid permutation = grid.setAt(Grid.Location.of(row, col), mark);
                 allSingleMarkGridPermutations.add(permutation);
             }
         }

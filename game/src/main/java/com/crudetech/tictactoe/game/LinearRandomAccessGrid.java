@@ -122,16 +122,18 @@ public class LinearRandomAccessGrid implements Grid {
         return getAt(location.getRow(), location.getColumn());
     }
 
-    void setAt(Location location, Mark mark) {
-        setAt(location.getRow(), location.getColumn(), mark);
+    LinearRandomAccessGrid setAt(Location location, Mark mark) {
+        return setAt(location.getRow(), location.getColumn(), mark);
     }
 
-    void setAt(Row row, Column column, Mark mark) {
+    LinearRandomAccessGrid setAt(Row row, Column column, Mark mark) {
         verifyThat(row, is(notNullValue()));
         verifyThat(column, is(notNullValue()));
         verifyThat(mark, is(allOf(not(Mark.None), notNullValue())));
 
-        matrix[computeIndexFrom(row, column)] = mark;
+        LinearRandomAccessGrid copy = of(this);
+        copy.matrix[computeIndexFrom(row, column)] = mark;
+        return copy;
     }
 
     @Override
@@ -256,8 +258,7 @@ public class LinearRandomAccessGrid implements Grid {
 
         List<Integer> nonMarkedCells = from(0, 1, 2, 3, 4, 5, 6, 7, 8).where(isNotMarked()).toList();
         if (nonMarkedCells.size() == 1) {
-            LinearRandomAccessGrid grid = new LinearRandomAccessGrid(this.matrix.clone());
-            grid.setAt(locationOfIndex(nonMarkedCells.get(0)), firstMark);
+            LinearRandomAccessGrid grid = setAt(locationOfIndex(nonMarkedCells.get(0)), firstMark);
             return grid.isTieForFirstPlayersMark(firstMark);
         } else {
             return nonMarkedCells.isEmpty();
@@ -271,9 +272,5 @@ public class LinearRandomAccessGrid implements Grid {
                 return matrix[integer].equals(Mark.None);
             }
         };
-    }
-
-    public Grid snapshot() {
-        return LinearRandomAccessGrid.of(this);
     }
 }

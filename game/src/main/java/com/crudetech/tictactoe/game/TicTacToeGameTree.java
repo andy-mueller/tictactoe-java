@@ -99,13 +99,11 @@ class TicTacToeGameTree {
                     .select(toNode());
         }
 
-        private UnaryFunction<Grid.Location, LinearRandomAccessGrid> permutationOf(final Grid base) {
+        private UnaryFunction<Grid.Location, LinearRandomAccessGrid> permutationOf(final LinearRandomAccessGrid base) {
             return new UnaryFunction<Grid.Location, LinearRandomAccessGrid>() {
                 @Override
                 public LinearRandomAccessGrid execute(Grid.Location location) {
-                    LinearRandomAccessGrid permutedGrid = new LinearRandomAccessGrid(base);
-                    permutedGrid.setAt(location, currentMark);
-                    return permutedGrid;
+                    return base.setAt(location, currentMark);
                 }
             };
         }

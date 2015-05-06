@@ -9,7 +9,7 @@ import static org.hamcrest.Matchers.*;
 
 public class TicTacToeGame {
 
-    private final LinearRandomAccessGrid grid = new LinearRandomAccessGrid();
+    private LinearRandomAccessGrid grid = new LinearRandomAccessGrid();
     private final Player player1;
     private final Player player2;
 
@@ -58,7 +58,7 @@ public class TicTacToeGame {
         currentPlayer = player;
         startingPlayersMark = playersMark;
         currentPlayersMark = playersMark;
-        currentPlayer.yourTurn(grid.snapshot());
+        currentPlayer.yourTurn(grid);
     }
 
     public void makeMove(Player player, Grid.Location location) {
@@ -70,7 +70,7 @@ public class TicTacToeGame {
         verifyThatItIsPlayersTurn(player);
         verifyThat(grid, isNotMarkedAt(row, column));
 
-        grid.setAt(row, column, currentPlayersMark);
+        grid = grid.setAt(row, column, currentPlayersMark);
         Grid.ThreeInARow triple = grid.getThreeInARow();
         if (didWin(triple)) {
             currentPlayer.youWin(grid, triple);
@@ -81,9 +81,9 @@ public class TicTacToeGame {
             player2.tie(grid);
             finished = true;
         } else {
-            currentPlayer.moveWasMade(grid.snapshot());
+            currentPlayer.moveWasMade(grid);
             flipCurrentPlayer();
-            currentPlayer.yourTurn(grid.snapshot());
+            currentPlayer.yourTurn(grid);
         }
     }
 
