@@ -9,6 +9,9 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class GameReferenceTest {
+
+    private final String movingPlayerId = "__movingPlayerId__";
+
     @Test
     public void givenPlayerMakesMove_ResultIsPresented() throws Exception {
         Player startPlayer = new HumanPlayer();
@@ -22,7 +25,7 @@ public class GameReferenceTest {
         Grid.Location move = Grid.Location.of(Grid.Row.First, Grid.Column.Second);
         GameReference.Presenter presenter = mock(GameReference.Presenter.class);
 
-        gameRef.makeMove("__movingPlayerId__", move, presenter);
+        gameRef.makeMove(movingPlayerId, move, presenter);
 
         Grid expectedGrid = LinearRandomAccessGrid.of(
                 Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
