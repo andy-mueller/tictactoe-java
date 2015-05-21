@@ -101,4 +101,65 @@ class GameReference {
             return new TicTacToeGame(startingPlayer, otherPlayer);
         }
     }
+
+    /**
+     *
+     */
+    static class HumanPlayer implements Player {
+        private Presenter presenter = nullPresenter();
+
+        @Override
+        public void yourTurn(Grid actualGrid) {
+            presenter.display(actualGrid);
+        }
+
+        @Override
+        public void youWin(Grid actualGrid, Grid.ThreeInARow triple) {
+            throw new RuntimeException("Not implemented yet!");
+        }
+
+        @Override
+        public void youLoose(Grid actualGrid, Grid.ThreeInARow triple) {
+            throw new RuntimeException("Not implemented yet!");
+        }
+
+        @Override
+        public void tie(Grid actualGrid) {
+            throw new RuntimeException("Not implemented yet!");
+        }
+
+        @Override
+        public void moveWasMade(Grid actualGrid) {
+            presenter.display(actualGrid);
+        }
+
+        @Override
+        public void setGame(TicTacToeGame game) {
+        }
+
+        public void setPresenter(Presenter presenter) {
+            this.presenter = presenter;
+        }
+
+        void resetPresenter() {
+            presenter = nullPresenter();
+        }
+
+        private Presenter nullPresenter() {
+            return new Presenter() {
+                @Override
+                public void display(Grid grid) {
+                }
+
+                @Override
+                public void highlight(Grid.ThreeInARow threeInARow) {
+                }
+
+                @Override
+                public void finished() {
+
+                }
+            };
+        }
+    }
 }

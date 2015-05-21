@@ -57,7 +57,7 @@ public class PlayGameUseCaseTest {
 
 
         Player otherPlayer = new SingleMovePlayer(otherPlayersMove);
-        Player movingPlayer = new HumanPlayer();
+        Player movingPlayer = new GameReference.HumanPlayer();
 
         GameReference gameReference = GameReference.builder()
                 .withStartPlayer(movingPlayer)

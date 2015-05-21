@@ -14,7 +14,7 @@ public class GameReferenceTest {
 
     @Test
     public void givenPlayerMakesMove_ResultIsPresented() throws Exception {
-        Player startPlayer = new HumanPlayer();
+        Player startPlayer = new GameReference.HumanPlayer();
         Player otherPlayer = mock(Player.class);
         GameReference gameRef = GameReference.builder()
                 .withStartPlayer(startPlayer)
