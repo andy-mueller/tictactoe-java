@@ -32,6 +32,7 @@ public class GameReferenceTest {
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.None
         );
+
         verify(presenter).display(expectedGrid);
         verify(presenter, never()).highlight(any(Grid.ThreeInARow.class));
         verify(presenter, never()).finished();
