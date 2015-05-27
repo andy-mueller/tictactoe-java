@@ -26,6 +26,9 @@ public class TicTacToeGameTest {
 
     @SuppressWarnings("unused")
     public class WithNonStartedGame {
+        private final Grid.Location anyLocation = Grid.Location.of(Grid.Row.First, Grid.Column.Third);
+        private final Grid noGrid = null;
+
         @Test
         public void startWithNoMarkThrows() {
             Runnable startWithNull = new Runnable() {
@@ -65,10 +68,21 @@ public class TicTacToeGameTest {
 
         @Test
         public void noActionHappensBeforeStart() {
-            Grid NoGrid = null;
 
             assertThat(firstPlayer.getTurnCount(), is(0));
-            assertThat(secondPlayer.getLastGrid(), is(NoGrid));
+            assertThat(secondPlayer.getLastGrid(), is(noGrid));
+        }
+
+        @Test
+        public void cannotPlay() {
+            Runnable makeMoveOnUnStartedGame = new Runnable() {
+                @Override
+                public void run() {
+                    game.makeMove(firstPlayer, anyLocation);
+                }
+            };
+
+            assertThat(makeMoveOnUnStartedGame, doesThrow(TicTacToeGame.GameWasNotStartedException.class));
         }
     }
 

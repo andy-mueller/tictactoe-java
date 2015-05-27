@@ -8,7 +8,6 @@ import static com.crudetech.matcher.Verify.verifyThat;
 import static org.hamcrest.Matchers.*;
 
 public class TicTacToeGame {
-
     private LinearRandomAccessGrid grid = new LinearRandomAccessGrid();
     private final Player player1;
     private final Player player2;
@@ -48,11 +47,17 @@ public class TicTacToeGame {
         }
     }
 
+    static class GameWasNotStartedException extends IllegalStateException {
+        private GameWasNotStartedException() {
+            super("The game was not started yet!");
+        }
+    }
+
     public void startWithPlayer(Player player, Grid.Mark playersMark) {
         verifyThat(player, is(anyOf(equalTo(player1), equalTo(player2))));
         verifyThat(playersMark, is(not(Grid.Mark.None)));
 
-        if (currentPlayer != null) {
+        if (gameWasStarted()) {
             throw new GameIsAlreadyStartedException();
         }
         currentPlayer = player;
@@ -61,12 +66,17 @@ public class TicTacToeGame {
         currentPlayer.yourTurn(grid);
     }
 
+    private boolean gameWasStarted() {
+        return currentPlayer != null;
+    }
+
     public void makeMove(Player player, Grid.Location location) {
         makeMove(player, location.getRow(), location.getColumn());
     }
 
     public void makeMove(Player player, Grid.Row row, Grid.Column column) {
         verifyGameIsNotFinished();
+        verifyGameIsStarted();
         verifyThatItIsPlayersTurn(player);
         verifyThat(grid, isNotMarkedAt(row, column));
 
@@ -115,6 +125,12 @@ public class TicTacToeGame {
     private void verifyGameIsNotFinished() {
         if (finished) {
             throw new GameIsFinishedException();
+        }
+    }
+
+    private void verifyGameIsStarted() {
+        if (!gameWasStarted()) {
+            throw new GameWasNotStartedException();
         }
     }
 
