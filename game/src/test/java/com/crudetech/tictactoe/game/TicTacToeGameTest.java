@@ -72,7 +72,6 @@ public class TicTacToeGameTest {
             assertThat(firstPlayer.getTurnCount(), is(0));
             assertThat(secondPlayer.getLastGrid(), is(noGrid));
         }
-
         @Test
         public void cannotPlay() {
             Runnable makeMoveOnUnStartedGame = new Runnable() {

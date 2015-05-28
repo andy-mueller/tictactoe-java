@@ -4,7 +4,7 @@ package com.crudetech.tictactoe.game;
  * Creates a test games
  */
 public class TicTacToeGameMother {
-    void setupAlmostFinishedGame(Player first, Player second, TicTacToeGame game) {
+    public void setupAlmostFinishedGame(Player first, Player second, TicTacToeGame game) {
         game.makeMove(first, Grid.Row.Second, Grid.Column.First);
         game.makeMove(second, Grid.Row.First, Grid.Column.Third);
 
