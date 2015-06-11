@@ -9,7 +9,7 @@ Stakeholders and Their Interests
 				  and will play a perfect game every time
 	
 Supporting Actors (external systems):
-	
+    Storage/Persistence to hold the AI Player
 	
 Data
 	<newPlayerId>
@@ -25,7 +25,8 @@ Exception course: Invalid input request
 
 Notes
 	It is unlikely that an exception will happen, as the request will most likely stay empty for now.
-------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------
 UC-002 Add a new human player to the environment
 
 Primary Actor
@@ -36,7 +37,7 @@ Stakeholders and Their Interests
 	              to the system.
 
 Supporting Actors (external systems):
-
+    Storage/Persistence to hold the human Player
 
 Data
 	<newPlayerId>
@@ -52,3 +53,139 @@ Exception course: Invalid input request
 
 Notes
 	It is unlikely that an exception will happen, as the request will most likely stay empty for now.
+----------------------------------------------------------------------------------------------------------
+UC-003 Human player starts a new game with another player
+
+Primary Actor
+	Human player
+
+Stakeholders and Their Interests
+	Human Player: The user of the system wants to start new games with other players.
+
+Supporting Actors (external systems):
+    Storage/Persistence
+
+Data
+	<startPlayerId>             <gameId>
+	<otherPlayerId>
+	<starPlayersMark>
+
+Primary Course
+    1. User issues "create new game command command to the system
+	2. The system will create a new game w/ the passed in players and the startPlayersMark
+	3. The system delivers the ID of the newly created game fot later use
+
+Exception course: One of the two players cannot be located
+    1. The system will throw an exception
+
+
+Notes
+	<notes>
+----------------------------------------------------------------------------------------------------------
+UC-004 Human player makes a move
+
+Primary Actor
+	Human Player
+
+Stakeholders and Their Interests
+	Human Player: A human player wants to make a move in games he is part of.
+
+Supporting Actors (external systems):
+    Storage/Persistence
+
+Data
+	<movingPlayersId>   <gameStateAfterMove>
+	<gameId>            <gameStateAfterOpponentMove
+
+Primary Course
+    1. User issues "make move" command to the system
+	2. The system will locate the game and verify that
+	    a) the user belongs to the game
+	    b) it is the user turn
+	3. The system will make the move in the game
+	4. The user will be notified on the game state after the move, before the opponents move
+	5. The user will be notified on the game state after the opponents move
+
+
+Exception course: The user makes an invalid moved on a covered field
+    1. The system will notify the user
+    2. The user can move again
+
+Exception course: Game does not exist
+    1. The system will notify the user
+
+Exception course: User is not part of the game
+    1. The system will notify the user
+
+Exception course: It is not the users turn
+    1. The system will notify the user
+
+Exception course: The game is not started or already ended
+    1. The system will notify the user
+
+Notes
+	<notes>
+
+----------------------------------------------------------------------------------------------------------
+UC-005 Terminate a running game
+
+Primary Actor
+	Human player
+
+Stakeholders and Their Interests
+	Human Player: Human players want to terminate running game they are part of
+
+Supporting Actors (external systems):
+    Storage/Persistence
+
+Data
+	<playersId>
+	<gameId>
+
+Primary Course
+    1. User issues "terminate game" command to the system
+	2. The system verifies, that the player actually is part of the game
+    3. The system terminates the game
+    4. All users will be notified of the termination
+
+Exception course: User is not part of the game
+    1. The system will notify the user
+    2. The game will continue
+
+Exception course: Game not running
+    1. The system will notify the user
+
+
+Notes
+	Notifying the other user might be a problem in a request response environment. It will probably
+	be necessary to store this information on the game, until the next player accesses it. However,
+	there are situation, when the other player will actually never query that information. If this is
+	an AI-player, it doesn't matter, but fpr two remote human players, it probably will require some
+	regular polling of the UI.
+
+----------------------------------------------------------------------------------------------------------
+Template:
+UC-ID <title>
+
+Primary Actor
+	<actor>
+
+Stakeholders and Their Interests
+	<stakeholder: short description of the stakeholders interest.
+
+Supporting Actors (external systems):
+    <supporting-actors>
+
+Data
+	<data>
+
+Primary Course
+    1. User issues <command> command to the system
+	2. ...
+
+Exception course: <name>
+    1. <reaction>
+
+
+Notes
+	<notes>
