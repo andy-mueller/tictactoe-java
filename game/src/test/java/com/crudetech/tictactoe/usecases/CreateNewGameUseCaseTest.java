@@ -6,6 +6,8 @@ import com.crudetech.tictactoe.game.TicTacToeGame;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -42,7 +44,7 @@ public class CreateNewGameUseCaseTest {
                 return new GameReference.Builder() {
                     @Override
                     TicTacToeGame newGame(Player startingPlayer, Player otherPlayer) {
-                        spiedGame = spy(super.newGame(startingPlayer, otherPlayer));
+                        spiedGame = super.newGame(startingPlayer, otherPlayer);
                         return spiedGame;
                     }
                 };
@@ -128,6 +130,7 @@ public class CreateNewGameUseCaseTest {
 
         createGame.execute(request, presenterMock);
 
-        verify(spiedGame).startWithPlayer(startPlayer, startPlayersMark);
+        assertThat(spiedGame.getStartingPlayer(), is(startPlayer));
+        assertThat(spiedGame.getStartingPlayersMark(), is(startPlayersMark));
     }
 }

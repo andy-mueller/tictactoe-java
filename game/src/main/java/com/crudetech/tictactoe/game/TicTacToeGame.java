@@ -1,27 +1,28 @@
 package com.crudetech.tictactoe.game;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
-
 import static com.crudetech.matcher.Verify.verifyThat;
 import static org.hamcrest.Matchers.*;
 
 public class TicTacToeGame {
+    private final TicTacToeGameFsm.Game gameFsmContext;
     private LinearRandomAccessGrid grid = new LinearRandomAccessGrid();
     private final Player player1;
     private final Player player2;
 
-    private Player currentPlayer;
-    private Grid.Mark currentPlayersMark;
 
-    private boolean finished = false;
+    private Player firstPlayer;
     private Grid.Mark startingPlayersMark;
+
+    private final TicTacToeGameFsm fsm;
+
 
     public TicTacToeGame(Player player1, Player player2) {
         this.player1 = player1;
         this.player2 = player2;
         setBackReferenceOnPlayer();
+
+        gameFsmContext = gameFsmContext();
+        fsm = new TicTacToeGameFsm(gameFsmContext());
     }
 
     private void setBackReferenceOnPlayer() {
@@ -29,45 +30,151 @@ public class TicTacToeGame {
         this.player2.setGame(this);
     }
 
+    private Player getCurrentPlayer() {
+        return fsm.currentState().getCurrentPlayer(firstPlayer, getSecondPlayer());
+    }
+
+    private Player getSecondPlayer() {
+        return firstPlayer == player1 ? player2 : player1;
+    }
+
+
     static class GameIsFinishedException extends IllegalStateException {
-        private GameIsFinishedException() {
+        GameIsFinishedException() {
             super("The game is finished!");
         }
     }
 
     static class GameIsAlreadyStartedException extends IllegalStateException {
-        private GameIsAlreadyStartedException() {
+        GameIsAlreadyStartedException() {
             super("The game was already started!");
         }
     }
 
     static class NotThisPlayersTurnException extends IllegalStateException {
-        private NotThisPlayersTurnException() {
+        NotThisPlayersTurnException() {
             super("It is not the passed in players turn!");
         }
     }
 
     static class GameWasNotStartedException extends IllegalStateException {
-        private GameWasNotStartedException() {
+        GameWasNotStartedException() {
             super("The game was not started yet!");
         }
     }
 
-    public void startWithPlayer(Player player, Grid.Mark playersMark) {
-        verifyThat(player, is(anyOf(equalTo(player1), equalTo(player2))));
-        verifyThat(playersMark, is(not(Grid.Mark.None)));
-
-        if (gameWasStarted()) {
-            throw new GameIsAlreadyStartedException();
-        }
-        currentPlayer = player;
-        startingPlayersMark = playersMark;
-        currentPlayersMark = playersMark;
-        currentPlayer.yourTurn(grid);
+    public Player getStartingPlayer() {
+        return firstPlayer;
     }
 
-    private boolean gameWasStarted() {
-        return currentPlayer != null;
+    public Grid.Mark getStartingPlayersMark() {
+        return startingPlayersMark;
+    }
+    private TicTacToeGameFsm.Game gameFsmContext() {
+        return new TicTacToeGameFsm.Game() {
+            @Override
+            public void starting() {
+                verifyThat(firstPlayer, is(anyOf(equalTo(player1), equalTo(player2))));
+                verifyThat(startingPlayersMark, is(not(Grid.Mark.None)));
+
+                TicTacToeGame.this.firstPlayer= firstPlayer;
+                getCurrentPlayer().yourTurn(grid);
+            }
+
+            @Override
+            public void eval() {
+                Grid.ThreeInARow triple = grid.getThreeInARow();
+                if (didWin(triple)) {
+                    if (wasFirstPlayersTurn())
+                        fsm.handleEvent(TicTacToeGameFsm.Event.FirstPlayerWins);
+                    else
+                        fsm.handleEvent(TicTacToeGameFsm.Event.SecondPlayerWins);
+                } else if (grid.isTieForFirstPlayersMark(startingPlayersMark)) {
+                    fsm.handleEvent(TicTacToeGameFsm.Event.Tie);
+                } else {
+                    if (wasFirstPlayersTurn())
+                        fsm.handleEvent(TicTacToeGameFsm.Event.SwitchTo2ndPlayer);
+                    else
+                        fsm.handleEvent(TicTacToeGameFsm.Event.SwitchTo1stPlayer);
+                }
+            }
+
+            @Override
+            public void switchTurnTo1stPlayer() {
+                getSecondPlayer().moveWasMade(grid);
+                firstPlayer.yourTurn(grid);
+            }
+
+            @Override
+            public void switchTurnTo2ndPlayer() {
+                firstPlayer.moveWasMade(grid);
+                getSecondPlayer().yourTurn(grid);
+            }
+
+            @Override
+            public void tie() {
+                player1.tie(grid);
+                player2.tie(grid);
+            }
+
+            @Override
+            public void firstPlayerWins() {
+                Grid.ThreeInARow triple = grid.getThreeInARow();
+                firstPlayer.youWin(grid, triple);
+                getSecondPlayer().youLoose(grid, triple);
+            }
+
+            @Override
+            public void secondPlayerWins() {
+                Grid.ThreeInARow triple = grid.getThreeInARow();
+                firstPlayer.youLoose(grid, triple);
+                getSecondPlayer().youWin(grid, triple);
+            }
+
+            @Override
+            public LinearRandomAccessGrid getGrid() {
+                return TicTacToeGame.this.grid;
+            }
+
+            @Override
+            public void setGrid(LinearRandomAccessGrid grid) {
+                TicTacToeGame.this.grid = grid;
+            }
+
+            @Override
+            public Player get1stPlayer() {
+                return firstPlayer;
+            }
+
+            @Override
+            public Player get2ndPlayer() {
+                return getSecondPlayer();
+            }
+
+            @Override
+            public Grid.Mark get1stPlayersMark() {
+                return startingPlayersMark;
+            }
+
+            @Override
+            public Grid.Mark get2ndPlayersMark() {
+                return startingPlayersMark.getOpposite();
+            }
+        };
+    }
+
+    private boolean wasFirstPlayersTurn() {
+        return fsm.previousState() == TicTacToeGameFsm.State.FirstPlayersTurn;
+    }
+
+    public void startWithPlayer(Player startingPlayer, Grid.Mark startPlayersMark) {
+        fsm.currentState().verifyNotStarted();
+
+        this.firstPlayer = startingPlayer;
+        this.startingPlayersMark = startPlayersMark;
+
+
+        fsm.handleEvent(TicTacToeGameFsm.Event.Start);
     }
 
     public void makeMove(Player player, Grid.Location location) {
@@ -75,68 +182,10 @@ public class TicTacToeGame {
     }
 
     public void makeMove(Player player, Grid.Row row, Grid.Column column) {
-        verifyGameIsNotFinished();
-        verifyGameIsStarted();
-        verifyThatItIsPlayersTurn(player);
-        verifyThat(grid, isNotMarkedAt(row, column));
-
-        grid = grid.setAt(row, column, currentPlayersMark);
-        Grid.ThreeInARow triple = grid.getThreeInARow();
-        if (didWin(triple)) {
-            currentPlayer.youWin(grid, triple);
-            getOtherPlayer().youLoose(grid, triple);
-            finished = true;
-        } else if (grid.isTieForFirstPlayersMark(startingPlayersMark)) {
-            player1.tie(grid);
-            player2.tie(grid);
-            finished = true;
-        } else {
-            currentPlayer.moveWasMade(grid);
-            flipCurrentPlayer();
-            currentPlayer.yourTurn(grid);
-        }
+        fsm.currentState().makeMove(gameFsmContext, player, row, column);
+        fsm.handleEvent(TicTacToeGameFsm.Event.Move);
     }
 
-    private void flipCurrentPlayer() {
-        currentPlayer = currentPlayer == player1 ? player2 : player1;
-        currentPlayersMark = currentPlayersMark.getOpposite();
-    }
-
-    private void verifyThatItIsPlayersTurn(Player player) {
-        if (currentPlayer != player) {
-            throw new NotThisPlayersTurnException();
-        }
-    }
-
-    private static Matcher<LinearRandomAccessGrid> isNotMarkedAt(final Grid.Row row, final Grid.Column column) {
-        return new TypeSafeMatcher<LinearRandomAccessGrid>() {
-            @Override
-            protected boolean matchesSafely(LinearRandomAccessGrid grid) {
-                return !grid.hasMarkAt(row, column);
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText(String.format("The grid was already marked at the specified location[%s, %s]", row, column));
-            }
-        };
-    }
-
-    private void verifyGameIsNotFinished() {
-        if (finished) {
-            throw new GameIsFinishedException();
-        }
-    }
-
-    private void verifyGameIsStarted() {
-        if (!gameWasStarted()) {
-            throw new GameWasNotStartedException();
-        }
-    }
-
-    private Player getOtherPlayer() {
-        return currentPlayer == player1 ? player2 : player1;
-    }
 
     private boolean didWin(Grid.ThreeInARow triple) {
         return !triple.equals(Grid.ThreeInARow.Empty);
