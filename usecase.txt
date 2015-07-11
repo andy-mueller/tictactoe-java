@@ -3,7 +3,7 @@ UC-001 Add a new AI player to the environment
 Primary Actor
 	Human Player
 	
-Stakeholders and Their Interests
+Stakeholders and their Interests
 	Human Player: The user of the system wants to add a AI (artificial intelligence) player
 	              to the system. This player is able to pay the game w/o any human interaction
 				  and will play a perfect game every time
@@ -32,7 +32,7 @@ UC-002 Add a new human player to the environment
 Primary Actor
 	Human Player
 
-Stakeholders and Their Interests
+Stakeholders and their Interests
 	Human Player: The user of the system wants to add a human player representing him/herself
 	              to the system.
 
@@ -59,7 +59,7 @@ UC-003 Human player starts a new game with another player
 Primary Actor
 	Human player
 
-Stakeholders and Their Interests
+Stakeholders and their Interests
 	Human Player: The user of the system wants to start new games with other players.
 
 Supporting Actors (external systems):
@@ -87,7 +87,7 @@ UC-004 Human player makes a move
 Primary Actor
 	Human Player
 
-Stakeholders and Their Interests
+Stakeholders and their Interests
 	Human Player: A human player wants to make a move in games he is part of.
 
 Supporting Actors (external systems):
@@ -132,7 +132,7 @@ UC-005 Terminate a running game
 Primary Actor
 	Human player
 
-Stakeholders and Their Interests
+Stakeholders and their Interests
 	Human Player: Human players want to terminate running game they are part of
 
 Supporting Actors (external systems):
@@ -170,7 +170,7 @@ UC-ID <title>
 Primary Actor
 	<actor>
 
-Stakeholders and Their Interests
+Stakeholders and their Interests
 	<stakeholder: short description of the stakeholders interest.
 
 Supporting Actors (external systems):
