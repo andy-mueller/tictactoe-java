@@ -1,194 +1,199 @@
 package com.crudetech.tictactoe.game;
 
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
+import com.crudetech.collections.Pair;
 
-import static com.crudetech.matcher.Verify.verifyThat;
-
-public class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTacToeGameFsm.State> {
-    public TicTacToeGameFsm(Game game) {
+class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTacToeGameFsm.State> {
+    public TicTacToeGameFsm(Context context) {
         super(State.NotStarted);
-        this.game = game;
+        this.context = context;
     }
 
     enum State {
         NotStarted {
             @Override
-            public void makeMove(Game context, Player movingPlayer, Grid.Row row, Grid.Column column) {
-                throw new TicTacToeGame.GameWasNotStartedException();
-            }
-
-            @Override
             public void verifyNotStarted() {
             }
-        },
-        FirstPlayersTurn {
-            @Override
-            public void makeMove(Game context, Player movingPlayer, Grid.Row row, Grid.Column column) {
-                verifyThat(context.getGrid(), isNotMarkedAt(row, column));
-                verifyPlayersTurn(context.get1stPlayer(), movingPlayer);
-                LinearRandomAccessGrid grid = context.getGrid();
-                context.setGrid(grid.setAt(row, column, context.get1stPlayersMark()));
-            }
 
             @Override
-            public Player getCurrentPlayer(Player firstPlayer, Player unused) {
-                return firstPlayer;
-            }
-        },
-        SecondPlayersTurn {
-            @Override
-            public void makeMove(Game context, Player movingPlayer, Grid.Row row, Grid.Column column) {
-                verifyThat(context.getGrid(), isNotMarkedAt(row, column));
-                verifyPlayersTurn(context.get2ndPlayer(), movingPlayer);
-                LinearRandomAccessGrid grid = context.getGrid();
-                context.setGrid(grid.setAt(row, column, context.get2ndPlayersMark()));
+            public Pair<Player, Grid.Mark> activePlayer(Context context) {
+                throw new GameWasNotStartedException();
             }
 
+        },
+        StartingPlayersTurn {
             @Override
-            public Player getCurrentPlayer(Player unused, Player secondPlayer) {
-                return secondPlayer;
+            public Pair<Player, Grid.Mark> activePlayer(Context context) {
+                return context.getStartingPlayer();
             }
-     },
+        },
+        OtherPlayersTurn {
+            @Override
+            public Pair<Player, Grid.Mark> activePlayer(Context context) {
+                return context.getOtherPlayer();
+            }
+
+        },
         Evaluate {
             @Override
-            public void makeMove(Game context, Player movingPlayer, Grid.Row row, Grid.Column column) {
+            public Pair<Player, Grid.Mark> activePlayer(Context context) {
                 throw new IllegalStateException();
             }
+
         },
         Tie {
             @Override
-            public void makeMove(Game context, Player movingPlayer, Grid.Row row, Grid.Column column) {
-                throw new TicTacToeGame.GameIsFinishedException();
+            public Pair<Player, Grid.Mark> activePlayer(Context context) {
+                throw new GameIsFinishedException();
             }
+
         },
-        SecondPlayerWins {
+        OtherPlayerWins {
             @Override
-            public void makeMove(Game context, Player movingPlayer, Grid.Row row, Grid.Column column) {
-                throw new TicTacToeGame.GameIsFinishedException();
+            public Pair<Player, Grid.Mark> activePlayer(Context context) {
+                throw new GameIsFinishedException();
             }
+
         },
-        FirstPlayerWins {
+        StartingPlayerWins {
             @Override
-            public void makeMove(Game context, Player movingPlayer, Grid.Row row, Grid.Column column) {
-                throw new TicTacToeGame.GameIsFinishedException();
+            public Pair<Player, Grid.Mark> activePlayer(Context context) {
+                throw new GameIsFinishedException();
             }
+
         };
 
-        private static void verifyPlayersTurn(Player currentPlayer, Player movingPlayer) {
-            if (currentPlayer != movingPlayer) {
-                throw new TicTacToeGame.NotThisPlayersTurnException();
+        public void verifyNotStarted() {
+            throw new GameIsAlreadyStartedException();
+        }
+
+        public abstract Pair<Player, Grid.Mark> activePlayer(Context context);
+
+        public void verifyPlayersTurn(Context context, Player movingPlayer) {
+            if (activePlayer(context).getFirst() != movingPlayer) {
+                throw new NotThisPlayersTurnException();
             }
         }
 
-
-        public abstract void makeMove(Game context, Player movingPlayer, Grid.Row row, Grid.Column column);
-
-        public void verifyNotStarted() {
-            throw new TicTacToeGame.GameIsAlreadyStartedException();
-        }
-
-        private static Matcher<LinearRandomAccessGrid> isNotMarkedAt(final Grid.Row row, final Grid.Column column) {
-            return new TypeSafeMatcher<LinearRandomAccessGrid>() {
-                @Override
-                protected boolean matchesSafely(LinearRandomAccessGrid grid) {
-                    return !grid.hasMarkAt(row, column);
-                }
-
-                @Override
-                public void describeTo(Description description) {
-                    description.appendText(String.format("The grid was already marked at the specified location[%s, %s]", row, column));
-                }
-            };
-        }
-
-        public Player getCurrentPlayer(Player firstPlayer, Player secondPlayer) {
-            throw new IllegalStateException(String.format("The property currentPlayer is not valid in the state [%s]", this));
+        public Grid.Mark activePlayersMark(Context context) {
+            return activePlayer(context).getSecond();
         }
     }
 
-    enum Event {Move, SwitchTo1stPlayer, SwitchTo2ndPlayer, Tie, FirstPlayerWins, SecondPlayerWins, Start}
+    enum Event {Start, Move, SwitchToStartingPlayer, SwitchToOtherPlayer, Tie, StartingPlayerWins, OtherPlayerWins}
 
-    interface Game {
+    interface Context {
         void starting();
 
         void eval();
 
-        void switchTurnTo1stPlayer();
+        void switchTurnToStartingPlayer();
 
-        void switchTurnTo2ndPlayer();
+        void switchTurnToOtherPlayer();
 
         void tie();
 
-        void firstPlayerWins();
+        void startingPlayerWins();
 
-        void secondPlayerWins();
+        void otherPlayerWins();
 
-        LinearRandomAccessGrid getGrid();
+        Pair<Player, Grid.Mark> getStartingPlayer();
 
-        void setGrid(LinearRandomAccessGrid linearRandomAccessGrid);
-
-        Player get1stPlayer();
-
-        Player get2ndPlayer();
-
-        Grid.Mark get1stPlayersMark();
-        Grid.Mark get2ndPlayersMark();
+        Pair<Player, Grid.Mark> getOtherPlayer();
     }
 
-    private final Game game;
+    private final Context context;
+
 
     {
-        addTransition(State.NotStarted, Event.Start, State.FirstPlayersTurn, new Runnable() {
-            @Override
-            public void run() {
-                game.starting();
-            }
-        });
-        addTransition(State.FirstPlayersTurn, Event.Move, State.Evaluate, new Runnable() {
-            @Override
-            public void run() {
-                game.eval();
-            }
-        });
-        addTransition(State.SecondPlayersTurn, Event.Move, State.Evaluate, new Runnable() {
-            @Override
-            public void run() {
-                game.eval();
-            }
-        });
-        addTransition(State.Evaluate, Event.SwitchTo2ndPlayer, State.SecondPlayersTurn, new Runnable() {
-            @Override
-            public void run() {
-                game.switchTurnTo2ndPlayer();
-            }
-        });
-        addTransition(State.Evaluate, Event.SwitchTo1stPlayer, State.FirstPlayersTurn, new Runnable() {
-            @Override
-            public void run() {
-                game.switchTurnTo1stPlayer();
-            }
-        });
-        addTransition(State.Evaluate, Event.Tie, State.Tie, new Runnable() {
-            @Override
-            public void run() {
-                game.tie();
-            }
-        });
-        addTransition(State.Evaluate, Event.FirstPlayerWins, State.FirstPlayerWins, new Runnable() {
-            @Override
-            public void run() {
-                game.firstPlayerWins();
-            }
-        });
-        addTransition(State.Evaluate, Event.SecondPlayerWins, State.SecondPlayerWins, new Runnable() {
-            @Override
-            public void run() {
-                game.secondPlayerWins();
-            }
-        });
+        addTransition(State.NotStarted, Event.Start, State.StartingPlayersTurn, starting());
+        addTransition(State.StartingPlayersTurn, Event.Move, State.Evaluate, eval());
+        addTransition(State.OtherPlayersTurn, Event.Move, State.Evaluate, eval());
+        addTransition(State.Evaluate, Event.SwitchToOtherPlayer, State.OtherPlayersTurn, switchTurnToOtherPlayer());
+        addTransition(State.Evaluate, Event.SwitchToStartingPlayer, State.StartingPlayersTurn, switchTurnToStartingPlayer());
+        addTransition(State.Evaluate, Event.Tie, State.Tie, tie());
+        addTransition(State.Evaluate, Event.StartingPlayerWins, State.StartingPlayerWins, startingPlayerWins());
+        addTransition(State.Evaluate, Event.OtherPlayerWins, State.OtherPlayerWins, otherPlayerWins());
     }
 
+    private Runnable otherPlayerWins() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                context.otherPlayerWins();
+            }
+        };
+    }
+    private Runnable startingPlayerWins() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                context.startingPlayerWins();
+            }
+        };
+    }
+    private Runnable switchTurnToStartingPlayer() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                context.switchTurnToStartingPlayer();
+            }
+        };
+    }
+    private Runnable tie() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                context.tie();
+            }
+        };
+    }
+    private Runnable switchTurnToOtherPlayer() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                context.switchTurnToOtherPlayer();
+            }
+        };
+    }
+    private Runnable eval() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                context.eval();
+            }
+        };
+    }
+    private Runnable starting() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                context.starting();
+            }
+        };
+    }
+
+    static class GameIsFinishedException extends IllegalStateException {
+        GameIsFinishedException() {
+            super("The game is finished!");
+        }
+    }
+
+    static class GameIsAlreadyStartedException extends IllegalStateException {
+        GameIsAlreadyStartedException() {
+            super("The game was already started!");
+        }
+    }
+
+    static class NotThisPlayersTurnException extends IllegalStateException {
+        NotThisPlayersTurnException() {
+            super("It is not the passed in players turn!");
+        }
+    }
+
+    static class GameWasNotStartedException extends IllegalStateException {
+        GameWasNotStartedException() {
+            super("The game was not started yet!");
+        }
+    }
 }

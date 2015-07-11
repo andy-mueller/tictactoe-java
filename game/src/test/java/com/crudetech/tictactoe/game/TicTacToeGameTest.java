@@ -81,7 +81,7 @@ public class TicTacToeGameTest {
                 }
             };
 
-            assertThat(makeMoveOnUnStartedGame, doesThrow(TicTacToeGame.GameWasNotStartedException.class));
+            assertThat(makeMoveOnUnStartedGame, doesThrow(TicTacToeGameFsm.GameWasNotStartedException.class));
         }
     }
 
@@ -134,7 +134,7 @@ public class TicTacToeGameTest {
                 }
             };
 
-            assertThat(startASecondTime, doesThrow(TicTacToeGame.GameIsAlreadyStartedException.class));
+            assertThat(startASecondTime, doesThrow(TicTacToeGameFsm.GameIsAlreadyStartedException.class));
         }
 
         @Test
@@ -146,7 +146,7 @@ public class TicTacToeGameTest {
                 }
             };
 
-            assertThat(startWithDifferentPlayer, doesThrow(TicTacToeGame.NotThisPlayersTurnException.class));
+            assertThat(startWithDifferentPlayer, doesThrow(TicTacToeGameFsm.NotThisPlayersTurnException.class));
         }
 
         @Test
@@ -284,7 +284,7 @@ public class TicTacToeGameTest {
                 }
             };
 
-            assertThat(makeMove, doesThrow(TicTacToeGame.GameIsFinishedException.class));
+            assertThat(makeMove, doesThrow(TicTacToeGameFsm.GameIsFinishedException.class));
         }
 
         @Test
@@ -330,7 +330,7 @@ public class TicTacToeGameTest {
                 }
             };
 
-            assertThat(makeMoveOnLastFreeCell, doesThrow(TicTacToeGame.GameIsFinishedException.class));
+            assertThat(makeMoveOnLastFreeCell, doesThrow(TicTacToeGameFsm.GameIsFinishedException.class));
         }
     }
 
