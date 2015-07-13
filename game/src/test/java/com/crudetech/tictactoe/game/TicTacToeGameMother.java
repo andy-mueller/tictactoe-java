@@ -35,4 +35,11 @@ public class TicTacToeGameMother {
 
         return game;
     }
+
+    public Grid almostFinishedGrid() {
+        return LinearRandomAccessGrid.of(
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought,
+                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought,
+                Grid.Mark.Cross,Grid.Mark.Nought,Grid.Mark.None);
+    }
 }

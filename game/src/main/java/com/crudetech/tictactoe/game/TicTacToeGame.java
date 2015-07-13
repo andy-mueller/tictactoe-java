@@ -18,7 +18,7 @@ public class TicTacToeGame {
     private Player startingPlayer;
     private Grid.Mark startingPlayersMark;
 
-    private final TicTacToeGameFsm fsm;
+    private TicTacToeGameFsm fsm;
 
 
     public TicTacToeGame(Player player1, Player player2) {
@@ -36,23 +36,14 @@ public class TicTacToeGame {
     }
 
 
-    private Player getOtherPlayer() {
-        return getStartingPlayer() == player1 ? player2 : player1;
-    }
-    private Grid.Mark getOtherPlayersMark() {
-        return getStartingPlayersMark().getOpposite();
-    }
-
-    public  Player getStartingPlayer() {
-        return startingPlayer;
-    }
-    public Grid.Mark getStartingPlayersMark() {
-        return startingPlayersMark;
+    private Pair<Player, Grid.Mark> getOtherPlayer() {
+        Pair<Player, Grid.Mark> startingPlayer = getStartingPlayer();
+        Grid.Mark otherPlayersMark = startingPlayer.getSecond().getOpposite();
+        return new Pair<>((startingPlayer.getFirst() == player1 ? player2 : player1), otherPlayersMark);
     }
 
-
-    private boolean wasFirstPlayersTurn() {
-        return fsm.previousState() == TicTacToeGameFsm.State.StartingPlayersTurn;
+    public Pair<Player, Grid.Mark> getStartingPlayer() {
+        return new Pair<>(startingPlayer, startingPlayersMark);
     }
 
     public void startWithPlayer(Player startingPlayer, Grid.Mark startPlayersMark) {
@@ -69,8 +60,8 @@ public class TicTacToeGame {
     }
 
     public void makeMove(Player player, Grid.Row row, Grid.Column column) {
-        TicTacToeGameFsm.State state = fsm.currentState();
         verifyThat(grid, isNotMarkedAt(row, column));
+        TicTacToeGameFsm.State state = fsm.currentState();
         state.verifyPlayersTurn(contextFsmContext, player);
 
         placeMark(row, column, state.activePlayersMark(contextFsmContext));
@@ -100,74 +91,114 @@ public class TicTacToeGame {
         return !triple.equals(Grid.ThreeInARow.Empty);
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    static class Builder {
+        private Player startingPlayer;
+        private Grid.Mark startingPlayersMark;
+        private Player otherPlayer;
+        private Grid grid;
+
+        public Builder withStartingPlayer(Player startingPlayerr) {
+            this.startingPlayer = startingPlayerr;
+            return this;
+        }
+
+        public Builder withStartingPlayersMark(Grid.Mark mark) {
+            startingPlayersMark = mark;
+            return this;
+        }
+
+        public Builder withOtherPlayer(Player otherPlayer) {
+            this.otherPlayer = otherPlayer;
+            return this;
+        }
+
+        public Builder withGrid(Grid grid) {
+            this.grid = grid;
+            return this;
+        }
+
+        public TicTacToeGame
+        startingPlayersTurn() {
+            return createGameForState(TicTacToeGameFsm.State.StartingPlayersTurn);
+        }
+
+        private TicTacToeGame createGameForState(TicTacToeGameFsm.State state) {
+            TicTacToeGame game = new TicTacToeGame(startingPlayer, otherPlayer);
+            game.startingPlayer = startingPlayer;
+            game.startingPlayersMark = startingPlayersMark;
+            game.grid = LinearRandomAccessGrid.of(grid);
+            game.fsm = game.fsm.transferInto(state);
+            return game;
+        }
+    }
+
     private class GameFsmContext implements TicTacToeGameFsm.Context {
         @Override
         public void starting() {
-            verifyThat(TicTacToeGame.this.getStartingPlayer(), is(anyOf(equalTo(player1), equalTo(player2))));
-            verifyThat(getStartingPlayersMark(), is(not(Grid.Mark.None)));
+            verifyThat(TicTacToeGame.this.getStartingPlayer().getFirst(), is(anyOf(equalTo(player1), equalTo(player2))));
+            verifyThat(getStartingPlayer().getSecond(), is(not(Grid.Mark.None)));
 
-            TicTacToeGame.this.getStartingPlayer().yourTurn(grid);
+            TicTacToeGame.this.getStartingPlayer().getFirst().yourTurn(grid);
         }
 
         @Override
         public void eval() {
             Grid.ThreeInARow triple = grid.getThreeInARow();
             if (didWin(triple)) {
-                if (wasFirstPlayersTurn())
-                    fsm.handleEvent(TicTacToeGameFsm.Event.StartingPlayerWins);
-                else
-                    fsm.handleEvent(TicTacToeGameFsm.Event.OtherPlayerWins);
-            } else if (grid.isTieForFirstPlayersMark(getStartingPlayersMark())) {
+                TicTacToeGameFsm.Event currentPlayerWins = fsm.previousState().currentPlayerWinsEvent();
+                fsm.handleEvent(currentPlayerWins);
+            } else if (grid.isTieForFirstPlayersMark(getStartingPlayer().getSecond())) {
                 fsm.handleEvent(TicTacToeGameFsm.Event.Tie);
             } else {
-                if (wasFirstPlayersTurn())
-                    fsm.handleEvent(TicTacToeGameFsm.Event.SwitchToOtherPlayer);
-                else
-                    fsm.handleEvent(TicTacToeGameFsm.Event.SwitchToStartingPlayer);
+                TicTacToeGameFsm.Event nextPlayersTurn = fsm.previousState().nextPlayersTurn();
+                fsm.handleEvent(nextPlayersTurn);
             }
         }
 
         @Override
         public void switchTurnToStartingPlayer() {
-            TicTacToeGame.this.getOtherPlayer().moveWasMade(grid);
-            TicTacToeGame.this.getStartingPlayer().yourTurn(grid);
+            TicTacToeGame.this.getOtherPlayer().getFirst().moveWasMade(grid);
+            TicTacToeGame.this.getStartingPlayer().getFirst().yourTurn(grid);
         }
 
         @Override
         public void switchTurnToOtherPlayer() {
-            TicTacToeGame.this.getStartingPlayer().moveWasMade(grid);
-            TicTacToeGame.this.getOtherPlayer().yourTurn(grid);
+            TicTacToeGame.this.getStartingPlayer().getFirst().moveWasMade(grid);
+            TicTacToeGame.this.getOtherPlayer().getFirst().yourTurn(grid);
         }
 
         @Override
         public void tie() {
-            TicTacToeGame.this.getStartingPlayer().tie(grid);
-            TicTacToeGame.this.getOtherPlayer().tie(grid);
+            TicTacToeGame.this.getStartingPlayer().getFirst().tie(grid);
+            TicTacToeGame.this.getOtherPlayer().getFirst().tie(grid);
         }
 
         @Override
         public void startingPlayerWins() {
             Grid.ThreeInARow triple = grid.getThreeInARow();
-            TicTacToeGame.this.getStartingPlayer().youWin(grid, triple);
-            TicTacToeGame.this.getOtherPlayer().youLoose(grid, triple);
+            TicTacToeGame.this.getStartingPlayer().getFirst().youWin(grid, triple);
+            TicTacToeGame.this.getOtherPlayer().getFirst().youLoose(grid, triple);
         }
 
         @Override
         public void otherPlayerWins() {
             Grid.ThreeInARow triple = grid.getThreeInARow();
-            TicTacToeGame.this.getStartingPlayer().youLoose(grid, triple);
-            TicTacToeGame.this.getOtherPlayer().youWin(grid, triple);
+            TicTacToeGame.this.getStartingPlayer().getFirst().youLoose(grid, triple);
+            TicTacToeGame.this.getOtherPlayer().getFirst().youWin(grid, triple);
         }
 
         @Override
         public Pair<Player, Grid.Mark> getStartingPlayer() {
-            return new Pair<>(TicTacToeGame.this.getStartingPlayer(), getStartingPlayersMark());
+            return TicTacToeGame.this.getStartingPlayer();
         }
 
         @Override
         public Pair<Player, Grid.Mark> getOtherPlayer() {
-            return new Pair<>(TicTacToeGame.this.getOtherPlayer(), getOtherPlayersMark());
+            return TicTacToeGame.this.getOtherPlayer();
         }
-
     }
 }

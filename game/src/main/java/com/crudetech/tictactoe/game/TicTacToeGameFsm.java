@@ -5,8 +5,15 @@ import com.crudetech.collections.Pair;
 
 class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTacToeGameFsm.State> {
     public TicTacToeGameFsm(Context context) {
-        super(State.NotStarted);
+        this(context, State.NotStarted);
+    }
+    public TicTacToeGameFsm(Context context, State initial) {
+        super(initial);
         this.context = context;
+    }
+
+    TicTacToeGameFsm transferInto(State state) {
+        return new TicTacToeGameFsm(context, state);
     }
 
     enum State {
@@ -26,6 +33,16 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
             public Pair<Player, Grid.Mark> activePlayer(Context context) {
                 return context.getStartingPlayer();
             }
+
+            @Override
+            public Event currentPlayerWinsEvent() {
+                return Event.StartingPlayerWins;
+            }
+
+            @Override
+            public Event nextPlayersTurn() {
+                return Event.SwitchToOtherPlayer;
+            }
         },
         OtherPlayersTurn {
             @Override
@@ -33,6 +50,15 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
                 return context.getOtherPlayer();
             }
 
+            @Override
+            public Event currentPlayerWinsEvent() {
+                return Event.OtherPlayerWins;
+            }
+
+            @Override
+            public Event nextPlayersTurn() {
+                return Event.SwitchToStartingPlayer;
+            }
         },
         Evaluate {
             @Override
@@ -77,6 +103,14 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
 
         public Grid.Mark activePlayersMark(Context context) {
             return activePlayer(context).getSecond();
+        }
+
+        public  Event currentPlayerWinsEvent(){
+            throw new IllegalStateException();
+        }
+
+        public Event nextPlayersTurn() {
+            throw new IllegalStateException();
         }
     }
 

@@ -1,5 +1,6 @@
 package com.crudetech.tictactoe.usecases;
 
+import com.crudetech.collections.Pair;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.Player;
 import com.crudetech.tictactoe.game.TicTacToeGame;
@@ -130,7 +131,7 @@ public class CreateNewGameUseCaseTest {
 
         createGame.execute(request, presenterMock);
 
-        assertThat(spiedGame.getStartingPlayer(), is(startPlayer));
-        assertThat(spiedGame.getStartingPlayersMark(), is(startPlayersMark));
+        Pair<Player, Grid.Mark> expectedPlayerInfo = new Pair<>(startPlayer, startPlayersMark);
+        assertThat(spiedGame.getStartingPlayer(), is(expectedPlayerInfo));
     }
 }
