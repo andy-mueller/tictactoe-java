@@ -9,7 +9,6 @@ import static com.crudetech.matcher.Verify.verifyThat;
 import static org.hamcrest.Matchers.*;
 
 public class TicTacToeGame {
-    private final TicTacToeGameFsm.Context contextFsmContext;
     private LinearRandomAccessGrid grid = new LinearRandomAccessGrid();
     private final Player player1;
     private final Player player2;
@@ -19,7 +18,7 @@ public class TicTacToeGame {
     private Grid.Mark startingPlayersMark;
 
     private TicTacToeGameFsm fsm;
-
+    private final TicTacToeGameFsm.Context contextFsmContext;
 
     public TicTacToeGame(Player player1, Player player2) {
         this.player1 = player1;
@@ -64,7 +63,8 @@ public class TicTacToeGame {
         TicTacToeGameFsm.State state = fsm.currentState();
         state.verifyPlayersTurn(contextFsmContext, player);
 
-        placeMark(row, column, state.activePlayersMark(contextFsmContext));
+        Grid.Mark activePlayersMark = state.activePlayersMark(contextFsmContext);
+        placeMark(row, column, activePlayersMark);
 
         fsm.handleEvent(TicTacToeGameFsm.Event.Move);
     }
@@ -121,8 +121,7 @@ public class TicTacToeGame {
             return this;
         }
 
-        public TicTacToeGame
-        startingPlayersTurn() {
+        public TicTacToeGame startingPlayersTurn() {
             return createGameForState(TicTacToeGameFsm.State.StartingPlayersTurn);
         }
 
@@ -139,10 +138,10 @@ public class TicTacToeGame {
     private class GameFsmContext implements TicTacToeGameFsm.Context {
         @Override
         public void starting() {
-            verifyThat(TicTacToeGame.this.getStartingPlayer().getFirst(), is(anyOf(equalTo(player1), equalTo(player2))));
+            verifyThat(getStartingPlayer().getFirst(), is(anyOf(equalTo(player1), equalTo(player2))));
             verifyThat(getStartingPlayer().getSecond(), is(not(Grid.Mark.None)));
 
-            TicTacToeGame.this.getStartingPlayer().getFirst().yourTurn(grid);
+            getStartingPlayer().getFirst().yourTurn(grid);
         }
 
         @Override
@@ -161,34 +160,34 @@ public class TicTacToeGame {
 
         @Override
         public void switchTurnToStartingPlayer() {
-            TicTacToeGame.this.getOtherPlayer().getFirst().moveWasMade(grid);
-            TicTacToeGame.this.getStartingPlayer().getFirst().yourTurn(grid);
+            getOtherPlayer().getFirst().moveWasMade(grid);
+            getStartingPlayer().getFirst().yourTurn(grid);
         }
 
         @Override
         public void switchTurnToOtherPlayer() {
-            TicTacToeGame.this.getStartingPlayer().getFirst().moveWasMade(grid);
-            TicTacToeGame.this.getOtherPlayer().getFirst().yourTurn(grid);
+            getStartingPlayer().getFirst().moveWasMade(grid);
+            getOtherPlayer().getFirst().yourTurn(grid);
         }
 
         @Override
         public void tie() {
-            TicTacToeGame.this.getStartingPlayer().getFirst().tie(grid);
-            TicTacToeGame.this.getOtherPlayer().getFirst().tie(grid);
+            getStartingPlayer().getFirst().tie(grid);
+            getOtherPlayer().getFirst().tie(grid);
         }
 
         @Override
         public void startingPlayerWins() {
             Grid.ThreeInARow triple = grid.getThreeInARow();
-            TicTacToeGame.this.getStartingPlayer().getFirst().youWin(grid, triple);
-            TicTacToeGame.this.getOtherPlayer().getFirst().youLoose(grid, triple);
+            getStartingPlayer().getFirst().youWin(grid, triple);
+            getOtherPlayer().getFirst().youLoose(grid, triple);
         }
 
         @Override
         public void otherPlayerWins() {
             Grid.ThreeInARow triple = grid.getThreeInARow();
-            TicTacToeGame.this.getStartingPlayer().getFirst().youLoose(grid, triple);
-            TicTacToeGame.this.getOtherPlayer().getFirst().youWin(grid, triple);
+            getStartingPlayer().getFirst().youLoose(grid, triple);
+            getOtherPlayer().getFirst().youWin(grid, triple);
         }
 
         @Override

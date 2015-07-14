@@ -141,8 +141,8 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
 
     {
         addTransition(State.NotStarted, Event.Start, State.StartingPlayersTurn, starting());
-        addTransition(State.StartingPlayersTurn, Event.Move, State.Evaluate, eval());
-        addTransition(State.OtherPlayersTurn, Event.Move, State.Evaluate, eval());
+        addTransition(State.StartingPlayersTurn, Event.Move, State.Evaluate, evaluate());
+        addTransition(State.OtherPlayersTurn, Event.Move, State.Evaluate, evaluate());
         addTransition(State.Evaluate, Event.SwitchToOtherPlayer, State.OtherPlayersTurn, switchTurnToOtherPlayer());
         addTransition(State.Evaluate, Event.SwitchToStartingPlayer, State.StartingPlayersTurn, switchTurnToStartingPlayer());
         addTransition(State.Evaluate, Event.Tie, State.Tie, tie());
@@ -190,7 +190,8 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
             }
         };
     }
-    private Runnable eval() {
+
+    private Runnable evaluate() {
         return new Runnable() {
             @Override
             public void run() {
