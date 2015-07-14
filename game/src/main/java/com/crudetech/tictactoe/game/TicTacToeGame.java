@@ -95,7 +95,7 @@ public class TicTacToeGame {
         return new Builder();
     }
 
-    static class Builder {
+    public static class Builder {
         private Player startingPlayer;
         private Grid.Mark startingPlayersMark;
         private Player otherPlayer;
