@@ -87,10 +87,6 @@ public class TicTacToeGame {
         };
     }
 
-    private boolean didWin(Grid.ThreeInARow triple) {
-        return !triple.equals(Grid.ThreeInARow.Empty);
-    }
-
     public static Builder builder() {
         return new Builder();
     }
@@ -157,6 +153,10 @@ public class TicTacToeGame {
                 fsm.handleEvent(nextPlayersTurn);
             }
         }
+        private boolean didWin(Grid.ThreeInARow triple) {
+            return !triple.equals(Grid.ThreeInARow.Empty);
+        }
+
 
         @Override
         public void switchTurnToStartingPlayer() {
