@@ -95,9 +95,9 @@ public class TicTacToeGame {
         private Player startingPlayer;
         private Grid.Mark startingPlayersMark;
         private Player otherPlayer;
-        private Grid grid;
+        private Grid grid = LinearRandomAccessGrid.empty();
 
-        public Builder withStartingPlayer(Player startingPlayerr) {
+        public Builder  withStartingPlayer(Player startingPlayerr) {
             this.startingPlayer = startingPlayerr;
             return this;
         }
@@ -121,6 +121,9 @@ public class TicTacToeGame {
             return createGameForState(TicTacToeGameFsm.State.StartingPlayersTurn);
         }
 
+        public TicTacToeGame otherPlayersTurn() {
+            return createGameForState(TicTacToeGameFsm.State.OtherPlayersTurn);
+        }
         private TicTacToeGame createGameForState(TicTacToeGameFsm.State state) {
             TicTacToeGame game = new TicTacToeGame(startingPlayer, otherPlayer);
             game.startingPlayer = startingPlayer;
@@ -128,6 +131,10 @@ public class TicTacToeGame {
             game.grid = LinearRandomAccessGrid.of(grid);
             game.fsm = game.fsm.transferInto(state);
             return game;
+        }
+
+        public TicTacToeGame build() {
+            return createGameForState(TicTacToeGameFsm.State.StartingPlayersTurn);
         }
     }
 

@@ -26,22 +26,29 @@ public class TextUiPlayerTest {
         };
 
         TextUiPlayer textUiPlayer = new TextUiPlayer(mock(TextGridWidgetUiView.class), mock(TextUiFeedbackChannel.class), new PrintWriter(actualOutput), input);
-        Player player1 = mock(Player.class);
+        Player computerPlayer = mock(Player.class);
 
         HumanVsComputerPlayerInteractor interactor =
                 HumanVsComputerPlayerInteractor.builder()
-                        .setComputerPlayer(player1)
+                        .setComputerPlayer(computerPlayer)
                         .setHumanPlayer(textUiPlayer)
                         .build();
 
         interactor.startWithComputerPlayer(Grid.Mark.Cross);
         interactor.makeComputerPlayerMove(Grid.Location.of(Grid.Row.Second, Grid.Column.Third));
 
+        LinearRandomAccessGrid expectedGridAfterFirstMove = LinearRandomAccessGrid.of(
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None);
+
+        verify(computerPlayer, times(1)).moveWasMade(expectedGridAfterFirstMove);
+
         LinearRandomAccessGrid expectedGrid = LinearRandomAccessGrid.of(
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.Cross,
                 Grid.Mark.Nought, Grid.Mark.None, Grid.Mark.None);
 
-        verify(player1, times(2)).yourTurn(expectedGrid);
+        verify(computerPlayer, times(1)).yourTurn(expectedGrid);
     }
 }

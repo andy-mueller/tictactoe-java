@@ -92,13 +92,18 @@ class GameReference {
         }
 
         public GameReference build() {
-            TicTacToeGame g = newGame(startingPlayer, otherPlayer);
-            g.startWithPlayer(startingPlayer, startPlayerMark);
+            TicTacToeGame g = gameBuilder()
+                    .withStartingPlayer(startingPlayer)
+                    .withStartingPlayersMark(startPlayerMark)
+                    .withOtherPlayer(otherPlayer)
+                    .build();
+
+   //         g.startWithPlayer(startingPlayer, startPlayerMark);
             return new GameReference(g, startingPlayer, otherPlayer);
         }
 
-        TicTacToeGame newGame(Player startingPlayer, Player otherPlayer) {
-            return new TicTacToeGame(startingPlayer, otherPlayer);
+        TicTacToeGame.Builder gameBuilder() {
+            return TicTacToeGame.builder();
         }
     }
 

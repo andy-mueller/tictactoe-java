@@ -1,6 +1,9 @@
 package com.crudetech.tictactoe.usecases;
 
-import com.crudetech.tictactoe.game.*;
+import com.crudetech.tictactoe.game.Grid;
+import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
+import com.crudetech.tictactoe.game.Player;
+import com.crudetech.tictactoe.game.TicTacToeGameMother;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -37,7 +40,6 @@ public class GameReferenceTest {
         verify(presenter, never()).highlight(any(Grid.ThreeInARow.class));
         verify(presenter, never()).finished();
     }
-
 
     @Ignore
     @Test
@@ -81,7 +83,7 @@ public class GameReferenceTest {
         @Override
         public GameReference build() {
 
-//            TicTacToeGame.builder().withStartingPlayer(st)
+//            TicTacToeGame.builder().withStartingPlayer()
 //
 //            TicTacToeGame g = newGame(startingPlayer, otherPlayer);
 //            g.startWithPlayer(startingPlayer, startPlayerMark);
