@@ -44,9 +44,14 @@ public class CreateNewGameUseCaseTest {
             GameReference.Builder gameReferenceBuilder() {
                 return new GameReference.Builder() {
                     @Override
-                    TicTacToeGame newGame(Player startingPlayer, Player otherPlayer) {
-                        spiedGame = super.newGame(startingPlayer, otherPlayer);
-                        return spiedGame;
+                    TicTacToeGame.Builder gameBuilder() {
+                        return new TicTacToeGame.Builder(){
+                            @Override
+                            public TicTacToeGame build() {
+                                spiedGame = super.build();
+                                return spiedGame;
+                            }
+                        };
                     }
                 };
             }
