@@ -63,6 +63,18 @@ public class UiPlayerTest {
     }
 
     @Test
+    public void youWinUpdatesModel() {
+        Grid winningGrid = LinearRandomAccessGrid.of(
+                Grid.Mark.Nought, Grid.Mark.Cross, Grid.Mark.None,
+                Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought);
+
+        player.youWin(winningGrid, DiagonalTriple);
+
+        verify(widget).setModel(winningGrid);
+    }
+
+    @Test
     public void youLoosGivesUserFeedback() {
         Grid winningGrid = LinearRandomAccessGrid.of(
                 Grid.Mark.Nought, Grid.Mark.Cross, Grid.Mark.None,
@@ -76,14 +88,27 @@ public class UiPlayerTest {
 
     @Test
     public void youLooseHighlightsWinningTriple() {
-        Grid winningGrid = LinearRandomAccessGrid.of(
+        Grid loosingGrid = LinearRandomAccessGrid.of(
                 Grid.Mark.Nought, Grid.Mark.Cross, Grid.Mark.None,
                 Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.None,
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought);
 
-        player.youLoose(winningGrid, DiagonalTriple);
+        player.youLoose(loosingGrid, DiagonalTriple);
 
         verify(widget).highlight(DiagonalTriple);
+    }
+
+
+    @Test
+    public void youLooseUpdatesModel() {
+        Grid loosingGrid = LinearRandomAccessGrid.of(
+                Grid.Mark.Nought, Grid.Mark.Cross, Grid.Mark.None,
+                Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought);
+
+        player.youLoose(loosingGrid, DiagonalTriple);
+
+        verify(widget).setModel(loosingGrid);
     }
 
     @Test
@@ -97,5 +122,18 @@ public class UiPlayerTest {
         player.tie(winningGrid);
 
         verify(uiFeedback).showMessage("Tie!");
+    }
+
+    @Test
+    public void tieUpdatesModel() {
+        Grid tieGrid = LinearRandomAccessGrid.of(
+                Grid.Mark.Nought, Grid.Mark.Cross, Grid.Mark.None,
+                Grid.Mark.Nought, Grid.Mark.Nought, Grid.Mark.None,
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought);
+
+
+        player.tie(tieGrid);
+
+        verify(widget).setModel(tieGrid);
     }
 }

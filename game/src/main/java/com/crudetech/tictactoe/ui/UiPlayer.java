@@ -26,18 +26,21 @@ public class UiPlayer implements Player {
 
     @Override
     public void youWin(Grid actualGrid, Grid.ThreeInARow triple) {
+        view.setModel(actualGrid);
         view.highlight(triple);
         uiFeedback.showMessage("You win!");
     }
 
     @Override
     public void youLoose(Grid actualGrid, Grid.ThreeInARow triple) {
+        view.setModel(actualGrid);
         view.highlight(triple);
         uiFeedback.showMessage("You loose!");
     }
 
     @Override
     public void tie(Grid actualGrid) {
+        view.setModel(actualGrid);
         uiFeedback.showMessage("Tie!");
     }
 

@@ -7,6 +7,7 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
     public TicTacToeGameFsm(Context context) {
         this(context, State.NotStarted);
     }
+
     public TicTacToeGameFsm(Context context, State initial) {
         super(initial);
         this.context = context;
@@ -105,7 +106,7 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
             return activePlayer(context).getSecond();
         }
 
-        public  Event currentPlayerWinsEvent(){
+        public Event currentPlayerWinsEvent() {
             throw new IllegalStateException();
         }
 
@@ -131,6 +132,10 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
 
         void otherPlayerWins();
 
+        void startingPlayerMoved();
+
+        void otherPlayerMoved();
+
         Pair<Player, Grid.Mark> getStartingPlayer();
 
         Pair<Player, Grid.Mark> getOtherPlayer();
@@ -140,14 +145,32 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
 
 
     {
-        addTransition(State.NotStarted, Event.Start, State.StartingPlayersTurn, starting());
-        addTransition(State.StartingPlayersTurn, Event.Move, State.Evaluate, evaluate());
-        addTransition(State.OtherPlayersTurn, Event.Move, State.Evaluate, evaluate());
-        addTransition(State.Evaluate, Event.SwitchToOtherPlayer, State.OtherPlayersTurn, switchTurnToOtherPlayer());
-        addTransition(State.Evaluate, Event.SwitchToStartingPlayer, State.StartingPlayersTurn, switchTurnToStartingPlayer());
-        addTransition(State.Evaluate, Event.Tie, State.Tie, tie());
-        addTransition(State.Evaluate, Event.StartingPlayerWins, State.StartingPlayerWins, startingPlayerWins());
-        addTransition(State.Evaluate, Event.OtherPlayerWins, State.OtherPlayerWins, otherPlayerWins());
+        addTransition(State.NotStarted, Event.Start, NoOp, State.StartingPlayersTurn, starting());
+        addTransition(State.StartingPlayersTurn, Event.Move, startingPlayerMoved(), State.Evaluate, evaluate());
+        addTransition(State.OtherPlayersTurn, Event.Move, otherPlayerMoved(), State.Evaluate, evaluate());
+        addTransition(State.Evaluate, Event.SwitchToOtherPlayer, NoOp, State.OtherPlayersTurn, switchTurnToOtherPlayer());
+        addTransition(State.Evaluate, Event.SwitchToStartingPlayer, NoOp, State.StartingPlayersTurn, switchTurnToStartingPlayer());
+        addTransition(State.Evaluate, Event.Tie, NoOp, State.Tie, tie());
+        addTransition(State.Evaluate, Event.StartingPlayerWins, NoOp, State.StartingPlayerWins, startingPlayerWins());
+        addTransition(State.Evaluate, Event.OtherPlayerWins, NoOp, State.OtherPlayerWins, otherPlayerWins());
+    }
+
+    private Runnable otherPlayerMoved() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                context.otherPlayerMoved();
+            }
+        };
+    }
+
+    private Runnable startingPlayerMoved() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                context.startingPlayerMoved();
+            }
+        };
     }
 
     private Runnable otherPlayerWins() {
@@ -158,6 +181,7 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
             }
         };
     }
+
     private Runnable startingPlayerWins() {
         return new Runnable() {
             @Override
@@ -166,6 +190,7 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
             }
         };
     }
+
     private Runnable switchTurnToStartingPlayer() {
         return new Runnable() {
             @Override
@@ -174,6 +199,7 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
             }
         };
     }
+
     private Runnable tie() {
         return new Runnable() {
             @Override
@@ -182,6 +208,7 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
             }
         };
     }
+
     private Runnable switchTurnToOtherPlayer() {
         return new Runnable() {
             @Override
@@ -199,6 +226,7 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
             }
         };
     }
+
     private Runnable starting() {
         return new Runnable() {
             @Override

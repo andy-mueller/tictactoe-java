@@ -12,16 +12,24 @@ public class TransitionTableFsm<TEvent, TState> {
         this.previousState = initialState;
     }
 
+    static final Runnable NoOp = new Runnable() {
+        @Override
+        public void run() {
 
-    class Transition<TEvent, TState> {
+        }
+    };
+
+    class Transition {
         private final TState givenState;
         private final TEvent event;
         private final TState nextState;
+        private final Runnable exitAction;
         private final Runnable entryAction;
 
-        Transition(TState givenState, TEvent event, TState nextState, Runnable action) {
+        Transition(TState givenState, TEvent event, Runnable exitAction, TState nextState, Runnable action) {
             this.givenState = givenState;
             this.event = event;
+            this.exitAction = exitAction;
             this.nextState = nextState;
             this.entryAction = action;
         }
@@ -39,10 +47,10 @@ public class TransitionTableFsm<TEvent, TState> {
         }
     }
     private class TransitionTable {
-        private final List<Transition<TEvent, TState>> transitions = new ArrayList<>();
+        private final List<Transition> transitions = new ArrayList<>();
 
-        void add(TState givenState, TEvent event, TState nextState, Runnable action) {
-            transitions.add(new Transition(givenState, event, nextState, action));
+        void add(TState givenState, TEvent event, Runnable exitAction, TState nextState, Runnable action) {
+            transitions.add(new Transition(givenState, event, exitAction, nextState, action));
         }
 
         Transition transitionForEvent(TEvent event) {
@@ -59,8 +67,9 @@ public class TransitionTableFsm<TEvent, TState> {
 
 
     public void handleEvent(TEvent event) {
-        Transition<TEvent, TState> t = transitions.transitionForEvent(event);
+        Transition t = transitions.transitionForEvent(event);
         this.previousState = this.state;
+        t.exitAction.run();
         this.state = t.nextState;
         t.entryAction.run();
     }
@@ -73,7 +82,7 @@ public class TransitionTableFsm<TEvent, TState> {
         return previousState;
     }
 
-    protected void addTransition(TState givenState, TEvent event, TState nextState, Runnable entryAction) {
-        transitions.add(givenState, event, nextState, entryAction);
+    protected void addTransition(TState givenState, TEvent event, Runnable exitAction, TState nextState, Runnable entryAction) {
+        transitions.add(givenState, event, exitAction, nextState, entryAction);
     }
 }

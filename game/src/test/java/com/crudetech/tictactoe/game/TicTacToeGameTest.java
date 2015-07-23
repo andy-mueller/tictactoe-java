@@ -72,6 +72,7 @@ public class TicTacToeGameTest {
             assertThat(firstPlayer.getTurnCount(), is(0));
             assertThat(secondPlayer.getLastGrid(), is(noGrid));
         }
+
         @Test
         public void cannotPlay() {
             Runnable makeMoveOnUnStartedGame = new Runnable() {
@@ -205,6 +206,9 @@ public class TicTacToeGameTest {
 
     @SuppressWarnings("unused")
     public class WithAlmostFinishedGame {
+
+        public static final int MovesUntillNow = 3;
+
         @Before
         public void setupAlmostFinishedGame() {
             game.startWithPlayer(firstPlayer, Grid.Mark.Cross);
@@ -224,6 +228,32 @@ public class TicTacToeGameTest {
             assertThat(firstPlayer.getLastGrid(), is(expectedGrid));
         }
 
+        @Test
+        public void movingPlayerIsInformedOnRegularMove() {
+
+            game.makeMove(firstPlayer, Grid.Location.of(Grid.Row.First, Grid.Column.Second));
+
+            assertThat(firstPlayer.getMoveWasMadeCount(), is(MovesUntillNow + 1));
+        }
+
+        @Test
+        public void movingPlayerIsInformedOnWinningMove() {
+
+            game.makeMove(firstPlayer, Grid.Location.of(Grid.Row.First, Grid.Column.First));
+
+            assertThat(firstPlayer.getMoveWasMadeCount(), is(MovesUntillNow + 1));
+        }
+
+        @Test
+        public void movingPlayerIsInformedOnTieMove() {
+
+            game.makeMove(firstPlayer, Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
+            game.makeMove(secondPlayer, Grid.Location.of(Grid.Row.First, Grid.Column.First));
+//            game.makeMove(firstPlayer, Grid.Location.of(Grid.Row.First, Grid.Column.Second));
+
+            assertThat(firstPlayer.getMoveWasMadeCount(), is(MovesUntillNow + 1));
+            assertThat(secondPlayer.getMoveWasMadeCount(), is(MovesUntillNow + 1));
+        }
 
         @Test
         public void winningPlayerIsInformedWhenWinning() {

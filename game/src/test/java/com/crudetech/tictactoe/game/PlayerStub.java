@@ -9,6 +9,7 @@ class PlayerStub implements Player {
     private Grid tieGrid;
     public TicTacToeGame game;
     private Grid lastMoveResult;
+    private int moveWasMadeCount = 0;
 
     @Override
     public void yourTurn(Grid actualGrid) {
@@ -34,6 +35,7 @@ class PlayerStub implements Player {
 
     @Override
     public void moveWasMade(Grid actualGrid) {
+        moveWasMadeCount++;
         lastMoveResult = actualGrid;
     }
 
@@ -80,5 +82,9 @@ class PlayerStub implements Player {
 
     Grid getLastMoveGrid() {
         return lastMoveResult;
+    }
+
+    public int getMoveWasMadeCount() {
+        return moveWasMadeCount;
     }
 }

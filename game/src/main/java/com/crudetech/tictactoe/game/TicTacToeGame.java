@@ -167,13 +167,11 @@ public class TicTacToeGame {
 
         @Override
         public void switchTurnToStartingPlayer() {
-            getOtherPlayer().getFirst().moveWasMade(grid);
             getStartingPlayer().getFirst().yourTurn(grid);
         }
 
         @Override
         public void switchTurnToOtherPlayer() {
-            getStartingPlayer().getFirst().moveWasMade(grid);
             getOtherPlayer().getFirst().yourTurn(grid);
         }
 
@@ -195,6 +193,16 @@ public class TicTacToeGame {
             Grid.ThreeInARow triple = grid.getThreeInARow();
             getStartingPlayer().getFirst().youLoose(grid, triple);
             getOtherPlayer().getFirst().youWin(grid, triple);
+        }
+
+        @Override
+        public void startingPlayerMoved() {
+            getStartingPlayer().getFirst().moveWasMade(grid);
+        }
+
+        @Override
+        public void otherPlayerMoved() {
+            getOtherPlayer().getFirst().moveWasMade(grid);
         }
 
         @Override
