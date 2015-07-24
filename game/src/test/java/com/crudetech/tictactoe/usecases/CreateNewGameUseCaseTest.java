@@ -6,6 +6,7 @@ import com.crudetech.tictactoe.game.Player;
 import com.crudetech.tictactoe.game.TicTacToeGame;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -39,23 +40,7 @@ public class CreateNewGameUseCaseTest {
 
     private void setupUseCase() {
         mockGameReferenceGateway = mock(GameReferenceGateway.class);
-        createGame = new CreateNewGameUseCase(mockPlayerReferenceGateway, mockPlayerFactory, mockGameReferenceGateway) {
-            @Override
-            GameReference.Builder gameReferenceBuilder() {
-                return new GameReference.Builder() {
-                    @Override
-                    TicTacToeGame.Builder gameBuilder() {
-                        return new TicTacToeGame.Builder(){
-                            @Override
-                            public TicTacToeGame build() {
-                                spiedGame = super.build();
-                                return spiedGame;
-                            }
-                        };
-                    }
-                };
-            }
-        };
+        createGame = new CreateNewGameUseCase(mockPlayerReferenceGateway, mockPlayerFactory, mockGameReferenceGateway);
     }
 
     private void setupPlayerFactory() {
@@ -133,10 +118,13 @@ public class CreateNewGameUseCaseTest {
     public void createdGameIsStartedWithCorrectPlayerAndMark() throws Exception {
         CreateNewGameUseCase.Presenter presenterMock = mock(CreateNewGameUseCase.Presenter.class);
         CreateNewGameUseCase.Request request = createRequest();
+        ArgumentCaptor<GameReference> createdGameRecCaptor = ArgumentCaptor.forClass(GameReference.class);
 
         createGame.execute(request, presenterMock);
 
+        verify(mockGameReferenceGateway).add(createdGameRecCaptor.capture());
+        GameReference gameReference = createdGameRecCaptor.getValue();
         Pair<Player, Grid.Mark> expectedPlayerInfo = new Pair<>(startPlayer, startPlayersMark);
-        assertThat(spiedGame.getStartingPlayer(), is(expectedPlayerInfo));
+        assertThat(gameReference.game.getStartingPlayer(), is(expectedPlayerInfo));
     }
 }

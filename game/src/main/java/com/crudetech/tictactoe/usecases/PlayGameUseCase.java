@@ -15,7 +15,7 @@ class PlayGameUseCase implements UseCase<PlayGameUseCase.Request, PlayGameUseCas
         public Grid.Location move;
     }
 
-    static interface Presenter {
+    interface Presenter {
         void display(Grid grid);
 
         void highlight(Grid.ThreeInARow threeInARow);

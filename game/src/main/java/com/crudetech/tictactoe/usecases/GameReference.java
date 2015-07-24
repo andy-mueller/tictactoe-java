@@ -92,18 +92,16 @@ class GameReference {
         }
 
         public GameReference build() {
-            TicTacToeGame g = gameBuilder()
-                    .withStartingPlayer(startingPlayer)
-                    .withStartingPlayersMark(startPlayerMark)
-                    .withOtherPlayer(otherPlayer)
-                    .build();
+            TicTacToeGame g = gameBuilder().build();
 
-   //         g.startWithPlayer(startingPlayer, startPlayerMark);
             return new GameReference(g, startingPlayer, otherPlayer);
         }
 
         TicTacToeGame.Builder gameBuilder() {
-            return TicTacToeGame.builder();
+            return TicTacToeGame.builder()
+                    .withStartingPlayer(startingPlayer)
+                    .withStartingPlayersMark(startPlayerMark)
+                    .withOtherPlayer(otherPlayer);
         }
     }
 
@@ -120,17 +118,22 @@ class GameReference {
 
         @Override
         public void youWin(Grid actualGrid, Grid.ThreeInARow triple) {
-            throw new RuntimeException("Not implemented yet!");
+            presenter.display(actualGrid);
+            presenter.highlight(triple);
+            presenter.finished();
         }
 
         @Override
         public void youLoose(Grid actualGrid, Grid.ThreeInARow triple) {
-            throw new RuntimeException("Not implemented yet!");
+            presenter.display(actualGrid);
+            presenter.highlight(triple);
+            presenter.finished();
         }
 
         @Override
         public void tie(Grid actualGrid) {
-            throw new RuntimeException("Not implemented yet!");
+            presenter.display(actualGrid);
+            presenter.finished();
         }
 
         @Override

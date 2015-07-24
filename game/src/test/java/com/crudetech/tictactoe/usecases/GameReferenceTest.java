@@ -1,14 +1,11 @@
 package com.crudetech.tictactoe.usecases;
 
-import com.crudetech.tictactoe.game.Grid;
-import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
-import com.crudetech.tictactoe.game.Player;
-import com.crudetech.tictactoe.game.TicTacToeGameMother;
-import org.junit.Ignore;
+import com.crudetech.tictactoe.game.*;
 import org.junit.Test;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 public class GameReferenceTest {
 
@@ -41,13 +38,12 @@ public class GameReferenceTest {
         verify(presenter, never()).finished();
     }
 
-    @Ignore
     @Test
     public void givenMoveResultsInTie_resultIsPresented() throws Exception {
         Player startPlayer = new GameReference.HumanPlayer();
         Player otherPlayer = new SingleMovePlayer(Grid.Location.of(Grid.Row.First, Grid.Column.First));
         GameReference gameRef = new AlmostFinishedGameReferenceBuilder()
-                .withStartPlayer( startPlayer)
+                .withStartPlayer(startPlayer)
                 .withStartPlayerMark(Grid.Mark.Cross)
                 .withOtherPlayer(otherPlayer)
                 .build();
@@ -67,6 +63,72 @@ public class GameReferenceTest {
         verify(presenter).finished();
     }
 
+    @Test
+    public void givenMoveResultsInWinning_resultIsPresented() throws Exception {
+        Player startPlayer = new GameReference.HumanPlayer();
+        Player otherPlayer = mock(Player.class);
+        GameReference gameRef = new AlmostFinishedGameReferenceBuilder()
+                .withStartPlayer(startPlayer)
+                .withStartPlayerMark(Grid.Mark.Cross)
+                .withOtherPlayer(otherPlayer)
+                .build();
+
+        GameReference.Presenter presenter = mock(GameReference.Presenter.class);
+        gameRef.makeMove(startingPlayerId, Grid.Location.of(Grid.Row.First, Grid.Column.First), presenter);
+
+
+        Grid expectedGrid = LinearRandomAccessGrid.of(
+                Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.Nought,
+                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought,
+                Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.None
+        );
+
+        verify(presenter, times(2)).display(expectedGrid);
+        verify(presenter).highlight(FirstColumnWithCrosses);
+        verify(presenter).finished();
+    }
+
+    @Test
+    public void givenMoveResultsLoss_resultIsPresented() throws Exception {
+        Player startPlayer = new GameReference.HumanPlayer();
+        Player otherPlayer = new SingleMovePlayer(Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
+        GameReference gameRef = new AlmostFinishedGameReferenceBuilder()
+                .withStartPlayer(startPlayer)
+                .withStartPlayerMark(Grid.Mark.Cross)
+                .withOtherPlayer(otherPlayer)
+                .build();
+
+        GameReference.Presenter presenter = mock(GameReference.Presenter.class);
+        gameRef.makeMove(startingPlayerId, Grid.Location.of(Grid.Row.First, Grid.Column.Second), presenter);
+
+
+        Grid expectedGrid = LinearRandomAccessGrid.of(
+                Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.Nought,
+                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought,
+                Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.Nought
+        );
+
+        verify(presenter).display(expectedGrid);
+        verify(presenter).highlight(ThirdColumnWithNoughts);
+        verify(presenter).finished();
+    }
+
+    private static final Grid.ThreeInARow FirstColumnWithCrosses =
+            Grid.ThreeInARow.of(
+                    Grid.Mark.Cross,
+                    Grid.Location.of(Grid.Row.First, Grid.Column.First),
+                    Grid.Location.of(Grid.Row.Second, Grid.Column.First),
+                    Grid.Location.of(Grid.Row.Third, Grid.Column.First)
+            );
+    private static final Grid.ThreeInARow ThirdColumnWithNoughts =
+            Grid.ThreeInARow.of(
+                    Grid.Mark.Nought,
+                    Grid.Location.of(Grid.Row.First, Grid.Column.Third),
+                    Grid.Location.of(Grid.Row.Second, Grid.Column.Third),
+                    Grid.Location.of(Grid.Row.Third, Grid.Column.Third)
+            );
+
+
     /**
      * Creates a game that is still open for both players to win or to produce a tie:
      * <pre>
@@ -81,17 +143,11 @@ public class GameReferenceTest {
      */
     private static class AlmostFinishedGameReferenceBuilder extends GameReference.Builder {
         @Override
-        public GameReference build() {
-
-//            TicTacToeGame.builder().withStartingPlayer()
-//
-//            TicTacToeGame g = newGame(startingPlayer, otherPlayer);
-//            g.startWithPlayer(startingPlayer, startPlayerMark);
-//            return new GameReference(g, startingPlayer, otherPlayer);
-            GameReference ref = super.build();
+        TicTacToeGame.Builder gameBuilder() {
             TicTacToeGameMother gameMother = new TicTacToeGameMother();
-            gameMother.setupAlmostFinishedGame(ref.startPlayer, ref.otherPlayer, ref.game);
-            return ref;
+
+            TicTacToeGame.Builder builder = super.gameBuilder();
+            return builder.withGrid(gameMother.almostFinishedGrid());
         }
     }
 }
