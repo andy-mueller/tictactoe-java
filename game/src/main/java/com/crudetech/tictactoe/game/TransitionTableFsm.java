@@ -42,9 +42,6 @@ public class TransitionTableFsm<TEvent, TState> {
         private TransitionNotAllowedForThisStateException(Object event, Object state) {
             super(String.format("This event [%s] is not allowed for the state [%s]!", event, state));
         }
-        private static <TEvent, TState> TransitionNotAllowedForThisStateException create(TEvent event, TState state){
-            return new TransitionNotAllowedForThisStateException(event, state);
-        }
     }
     private class TransitionTable {
         private final List<Transition> transitions = new ArrayList<>();
@@ -59,7 +56,7 @@ public class TransitionTableFsm<TEvent, TState> {
                     return t;
                 }
             }
-            throw TransitionNotAllowedForThisStateException.create(event, state);
+            throw new TransitionNotAllowedForThisStateException(event, state);
         }
     }
 
@@ -67,11 +64,11 @@ public class TransitionTableFsm<TEvent, TState> {
 
 
     public void handleEvent(TEvent event) {
-        Transition t = transitions.transitionForEvent(event);
+        Transition transition = transitions.transitionForEvent(event);
         this.previousState = this.state;
-        t.exitAction.run();
-        this.state = t.nextState;
-        t.entryAction.run();
+        transition.exitAction.run();
+        this.state = transition.nextState;
+        transition.entryAction.run();
     }
 
     public TState currentState() {
