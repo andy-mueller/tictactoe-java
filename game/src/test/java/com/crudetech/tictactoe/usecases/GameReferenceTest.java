@@ -1,6 +1,7 @@
 package com.crudetech.tictactoe.usecases;
 
 import com.crudetech.tictactoe.game.*;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.mockito.Matchers.any;
@@ -128,6 +129,24 @@ public class GameReferenceTest {
                     Grid.Location.of(Grid.Row.Third, Grid.Column.Third)
             );
 
+    @Ignore
+    @Test
+    public void givenGameIsAlreadyFinishedOnMove_ErrorIsDisplayed() throws Exception {
+        Player startPlayer = new GameReference.HumanPlayer();
+        Player otherPlayer = mock(Player.class);
+        GameReference finishedGameRef = new FinishedGameReferenceBuilder()
+                .withStartPlayer(startPlayer)
+                .withStartPlayerMark(Grid.Mark.Cross)
+                .withOtherPlayer(otherPlayer)
+                .build();
+
+        GameReference.Presenter presenter = mock(GameReference.Presenter.class);
+        finishedGameRef.makeMove(startingPlayerId, Grid.Location.of(Grid.Row.First, Grid.Column.Second), presenter);
+
+
+        //verify(presenter).gameAlreadyFinished();
+        //  What should happen? Exception? callback?
+    }
 
     /**
      * Creates a game that is still open for both players to win or to produce a tie:
@@ -145,9 +164,31 @@ public class GameReferenceTest {
         @Override
         TicTacToeGame.Builder gameBuilder() {
             TicTacToeGameMother gameMother = new TicTacToeGameMother();
-
             TicTacToeGame.Builder builder = super.gameBuilder();
             return builder.withGrid(gameMother.almostFinishedGrid());
+        }
+    }
+
+    /**
+     * Creates a game is finished nd won by the x player:
+     * <pre>
+     *    |   | O
+     * ---+---+---
+     *  X | X | O
+     * ---+---+---
+     *  X | O | O
+     * </pre>
+     * <p/>
+     * It is the no players turn now
+     */
+    private static class FinishedGameReferenceBuilder extends GameReference.Builder {
+        @Override
+        TicTacToeGame.Builder gameBuilder() {
+            TicTacToeGameMother gameMother = new TicTacToeGameMother();
+            TicTacToeGame.Builder builder = super.gameBuilder();
+            return builder
+                    .withStartingPlayerWins()
+                    .withGrid(gameMother.finishedGridWitNoughtsWinning());
         }
     }
 }

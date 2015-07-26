@@ -42,4 +42,21 @@ public class TicTacToeGameMother {
                 Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought,
                 Grid.Mark.Cross,Grid.Mark.Nought,Grid.Mark.None);
     }
+
+    /**
+     * Creates a game is finished nd won by the O player:
+     * <pre>
+     *    |   | O
+     * ---+---+---
+     *  X | X | O
+     * ---+---+---
+     *  X | O | O
+     * </pre>
+     */
+    public Grid finishedGridWitNoughtsWinning() {
+        return LinearRandomAccessGrid.of(
+                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought,
+                Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought,
+                Grid.Mark.Cross, Grid.Mark.Nought, Grid.Mark.Nought);
+    }
 }

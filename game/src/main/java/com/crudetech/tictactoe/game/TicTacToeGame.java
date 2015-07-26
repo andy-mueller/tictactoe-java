@@ -96,9 +96,10 @@ public class TicTacToeGame {
         private Grid.Mark startingPlayersMark;
         private Player otherPlayer;
         private Grid grid = LinearRandomAccessGrid.empty();
+        private TicTacToeGameFsm.State state = TicTacToeGameFsm.State.StartingPlayersTurn;
 
-        public Builder  withStartingPlayer(Player startingPlayerr) {
-            this.startingPlayer = startingPlayerr;
+        public Builder withStartingPlayer(Player startingPlayer) {
+            this.startingPlayer = startingPlayer;
             return this;
         }
 
@@ -117,14 +118,8 @@ public class TicTacToeGame {
             return this;
         }
 
-        public TicTacToeGame startingPlayersTurn() {
-            return createGameForState(TicTacToeGameFsm.State.StartingPlayersTurn);
-        }
 
-        public TicTacToeGame otherPlayersTurn() {
-            return createGameForState(TicTacToeGameFsm.State.OtherPlayersTurn);
-        }
-        private TicTacToeGame createGameForState(TicTacToeGameFsm.State state) {
+        public TicTacToeGame build() {
             TicTacToeGame game = new TicTacToeGame(startingPlayer, otherPlayer);
             game.startingPlayer = startingPlayer;
             game.startingPlayersMark = startingPlayersMark;
@@ -133,8 +128,9 @@ public class TicTacToeGame {
             return game;
         }
 
-        public TicTacToeGame build() {
-            return createGameForState(TicTacToeGameFsm.State.StartingPlayersTurn);
+        public Builder withStartingPlayerWins() {
+            this.state = TicTacToeGameFsm.State.OtherPlayerWins;
+            return this;
         }
     }
 
@@ -160,6 +156,7 @@ public class TicTacToeGame {
                 fsm.handleEvent(nextPlayersTurn);
             }
         }
+
         private boolean didWin(Grid.ThreeInARow triple) {
             return !triple.equals(Grid.ThreeInARow.Empty);
         }
