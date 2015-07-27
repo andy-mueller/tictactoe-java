@@ -1,12 +1,10 @@
 package com.crudetech.tictactoe.usecases;
 
 import com.crudetech.tictactoe.game.*;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.mock;
 
 public class GameReferenceTest {
 
@@ -129,7 +127,6 @@ public class GameReferenceTest {
                     Grid.Location.of(Grid.Row.Third, Grid.Column.Third)
             );
 
-    @Ignore
     @Test
     public void givenGameIsAlreadyFinishedOnMove_ErrorIsDisplayed() throws Exception {
         Player startPlayer = new GameReference.HumanPlayer();
@@ -143,9 +140,7 @@ public class GameReferenceTest {
         GameReference.Presenter presenter = mock(GameReference.Presenter.class);
         finishedGameRef.makeMove(startingPlayerId, Grid.Location.of(Grid.Row.First, Grid.Column.Second), presenter);
 
-
-        //verify(presenter).gameAlreadyFinished();
-        //  What should happen? Exception? callback?
+        verify(presenter).gameAlreadyFinished();
     }
 
     /**

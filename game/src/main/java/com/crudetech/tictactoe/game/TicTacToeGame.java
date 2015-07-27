@@ -45,6 +45,9 @@ public class TicTacToeGame {
         return new Pair<>(startingPlayer, startingPlayersMark);
     }
 
+    public boolean isFinished() {
+        return fsm.currentState().isFinished();
+    }
     public void startWithPlayer(Player startingPlayer, Grid.Mark startPlayersMark) {
         fsm.currentState().verifyNotStarted();
 
@@ -90,6 +93,7 @@ public class TicTacToeGame {
     public static Builder builder() {
         return new Builder();
     }
+
 
     public static class Builder {
         private Player startingPlayer;

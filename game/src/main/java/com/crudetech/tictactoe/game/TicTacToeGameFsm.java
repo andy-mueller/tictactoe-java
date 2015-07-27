@@ -28,6 +28,11 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
                 throw new GameWasNotStartedException();
             }
 
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+
         },
         StartingPlayersTurn {
             @Override
@@ -43,6 +48,10 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
             @Override
             public Event nextPlayersTurn() {
                 return Event.SwitchToOtherPlayer;
+            }
+            @Override
+            public boolean isFinished() {
+                return false;
             }
         },
         OtherPlayersTurn {
@@ -60,34 +69,50 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
             public Event nextPlayersTurn() {
                 return Event.SwitchToStartingPlayer;
             }
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
         },
         Evaluate {
             @Override
             public Pair<Player, Grid.Mark> activePlayer(Context context) {
                 throw new IllegalStateException();
             }
-
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
         },
         Tie {
             @Override
             public Pair<Player, Grid.Mark> activePlayer(Context context) {
                 throw new GameIsFinishedException();
             }
-
+            @Override
+            public boolean isFinished() {
+                return true;
+            }
         },
         OtherPlayerWins {
             @Override
             public Pair<Player, Grid.Mark> activePlayer(Context context) {
                 throw new GameIsFinishedException();
             }
-
+            @Override
+            public boolean isFinished() {
+                return true;
+            }
         },
         StartingPlayerWins {
             @Override
             public Pair<Player, Grid.Mark> activePlayer(Context context) {
                 throw new GameIsFinishedException();
             }
-
+            @Override
+            public boolean isFinished() {
+                return true;
+            }
         };
 
         public void verifyNotStarted() {
@@ -113,6 +138,8 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
         public Event nextPlayersTurn() {
             throw new IllegalStateException();
         }
+
+        public abstract boolean isFinished();
     }
 
     enum Event {Start, Move, SwitchToStartingPlayer, SwitchToOtherPlayer, Tie, StartingPlayerWins, OtherPlayerWins}

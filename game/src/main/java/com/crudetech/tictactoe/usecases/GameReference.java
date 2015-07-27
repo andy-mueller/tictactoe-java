@@ -53,15 +53,22 @@ class GameReference {
         void highlight(Grid.ThreeInARow threeInARow);
 
         void finished();
+
+        void gameAlreadyFinished();
     }
+
     public Player getPlayerById(Object playerId) {
         return startPlayer;
     }
 
     public void makeMove(Object movingPlayerId, Grid.Location move, Presenter presenter) {
-        Player movingPlayer = getPlayerById(movingPlayerId) ;
-        if(movingPlayer instanceof HumanPlayer) {
-            ((HumanPlayer)movingPlayer).setPresenter(presenter);
+        Player movingPlayer = getPlayerById(movingPlayerId);
+        if (movingPlayer instanceof HumanPlayer) {
+            ((HumanPlayer) movingPlayer).setPresenter(presenter);
+        }
+        if(game.isFinished()){
+            presenter.gameAlreadyFinished();
+            return;
         }
         game.makeMove(movingPlayer, move);
 //        movingPlayer.resetPresenter();
@@ -166,6 +173,10 @@ class GameReference {
                 @Override
                 public void finished() {
 
+                }
+
+                @Override
+                public void gameAlreadyFinished() {
                 }
             };
         }

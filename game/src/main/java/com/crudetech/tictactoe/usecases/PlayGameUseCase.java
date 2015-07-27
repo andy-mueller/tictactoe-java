@@ -46,6 +46,10 @@ class PlayGameUseCase implements UseCase<PlayGameUseCase.Request, PlayGameUseCas
             public void finished() {
                 presenter.finished();
             }
+
+            @Override
+            public void gameAlreadyFinished() {
+            }
         };
     }
 }
