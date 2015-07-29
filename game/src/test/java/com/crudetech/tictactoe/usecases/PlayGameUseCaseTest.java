@@ -2,7 +2,6 @@ package com.crudetech.tictactoe.usecases;
 
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
-import com.crudetech.tictactoe.game.Player;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -55,8 +54,8 @@ public class PlayGameUseCaseTest {
         );
 
 
-        Player otherPlayer = new SingleMovePlayer(otherPlayersMove);
-        Player movingPlayer = new GameReference.HumanPlayer();
+        PlayerReference movingPlayer = new HumanPlayerReference();
+        PlayerReference otherPlayer = new SingleMovePlayerReference(otherPlayersMove);
 
         GameReference gameReference = GameReference.builder()
                 .withStartPlayer(movingPlayer)

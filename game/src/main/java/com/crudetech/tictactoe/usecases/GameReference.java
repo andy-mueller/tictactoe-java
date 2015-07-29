@@ -83,9 +83,13 @@ class GameReference {
         private Grid.Mark startPlayerMark;
         private Player startingPlayer;
 
-        public Builder withStartPlayer(Player startingPlayer) {
-            this.startingPlayer = startingPlayer;
+        public Builder withStartPlayer(PlayerReference startingPlayer) {
+            this.startingPlayer = convert(startingPlayer);
             return this;
+        }
+
+        Player convert(PlayerReference player) {
+            return null;
         }
 
         public Builder withStartPlayerMark(Grid.Mark startPlayerMark) {
@@ -93,8 +97,8 @@ class GameReference {
             return this;
         }
 
-        public Builder withOtherPlayer(Player otherPlayer) {
-            this.otherPlayer = otherPlayer;
+        public Builder withOtherPlayer(PlayerReference otherPlayer) {
+            this.otherPlayer = convert(otherPlayer);
             return this;
         }
 

@@ -56,13 +56,13 @@ class CreateNewGameUseCase implements UseCase<CreateNewGameUseCase.Request, Crea
 
     @Override
     public void execute(Request request, Presenter presenter) {
-        Player startPlayer = createPlayer(request.startPlayerId);
-        Player secondPlayer = createPlayer(request.otherPlayerId);
+        PlayerReference startingPlayer = playerReferences.fetchById(request.startPlayerId);
+        PlayerReference otherPlayer = playerReferences.fetchById(request.otherPlayerId);
 
         GameReference gameReference = gameReferenceBuilder()
-                .withStartPlayer(startPlayer)
+                .withStartPlayer(startingPlayer)
                 .withStartPlayerMark(request.startPlayersMark)
-                .withOtherPlayer(secondPlayer).build();
+                .withOtherPlayer(otherPlayer).build();
 
         Response response = new Response();
         response.createdGameId = games.add(gameReference);
