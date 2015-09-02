@@ -13,6 +13,7 @@ public class PlayGameUseCaseTest {
 
     private Object gameId = "__gameId__";
     private Object movingPlayerId = "__movingPlayerId__";
+    private Object otherPlayerId = "__otherPlayerId__";
 
     private GameReferenceMock gameReferenceMock;
     private Grid.Location movingPlayersMove;
@@ -55,9 +56,11 @@ public class PlayGameUseCaseTest {
 
 
         PlayerReference movingPlayer = new HumanPlayerReference();
+        movingPlayer.setId(movingPlayerId);
         PlayerReference otherPlayer = new SingleMovePlayerReference(otherPlayersMove);
+        otherPlayer.setId(otherPlayerId);
 
-        GameReference gameReference = GameReference.builder()
+        GameReference gameReference = new GameReferenceTest.GameReferenceBuilder()
                 .withStartPlayer(movingPlayer)
                 .withStartPlayerMark(movingPlayersMark)
                 .withOtherPlayer(otherPlayer)
@@ -73,8 +76,8 @@ public class PlayGameUseCaseTest {
 
         playGame.execute(request, mockPresenter);
 
-        verify(mockPresenter).display(expectedGridAfterMove);
         verify(mockPresenter).display(expectedGridAfterInitialMove);
+        verify(mockPresenter).display(expectedGridAfterMove);
     }
 
     @Test

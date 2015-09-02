@@ -13,15 +13,27 @@ public class GameReferenceTest {
 
     static class GameReferenceBuilder extends GameReference.Builder {
         @Override
-        Player convert(PlayerReference player) {
+        Player convertStartingPlayer(PlayerReference player) {
             if (player instanceof HumanPlayerReference) {
                 return new GameReference.HumanPlayer();
             } else if (player instanceof MockPlayerReference) {
                 return mock(Player.class);
-            } else if (player instanceof SingleMovePlayerReference){
-                return new SingleMovePlayer( ((SingleMovePlayerReference)player).move );
-            }else
-                return super.convert(player);
+            } else if (player instanceof SingleMovePlayerReference) {
+                return new SingleMovePlayer(((SingleMovePlayerReference) player).move);
+            } else
+                return super.convertStartingPlayer(player);
+        }
+
+        @Override
+        Player convertOtherPlayer(PlayerReference player) {
+            if (player instanceof HumanPlayerReference) {
+                return new GameReference.HumanPlayer();
+            } else if (player instanceof MockPlayerReference) {
+                return mock(Player.class);
+            } else if (player instanceof SingleMovePlayerReference) {
+                return new SingleMovePlayer(((SingleMovePlayerReference) player).move);
+            } else
+                return super.convertOtherPlayer(player);
         }
     }
 
@@ -31,8 +43,11 @@ public class GameReferenceTest {
     @Test
     public void givenStartingPlayerMakesMove_ResultIsPresented() throws Exception {
         PlayerReference startPlayer = new HumanPlayerReference();
+        startPlayer.setId(startingPlayerId);
         PlayerReference otherPlayer = new MockPlayerReference();
-        GameReference gameRef = GameReference.builder()
+        otherPlayer.setId(otherPlayer);
+
+        GameReference gameRef = new GameReferenceBuilder()
                 .withStartPlayer(startPlayer)
                 .withStartPlayerMark(Grid.Mark.Cross)
                 .withOtherPlayer(otherPlayer)
@@ -57,8 +72,11 @@ public class GameReferenceTest {
     @Test
     public void givenOtherPlayerMakesMove_ResultIsPresented() throws Exception {
         PlayerReference startPlayer = new HumanPlayerReference();
+        startPlayer.setId(startingPlayerId);
         PlayerReference otherPlayer = new MockPlayerReference();
-        GameReference gameRef = GameReference.builder()
+        otherPlayer.setId(otherPlayerId);
+
+        GameReference gameRef = new GameReferenceBuilder()
                 .withStartPlayer(startPlayer)
                 .withStartPlayerMark(Grid.Mark.Cross)
                 .withOtherPlayer(otherPlayer)
@@ -85,7 +103,10 @@ public class GameReferenceTest {
     @Test
     public void givenMoveResultsInTie_resultIsPresented() throws Exception {
         PlayerReference startPlayer = new HumanPlayerReference();
+        startPlayer.setId(startingPlayerId);
         PlayerReference otherPlayer = new SingleMovePlayerReference(Grid.Location.of(Grid.Row.First, Grid.Column.First));
+        otherPlayer.setId(otherPlayerId);
+
         GameReference gameRef = new AlmostFinishedGameReferenceBuilder()
                 .withStartPlayer(startPlayer)
                 .withStartPlayerMark(Grid.Mark.Cross)
@@ -110,7 +131,10 @@ public class GameReferenceTest {
     @Test
     public void givenMoveResultsInWinning_resultIsPresented() throws Exception {
         PlayerReference startPlayer = new HumanPlayerReference();
+        startPlayer.setId(startingPlayerId);
         PlayerReference otherPlayer = new MockPlayerReference();
+        otherPlayer.setId(otherPlayerId);
+
         GameReference gameRef = new AlmostFinishedGameReferenceBuilder()
                 .withStartPlayer(startPlayer)
                 .withStartPlayerMark(Grid.Mark.Cross)
@@ -132,10 +156,17 @@ public class GameReferenceTest {
         verify(presenter).finished();
     }
 
+    private Grid xox(String s) {
+        throw new RuntimeException("Not implementd yet!");
+    }
+
     @Test
     public void givenMoveResultsLoss_resultIsPresented() throws Exception {
         PlayerReference startPlayer = new HumanPlayerReference();
+        startPlayer.setId(startingPlayerId);
         PlayerReference otherPlayer = new SingleMovePlayerReference(Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
+        otherPlayer.setId(otherPlayerId);
+
         GameReference gameRef = new AlmostFinishedGameReferenceBuilder()
                 .withStartPlayer(startPlayer)
                 .withStartPlayerMark(Grid.Mark.Cross)
@@ -175,7 +206,10 @@ public class GameReferenceTest {
     @Test
     public void givenGameIsAlreadyFinishedOnMove_ErrorIsDisplayed() throws Exception {
         PlayerReference startPlayer = new HumanPlayerReference();
+        startPlayer.setId(startingPlayerId);
         PlayerReference otherPlayer = new MockPlayerReference();
+        otherPlayer.setId(otherPlayerId);
+
         GameReference finishedGameRef = new FinishedGameReferenceBuilder()
                 .withStartPlayer(startPlayer)
                 .withStartPlayerMark(Grid.Mark.Cross)
@@ -202,9 +236,9 @@ public class GameReferenceTest {
      */
     private static class AlmostFinishedGameReferenceBuilder extends GameReferenceBuilder {
         @Override
-        TicTacToeGame.Builder gameBuilder() {
+        TicTacToeGame.Builder gameBuilder(Player startingPlayer, Grid.Mark startPlayersMark, Player otherPlayer) {
             TicTacToeGameMother gameMother = new TicTacToeGameMother();
-            TicTacToeGame.Builder builder = super.gameBuilder();
+            TicTacToeGame.Builder builder = super.gameBuilder(startingPlayer, startPlayersMark, otherPlayer);
             return builder.withGrid(gameMother.almostFinishedGrid());
         }
     }
@@ -223,9 +257,9 @@ public class GameReferenceTest {
      */
     private static class FinishedGameReferenceBuilder extends GameReferenceBuilder {
         @Override
-        TicTacToeGame.Builder gameBuilder() {
+        TicTacToeGame.Builder gameBuilder(Player startingPlayer, Grid.Mark startPlayersMark, Player otherPlayer) {
             TicTacToeGameMother gameMother = new TicTacToeGameMother();
-            TicTacToeGame.Builder builder = super.gameBuilder();
+            TicTacToeGame.Builder builder = super.gameBuilder(startingPlayer, startPlayersMark, otherPlayer);
             return builder
                     .withStartingPlayerWins()
                     .withGrid(gameMother.finishedGridWitNoughtsWinning());

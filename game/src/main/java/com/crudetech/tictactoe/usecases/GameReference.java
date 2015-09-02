@@ -1,16 +1,20 @@
 package com.crudetech.tictactoe.usecases;
 
 
+import com.crudetech.collections.Pair;
+import com.crudetech.tictactoe.game.AlphaBetaPruningPlayer;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.Player;
 import com.crudetech.tictactoe.game.TicTacToeGame;
 
+import java.util.Objects;
+
 class GameReference {
     final TicTacToeGame game;
-    final Player startPlayer;
-    final Player otherPlayer;
+    final Pair<Object, Player> startPlayer;
+    final Pair<Object, Player> otherPlayer;
 
-    GameReference(TicTacToeGame game, Player startPlayer, Player otherPlayer) {
+    GameReference(TicTacToeGame game, Pair<Object, Player> startPlayer, Pair<Object, Player> otherPlayer) {
         this.game = game;
         this.startPlayer = startPlayer;
         this.otherPlayer = otherPlayer;
@@ -57,8 +61,14 @@ class GameReference {
         void gameAlreadyFinished();
     }
 
-    public Player getPlayerById(Object playerId) {
-        return startPlayer;
+    private Player getPlayerById(Object playerId) {
+        if (Objects.equals(startPlayer.getFirst(), playerId)) {
+            return startPlayer.getSecond();
+        }
+        if (Objects.equals(otherPlayer.getFirst(), playerId)) {
+            return otherPlayer.getSecond();
+        }
+        throw new IllegalArgumentException("Unknown PlayerId!");
     }
 
     public void makeMove(Object movingPlayerId, Grid.Location move, Presenter presenter) {
@@ -66,7 +76,7 @@ class GameReference {
         if (movingPlayer instanceof HumanPlayer) {
             ((HumanPlayer) movingPlayer).setPresenter(presenter);
         }
-        if(game.isFinished()){
+        if (game.isFinished()) {
             presenter.gameAlreadyFinished();
             return;
         }
@@ -79,17 +89,43 @@ class GameReference {
     }
 
     static class Builder {
-        private Player otherPlayer;
+        private PlayerReference otherPlayer;
         private Grid.Mark startPlayerMark;
-        private Player startingPlayer;
+        private PlayerReference startingPlayer;
 
         public Builder withStartPlayer(PlayerReference startingPlayer) {
-            this.startingPlayer = convert(startingPlayer);
+            this.startingPlayer = startingPlayer;
             return this;
         }
 
-        Player convert(PlayerReference player) {
-            return null;
+        Player convertStartingPlayer(PlayerReference player) {
+            if (player instanceof HumanPlayerReference) {
+                return new GameReference.HumanPlayer();
+            } else if (player instanceof AiPlayerReference) {
+                return AlphaBetaPruningPlayer.builder().withMark(startPlayerMark).asStartingPlayer();
+            } else
+                throw new IllegalArgumentException();
+        }
+
+        Player convertOtherPlayer(PlayerReference player) {
+            if (player instanceof HumanPlayerReference) {
+                return new GameReference.HumanPlayer();
+            } else if (player instanceof AiPlayerReference) {
+                return AlphaBetaPruningPlayer.builder().withMark(startPlayerMark.getOpposite()).asSecondPlayer();
+            } else
+                throw new IllegalArgumentException();
+        }
+
+        static class PlayerFactory {
+
+            Player convertOtherPlayer(PlayerReference player, Grid.Mark playersMark) {
+                if (player instanceof HumanPlayerReference) {
+                    return new GameReference.HumanPlayer();
+                } else if (player instanceof AiPlayerReference) {
+                    return AlphaBetaPruningPlayer.builder().withMark(playersMark.getOpposite()).asSecondPlayer();
+                } else
+                    throw new IllegalArgumentException();
+            }
         }
 
         public Builder withStartPlayerMark(Grid.Mark startPlayerMark) {
@@ -98,17 +134,23 @@ class GameReference {
         }
 
         public Builder withOtherPlayer(PlayerReference otherPlayer) {
-            this.otherPlayer = convert(otherPlayer);
+            this.otherPlayer = otherPlayer;
             return this;
         }
 
         public GameReference build() {
-            TicTacToeGame g = gameBuilder().build();
+            Player startingPlayer = convertStartingPlayer(this.startingPlayer);
+            Player otherPlayer = convertOtherPlayer(this.otherPlayer);
 
-            return new GameReference(g, startingPlayer, otherPlayer);
+            TicTacToeGame game = gameBuilder(startingPlayer, startPlayerMark, otherPlayer).build();
+
+            return new GameReference(game,
+                    new Pair<>(this.startingPlayer.getId(), startingPlayer),
+                    new Pair<>(this.otherPlayer.getId(), otherPlayer)
+            );
         }
 
-        TicTacToeGame.Builder gameBuilder() {
+        TicTacToeGame.Builder gameBuilder(Player startingPlayer, Grid.Mark startPlayersMark, Player otherPlayer) {
             return TicTacToeGame.builder()
                     .withStartingPlayer(startingPlayer)
                     .withStartingPlayersMark(startPlayerMark)

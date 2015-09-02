@@ -44,7 +44,7 @@ class CreateNewGameUseCase implements UseCase<CreateNewGameUseCase.Request, Crea
         }
     }
 
-    public static interface Presenter {
+    public interface Presenter {
         void display(Response response);
     }
 
@@ -59,7 +59,7 @@ class CreateNewGameUseCase implements UseCase<CreateNewGameUseCase.Request, Crea
         PlayerReference startingPlayer = playerReferences.fetchById(request.startPlayerId);
         PlayerReference otherPlayer = playerReferences.fetchById(request.otherPlayerId);
 
-        GameReference gameReference = gameReferenceBuilder()
+        GameReference gameReference = GameReference.builder()
                 .withStartPlayer(startingPlayer)
                 .withStartPlayerMark(request.startPlayersMark)
                 .withOtherPlayer(otherPlayer).build();
@@ -73,7 +73,4 @@ class CreateNewGameUseCase implements UseCase<CreateNewGameUseCase.Request, Crea
         return playerFactory.create(playerReferences.fetchById(playerId));
     }
 
-    GameReference.Builder gameReferenceBuilder() {
-        return new GameReference.Builder();
-    }
 }
