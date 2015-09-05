@@ -11,7 +11,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <crudetech.libs.version>0.23</crudetech.libs.version>
+        <crudetech.libs.version>0.28</crudetech.libs.version>
         <hamcrest.version>1.3.RC2</hamcrest.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -31,9 +31,9 @@
                 <checksumPolicy>fail</checksumPolicy>
             </snapshots>
 
-            <id>crudetech-repo</id>
-            <name>Crudetech Library Repository</name>
-            <url>http://crudetech-libs.googlecode.com/svn/java/repo</url>
+            <id>public.maven.repository</id>
+            <name>public.maven.repository on GitHub</name>
+            <url>https://raw.github.com/andy-mueller/puplic-maven-repo/master</url>
             <layout>default</layout>
         </repository>
     </repositories>
@@ -92,13 +92,6 @@
             </plugin>
 
         </plugins>
-        <extensions>
-            <extension>
-                <groupId>com.google.code.maven-svn-wagon</groupId>
-                <artifactId>maven-svn-wagon</artifactId>
-                <version>1.2</version>
-            </extension>
-        </extensions>
     </build>
     <dependencyManagement>
         <dependencies>
