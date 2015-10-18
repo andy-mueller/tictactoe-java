@@ -7,6 +7,9 @@ import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.Player;
 import com.crudetech.tictactoe.game.TicTacToeGame;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static java.util.Arrays.asList;
 
 public class HumanVsComputerPlayerInteractor {
@@ -92,13 +95,11 @@ public class HumanVsComputerPlayerInteractor {
                     makeHumanPlayerMove(e.getCellLocation());
                 }
             };
-
-            return new EventHookingBean<>(covariant_cast(cellClickedEvent), asList(cellClickedListener));
+            return new EventHookingBean<>(cellClickedEvent, oneToList(cellClickedListener));
         }
 
-        @SuppressWarnings("unchecked")
-        private com.crudetech.event.Event<CellEventObject<?>> covariant_cast(com.crudetech.event.Event<? extends CellEventObject<?>> cellClickedEvent) {
-            return (com.crudetech.event.Event<CellEventObject<?>>) cellClickedEvent;
+        private List<EventListener<? super CellEventObject<?>>> oneToList(EventListener<CellEventObject<?>> cellClickedListener) {
+            return Arrays.<EventListener<? super CellEventObject<?>>>asList(cellClickedListener);
         }
 
         @Override
