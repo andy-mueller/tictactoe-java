@@ -2,10 +2,12 @@ package com.crudetech.tictactoe.delivery.swing;
 
 import com.crudetech.collections.Iterables;
 import org.mockito.exceptions.verification.NoInteractionsWanted;
-import org.mockito.internal.debugging.Location;
-import org.mockito.internal.invocation.Invocation;
+
+import org.mockito.internal.debugging.LocationImpl;
 import org.mockito.internal.invocation.InvocationMatcher;
 import org.mockito.internal.verification.api.VerificationData;
+import org.mockito.invocation.Invocation;
+
 import org.mockito.verification.VerificationMode;
 
 import java.util.List;
@@ -29,7 +31,7 @@ public class LastCallOnMock implements VerificationMode {
                 "But found this interaction:",
                 lastInvocationOnMock.getLocation(),
                 "No interactions wanted here:",
-                new Location()
+                new LocationImpl()
         ));
     }
 }

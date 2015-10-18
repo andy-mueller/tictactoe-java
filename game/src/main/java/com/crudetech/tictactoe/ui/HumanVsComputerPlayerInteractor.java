@@ -8,6 +8,7 @@ import com.crudetech.tictactoe.game.Player;
 import com.crudetech.tictactoe.game.TicTacToeGame;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 
@@ -47,7 +48,7 @@ public class HumanVsComputerPlayerInteractor {
 
     public static class Builder {
         private Player computerPlayer;
-        private Event<? extends CellEventObject<?>> humanPlayerMadeMove;
+        private Event<? extends CellEventObject<?>> madeMove;
         private Player humanPlayer;
 
 
@@ -59,8 +60,8 @@ public class HumanVsComputerPlayerInteractor {
             return this;
         }
 
-        public Builder setHumanPlayerMadeMove(Event<? extends CellEventObject<?>> humanPlayerMadeMove) {
-            this.humanPlayerMadeMove = humanPlayerMadeMove;
+        public Builder setMadeMove(Event<? extends CellEventObject<?>> humanPlayerMadeMove) {
+            this.madeMove = humanPlayerMadeMove;
             return this;
         }
 
@@ -71,8 +72,8 @@ public class HumanVsComputerPlayerInteractor {
         }
 
         public HumanVsComputerPlayerInteractor build() {
-            if (humanPlayerMadeMove != null) {
-                return new EventDrivenHumanVsComputerPlayerInteractor(computerPlayer, humanPlayer, humanPlayerMadeMove);
+            if (madeMove != null) {
+                return new EventDrivenHumanVsComputerPlayerInteractor(computerPlayer, humanPlayer, madeMove);
             }
             return new HumanVsComputerPlayerInteractor(computerPlayer, humanPlayer);
         }
@@ -94,8 +95,11 @@ public class HumanVsComputerPlayerInteractor {
                     makeHumanPlayerMove(e.getCellLocation());
                 }
             };
+            return new EventHookingBean<>(cellClickedEvent, oneToList(cellClickedListener));
+        }
 
-            return new EventHookingBean<>(cellClickedEvent, Arrays.<EventListener<? super CellEventObject<?>>>asList(cellClickedListener));
+        private List<EventListener<? super CellEventObject<?>>> oneToList(EventListener<CellEventObject<?>> cellClickedListener) {
+            return Arrays.<EventListener<? super CellEventObject<?>>>asList(cellClickedListener);
         }
 
         @Override
