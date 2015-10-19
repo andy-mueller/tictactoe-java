@@ -5,7 +5,6 @@ import com.crudetech.gui.widgets.AlphaValue;
 import com.crudetech.gui.widgets.CoordinateSystem;
 import com.crudetech.gui.widgets.Point;
 import com.crudetech.lang.Compare;
-import com.crudetech.tictactoe.delivery.swing.LastCallOnMock;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
@@ -15,6 +14,7 @@ import org.mockito.Mockito;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
+import static com.crudetech.tictactoe.delivery.swing.LastCallOnMock.lastCall;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -43,7 +43,7 @@ public class AwtGraphicsStreamTest {
         awtStream.pushCoordinateSystem(otherCoordinates);
         awtStream.popCoordinateSystem();
 
-        verify(g2d, new LastCallOnMock()).setTransform(uniqueBaseTransform);
+        verify(g2d, lastCall()).setTransform(uniqueBaseTransform);
     }
 
     private CoordinateSystem someCoordinates() {
@@ -81,7 +81,7 @@ public class AwtGraphicsStreamTest {
 
         awtStream.popAlpha();
 
-        verify(g2d, new LastCallOnMock()).setComposite(uniqueBaseAlpha);
+        verify(g2d, lastCall()).setComposite(uniqueBaseAlpha);
     }
 
     private AlphaComposite withAlpha(final AlphaValue anyAlpha) {
@@ -147,6 +147,6 @@ public class AwtGraphicsStreamTest {
 
         ctx.close();
 
-        verify(clone, new LastCallOnMock()).dispose();
+        verify(clone, lastCall()).dispose();
     }
 }

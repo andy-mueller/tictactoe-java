@@ -10,7 +10,6 @@ import com.crudetech.tictactoe.game.TicTacToeGame;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.util.Arrays.asList;
 
 public class HumanVsComputerPlayerInteractor {
     private final TicTacToeGame game;
@@ -60,7 +59,7 @@ public class HumanVsComputerPlayerInteractor {
             return this;
         }
 
-        public Builder setMadeMove(Event<? extends CellEventObject<?>> humanPlayerMadeMove) {
+        public Builder setHumanPlayerMadeMove(Event<? extends CellEventObject<?>> humanPlayerMadeMove) {
             this.madeMove = humanPlayerMadeMove;
             return this;
         }

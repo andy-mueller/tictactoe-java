@@ -106,6 +106,7 @@
                 <version>${hamcrest.version}</version>
             </dependency>
             <dependency>
+                <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.12</version>
                 <exclusions>
@@ -185,6 +186,7 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>de.bechte.junit</groupId>
             <artifactId>junit-hierarchicalcontextrunner</artifactId>

@@ -15,6 +15,9 @@ import java.util.List;
 import static org.mockito.internal.util.StringJoiner.join;
 
 public class LastCallOnMock implements VerificationMode {
+    public static VerificationMode lastCall() {
+        return new LastCallOnMock();
+    }
     @Override
     public void verify(VerificationData data) {
         List<Invocation> allInvocationOnMock = data.getAllInvocations();
@@ -31,7 +34,7 @@ public class LastCallOnMock implements VerificationMode {
                 "But found this interaction:",
                 lastInvocationOnMock.getLocation(),
                 "No interactions wanted here:",
-                new LocationImpl()
+                lastInvocationOnMock.getLocation()
         ));
     }
 }
