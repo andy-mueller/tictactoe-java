@@ -13,7 +13,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.baulsupp.kolja</groupId>
+            <groupId>com.crudetech</groupId>
             <artifactId>jcurses</artifactId>
         </dependency>
         <dependency>
