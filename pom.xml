@@ -134,15 +134,9 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>com.baulsupp.kolja</groupId>
+                <groupId>com.crudetech</groupId>
                 <artifactId>jcurses</artifactId>
-                <version>0.9.5.3</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                </exclusions>
+                <version>0.10</version>
             </dependency>
 
             <dependency>
