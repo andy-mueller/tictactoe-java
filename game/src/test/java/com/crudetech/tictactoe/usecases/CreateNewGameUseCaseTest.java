@@ -1,15 +1,10 @@
 package com.crudetech.tictactoe.usecases;
 
-import com.crudetech.collections.Pair;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.Player;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -90,21 +85,5 @@ public class CreateNewGameUseCaseTest {
         CreateNewGameUseCase.Response expectedResponse = new CreateNewGameUseCase.Response();
         expectedResponse.createdGameId = gameId;
         verify(presenterMock).display(expectedResponse);
-    }
-
-
-    @Ignore("Must be resurrected, after game works with IDs")
-    @Test
-    public void createdGameIsStartedWithCorrectPlayerAndMark() throws Exception {
-        CreateNewGameUseCase.Presenter presenterMock = mock(CreateNewGameUseCase.Presenter.class);
-        CreateNewGameUseCase.Request request = createNewGameRequest();
-        ArgumentCaptor<GameReference> createdGameRecCaptor = ArgumentCaptor.forClass(GameReference.class);
-
-        createGame.execute(request, presenterMock);
-
-        verify(mockGameReferenceGateway).add(createdGameRecCaptor.capture());
-        GameReference gameReference = createdGameRecCaptor.getValue();
-        Pair<Player, Grid.Mark> expectedPlayerInfo = new Pair<>(startPlayer, startPlayersMark);
-        assertThat(gameReference.game.getStartingPlayer(), is(expectedPlayerInfo));
     }
 }
