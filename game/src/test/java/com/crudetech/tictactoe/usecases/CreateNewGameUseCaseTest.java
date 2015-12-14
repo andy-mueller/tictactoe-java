@@ -3,7 +3,6 @@ package com.crudetech.tictactoe.usecases;
 import com.crudetech.collections.Pair;
 import com.crudetech.tictactoe.game.Grid;
 import com.crudetech.tictactoe.game.Player;
-import com.crudetech.tictactoe.game.TicTacToeGame;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -16,18 +15,13 @@ import static org.mockito.Mockito.*;
 
 public class CreateNewGameUseCaseTest {
     private final Grid.Mark startPlayersMark = Grid.Mark.Cross;
-    private PlayerReference startPlayerReference;
-    private PlayerReference secondPlayerReference;
     private final Object startPlayerId = "__startPlayerId__";
     private final Object secondPlayerId = "__secondPlayerId__";
     private final Object gameId = "__gameId__";
     private PlayerReferenceGateway mockPlayerReferenceGateway;
     private CreateNewGameUseCase createGame;
     private GameReferenceGateway mockGameReferenceGateway;
-    private PlayerFactory mockPlayerFactory;
-    private TicTacToeGame spiedGame;
     private Player startPlayer;
-    private Player secondPlayer;
 
 
     @Before
@@ -41,20 +35,16 @@ public class CreateNewGameUseCaseTest {
 
     private void setupUseCase() {
         mockGameReferenceGateway = mock(GameReferenceGateway.class);
-        createGame = new CreateNewGameUseCase(mockPlayerReferenceGateway, mockPlayerFactory, mockGameReferenceGateway);
+        createGame = new CreateNewGameUseCase(mockPlayerReferenceGateway, mockGameReferenceGateway);
     }
 
     private void setupPlayerFactory() {
         startPlayer = mock(Player.class);
-        secondPlayer = mock(Player.class);
-        mockPlayerFactory = mock(PlayerFactory.class);
-        when(mockPlayerFactory.create(startPlayerReference)).thenReturn(startPlayer);
-        when(mockPlayerFactory.create(secondPlayerReference)).thenReturn(secondPlayer);
     }
 
     private void setupPlayerGateway() {
-        startPlayerReference = new HumanPlayerReference();
-        secondPlayerReference = new HumanPlayerReference();
+        PlayerReference startPlayerReference = new HumanPlayerReference();
+        PlayerReference secondPlayerReference = new HumanPlayerReference();
         mockPlayerReferenceGateway = mock(PlayerReferenceGateway.class);
         when(mockPlayerReferenceGateway.fetchById(startPlayerId)).thenReturn(startPlayerReference);
         when(mockPlayerReferenceGateway.fetchById(secondPlayerId)).thenReturn(secondPlayerReference);

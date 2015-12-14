@@ -7,12 +7,10 @@ import java.util.Objects;
 
 class CreateNewGameUseCase implements UseCase<CreateNewGameUseCase.Request, CreateNewGameUseCase.Presenter> {
     private final PlayerReferenceGateway playerReferences;
-    private final PlayerFactory playerFactory;
     private final GameReferenceGateway games;
 
-    public CreateNewGameUseCase(PlayerReferenceGateway players, PlayerFactory playerFactory, GameReferenceGateway games) {
+    public CreateNewGameUseCase(PlayerReferenceGateway players, GameReferenceGateway games) {
         this.playerReferences = players;
-        this.playerFactory = playerFactory;
         this.games = games;
     }
 
@@ -68,9 +66,4 @@ class CreateNewGameUseCase implements UseCase<CreateNewGameUseCase.Request, Crea
         response.createdGameId = games.add(gameReference);
         presenter.display(response);
     }
-
-    private Player createPlayer(Object playerId) {
-        return playerFactory.create(playerReferences.fetchById(playerId));
-    }
-
 }
