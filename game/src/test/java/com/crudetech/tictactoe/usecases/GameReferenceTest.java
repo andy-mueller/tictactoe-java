@@ -156,10 +156,6 @@ public class GameReferenceTest {
         verify(presenter).finished();
     }
 
-    private Grid xox(String s) {
-        throw new RuntimeException("Not implementd yet!");
-    }
-
     @Test
     public void givenMoveResultsLoss_resultIsPresented() throws Exception {
         PlayerReference startPlayer = new HumanPlayerReference();
