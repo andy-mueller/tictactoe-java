@@ -35,19 +35,16 @@ public class TicTacToeGame {
     }
 
 
-    private Pair<Player, Grid.Mark> getOtherPlayer() {
-        Pair<Player, Grid.Mark> startingPlayer = getStartingPlayer();
+    private Pair<Object, Grid.Mark> getOtherPlayer() {
+        Pair<Object, Grid.Mark> startingPlayer = getStartingPlayer();
         Grid.Mark otherPlayersMark = startingPlayer.getSecond().getOpposite();
-        return new Pair<>((startingPlayer.getFirst() == player1 ? player2 : player1), otherPlayersMark);
+        return new Pair<Object, Grid.Mark>((startingPlayer.getFirst() == player1 ? player2 : player1), otherPlayersMark);
     }
 
-    public Pair<Player, Grid.Mark> getStartingPlayer() {
-        return new Pair<>(startingPlayer, startingPlayersMark);
+    public Pair<Object, Grid.Mark> getStartingPlayer() {
+        return new Pair<Object, Grid.Mark>(startingPlayer, startingPlayersMark);
     }
 
-    public boolean isFinished() {
-        return fsm.currentState().isFinished();
-    }
     public void startWithPlayer(Player startingPlayer, Grid.Mark startPlayersMark) {
         fsm.currentState().verifyNotStarted();
 
@@ -141,10 +138,14 @@ public class TicTacToeGame {
     private class GameFsmContext implements TicTacToeGameFsm.Context {
         @Override
         public void starting() {
-            verifyThat(getStartingPlayer().getFirst(), is(anyOf(equalTo(player1), equalTo(player2))));
+            verifyThat(startingPlayer(), is(anyOf(equalTo(player1), equalTo(player2))));
             verifyThat(getStartingPlayer().getSecond(), is(not(Grid.Mark.None)));
 
-            getStartingPlayer().getFirst().yourTurn(grid);
+            startingPlayer().yourTurn(grid);
+        }
+
+        private Player startingPlayer() {
+            return (Player) getStartingPlayer().getFirst();
         }
 
         @Override
@@ -168,51 +169,55 @@ public class TicTacToeGame {
 
         @Override
         public void switchTurnToStartingPlayer() {
-            getStartingPlayer().getFirst().yourTurn(grid);
+            startingPlayer().yourTurn(grid);
         }
 
         @Override
         public void switchTurnToOtherPlayer() {
-            getOtherPlayer().getFirst().yourTurn(grid);
+            otherPlayer().yourTurn(grid);
+        }
+
+        private Player otherPlayer() {
+            return (Player) getOtherPlayer().getFirst();
         }
 
         @Override
         public void tie() {
-            getStartingPlayer().getFirst().tie(grid);
-            getOtherPlayer().getFirst().tie(grid);
+            startingPlayer().tie(grid);
+            otherPlayer().tie(grid);
         }
 
         @Override
         public void startingPlayerWins() {
             Grid.ThreeInARow triple = grid.getThreeInARow();
-            getStartingPlayer().getFirst().youWin(grid, triple);
-            getOtherPlayer().getFirst().youLoose(grid, triple);
+            startingPlayer().youWin(grid, triple);
+            otherPlayer().youLoose(grid, triple);
         }
 
         @Override
         public void otherPlayerWins() {
             Grid.ThreeInARow triple = grid.getThreeInARow();
-            getStartingPlayer().getFirst().youLoose(grid, triple);
-            getOtherPlayer().getFirst().youWin(grid, triple);
+            startingPlayer().youLoose(grid, triple);
+            otherPlayer().youWin(grid, triple);
         }
 
         @Override
         public void startingPlayerMoved() {
-            getStartingPlayer().getFirst().moveWasMade(grid);
+            startingPlayer().moveWasMade(grid);
         }
 
         @Override
         public void otherPlayerMoved() {
-            getOtherPlayer().getFirst().moveWasMade(grid);
+            otherPlayer().moveWasMade(grid);
         }
 
         @Override
-        public Pair<Player, Grid.Mark> getStartingPlayer() {
+        public Pair<Object, Grid.Mark> getStartingPlayer() {
             return TicTacToeGame.this.getStartingPlayer();
         }
 
         @Override
-        public Pair<Player, Grid.Mark> getOtherPlayer() {
+        public Pair<Object, Grid.Mark> getOtherPlayer() {
             return TicTacToeGame.this.getOtherPlayer();
         }
     }

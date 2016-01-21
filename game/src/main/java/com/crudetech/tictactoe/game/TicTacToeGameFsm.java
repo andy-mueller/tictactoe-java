@@ -3,7 +3,7 @@ package com.crudetech.tictactoe.game;
 
 import com.crudetech.collections.Pair;
 
-class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTacToeGameFsm.State> {
+public class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTacToeGameFsm.State> {
     public TicTacToeGameFsm(Context context) {
         this(context, State.NotStarted);
     }
@@ -13,18 +13,18 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
         this.context = context;
     }
 
-    TicTacToeGameFsm transferInto(State state) {
+    public TicTacToeGameFsm transferInto(State state) {
         return new TicTacToeGameFsm(context, state);
     }
 
-    enum State {
+    public enum State {
         NotStarted {
             @Override
             public void verifyNotStarted() {
             }
 
             @Override
-            public Pair<Player, Grid.Mark> activePlayer(Context context) {
+            public Pair<Object, Grid.Mark> activePlayer(Context context) {
                 throw new GameWasNotStartedException();
             }
 
@@ -36,7 +36,7 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
         },
         StartingPlayersTurn {
             @Override
-            public Pair<Player, Grid.Mark> activePlayer(Context context) {
+            public Pair<Object, Grid.Mark> activePlayer(Context context) {
                 return context.getStartingPlayer();
             }
 
@@ -56,7 +56,7 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
         },
         OtherPlayersTurn {
             @Override
-            public Pair<Player, Grid.Mark> activePlayer(Context context) {
+            public Pair<Object, Grid.Mark> activePlayer(Context context) {
                 return context.getOtherPlayer();
             }
 
@@ -76,7 +76,7 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
         },
         Evaluate {
             @Override
-            public Pair<Player, Grid.Mark> activePlayer(Context context) {
+            public Pair<Object, Grid.Mark> activePlayer(Context context) {
                 throw new IllegalStateException();
             }
             @Override
@@ -86,7 +86,7 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
         },
         Tie {
             @Override
-            public Pair<Player, Grid.Mark> activePlayer(Context context) {
+            public Pair<Object, Grid.Mark> activePlayer(Context context) {
                 throw new GameIsFinishedException();
             }
             @Override
@@ -96,7 +96,7 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
         },
         OtherPlayerWins {
             @Override
-            public Pair<Player, Grid.Mark> activePlayer(Context context) {
+            public Pair<Object, Grid.Mark> activePlayer(Context context) {
                 throw new GameIsFinishedException();
             }
             @Override
@@ -106,7 +106,7 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
         },
         StartingPlayerWins {
             @Override
-            public Pair<Player, Grid.Mark> activePlayer(Context context) {
+            public Pair<Object, Grid.Mark> activePlayer(Context context) {
                 throw new GameIsFinishedException();
             }
             @Override
@@ -119,9 +119,9 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
             throw new GameIsAlreadyStartedException();
         }
 
-        public abstract Pair<Player, Grid.Mark> activePlayer(Context context);
+        public abstract Pair<Object, Grid.Mark> activePlayer(Context context);
 
-        public void verifyPlayersTurn(Context context, Player movingPlayer) {
+        public void verifyPlayersTurn(Context context, Object movingPlayer) {
             if (activePlayer(context).getFirst() != movingPlayer) {
                 throw new NotThisPlayersTurnException();
             }
@@ -142,9 +142,9 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
         public abstract boolean isFinished();
     }
 
-    enum Event {Start, Move, SwitchToStartingPlayer, SwitchToOtherPlayer, Tie, StartingPlayerWins, OtherPlayerWins}
+    public enum Event {Start, Move, SwitchToStartingPlayer, SwitchToOtherPlayer, Tie, StartingPlayerWins, OtherPlayerWins}
 
-    interface Context {
+    public interface Context {
         void starting();
 
         void eval();
@@ -163,9 +163,9 @@ class TicTacToeGameFsm extends TransitionTableFsm<TicTacToeGameFsm.Event, TicTac
 
         void otherPlayerMoved();
 
-        Pair<Player, Grid.Mark> getStartingPlayer();
+        Pair<Object, Grid.Mark> getStartingPlayer();
 
-        Pair<Player, Grid.Mark> getOtherPlayer();
+        Pair<Object, Grid.Mark> getOtherPlayer();
     }
 
     private final Context context;

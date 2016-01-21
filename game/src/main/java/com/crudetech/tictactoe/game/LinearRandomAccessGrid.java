@@ -105,7 +105,7 @@ public class LinearRandomAccessGrid implements Grid {
         return Arrays.hashCode(matrix);
     }
 
-    boolean hasMarkAt(Row row, Column column) {
+    public boolean hasMarkAt(Row row, Column column) {
         return getAt(row, column) != Mark.None;
     }
 
@@ -126,7 +126,7 @@ public class LinearRandomAccessGrid implements Grid {
         return setAt(location.getRow(), location.getColumn(), mark);
     }
 
-    LinearRandomAccessGrid setAt(Row row, Column column, Mark mark) {
+    public LinearRandomAccessGrid setAt(Row row, Column column, Mark mark) {
         verifyThat(row, is(notNullValue()));
         verifyThat(column, is(notNullValue()));
         verifyThat(mark, is(allOf(not(Mark.None), notNullValue())));
@@ -160,7 +160,7 @@ public class LinearRandomAccessGrid implements Grid {
             {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {6, 4, 2}
     };
 
-    ThreeInARow getThreeInARow() {
+    public ThreeInARow getThreeInARow() {
         return from(allPossibleThreeInARows)
                 .select(toLocation())
                 .where(markIsSet())
@@ -251,7 +251,7 @@ public class LinearRandomAccessGrid implements Grid {
         return triple.isWinForMark(startPlayerMark);
     }
 
-    boolean isTieForFirstPlayersMark(Mark firstMark) {
+    public boolean isTieForFirstPlayersMark(Mark firstMark) {
         if (isWin()) {
             return false;
         }

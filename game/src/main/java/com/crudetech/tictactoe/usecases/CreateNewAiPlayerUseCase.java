@@ -1,5 +1,6 @@
 package com.crudetech.tictactoe.usecases;
 
+
 import java.util.Objects;
 
 
@@ -36,7 +37,7 @@ public class CreateNewAiPlayerUseCase implements UseCase<CreateNewAiPlayerUseCas
         }
     }
 
-    public static interface Presenter {
+    public interface Presenter {
         void display(Response response);
     }
 
@@ -48,7 +49,7 @@ public class CreateNewAiPlayerUseCase implements UseCase<CreateNewAiPlayerUseCas
     @Override
     public void execute(Request request, Presenter presenter) {
         Response response = new Response();
-        response.createdPlayerId = players.create(new AiPlayerReference());
+        response.createdPlayerId = players.create(new AlphaBetaPruningPlayer());
         presenter.display(response);
     }
 }

@@ -8,4 +8,9 @@ class SingleMovePlayerReference extends AiPlayerReference {
     public SingleMovePlayerReference(Grid.Location move) {
         this.move = move;
     }
+
+    @Override
+    public Grid.Location nextMove() {
+        return move;
+    }
 }

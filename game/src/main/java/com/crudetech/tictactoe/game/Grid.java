@@ -27,17 +27,32 @@ public interface Grid {
             public Mark getOpposite() {
                 return Nought;
             }
+
+            @Override
+            public String toString() {
+                return "X";
+            }
         },
         Nought {
             @Override
             public Mark getOpposite() {
                 return Cross;
             }
+
+            @Override
+            public String toString() {
+                return "O";
+            }
         },
         None {
             @Override
             public Mark getOpposite() {
                 throw new IllegalStateException("Can't be done for None!");
+            }
+
+            @Override
+            public String toString() {
+                return "*";
             }
         };
 

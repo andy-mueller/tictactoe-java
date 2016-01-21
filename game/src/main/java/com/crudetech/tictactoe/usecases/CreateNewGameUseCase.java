@@ -60,7 +60,7 @@ class CreateNewGameUseCase implements UseCase<CreateNewGameUseCase.Request, Crea
         GameReference gameReference = GameReference.builder()
                 .withStartPlayer(startingPlayer)
                 .withStartPlayerMark(request.startPlayersMark)
-                .withOtherPlayer(otherPlayer).build();
+                .withOtherPlayer(otherPlayer).build().start();
 
         Response response = new Response();
         response.createdGameId = games.add(gameReference);

@@ -15,7 +15,6 @@ public class TransitionTableFsm<TEvent, TState> {
     static final Runnable NoOp = new Runnable() {
         @Override
         public void run() {
-
         }
     };
 

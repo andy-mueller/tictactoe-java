@@ -53,7 +53,7 @@ public class TicTacToeGameMother {
      *  X | O | O
      * </pre>
      */
-    public Grid finishedGridWitNoughtsWinning() {
+    public Grid finishedGridWithNoughtsWinning() {
         return LinearRandomAccessGrid.of(
                 Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought,
                 Grid.Mark.Cross, Grid.Mark.Cross, Grid.Mark.Nought,
