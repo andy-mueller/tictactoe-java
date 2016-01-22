@@ -17,23 +17,29 @@ public class GameReferenceTest {
     private final Object startingPlayerId = "__startingPlayerId__";
     private final Object otherPlayerId = "__otherPlayerId__";
 
-    private static PlayerReference createPlayerMock(Object playersId) {
-        PlayerReference startPlayer = mock(PlayerReference.class);
-        when(startPlayer.hasId(playersId)).thenReturn(true);
-        return startPlayer;
+    private static PlayerReference createPlayerSpy(Object playersId) {
+        PlayerReference player = new SimplePlayer();
+        return createPlayerSpy(playersId, player);
     }
 
+    private static PlayerReference createPlayerSpy(Object playersId, PlayerReference player) {
+        player.setId(playersId);
+        return spy(player);
+    }
+
+    static class SimplePlayer extends PlayerReference{}
+
     public class GivenStartedGame {
-        private GameReference gameRef;
+        private GameReference game;
         private PlayerReference otherPlayer;
+        private PlayerReference startPlayer;
 
         @Before
         public void setup() {
-            PlayerReference startPlayer = createPlayerMock(startingPlayerId);
-            otherPlayer = mock(PlayerReference.class);
-            when(otherPlayer.hasId(otherPlayerId)).thenReturn(true);
+            startPlayer = createPlayerSpy(startingPlayerId);
+            otherPlayer = createPlayerSpy(otherPlayerId);
 
-            gameRef = GameReference.builder()
+            game = GameReference.builder()
                     .withStartPlayer(startPlayer)
                     .withStartPlayerMark(Grid.Mark.Cross)
                     .withOtherPlayer(otherPlayer)
@@ -44,30 +50,33 @@ public class GameReferenceTest {
         @Test
         public void givenStartingPlayerMakesMove_ResultIsPresented() throws Exception {
             Grid.Location move = Grid.Location.of(Grid.Row.First, Grid.Column.Second);
-            GameReference.Presenter presenter = mock(GameReference.Presenter.class);
 
-            gameRef.makeMove(startingPlayerId, move, presenter);
+            startPlayer.makeMove(game, move);
 
             Grid expectedGrid = LinearRandomAccessGrid.of(
                     Grid.Mark.None, Grid.Mark.Cross, Grid.Mark.None,
                     Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
                     Grid.Mark.None, Grid.Mark.None, Grid.Mark.None
             );
-            verify(presenter).display(expectedGrid);
-            verify(presenter, never()).highlight(any(Grid.ThreeInARow.class));
-            verify(presenter, never()).finished();
+            verify(startPlayer).moveWasMade(game, expectedGrid);
+            verifyGameIsNotFinished(startPlayer);
+            verifyGameIsNotFinished(otherPlayer);
+        }
+
+        private void verifyGameIsNotFinished(PlayerReference player) {
+            verify(player, never()).tie(any(GameReference.class), any(Grid.class));
+            verify(player, never()).youLoose(any(GameReference.class), any(Grid.class), any(Grid.ThreeInARow.class));
+            verify(player, never()).youWin(any(GameReference.class), any(Grid.class), any(Grid.ThreeInARow.class));
         }
 
 
         @Test
         public void givenOtherPlayerMakesMove_ResultIsPresented() throws Exception {
-
             Grid.Location startingPlayerMove = Grid.Location.of(Grid.Row.First, Grid.Column.Second);
             Grid.Location otherPlayerMove = Grid.Location.of(Grid.Row.First, Grid.Column.Third);
-            GameReference.Presenter presenter = mock(GameReference.Presenter.class);
 
-            gameRef.makeMove(startingPlayerId, startingPlayerMove, presenter);
-            gameRef.makeMove(otherPlayerId, otherPlayerMove, presenter);
+            startPlayer.makeMove(game, startingPlayerMove);
+            otherPlayer.makeMove(game, otherPlayerMove);
 
             Grid expectedGridAfter1stPlayersMove = gridOf("" +
                     "*|X|*" +
@@ -81,20 +90,27 @@ public class GameReferenceTest {
                     "*|*|*"
             );
 
-            InOrder inOrder = inOrder(presenter, otherPlayer);
-            inOrder.verify(presenter).display(expectedGridAfter1stPlayersMove);
-            inOrder.verify(otherPlayer).yourTurn(gameRef);
-            inOrder.verify(presenter).display(expectedGridAfter2ndPlayersMove);
-            verify(presenter, never()).highlight(any(Grid.ThreeInARow.class));
-            verify(presenter, never()).finished();
+            InOrder inOrder = inOrder(startPlayer, otherPlayer);
+            inOrder.verify(startPlayer).moveWasMade(game, expectedGridAfter1stPlayersMove);
+            inOrder.verify(otherPlayer).moveWasMade(game, expectedGridAfter2ndPlayersMove);
+
+            inOrder.verify(otherPlayer).yourTurn(game, expectedGridAfter2ndPlayersMove);
+
+            inOrder.verify(otherPlayer).moveWasMade(game, expectedGridAfter2ndPlayersMove);
+            inOrder.verify(startPlayer).moveWasMade(game, expectedGridAfter2ndPlayersMove);
+
+            inOrder.verify(startPlayer).yourTurn(game, expectedGridAfter2ndPlayersMove);
+
+            verifyGameIsNotFinished(startPlayer);
+            verifyGameIsNotFinished(otherPlayer);
         }
     }
 
     public class GivenAlmostFinishedGame {
         @Test
         public void givenMoveResultsInTie_resultIsPresented() throws Exception {
-            PlayerReference startPlayer = createPlayerMock(startingPlayerId);
-            PlayerReference otherPlayer = new SingleMovePlayerReference(Grid.Location.of(Grid.Row.First, Grid.Column.First));
+            PlayerReference startPlayer = createPlayerSpy(startingPlayerId);
+            PlayerReference otherPlayer = createSingleMovePlayerSpy(otherPlayerId, Grid.Location.of(Grid.Row.First, Grid.Column.First));
             otherPlayer.setId(otherPlayerId);
 
             GameReference gameRef = new AlmostFinishedGameReferenceBuilder()
@@ -104,8 +120,8 @@ public class GameReferenceTest {
                     .build()
                     .start();
 
-            GameReference.Presenter presenter = mock(GameReference.Presenter.class);
-            gameRef.makeMove(startingPlayerId, Grid.Location.of(Grid.Row.Third, Grid.Column.Third), presenter);
+            startPlayer.makeMove(Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
+            gameRef.makeMove(startingPlayerId, Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
 
 
             Grid expectedGridAfter1stMove = gridOf("" +
@@ -122,20 +138,21 @@ public class GameReferenceTest {
             );
 
 
-            InOrder inOrder = inOrder(presenter);
-            inOrder.verify(presenter).display(expectedGridAfter1stMove);
-            inOrder.verify(presenter).display(expectedGridAfter2ndMove);
-            inOrder.verify(presenter).finished();
-            verify(presenter, never()).highlight(any(Grid.ThreeInARow.class));
+            InOrder inOrder = inOrder(startPlayer);
+            inOrder.verify(startPlayer).moveWasMade(gameRef, expectedGridAfter1stMove);
+            inOrder.verify(startPlayer).moveWasMade(gameRef, expectedGridAfter2ndMove);
+            inOrder.verify(startPlayer).tie(gameRef, expectedGridAfter2ndMove);
+            inOrder.verify(otherPlayer).tie(gameRef, expectedGridAfter2ndMove);
         }
 
+        PlayerReference createSingleMovePlayerSpy(final Object id, final Grid.Location move){
+            return createPlayerSpy(id, new SingleMovePlayerReference(move));
+        }
 
         @Test
         public void givenMoveResultsInWinning_resultIsPresented() throws Exception {
-            PlayerReference startPlayer = new HumanPlayerReference();
-            startPlayer.setId(startingPlayerId);
-            PlayerReference otherPlayer = mock(PlayerReference.class);
-            otherPlayer.setId(otherPlayerId);
+            PlayerReference startPlayer = createPlayerSpy(startingPlayerId);
+            PlayerReference otherPlayer = createPlayerSpy(otherPlayerId);
 
             GameReference gameRef = new AlmostFinishedGameReferenceBuilder()
                     .withStartPlayer(startPlayer)
@@ -144,8 +161,7 @@ public class GameReferenceTest {
                     .build()
                     .start();
 
-            GameReference.Presenter presenter = mock(GameReference.Presenter.class);
-            gameRef.makeMove(startingPlayerId, Grid.Location.of(Grid.Row.First, Grid.Column.First), presenter);
+            gameRef.makeMove(startingPlayerId, Grid.Location.of(Grid.Row.First, Grid.Column.First));
 
 
             Grid expectedGrid = LinearRandomAccessGrid.of(
@@ -174,7 +190,7 @@ public class GameReferenceTest {
                     .start();
 
             GameReference.Presenter presenter = mock(GameReference.Presenter.class);
-            gameRef.makeMove(startingPlayerId, Grid.Location.of(Grid.Row.First, Grid.Column.Second), presenter);
+            gameRef.makeMove(startingPlayerId, Grid.Location.of(Grid.Row.First, Grid.Column.Second));
 
 
             Grid expectedGrid = LinearRandomAccessGrid.of(
@@ -241,7 +257,7 @@ public class GameReferenceTest {
                     .build();
 
             GameReference.Presenter presenter = mock(GameReference.Presenter.class);
-            finishedGameRef.makeMove(startingPlayerId, Grid.Location.of(Grid.Row.First, Grid.Column.Second), presenter);
+            finishedGameRef.makeMove(startingPlayerId, Grid.Location.of(Grid.Row.First, Grid.Column.Second));
 
             verify(presenter).gameAlreadyFinished();
         }

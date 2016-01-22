@@ -4,9 +4,11 @@ import com.crudetech.tictactoe.game.Grid;
 
 class PlayGameUseCase implements UseCase<PlayGameUseCase.Request, PlayGameUseCase.Presenter> {
     private final GameReferenceGateway games;
+    private final PlayerReferenceGateway players;
 
-    public PlayGameUseCase(GameReferenceGateway games) {
+    public PlayGameUseCase(GameReferenceGateway games, PlayerReferenceGateway players) {
         this.games = games;
+        this.players = players;
     }
 
     public static class Request {
@@ -27,11 +29,15 @@ class PlayGameUseCase implements UseCase<PlayGameUseCase.Request, PlayGameUseCas
     public void execute(Request request, Presenter presenter) {
         GameReference gameReference = games.fetchById(request.gameId);
 
-        gameReference.makeMove(request.movingPlayerId, request.move, adapt(presenter));
+        PlayerReference movingPlayer = players.fetchById(request.movingPlayerId);
+        movingPlayer.setPresenter(adapt(presenter));
+
+        gameReference.makeMove(request.movingPlayerId, request.move);
+        //movingPlayer.resetPresenter()
     }
 
-    private GameReference.Presenter adapt(final Presenter presenter) {
-        return new GameReference.Presenter() {
+    private PlayerReference.Presenter adapt(final Presenter presenter) {
+        return new PlayerReference.Presenter() {
             @Override
             public void display(Grid grid) {
                 presenter.display(grid);

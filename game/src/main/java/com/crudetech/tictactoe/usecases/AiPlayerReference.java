@@ -5,7 +5,7 @@ import com.crudetech.tictactoe.game.Grid;
 
 public abstract class AiPlayerReference extends PlayerReference {
     @Override
-    public void yourTurn(GameReference game) {
+    public void yourTurn(GameReference game, Grid grid) {
         Grid.Location nextMove = nextMove();
         makeMove(game, nextMove);
     }

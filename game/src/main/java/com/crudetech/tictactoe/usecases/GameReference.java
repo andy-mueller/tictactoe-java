@@ -44,55 +44,13 @@ class GameReference {
                 '}';
     }
 
-    interface Presenter {
-        void display(Grid grid);
-
-        void highlight(Grid.ThreeInARow threeInARow);
-
-        void finished();
-
-        void gameAlreadyFinished();
-    }
-
-
     private class GameFsmContext implements TicTacToeGameFsm.Context {
-        private Presenter presenter = nullPresenter();
-
-        private void setPresenter(Presenter presenter) {
-            this.presenter = presenter;
-        }
-
-        void resetPresenter() {
-            presenter = nullPresenter();
-        }
-
-        private Presenter nullPresenter() {
-            return new Presenter() {
-                @Override
-                public void display(Grid grid) {
-                }
-
-                @Override
-                public void highlight(Grid.ThreeInARow threeInARow) {
-                }
-
-                @Override
-                public void finished() {
-
-                }
-
-                @Override
-                public void gameAlreadyFinished() {
-                }
-            };
-        }
-
         @Override
         public void starting() {
             verifyThat(getStartingPlayer().getFirst(), is(anyOf(equalTo((Object) startPlayer), equalTo((Object) otherPlayer))));
             verifyThat(getStartingPlayer().getSecond(), is(not(Grid.Mark.None)));
 
-            presenter.display(grid);
+            startPlayer.yourTurn(GameReference.this, expectedGridAfter2ndPlayersMove);
         }
 
         @Override
@@ -116,42 +74,42 @@ class GameReference {
 
         @Override
         public void switchTurnToStartingPlayer() {
-            startPlayer.yourTurn(GameReference.this);
+            startPlayer.yourTurn(GameReference.this, expectedGridAfter2ndPlayersMove);
         }
 
         @Override
         public void switchTurnToOtherPlayer() {
-            otherPlayer.yourTurn(GameReference.this);
+            otherPlayer.yourTurn(GameReference.this, expectedGridAfter2ndPlayersMove);
         }
 
         @Override
         public void tie() {
-            presenter.display(grid);
-            presenter.finished();
+            startPlayer.tie(GameReference.this, expectedGridAfter2ndMove);
+            otherPlayer.tie(GameReference.this, expectedGridAfter2ndMove);
         }
 
         @Override
         public void startingPlayerWins() {
             Grid.ThreeInARow triple = grid.getThreeInARow();
-            presenter.display(grid);
-            presenter.highlight(triple);
+            startPlayer.youWin(GameReference.this, grid, triple);
+            otherPlayer.youLoose(GameReference.this, grid, triple);
         }
 
         @Override
         public void otherPlayerWins() {
             Grid.ThreeInARow triple = grid.getThreeInARow();
-            presenter.display(grid);
-            presenter.highlight(triple);
+            startPlayer.youLoose(GameReference.this, grid, triple);
+            otherPlayer.youWin(GameReference.this, grid, triple);
         }
 
         @Override
         public void startingPlayerMoved() {
-            presenter.display(grid);
+            startPlayer.moveWasMade(GameReference.this, grid);
         }
 
         @Override
         public void otherPlayerMoved() {
-            presenter.display(grid);
+            otherPlayer.moveWasMade(GameReference.this, grid);
         }
 
         @Override
@@ -164,28 +122,26 @@ class GameReference {
             return new Pair<Object, Grid.Mark>(otherPlayer, startingPlayersMark.getOpposite());
         }
     }
-
-    public void makeMove(Object movingPlayerId, Grid.Location move, Presenter presenter) {
+    @Deprecated
+    void makeMove(Object movingPlayerId, Grid.Location move) {
+        PlayerReference movingPlayer = playerForId(movingPlayerId);
         if (fsm.currentState().isFinished()) {
-            presenter.gameAlreadyFinished();
+            movingPlayer.gameAlreadyFinished();
             return;
         }
 
-        contextFsmContext.setPresenter(presenter);
+        makeMove(movingPlayer, move.getRow(), move.getColumn());
+    }
 
-        Grid.Row row = move.getRow();
-        Grid.Column column = move.getColumn();
+    private void makeMove(PlayerReference movingPlayer, Grid.Row row, Grid.Column column) {
         verifyThat(grid, isNotMarkedAt(row, column));
         TicTacToeGameFsm.State state = fsm.currentState();
-        state.verifyPlayersTurn(contextFsmContext, playerForId(movingPlayerId));
+        state.verifyPlayersTurn(contextFsmContext, movingPlayer);
 
         Grid.Mark activePlayersMark = state.activePlayersMark(contextFsmContext);
         placeMark(row, column, activePlayersMark);
 
         fsm.handleEvent(TicTacToeGameFsm.Event.Move);
-
-
-//        contextFsmContext.resetPresenter();
     }
 
     private PlayerReference playerForId(Object playerId) {
