@@ -27,12 +27,12 @@ class PlayGameUseCase implements UseCase<PlayGameUseCase.Request, PlayGameUseCas
 
     @Override
     public void execute(Request request, Presenter presenter) {
-        GameReference gameReference = games.fetchById(request.gameId);
+        GameReference game = games.fetchById(request.gameId);
 
         PlayerReference movingPlayer = players.fetchById(request.movingPlayerId);
         movingPlayer.setPresenter(adapt(presenter));
 
-        gameReference.makeMove(request.movingPlayerId, request.move);
+        movingPlayer.makeMove(game, request.move);
         //movingPlayer.resetPresenter()
     }
 

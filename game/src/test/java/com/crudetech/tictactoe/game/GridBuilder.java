@@ -1,6 +1,19 @@
 package com.crudetech.tictactoe.game;
 
 public class GridBuilder {
+    /**
+     * Usage:
+     * <pre>
+     *     Grid expectedGridAfterInitialMove = gridOf("" +
+     *                      "*|*|*" +
+     *                      "*|*|*" +
+     *                      "*|*|*");
+     *
+     * </pre>
+     *
+     * @param grid
+     * @return
+     */
     public static LinearRandomAccessGrid gridOf(String grid) {
         while (grid.contains("   ")) {
             grid = grid.replace("   ", " $ ");

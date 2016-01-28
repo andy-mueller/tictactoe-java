@@ -1,9 +1,9 @@
 package com.crudetech.tictactoe.usecases;
 
 import com.crudetech.tictactoe.game.Grid;
-import com.crudetech.tictactoe.game.LinearRandomAccessGrid;
 import org.junit.Test;
 
+import static com.crudetech.tictactoe.game.GridBuilder.gridOf;
 import static org.mockito.Mockito.*;
 
 public class PlayGameUseCaseTest {
@@ -13,14 +13,12 @@ public class PlayGameUseCaseTest {
     private Object otherPlayerId = "__otherPlayerId__";
 
 
-
     @Test
     public void givenPlayerMakeMove_ChangedGridsArePresented() throws Exception {
         Grid.Location movingPlayersMove = Grid.Location.of(Grid.Row.First, Grid.Column.First);
 
         Grid.Mark movingPlayersMark = Grid.Mark.Cross;
         Grid.Location otherPlayersMove = Grid.Location.of(Grid.Row.Third, Grid.Column.Third);
-
 
 
         PlayerReference movingPlayer = new HumanPlayerReference();
@@ -46,23 +44,20 @@ public class PlayGameUseCaseTest {
         PlayGameUseCase playGame = new PlayGameUseCase(gameReferenceGatewayMock, players);
 
 
-
         PlayGameUseCase.Request request = createMoveRequest(movingPlayersMove);
         playGame.execute(request, mockPresenter);
 
 
+        Grid expectedGridAfterInitialMove = gridOf("" +
+                "X|*|*" +
+                "*|*|*" +
+                "*|*|*");
 
-        Grid expectedGridAfterInitialMove = LinearRandomAccessGrid.of(
-                Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None
-        );
 
-        Grid expectedGridAfterMove = LinearRandomAccessGrid.of(
-                Grid.Mark.Cross, Grid.Mark.None, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.None,
-                Grid.Mark.None, Grid.Mark.None, Grid.Mark.Nought
-        );
+        Grid expectedGridAfterMove = gridOf("" +
+                "X|*|*" +
+                "*|*|*" +
+                "*|*|O");
 
         verify(mockPresenter).display(expectedGridAfterInitialMove);
         verify(mockPresenter).display(expectedGridAfterMove);

@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class PlayerReference {
     private Object id = "__no_id_set_yet__";
-    private Presenter presenter;
+    private Presenter presenter = nullPresenter();
 
     public boolean hasId(Object id) {
         return Objects.equals(this.id, id);
@@ -34,7 +34,7 @@ public class PlayerReference {
     }
 
     public void moveWasMade(GameReference game, Grid grid) {
-
+        presenter.display(grid);
     }
 
     public void gameAlreadyFinished() {
@@ -42,7 +42,7 @@ public class PlayerReference {
     }
 
     public void yourTurn(GameReference game, Grid grid) {
-
+        presenter.display(grid);
     }
 
     public void setPresenter(Presenter presenter) {
@@ -61,5 +61,29 @@ public class PlayerReference {
 
     void makeMove(GameReference game, Grid.Location move) {
         game.makeMove(getId(), move);
+    }
+
+    private Presenter nullPresenter() {
+        return new Presenter() {
+            @Override
+            public void display(Grid grid) {
+
+            }
+
+            @Override
+            public void highlight(Grid.ThreeInARow threeInARow) {
+
+            }
+
+            @Override
+            public void finished() {
+
+            }
+
+            @Override
+            public void gameAlreadyFinished() {
+
+            }
+        };
     }
 }

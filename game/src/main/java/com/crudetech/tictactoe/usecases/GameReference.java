@@ -50,7 +50,7 @@ class GameReference {
             verifyThat(getStartingPlayer().getFirst(), is(anyOf(equalTo((Object) startPlayer), equalTo((Object) otherPlayer))));
             verifyThat(getStartingPlayer().getSecond(), is(not(Grid.Mark.None)));
 
-            startPlayer.yourTurn(GameReference.this, expectedGridAfter2ndPlayersMove);
+            startPlayer.yourTurn(GameReference.this, grid);
         }
 
         @Override
@@ -74,18 +74,18 @@ class GameReference {
 
         @Override
         public void switchTurnToStartingPlayer() {
-            startPlayer.yourTurn(GameReference.this, expectedGridAfter2ndPlayersMove);
+            startPlayer.yourTurn(GameReference.this, grid);
         }
 
         @Override
         public void switchTurnToOtherPlayer() {
-            otherPlayer.yourTurn(GameReference.this, expectedGridAfter2ndPlayersMove);
+            otherPlayer.yourTurn(GameReference.this, grid);
         }
 
         @Override
         public void tie() {
-            startPlayer.tie(GameReference.this, expectedGridAfter2ndMove);
-            otherPlayer.tie(GameReference.this, expectedGridAfter2ndMove);
+            startPlayer.tie(GameReference.this, grid);
+            otherPlayer.tie(GameReference.this, grid);
         }
 
         @Override
@@ -122,7 +122,6 @@ class GameReference {
             return new Pair<Object, Grid.Mark>(otherPlayer, startingPlayersMark.getOpposite());
         }
     }
-    @Deprecated
     void makeMove(Object movingPlayerId, Grid.Location move) {
         PlayerReference movingPlayer = playerForId(movingPlayerId);
         if (fsm.currentState().isFinished()) {
