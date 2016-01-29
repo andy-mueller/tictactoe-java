@@ -122,8 +122,8 @@ class GameReference {
             return new Pair<Object, Grid.Mark>(otherPlayer, startingPlayersMark.getOpposite());
         }
     }
-    void makeMove(Object movingPlayerId, Grid.Location move) {
-        PlayerReference movingPlayer = playerForId(movingPlayerId);
+
+    void makeMove(PlayerReference movingPlayer, Grid.Location move) {
         if (fsm.currentState().isFinished()) {
             movingPlayer.gameAlreadyFinished();
             return;
@@ -141,16 +141,6 @@ class GameReference {
         placeMark(row, column, activePlayersMark);
 
         fsm.handleEvent(TicTacToeGameFsm.Event.Move);
-    }
-
-    private PlayerReference playerForId(Object playerId) {
-        if (startPlayer.hasId(playerId)) {
-            return startPlayer;
-        } else if (otherPlayer.hasId(playerId)) {
-            return otherPlayer;
-        } else {
-            throw new RuntimeException("No player matches ID: " + playerId);
-        }
     }
 
     private void placeMark(Grid.Row row, Grid.Column column, Grid.Mark mark) {

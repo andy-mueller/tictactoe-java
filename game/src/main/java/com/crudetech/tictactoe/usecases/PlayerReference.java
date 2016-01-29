@@ -60,7 +60,7 @@ public class PlayerReference {
     }
 
     void makeMove(GameReference game, Grid.Location move) {
-        game.makeMove(getId(), move);
+        game.makeMove(this, move);
     }
 
     private Presenter nullPresenter() {
