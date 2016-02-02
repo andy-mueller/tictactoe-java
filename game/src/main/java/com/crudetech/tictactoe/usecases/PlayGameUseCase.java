@@ -39,22 +39,35 @@ class PlayGameUseCase implements UseCase<PlayGameUseCase.Request, PlayGameUseCas
     private PlayerReference.Presenter adapt(final Presenter presenter) {
         return new PlayerReference.Presenter() {
             @Override
-            public void display(Grid grid) {
+            public void tie(PlayerReference player, Grid grid) {
+
+            }
+
+            @Override
+            public void won(PlayerReference player, Grid grid, Grid.ThreeInARow threeInARow) {
                 presenter.display(grid);
-            }
-
-            @Override
-            public void highlight(Grid.ThreeInARow threeInARow) {
                 presenter.highlight(threeInARow);
-            }
-
-            @Override
-            public void finished() {
                 presenter.finished();
             }
 
             @Override
+            public void lost(PlayerReference player, Grid grid, Grid.ThreeInARow threeInARow) {
+
+            }
+
+            @Override
+            public void moveWasMade(PlayerReference player, Grid grid) {
+                presenter.display(grid);
+            }
+
+            @Override
+            public void yourTurn(PlayerReference player, Grid grid) {
+                presenter.display(grid);
+            }
+
+            @Override
             public void gameAlreadyFinished() {
+
             }
         };
     }

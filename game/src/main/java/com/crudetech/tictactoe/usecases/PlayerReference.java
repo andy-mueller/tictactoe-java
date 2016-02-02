@@ -26,7 +26,7 @@ public class PlayerReference {
     }
 
     public void youWin(GameReference game, Grid grid, Grid.ThreeInARow threeInARow) {
-
+        presenter.won(this, grid, threeInARow);
     }
 
     public void youLoose(GameReference game, Grid grid, Grid.ThreeInARow threeInARow) {
@@ -34,7 +34,7 @@ public class PlayerReference {
     }
 
     public void moveWasMade(GameReference game, Grid grid) {
-        presenter.display(grid);
+        presenter.moveWasMade(this, grid);
     }
 
     public void gameAlreadyFinished() {
@@ -42,7 +42,7 @@ public class PlayerReference {
     }
 
     public void yourTurn(GameReference game, Grid grid) {
-        presenter.display(grid);
+        presenter.yourTurn(this, grid);
     }
 
     public void setPresenter(Presenter presenter) {
@@ -50,11 +50,15 @@ public class PlayerReference {
     }
 
     interface Presenter {
-        void display(Grid grid);
+        void tie(PlayerReference player, Grid grid);
 
-        void highlight(Grid.ThreeInARow threeInARow);
+        void won(PlayerReference player, Grid grid, Grid.ThreeInARow threeInARow);
 
-        void finished();
+        void lost(PlayerReference player, Grid grid, Grid.ThreeInARow threeInARow);
+
+        void moveWasMade(PlayerReference player, Grid grid);
+
+        void yourTurn(PlayerReference player, Grid grid);
 
         void gameAlreadyFinished();
     }
@@ -66,17 +70,27 @@ public class PlayerReference {
     private Presenter nullPresenter() {
         return new Presenter() {
             @Override
-            public void display(Grid grid) {
+            public void tie(PlayerReference player, Grid grid) {
 
             }
 
             @Override
-            public void highlight(Grid.ThreeInARow threeInARow) {
+            public void won(PlayerReference player, Grid grid, Grid.ThreeInARow threeInARow) {
 
             }
 
             @Override
-            public void finished() {
+            public void lost(PlayerReference player, Grid grid, Grid.ThreeInARow threeInARow) {
+
+            }
+
+            @Override
+            public void moveWasMade(PlayerReference player, Grid grid) {
+
+            }
+
+            @Override
+            public void yourTurn(PlayerReference player, Grid grid) {
 
             }
 

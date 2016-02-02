@@ -211,28 +211,7 @@ public class GameReferenceTest {
                         Grid.Location.of(Grid.Row.Third, Grid.Column.Third)
                 );
 
-        /**
-         * Creates a game that is still open for both players to win or to produce a tie:
-         * <pre>
-         *    |   | O
-         * ---+---+---
-         *  X | X | O
-         * ---+---+---
-         *  X | O |
-         * </pre>
-         * <p/>
-         * It is the first players turn now, using the 'X' mark
-         */
-        private class AlmostFinishedGameReferenceBuilder extends GameReference.Builder {
-            public GameReference build() {
-                TicTacToeGameMother gameMother = new TicTacToeGameMother();
-                withGrid(gameMother.almostFinishedGrid());
-                return super.build();
-            }
-        }
-
     }
-
 
     public class GivenFinishedGame {
         @Test
@@ -275,4 +254,5 @@ public class GameReferenceTest {
             }
         }
     }
+
 }
