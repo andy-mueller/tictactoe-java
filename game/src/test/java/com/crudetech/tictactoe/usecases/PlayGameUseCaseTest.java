@@ -5,6 +5,7 @@ import de.bechte.junit.runners.context.HierarchicalContextRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 
 import static com.crudetech.tictactoe.game.GridBuilder.gridOf;
 import static org.mockito.Mockito.*;
@@ -107,8 +108,7 @@ public class PlayGameUseCaseTest {
             Grid.Location movingPlayersMove = Grid.Location.of(Grid.Row.First, Grid.Column.First);
 
 
-            PlayGameUseCase.Request request = createMoveRequest(movingPlayersMove);
-            playGame.execute(request, presenter);
+            makeMove(movingPlayersMove);
 
             Grid expectedGridAfterInitialMove = gridOf("" +
                     "X|*|O" +
@@ -120,8 +120,43 @@ public class PlayGameUseCaseTest {
             verify(presenter).finished();
         }
 
+        @Test
+        public void givenMovesEndsInTie_ResultIsPresented() {
+            makeMove(Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
+
+            makeMove(Grid.Location.of(Grid.Row.First, Grid.Column.First));
+
+            makeMove(Grid.Location.of(Grid.Row.First, Grid.Column.First));
+
+            Grid expectedGridAfterInitialMove = gridOf("" +
+                    "*|*|O" +
+                    "X|X|O" +
+                    "X|O|X");
+
+            Grid expectedGridAfter2ndMove = gridOf("" +
+                    "O|*|O" +
+                    "X|X|O" +
+                    "X|O|X");
+
+            Grid expectedGridAfter3rdMove = gridOf("" +
+                    "O|X|O" +
+                    "X|X|O" +
+                    "X|O|X");
+
+            InOrder inOrder = inOrder(presenter);
+            inOrder.verify(presenter, times(2)).display(expectedGridAfterInitialMove);
+            inOrder.verify(presenter, times(2)).display(expectedGridAfter2ndMove);
+            inOrder.verify(presenter, times(1)).display(expectedGridAfter3rdMove);
+            inOrder.verify(presenter, never()).highlight(FirstColumn);
+            inOrder.verify(presenter).finished();
+        }
+
+        private void makeMove(Grid.Location move) {
+            PlayGameUseCase.Request othersRequest = createMoveRequest(move);
+            playGame.execute(othersRequest, presenter);
+        }
+
         //loose
-        //tie
         //already finished
     }
 
