@@ -118,6 +118,7 @@ public class GameReferenceTest {
                     .start();
 
             startPlayer.makeMove(game, Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
+            startPlayer.makeMove(game, Grid.Location.of(Grid.Row.First, Grid.Column.Second));
 
 
             Grid expectedGridAfter1stMove = gridOf("" +
@@ -133,12 +134,21 @@ public class GameReferenceTest {
                     "X|O|X"
             );
 
+            Grid expectedGridAfter3rdMove = gridOf("" +
+                    "O|X|O" +
+                    "X|X|O" +
+                    "X|O|X"
+            );
+
 
             InOrder inOrder = inOrder(startPlayer, otherPlayer);
             inOrder.verify(startPlayer).moveWasMade(game, expectedGridAfter1stMove);
+            inOrder.verify(otherPlayer).yourTurn(game, expectedGridAfter1stMove);
             inOrder.verify(otherPlayer).moveWasMade(game, expectedGridAfter2ndMove);
-            inOrder.verify(startPlayer).tie(game, expectedGridAfter2ndMove);
-            inOrder.verify(otherPlayer).tie(game, expectedGridAfter2ndMove);
+            inOrder.verify(startPlayer).yourTurn(game, expectedGridAfter2ndMove);
+            inOrder.verify(startPlayer).moveWasMade(game, expectedGridAfter3rdMove);
+            inOrder.verify(startPlayer).tie(game, expectedGridAfter3rdMove);
+            inOrder.verify(otherPlayer).tie(game, expectedGridAfter3rdMove);
         }
 
         PlayerReference createSingleMovePlayerSpy(final Object id, final Grid.Location move){

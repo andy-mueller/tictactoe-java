@@ -1,115 +1,130 @@
 package com.crudetech.tictactoe.usecases;
 
 import com.crudetech.tictactoe.game.Grid;
+import de.bechte.junit.runners.context.HierarchicalContextRunner;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static com.crudetech.tictactoe.game.GridBuilder.gridOf;
 import static org.mockito.Mockito.*;
 
+@RunWith(HierarchicalContextRunner.class)
 public class PlayGameUseCaseTest {
 
     private Object gameId = "__gameId__";
     private Object movingPlayerId = "__movingPlayerId__";
+    private final Grid.Mark movingPlayersMark = Grid.Mark.Cross;
     private Object otherPlayerId = "__otherPlayerId__";
+    private PlayGameUseCase playGame;
+    private PlayGameUseCase.Presenter presenter;
+
+    public class GivenAStartedGame {
+        @Before
+        public void setUp() {
+            Grid.Location otherPlayersMove = Grid.Location.of(Grid.Row.Third, Grid.Column.Third);
 
 
-    @Test
-    public void givenPlayerMakeMove_ChangedGridsArePresented() throws Exception {
-        Grid.Location movingPlayersMove = Grid.Location.of(Grid.Row.First, Grid.Column.First);
+            PlayerReference movingPlayer = new HumanPlayerReference();
+            movingPlayer.setId(movingPlayerId);
+            PlayerReference otherPlayer = new SingleMovePlayerReference(otherPlayersMove);
+            otherPlayer.setId(otherPlayerId);
 
-        Grid.Mark movingPlayersMark = Grid.Mark.Cross;
-        Grid.Location otherPlayersMove = Grid.Location.of(Grid.Row.Third, Grid.Column.Third);
+            final GameReference gameReference = GameReference.builder()
+                    .withStartPlayer(movingPlayer)
+                    .withStartPlayerMark(movingPlayersMark)
+                    .withOtherPlayer(otherPlayer)
+                    .build()
+                    .start();
 
-
-        PlayerReference movingPlayer = new HumanPlayerReference();
-        movingPlayer.setId(movingPlayerId);
-        PlayerReference otherPlayer = new SingleMovePlayerReference(otherPlayersMove);
-        otherPlayer.setId(otherPlayerId);
-
-        final GameReference gameReference = GameReference.builder()
-                .withStartPlayer(movingPlayer)
-                .withStartPlayerMark(movingPlayersMark)
-                .withOtherPlayer(otherPlayer)
-                .build()
-                .start();
-
-        GameReferenceGateway gameReferenceGatewayMock = mock(GameReferenceGateway.class);
-        when(gameReferenceGatewayMock.fetchById(gameId)).thenReturn(gameReference);
+            GameReferenceGateway gameReferenceGatewayMock = mock(GameReferenceGateway.class);
+            when(gameReferenceGatewayMock.fetchById(gameId)).thenReturn(gameReference);
 
 
-        PlayerReferenceGateway players = mock(PlayerReferenceGateway.class);
-        when(players.fetchById(movingPlayerId)).thenReturn(movingPlayer);
+            PlayerReferenceGateway players = mock(PlayerReferenceGateway.class);
+            when(players.fetchById(movingPlayerId)).thenReturn(movingPlayer);
 
-        PlayGameUseCase.Presenter mockPresenter = mock(PlayGameUseCase.Presenter.class);
+            presenter = mock(PlayGameUseCase.Presenter.class);
 
-        PlayGameUseCase playGame = new PlayGameUseCase(gameReferenceGatewayMock, players);
+            playGame = new PlayGameUseCase(gameReferenceGatewayMock, players);
+        }
 
-
-        PlayGameUseCase.Request request = createMoveRequest(movingPlayersMove);
-        playGame.execute(request, mockPresenter);
-
-
-        Grid expectedGridAfterInitialMove = gridOf("" +
-                "X|*|*" +
-                "*|*|*" +
-                "*|*|*");
+        @Test
+        public void givenPlayerMakeMove_ChangedGridsArePresented() throws Exception {
+            Grid.Location movingPlayersMove = Grid.Location.of(Grid.Row.First, Grid.Column.First);
 
 
-        Grid expectedGridAfterMove = gridOf("" +
-                "X|*|*" +
-                "*|*|*" +
-                "*|*|O");
+            PlayGameUseCase.Request request = createMoveRequest(movingPlayersMove);
+            playGame.execute(request, presenter);
 
-        verify(mockPresenter).display(expectedGridAfterInitialMove);
-        verify(mockPresenter).display(expectedGridAfterMove);
+
+            Grid expectedGridAfterInitialMove = gridOf("" +
+                    "X|*|*" +
+                    "*|*|*" +
+                    "*|*|*");
+
+
+            Grid expectedGridAfterMove = gridOf("" +
+                    "X|*|*" +
+                    "*|*|*" +
+                    "*|*|O");
+
+            verify(presenter).display(expectedGridAfterInitialMove);
+            verify(presenter).display(expectedGridAfterMove);
+        }
     }
 
-    @Test
-    public void givenMovingPlayerWins_ResultIsPresented() {
-        Grid.Location movingPlayersMove = Grid.Location.of(Grid.Row.First, Grid.Column.First);
-        Grid.Mark movingPlayersMark = Grid.Mark.Cross;
+    class GivenAnAlmostFinishedGame {
+        @Before
+        public void setUp() throws Exception {
+
+            PlayerReference movingPlayer = new HumanPlayerReference();
+            movingPlayer.setId(movingPlayerId);
+            PlayerReference otherPlayer = new HumanPlayerReference();
+            otherPlayer.setId(otherPlayerId);
+            GameReference gameReference = new AlmostFinishedGameReferenceBuilder()
+                    .withStartPlayer(movingPlayer)
+                    .withStartPlayerMark(movingPlayersMark)
+                    .withOtherPlayer(otherPlayer)
+                    .build()
+                    .start();
 
 
-        PlayerReference movingPlayer = new HumanPlayerReference();
-        movingPlayer.setId(movingPlayerId);
-        PlayerReference otherPlayer = new HumanPlayerReference();
-        otherPlayer.setId(otherPlayerId);
-        GameReference gameReference = new AlmostFinishedGameReferenceBuilder()
-                .withStartPlayer(movingPlayer)
-                .withStartPlayerMark(movingPlayersMark)
-                .withOtherPlayer(otherPlayer)
-                .build()
-                .start();
+            GameReferenceGateway gameReferenceGatewayMock = mock(GameReferenceGateway.class);
+            when(gameReferenceGatewayMock.fetchById(gameId)).thenReturn(gameReference);
 
 
-        GameReferenceGateway gameReferenceGatewayMock = mock(GameReferenceGateway.class);
-        when(gameReferenceGatewayMock.fetchById(gameId)).thenReturn(gameReference);
+            PlayerReferenceGateway players = mock(PlayerReferenceGateway.class);
+            when(players.fetchById(movingPlayerId)).thenReturn(movingPlayer);
+
+            presenter = mock(PlayGameUseCase.Presenter.class);
+
+            playGame = new PlayGameUseCase(gameReferenceGatewayMock, players);
+
+        }
+        @Test
+        public void givenMovingPlayerWins_ResultIsPresented() {
+            Grid.Location movingPlayersMove = Grid.Location.of(Grid.Row.First, Grid.Column.First);
 
 
-        PlayerReferenceGateway players = mock(PlayerReferenceGateway.class);
-        when(players.fetchById(movingPlayerId)).thenReturn(movingPlayer);
+            PlayGameUseCase.Request request = createMoveRequest(movingPlayersMove);
+            playGame.execute(request, presenter);
 
-        PlayGameUseCase.Presenter mockPresenter = mock(PlayGameUseCase.Presenter.class);
+            Grid expectedGridAfterInitialMove = gridOf("" +
+                    "X|*|O" +
+                    "X|X|O" +
+                    "X|O|*");
 
-        PlayGameUseCase playGame = new PlayGameUseCase(gameReferenceGatewayMock, players);
+            verify(presenter, times(2)).display(expectedGridAfterInitialMove);
+            verify(presenter).highlight(FirstColumn);
+            verify(presenter).finished();
+        }
 
-
-        PlayGameUseCase.Request request = createMoveRequest(movingPlayersMove);
-        playGame.execute(request, mockPresenter);
-
-        Grid expectedGridAfterInitialMove = gridOf("" +
-                "X|*|O" +
-                "X|X|O" +
-                "X|O|*");
-
-        verify(mockPresenter, times(2)).display(expectedGridAfterInitialMove);
-        verify(mockPresenter).highlight(FirstColumn);
-        verify(mockPresenter).finished();
+        //loose
+        //tie
+        //already finished
     }
 
-    //loose
-    //tie
-    //already finished
     static final Grid.ThreeInARow FirstColumn = Grid.ThreeInARow.of(
             Grid.Mark.Cross,
             Grid.Location.of(Grid.Row.First, Grid.Column.First),

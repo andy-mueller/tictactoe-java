@@ -265,6 +265,11 @@ public class LinearRandomAccessGrid implements Grid {
         }
     }
 
+    public boolean isTie() {
+        boolean hasSomeUnMarked = from(0, 1, 2, 3, 4, 5, 6, 7, 8).where(isNotMarked()).any();
+        return !hasSomeUnMarked;
+    }
+
     private UnaryFunction<? super Integer, Boolean> isNotMarked() {
         return new UnaryFunction<Integer, Boolean>() {
             @Override
@@ -273,4 +278,5 @@ public class LinearRandomAccessGrid implements Grid {
             }
         };
     }
+
 }

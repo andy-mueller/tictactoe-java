@@ -59,7 +59,7 @@ class GameReference {
             if (didWin(triple)) {
                 TicTacToeGameFsm.Event currentPlayerWins = fsm.previousState().currentPlayerWinsEvent();
                 fsm.handleEvent(currentPlayerWins);
-            } else if (grid.isTieForFirstPlayersMark(getStartingPlayer().getSecond())) {
+            } else if (grid.isTie()) {
                 fsm.handleEvent(TicTacToeGameFsm.Event.Tie);
             } else {
                 TicTacToeGameFsm.Event nextPlayersTurn = fsm.previousState().nextPlayersTurn();
