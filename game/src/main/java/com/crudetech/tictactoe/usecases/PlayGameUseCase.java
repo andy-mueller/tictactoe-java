@@ -40,7 +40,8 @@ class PlayGameUseCase implements UseCase<PlayGameUseCase.Request, PlayGameUseCas
         return new PlayerReference.Presenter() {
             @Override
             public void tie(PlayerReference player, Grid grid) {
-
+                presenter.display(grid);
+                presenter.finished();
             }
 
             @Override

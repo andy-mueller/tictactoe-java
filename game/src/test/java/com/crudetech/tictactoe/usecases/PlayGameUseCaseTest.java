@@ -18,9 +18,9 @@ public class PlayGameUseCaseTest {
     private final Grid.Mark movingPlayersMark = Grid.Mark.Cross;
     private Object otherPlayerId = "__otherPlayerId__";
     private PlayGameUseCase playGame;
-    private PlayGameUseCase.Presenter presenter;
 
     public class GivenAStartedGame {
+        private PlayGameUseCase.Presenter movingPlayerPresenter;
         @Before
         public void setUp() {
             Grid.Location otherPlayersMove = Grid.Location.of(Grid.Row.Third, Grid.Column.Third);
@@ -45,7 +45,7 @@ public class PlayGameUseCaseTest {
             PlayerReferenceGateway players = mock(PlayerReferenceGateway.class);
             when(players.fetchById(movingPlayerId)).thenReturn(movingPlayer);
 
-            presenter = mock(PlayGameUseCase.Presenter.class);
+            movingPlayerPresenter = mock(PlayGameUseCase.Presenter.class);
 
             playGame = new PlayGameUseCase(gameReferenceGatewayMock, players);
         }
@@ -55,8 +55,8 @@ public class PlayGameUseCaseTest {
             Grid.Location movingPlayersMove = Grid.Location.of(Grid.Row.First, Grid.Column.First);
 
 
-            PlayGameUseCase.Request request = createMoveRequest(movingPlayersMove);
-            playGame.execute(request, presenter);
+            PlayGameUseCase.Request request = createMoveRequest(movingPlayersMove, movingPlayerId);
+            playGame.execute(request, movingPlayerPresenter);
 
 
             Grid expectedGridAfterInitialMove = gridOf("" +
@@ -70,12 +70,14 @@ public class PlayGameUseCaseTest {
                     "*|*|*" +
                     "*|*|O");
 
-            verify(presenter).display(expectedGridAfterInitialMove);
-            verify(presenter).display(expectedGridAfterMove);
+            verify(movingPlayerPresenter).display(expectedGridAfterInitialMove);
+            verify(movingPlayerPresenter).display(expectedGridAfterMove);
         }
     }
 
-    class GivenAnAlmostFinishedGame {
+    public class GivenAnAlmostFinishedGame {
+        private PlayGameUseCase.Presenter movingPlayerPresenter;
+        private PlayGameUseCase.Presenter otherPlayerPresenter;
         @Before
         public void setUp() throws Exception {
 
@@ -97,8 +99,10 @@ public class PlayGameUseCaseTest {
 
             PlayerReferenceGateway players = mock(PlayerReferenceGateway.class);
             when(players.fetchById(movingPlayerId)).thenReturn(movingPlayer);
+            when(players.fetchById(otherPlayerId)).thenReturn(otherPlayer);
 
-            presenter = mock(PlayGameUseCase.Presenter.class);
+            movingPlayerPresenter = mock(PlayGameUseCase.Presenter.class);
+            otherPlayerPresenter = mock(PlayGameUseCase.Presenter.class);
 
             playGame = new PlayGameUseCase(gameReferenceGatewayMock, players);
 
@@ -108,25 +112,25 @@ public class PlayGameUseCaseTest {
             Grid.Location movingPlayersMove = Grid.Location.of(Grid.Row.First, Grid.Column.First);
 
 
-            makeMove(movingPlayersMove);
+            makeMove(movingPlayerId, movingPlayerPresenter, movingPlayersMove);
 
             Grid expectedGridAfterInitialMove = gridOf("" +
                     "X|*|O" +
                     "X|X|O" +
                     "X|O|*");
 
-            verify(presenter, times(2)).display(expectedGridAfterInitialMove);
-            verify(presenter).highlight(FirstColumn);
-            verify(presenter).finished();
+            verify(movingPlayerPresenter, times(2)).display(expectedGridAfterInitialMove);
+            verify(movingPlayerPresenter).highlight(FirstColumn);
+            verify(movingPlayerPresenter).finished();
         }
 
         @Test
         public void givenMovesEndsInTie_ResultIsPresented() {
-            makeMove(Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
+            makeMove(movingPlayerId, movingPlayerPresenter, Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
 
-            makeMove(Grid.Location.of(Grid.Row.First, Grid.Column.First));
+            makeMove(otherPlayerId, otherPlayerPresenter, Grid.Location.of(Grid.Row.First, Grid.Column.First));
 
-            makeMove(Grid.Location.of(Grid.Row.First, Grid.Column.First));
+            makeMove(movingPlayerId, movingPlayerPresenter, Grid.Location.of(Grid.Row.First, Grid.Column.Second));
 
             Grid expectedGridAfterInitialMove = gridOf("" +
                     "*|*|O" +
@@ -143,16 +147,16 @@ public class PlayGameUseCaseTest {
                     "X|X|O" +
                     "X|O|X");
 
-            InOrder inOrder = inOrder(presenter);
-            inOrder.verify(presenter, times(2)).display(expectedGridAfterInitialMove);
-            inOrder.verify(presenter, times(2)).display(expectedGridAfter2ndMove);
-            inOrder.verify(presenter, times(1)).display(expectedGridAfter3rdMove);
-            inOrder.verify(presenter, never()).highlight(FirstColumn);
-            inOrder.verify(presenter).finished();
+            InOrder inOrder = inOrder(movingPlayerPresenter);
+            inOrder.verify(movingPlayerPresenter, atLeast(1)).display(expectedGridAfterInitialMove);
+            inOrder.verify(movingPlayerPresenter, atLeast(1)).display(expectedGridAfter2ndMove);
+            inOrder.verify(movingPlayerPresenter, times(2)).display(expectedGridAfter3rdMove);
+            inOrder.verify(movingPlayerPresenter, never()).highlight(any(Grid.ThreeInARow.class));
+            inOrder.verify(movingPlayerPresenter).finished();
         }
 
-        private void makeMove(Grid.Location move) {
-            PlayGameUseCase.Request othersRequest = createMoveRequest(move);
+        private void makeMove(Object movingPlayerId, PlayGameUseCase.Presenter presenter, Grid.Location move) {
+            PlayGameUseCase.Request othersRequest = createMoveRequest(move, movingPlayerId);
             playGame.execute(othersRequest, presenter);
         }
 
@@ -167,7 +171,7 @@ public class PlayGameUseCaseTest {
             Grid.Location.of(Grid.Row.Third, Grid.Column.First)
     );
 
-    private PlayGameUseCase.Request createMoveRequest(Grid.Location movingPlayersMove) {
+    private PlayGameUseCase.Request createMoveRequest(Grid.Location movingPlayersMove, Object movingPlayerId) {
         PlayGameUseCase.Request request = new PlayGameUseCase.Request();
         request.gameId = gameId;
         request.movingPlayerId = movingPlayerId;

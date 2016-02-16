@@ -22,7 +22,7 @@ public class PlayerReference {
 
 
     public void tie(GameReference game, Grid grid) {
-
+        presenter.tie(this, grid);
     }
 
     public void youWin(GameReference game, Grid grid, Grid.ThreeInARow threeInARow) {
