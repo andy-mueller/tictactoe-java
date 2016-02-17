@@ -53,7 +53,9 @@ class PlayGameUseCase implements UseCase<PlayGameUseCase.Request, PlayGameUseCas
 
             @Override
             public void lost(PlayerReference player, Grid grid, Grid.ThreeInARow threeInARow) {
-
+                presenter.display(grid);
+                presenter.highlight(threeInARow);
+                presenter.finished();
             }
 
             @Override

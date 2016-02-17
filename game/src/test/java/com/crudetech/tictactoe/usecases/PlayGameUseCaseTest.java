@@ -18,9 +18,9 @@ public class PlayGameUseCaseTest {
     private final Grid.Mark movingPlayersMark = Grid.Mark.Cross;
     private Object otherPlayerId = "__otherPlayerId__";
     private PlayGameUseCase playGame;
+    private PlayGameUseCase.Presenter movingPlayerPresenter;
 
     public class GivenAStartedGame {
-        private PlayGameUseCase.Presenter movingPlayerPresenter;
         @Before
         public void setUp() {
             Grid.Location otherPlayersMove = Grid.Location.of(Grid.Row.Third, Grid.Column.Third);
@@ -76,8 +76,6 @@ public class PlayGameUseCaseTest {
     }
 
     public class GivenAnAlmostFinishedGame {
-        private PlayGameUseCase.Presenter movingPlayerPresenter;
-        private PlayGameUseCase.Presenter otherPlayerPresenter;
         @Before
         public void setUp() throws Exception {
 
@@ -102,7 +100,6 @@ public class PlayGameUseCaseTest {
             when(players.fetchById(otherPlayerId)).thenReturn(otherPlayer);
 
             movingPlayerPresenter = mock(PlayGameUseCase.Presenter.class);
-            otherPlayerPresenter = mock(PlayGameUseCase.Presenter.class);
 
             playGame = new PlayGameUseCase(gameReferenceGatewayMock, players);
 
@@ -120,7 +117,7 @@ public class PlayGameUseCaseTest {
                     "X|O|*");
 
             verify(movingPlayerPresenter, times(2)).display(expectedGridAfterInitialMove);
-            verify(movingPlayerPresenter).highlight(FirstColumn);
+            verify(movingPlayerPresenter).highlight(firstColumnWith(Grid.Mark.Cross));
             verify(movingPlayerPresenter).finished();
         }
 
@@ -128,7 +125,7 @@ public class PlayGameUseCaseTest {
         public void givenMovesEndsInTie_ResultIsPresented() {
             makeMove(movingPlayerId, movingPlayerPresenter, Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
 
-            makeMove(otherPlayerId, otherPlayerPresenter, Grid.Location.of(Grid.Row.First, Grid.Column.First));
+            makeMove(otherPlayerId, anyPresenter(), Grid.Location.of(Grid.Row.First, Grid.Column.First));
 
             makeMove(movingPlayerId, movingPlayerPresenter, Grid.Location.of(Grid.Row.First, Grid.Column.Second));
 
@@ -155,22 +152,58 @@ public class PlayGameUseCaseTest {
             inOrder.verify(movingPlayerPresenter).finished();
         }
 
+        private PlayGameUseCase.Presenter anyPresenter() {
+            return mock(PlayGameUseCase.Presenter.class);
+        }
+
         private void makeMove(Object movingPlayerId, PlayGameUseCase.Presenter presenter, Grid.Location move) {
             PlayGameUseCase.Request othersRequest = createMoveRequest(move, movingPlayerId);
             playGame.execute(othersRequest, presenter);
         }
 
-        //loose
+        @Test
+        public void givenMovingPlayerLooses_ResultIsPresented() {
+            Grid.Location movingPlayersMove = Grid.Location.of(Grid.Row.First, Grid.Column.Second);
+
+
+            makeMove(movingPlayerId, movingPlayerPresenter, movingPlayersMove);
+            makeMove(otherPlayerId, anyPresenter(), Grid.Location.of(Grid.Row.Third, Grid.Column.Third));
+
+            Grid expectedGridAfterInitialMove = gridOf("" +
+                    "*|X|O" +
+                    "X|X|O" +
+                    "X|O|*");
+
+            Grid expectedGridAfterLoosing = gridOf("" +
+                    "*|X|O" +
+                    "X|X|O" +
+                    "X|O|O");
+
+            verify(movingPlayerPresenter, atLeastOnce()).display(expectedGridAfterInitialMove);
+            verify(movingPlayerPresenter, times(1)).display(expectedGridAfterLoosing);
+            verify(movingPlayerPresenter).highlight(thirdColumnWith(Grid.Mark.Nought));
+            verify(movingPlayerPresenter).finished();
+        }
         //already finished
     }
 
-    static final Grid.ThreeInARow FirstColumn = Grid.ThreeInARow.of(
-            Grid.Mark.Cross,
-            Grid.Location.of(Grid.Row.First, Grid.Column.First),
-            Grid.Location.of(Grid.Row.Second, Grid.Column.First),
-            Grid.Location.of(Grid.Row.Third, Grid.Column.First)
-    );
+    private Grid.ThreeInARow thirdColumnWith(Grid.Mark mark) {
+        return Grid.ThreeInARow.of(
+                mark,
+                Grid.Location.of(Grid.Row.First, Grid.Column.Third),
+                Grid.Location.of(Grid.Row.Second, Grid.Column.Third),
+                Grid.Location.of(Grid.Row.Third, Grid.Column.Third)
+        );
+    }
 
+    private Grid.ThreeInARow firstColumnWith(Grid.Mark mark) {
+        return Grid.ThreeInARow.of(
+                mark,
+                Grid.Location.of(Grid.Row.First, Grid.Column.First),
+                Grid.Location.of(Grid.Row.Second, Grid.Column.First),
+                Grid.Location.of(Grid.Row.Third, Grid.Column.First)
+        );
+    }
     private PlayGameUseCase.Request createMoveRequest(Grid.Location movingPlayersMove, Object movingPlayerId) {
         PlayGameUseCase.Request request = new PlayGameUseCase.Request();
         request.gameId = gameId;

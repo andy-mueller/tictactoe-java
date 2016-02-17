@@ -30,7 +30,7 @@ public class PlayerReference {
     }
 
     public void youLoose(GameReference game, Grid grid, Grid.ThreeInARow threeInARow) {
-
+        presenter.lost(this, grid, threeInARow);
     }
 
     public void moveWasMade(GameReference game, Grid grid) {
