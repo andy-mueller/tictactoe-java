@@ -3,6 +3,7 @@ package com.crudetech.tictactoe.usecases;
 import com.crudetech.tictactoe.game.Grid;
 import de.bechte.junit.runners.context.HierarchicalContextRunner;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
@@ -104,6 +105,7 @@ public class PlayGameUseCaseTest {
             playGame = new PlayGameUseCase(gameReferenceGatewayMock, players);
 
         }
+
         @Test
         public void givenMovingPlayerWins_ResultIsPresented() {
             Grid.Location movingPlayersMove = Grid.Location.of(Grid.Row.First, Grid.Column.First);
@@ -156,10 +158,6 @@ public class PlayGameUseCaseTest {
             return mock(PlayGameUseCase.Presenter.class);
         }
 
-        private void makeMove(Object movingPlayerId, PlayGameUseCase.Presenter presenter, Grid.Location move) {
-            PlayGameUseCase.Request othersRequest = createMoveRequest(move, movingPlayerId);
-            playGame.execute(othersRequest, presenter);
-        }
 
         @Test
         public void givenMovingPlayerLooses_ResultIsPresented() {
@@ -184,9 +182,52 @@ public class PlayGameUseCaseTest {
             verify(movingPlayerPresenter).highlight(thirdColumnWith(Grid.Mark.Nought));
             verify(movingPlayerPresenter).finished();
         }
-        //already finished
     }
 
+    public class GivenFinishedGame {
+        @Before
+        public void setUp() throws Exception {
+
+            PlayerReference movingPlayer = new HumanPlayerReference();
+            movingPlayer.setId(movingPlayerId);
+            PlayerReference otherPlayer = new HumanPlayerReference();
+            otherPlayer.setId(otherPlayerId);
+            GameReference gameReference = new AlmostFinishedGameReferenceBuilder()
+                    .withStartPlayer(movingPlayer)
+                    .withStartPlayerMark(movingPlayersMark)
+                    .withOtherPlayer(otherPlayer)
+                    .build()
+                    .start();
+
+
+            GameReferenceGateway gameReferenceGatewayMock = mock(GameReferenceGateway.class);
+            when(gameReferenceGatewayMock.fetchById(gameId)).thenReturn(gameReference);
+
+
+            PlayerReferenceGateway players = mock(PlayerReferenceGateway.class);
+            when(players.fetchById(movingPlayerId)).thenReturn(movingPlayer);
+            when(players.fetchById(otherPlayerId)).thenReturn(otherPlayer);
+
+            movingPlayerPresenter = mock(PlayGameUseCase.Presenter.class);
+
+            playGame = new PlayGameUseCase(gameReferenceGatewayMock, players);
+        }
+
+        @Ignore
+        @Test
+        public void whenMoveIsTried_AlreadyFinishedIsResponded() {
+            Grid.Location movingPlayersMove = Grid.Location.of(Grid.Row.First, Grid.Column.Second);
+
+            makeMove(movingPlayerId, movingPlayerPresenter, movingPlayersMove);
+
+//            verify(movingPlayerPresenter).alreadyFinished();
+        }
+    }
+
+    private void makeMove(Object movingPlayerId, PlayGameUseCase.Presenter presenter, Grid.Location move) {
+        PlayGameUseCase.Request othersRequest = createMoveRequest(move, movingPlayerId);
+        playGame.execute(othersRequest, presenter);
+    }
     private Grid.ThreeInARow thirdColumnWith(Grid.Mark mark) {
         return Grid.ThreeInARow.of(
                 mark,
@@ -204,6 +245,7 @@ public class PlayGameUseCaseTest {
                 Grid.Location.of(Grid.Row.Third, Grid.Column.First)
         );
     }
+
     private PlayGameUseCase.Request createMoveRequest(Grid.Location movingPlayersMove, Object movingPlayerId) {
         PlayGameUseCase.Request request = new PlayGameUseCase.Request();
         request.gameId = gameId;

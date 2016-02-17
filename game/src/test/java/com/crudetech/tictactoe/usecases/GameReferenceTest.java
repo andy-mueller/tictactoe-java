@@ -240,29 +240,5 @@ public class GameReferenceTest {
 
             verify(startPlayer).gameAlreadyFinished();
         }
-
-
-        /**
-         * Creates a game is started, finished and won by the O player:
-         * <pre>
-         *    |   | O
-         * ---+---+---
-         *  X | X | O
-         * ---+---+---
-         *  X | O | O
-         * </pre>
-         * <p/>
-         * It is the no players turn now
-         */
-        private class FinishedGameReferenceBuilder extends GameReference.Builder {
-            @Override
-            public GameReference build() {
-                TicTacToeGameMother gameMother = new TicTacToeGameMother();
-                withGrid(gameMother.finishedGridWithNoughtsWinning());
-                withState(TicTacToeGameFsm.State.StartingPlayerWins);
-                return super.build();
-            }
-        }
     }
-
 }
