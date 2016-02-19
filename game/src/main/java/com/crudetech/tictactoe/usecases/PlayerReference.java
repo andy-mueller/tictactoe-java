@@ -38,7 +38,7 @@ public class PlayerReference {
     }
 
     public void gameAlreadyFinished() {
-
+        presenter.gameAlreadyFinished();
     }
 
     public void yourTurn(GameReference game, Grid grid) {

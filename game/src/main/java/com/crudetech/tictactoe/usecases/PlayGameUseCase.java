@@ -23,6 +23,8 @@ class PlayGameUseCase implements UseCase<PlayGameUseCase.Request, PlayGameUseCas
         void highlight(Grid.ThreeInARow threeInARow);
 
         void finished();
+
+        void alreadyFinished();
     }
 
     @Override
@@ -70,7 +72,7 @@ class PlayGameUseCase implements UseCase<PlayGameUseCase.Request, PlayGameUseCas
 
             @Override
             public void gameAlreadyFinished() {
-
+                presenter.alreadyFinished();
             }
         };
     }
