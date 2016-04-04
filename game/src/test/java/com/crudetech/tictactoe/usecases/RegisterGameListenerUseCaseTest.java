@@ -12,8 +12,7 @@ public class RegisterGameListenerUseCaseTest {
 
         RegisterGameListenerUseCase.Request request = new RegisterGameListenerUseCase.Request();
         request.gameId = "__gameId__";
-        request.listener = new RegisterGameListenerUseCase.GameEventListener() {
-        };
+        request.listener = mock(RegisterGameListenerUseCase.GameEventListener.class);
         RegisterGameListenerUseCase.Presenter presenter = mock(RegisterGameListenerUseCase.Presenter.class);
         uc.excute(request, presenter);
 
